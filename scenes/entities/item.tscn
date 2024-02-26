@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3miyavfmn4oh"]
+
+[ext_resource type="Texture2D" uid="uid://dlh8bljak1r51" path="res://sprites/icons/honey_drop.tres" id="1_7gchl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1kg8j"]
+radius = 5.0
+
+[node name="item" type="RigidBody2D"]
+disable_mode = 2
+gravity_scale = 0.0
+lock_rotation = true
+freeze = true
+freeze_mode = 1
+metadata/tag = "item"
+metadata/pickup = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_7gchl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1kg8j")

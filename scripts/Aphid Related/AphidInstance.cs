@@ -1,0 +1,10 @@
+public class AphidInstance
+{
+	public AphidData.Status Status = new();
+	public AphidData.Genes Genes = new();
+	public Aphid Entity;
+	public string ID;
+
+	public enum AphidStatus { Active, Passive }
+	public AphidStatus EntityStatus = AphidStatus.Active;
+}

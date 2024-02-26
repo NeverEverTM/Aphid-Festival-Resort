@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c26milatu6udv"]
+
+[ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="1_kgla5"]
+
+[resource]
+default_font = ExtResource("1_kgla5")
+default_font_size = 40

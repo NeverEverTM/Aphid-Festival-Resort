@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cn7d8wjyx78a3"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_lljrg"]
+[ext_resource type="Texture2D" uid="uid://dlh8bljak1r51" path="res://sprites/icons/honey_drop.tres" id="2_bddoh"]
+
+[node name="item" type="TextureButton"]
+self_modulate = Color(0.894118, 0.447059, 0.415686, 1)
+offset_right = 64.0
+offset_bottom = 66.0
+scale = Vector2(0.5, 0.5)
+texture_normal = ExtResource("1_lljrg")
+stretch_mode = 0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 22.0
+offset_right = 106.0
+offset_bottom = 108.0
+texture = ExtResource("2_bddoh")

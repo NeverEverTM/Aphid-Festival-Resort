@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxw3ptsviauui"]
+
+[ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_yxvfm"]
+[ext_resource type="Script" path="res://scripts/Aphid Related/AphidHatch.cs" id="2_5qpkw"]
+[ext_resource type="Texture2D" uid="uid://ooi5olkm8eom" path="res://sprites/icons/aphid_egg_red.tres" id="3_8rnru"]
+
+[node name="aphid_egg" instance=ExtResource("1_yxvfm")]
+script = ExtResource("2_5qpkw")
+colors = PackedColorArray(0.141176, 0, 0, 1, 0, 0, 0, 1, 0.670588, 0, 0, 1, 0.439216, 0, 0, 1)
+metadata/cost = 0
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("3_8rnru")

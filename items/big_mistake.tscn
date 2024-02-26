@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddw72xf4o5h3x"]
+
+[ext_resource type="PackedScene" uid="uid://dhgg8l8sw0dy4" path="res://scenes/entities/edible_item.tscn" id="1_xdrh8"]
+[ext_resource type="Texture2D" uid="uid://dackluogv1m7p" path="res://sprites/icons/big_mistake.tres" id="2_5f6oq"]
+[ext_resource type="PackedScene" uid="uid://dsumfeixta5kj" path="res://scenes/particles/mistake_particles.tscn" id="3_f2vgl"]
+
+[node name="big_mistake" instance=ExtResource("1_xdrh8")]
+metadata/food_type = 4
+metadata/food_value = 20.0
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_5f6oq")
+
+[node name="GPU_HeartParticles" parent="." index="2" instance=ExtResource("3_f2vgl")]

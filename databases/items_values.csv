@@ -1,0 +1,15 @@
+item_name,cost,level,buyable
+honey_drop,5,0,TRUE
+leaf,5,0,TRUE
+shroom,5,0,TRUE
+berry_juice,15,0,TRUE
+berry,5,0,TRUE
+shaved_ice,7,0,TRUE
+water,5,0,TRUE
+aphid_egg,200,0,TRUE
+aphid_egg_red,400,1,TRUE
+aphid_egg_green,400,1,TRUE
+aphid_egg_blue,400,1,TRUE
+aphid_egg_yellow,400,1,TRUE
+mistake,0,0,FALSE
+big_mistake,0,0,FALSE

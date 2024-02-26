@@ -1,0 +1,28 @@
+,en,es
+BOOT_0,Booting up...,Iniciando...
+BOOT_1,Loading Icons...,Cargando Iconos...
+BOOT_2,Loading Skins...,Cargando Skins...
+BOOT_3,Loading Databases...,Cargando Datos...
+new_game,New Game,Nueva Partida
+load_game,Load Game,Cargar Partida
+continue,Continue,Continuar
+options,Options,Opciones
+credits,Credits,Creditos
+exit,Exit,Salir
+new_note,Save data from the alpha may not carry over to later versions,Partidas guardadas no tienen garantizado funcionar en versiones posteriores
+new_resort_placeholder,Type a name for your resort,Escribe un nombre para tu complejo
+new_player_placeholder,Type a name for yourself!,Escribe un nombre para ti!
+new_begin,Begin,Comenzar
+load_quote,Select your profile!,Selecciona tu partida!
+load_note,Use <A> <D> or the arrow keys to select a profile\nPress <L> or <Z> to delete a profile.,Usa <A> <D> o las flechas del teclado para seleccionar una partida\nPresiona <L> o <Z> para eliminar una partida.
+credits_note,Made in Godot 4.2\n\nThis is a Non-Profit fan game.\nRegistered trademarks and copyrights belong to Moonsprout Games\n\nInspired by the fan game Chao Resort Island\nby Nefault1st. You should check them out!\n\nEntirely developed and drawn by\nSummer(NeverEver),Hecho en Godot 4.2\n\nEste es un juego no oficial sin animo de lucro.\nMarcas registradas y derechos de autor\nle pertenecen a Moonsprout Games.\n\nInspirado por el juego Chao Resort Island\nhecho por Nefault1st. Echale un vistazo!\n\nEnteramente desarollado y dibujado por\nSummer(NeverEver)
+store_name_placeholder,Kuts Food Cabinet,Puesto de Alimentos de Kut
+store_desc_placeholder,Purchase basic ingredients for Aphid feeding.,Adquiere ingredientes basicos para alimentar Ãfidos.
+bio_name_placeholder,Aphid Name,Nombre del Ãfido
+flavor_0,Sweet,Dulce
+flavor_1,Sour,Agrio
+flavor_2,Salty,Salado
+flavor_3,Bitter,Amargo
+flavor_4,Vile,Vil
+flavor_5,Bland,Soso
+flavor_6,Average,Normal
