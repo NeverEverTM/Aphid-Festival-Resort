@@ -1,4 +1,4 @@
-item_name,cost,level,buyable
+ITEMS,cost,level,buyable
 honey_drop,5,0,TRUE
 leaf,5,0,TRUE
 shroom,5,0,TRUE

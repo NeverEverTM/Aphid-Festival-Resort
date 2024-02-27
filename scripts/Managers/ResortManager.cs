@@ -34,7 +34,14 @@ public partial class ResortManager : Node2D
 
 	public static Node2D CreateItem(string _item_name)
 	{
-		Node2D _item = ResourceLoader.Load<PackedScene>($"{GameManager.ItemPath}/{_item_name}.tscn").Instantiate() as Node2D;
+		string _path = $"{GameManager.ItemPath}/{_item_name}.tscn";
+		if (ResourceLoader.Exists(_path))
+		{
+			GD.PrintErr($"{_item_name} is not a valid .tscn in the folder");
+			return null;
+		}
+
+		Node2D _item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
 		_item.SetMeta("id", _item_name);
 		Instance.AddChild(_item);
 		return _item;

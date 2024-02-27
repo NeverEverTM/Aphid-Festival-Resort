@@ -21,12 +21,30 @@ public partial class GameManager : Node2D
 		DatabasesPath = "res://databases";
 
 	// =========| LOADED VALUES |===========
-	public static readonly Dictionary<string, Texture2D> ICONS = new();
-	public static readonly Dictionary<string, Item> ITEMS = new();
-	public struct Item
+	public static readonly Dictionary<string, Texture2D> G_ICONS = new();
+	public static readonly Dictionary<string, Item> G_ITEMS = new();
+	public static readonly Dictionary<string, Food> G_FOOD = new();
+	public readonly struct Item
 	{
-		public int cost;
-		public int unlockableLevel;
+		public readonly int cost;
+		public readonly int unlockableLevel;
+		public readonly bool canBeBought;
+		public Item(int cost, int unlockableLevel, bool canBeBought)
+		{
+			this.cost = cost;
+			this.unlockableLevel = unlockableLevel;
+			this.canBeBought = canBeBought;
+		}
+	}
+	public readonly struct Food
+	{
+		public readonly int type;
+		public readonly float value;
+		public Food(int type, float value)
+		{
+			this.type = type;
+			this.value = value;
+		}
 	}
 
 	// Variables
@@ -84,11 +102,11 @@ public partial class GameManager : Node2D
 		}
 		catch (Exception _err)
 		{
-			GD.PrintErr(_err);
+			GD.PushError(_err);
 			Instance.GetTree().Quit(1);
 		}
 	}
-	private async static Task LOAD_ICONS()
+	private static Task LOAD_ICONS()
 	{
 		string[] _icons = DirAccess.GetFilesAt(IconPath);
 		string _tr = Instance.Tr("BOOT_1");
@@ -100,27 +118,28 @@ public partial class GameManager : Node2D
 			string _path = $"{IconPath}/{_icons[i]}";
 			ResourceLoader.LoadThreadedRequest(_path, "", true);
 			_status = ResourceLoader.LoadThreadedGetStatus(_path);
-			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-			{
-				await Task.Delay(1);
-				_status = ResourceLoader.LoadThreadedGetStatus(_path);
-			}
 
+			// Wait until it yields
+			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
+				_status = ResourceLoader.LoadThreadedGetStatus(_path);
+
+			// action state: if anything but good, close application
 			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
 			{
 				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
-					GD.PrintErr($"Item <{_icons[i]}> is not a valid resource or request.");
+					GD.PushError($"Item <{_icons[i]}> is not a valid resource or request.");
 				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-					GD.PrintErr($"Icon <{_icons[i]}> esd not able to be loaded.");
+					GD.PushError($"Icon <{_icons[i]}> esd not able to be loaded.");
 
 				Instance.GetTree().Quit(2);
 			}
 
-			ICONS.Add(_icons[i].Remove(_icons[i].Length - 5), ResourceLoader.LoadThreadedGet(_path) as Texture2D);	
+			G_ICONS.Add(_icons[i].Remove(_icons[i].Length - 5), ResourceLoader.LoadThreadedGet(_path) as Texture2D);	
 			BOOT_LOADING_LABEL.Text = $"{_tr} ({i + 1}/{_icons.Length})";
 		}
+		return Task.CompletedTask;
 	}
-	private async static Task LOAD_SKINS()
+	private static Task LOAD_SKINS()
 	{
 		string[] _skins = DirAccess.GetFilesAt(SkinsPath);
 		string _tr = Instance.Tr("BOOT_2");
@@ -137,7 +156,6 @@ public partial class GameManager : Node2D
 			_status = ResourceLoader.LoadThreadedGetStatus(_path);
 			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
 			{
-				await Task.Delay(1);
 				_status = ResourceLoader.LoadThreadedGetStatus(_path);
 			}
 
@@ -153,19 +171,42 @@ public partial class GameManager : Node2D
 
 			BOOT_LOADING_LABEL.Text = $"{_tr} ({i + 1}/{_skins.Length})";
 		}
+		return Task.CompletedTask;
 	}
-	private static Task LOAD_DATABASES()
+	private static async Task LOAD_DATABASES()
 	{
-		// Get Items
+		string _tr = Instance.Tr("BOOT_3");
+		await LOAD_ITEM_VALUES(_tr);
+		await LOAD_FOOD_VALUES(_tr);
+	}
+	private static Task LOAD_ITEM_VALUES(string _tr)
+	{
 		FileAccess _file = FileAccess.Open(DatabasesPath + "/items_values.csv", FileAccess.ModeFlags.Read);
+		BOOT_LOADING_LABEL.Text = _tr + $" ({Instance.Tr(_file.GetCsvLine()[0])})";
 		while(_file.GetPosition() < _file.GetLength())
 		{
-			Item _item = new()
-			{
-				cost = 0,
-				unlockableLevel = 0
-			};
-			ITEMS.Add("name", _item);
+			string[] _info = _file.GetCsvLine();
+			Item _item = new(
+				cost: int.Parse(_info[1]),
+				unlockableLevel: int.Parse(_info[2]),
+				canBeBought: bool.Parse(_info[3])
+			);
+			G_ITEMS.Add(_info[0], _item);
+		}
+		return Task.CompletedTask;
+	}
+	private static Task LOAD_FOOD_VALUES(string _tr)
+	{
+		FileAccess _file = FileAccess.Open(DatabasesPath + "/foods_values.csv", FileAccess.ModeFlags.Read);
+		BOOT_LOADING_LABEL.Text += _tr + $" ({Instance.Tr(_file.GetCsvLine()[0])})";
+		while(_file.GetPosition() < _file.GetLength())
+		{
+			string[] _info = _file.GetCsvLine();
+			Food _item = new(
+				type: int.Parse(_info[1]),
+				value: float.Parse(_info[2])
+			);
+			G_FOOD.Add(_info[0], _item);
 		}
 		return Task.CompletedTask;
 	}

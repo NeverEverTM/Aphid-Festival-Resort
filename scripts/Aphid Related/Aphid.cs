@@ -277,10 +277,13 @@ public partial class Aphid : CharacterBody2D
 			// Dispose of the food item now
 			if (IsInstanceValid(food_item)) 
 			{
+				string _id = food_item.GetMeta("id").ToString();
+				GameManager.Food _food = GameManager.G_FOOD[_id];
+				float _multi = Instance.Genes.FoodMultipliers[_food.type];
 				if (FoodMode)
-					SetHunger((int)(10 * Instance.Genes.FoodMultipliers[(int)food_item.GetMeta("food_type")]));
+					SetHunger(_food.value * _multi);
 				else
-					SetThirst((int)(10 * Instance.Genes.FoodMultipliers[(int)food_item.GetMeta("food_type")]));
+					SetThirst(_food.value * _multi);
 				
 				food_item.QueueFree();
 			}
@@ -449,7 +452,7 @@ public partial class Aphid : CharacterBody2D
 	}
 
 	// =======| Stat Related Functions |=======
-	public virtual void SetHunger(int _amount, bool _setAsCurrent = false)
+	public virtual void SetHunger(float _amount, bool _setAsCurrent = false)
 	{
 		if (_setAsCurrent)
 			Instance.Status.Hunger = Math.Clamp(_amount, 0, 100);
@@ -469,7 +472,7 @@ public partial class Aphid : CharacterBody2D
 				hunger_decay;
 		}
 	}
-	public virtual void SetThirst(int _amount, bool _setAsCurrent = false)
+	public virtual void SetThirst(float _amount, bool _setAsCurrent = false)
 	{
 		if (_setAsCurrent)
 			Instance.Status.Thirst = Math.Clamp(_amount, 0, 100);

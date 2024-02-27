@@ -43,10 +43,13 @@ public partial class KitchenStore : Node2D
 		string[] _globalItems = DirAccess.GetFilesAt(GameManager.ItemPath);
 		for(int i = 0; i < _globalItems.Length; i++)
 		{
+			string _itemName = _globalItems[i].Remove(_globalItems[i].Length - 5); // delete the .tscn extension
+			if (!GameManager.G_ITEMS[_itemName].canBeBought)
+				continue;
+
 			TextureButton _itemContainer = itemContainer.Instantiate() as TextureButton;
 
-			string _itemName = _globalItems[i].Remove(_globalItems[i].Length - 5); // delete the .tscn extension
-			(_itemContainer.GetChild(0) as TextureRect).Texture = GameManager.ICONS[_itemName];
+			(_itemContainer.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[_itemName];
 			_itemContainer.Pressed += () => SetItemAsCurrent(_itemName);
 			
 			itemGrid.AddChild(_itemContainer);
@@ -60,15 +63,12 @@ public partial class KitchenStore : Node2D
 	private void SetItemAsCurrent(string _itemName)
 	{
 		currentItem = _itemName;
-		// I have to instantiate it to get the metadata, otherwise it cant read it
-		var _temp = ResourceLoader.Load<PackedScene>($"{GameManager.ItemPath}/{_itemName}.tscn").Instantiate();
-		currentCost = (int)_temp.GetMeta("cost");
+		currentCost = GameManager.G_ITEMS[_itemName].cost;
 		itemCost.Text = currentCost.ToString();
-		_temp.QueueFree();
 
 		itemName.Text = Tr(_itemName + "_name");
 		itemDescription.Text = Tr(_itemName + "_desc");
-		itemIcon.Texture = GameManager.ICONS[_itemName];
+		itemIcon.Texture = GameManager.G_ICONS[_itemName];
 	}
 	private void PurchaseItem()
 	{

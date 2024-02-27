@@ -1,0 +1,10 @@
+FOOD,food_type,food_value
+honey_drop,0,10
+leaf,5,10
+shroom,1,6
+berry,3,6
+berry_juice,0,10
+water,6,10
+shaved_ice,6,15
+mistake,4,-5
+big_mistake,4,-20

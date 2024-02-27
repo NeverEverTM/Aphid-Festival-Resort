@@ -339,7 +339,7 @@ public partial class Player : CharacterBody2D
 	private static void CreateInvItem(int _index)
 	{
 		TextureButton _item = Instance.invItemContainer.Instantiate() as TextureButton;
-		(_item.GetChild(0) as TextureRect).Texture = GameManager.ICONS[Data.Inventory[_index]];
+		(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[Data.Inventory[_index]];
 		var _item_name = Data.Inventory[_index];
 		_item.Pressed += () => 
 		{ 
