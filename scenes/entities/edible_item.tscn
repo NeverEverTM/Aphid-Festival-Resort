@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dhgg8l8sw0dy4"]
-
-[ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_06wtf"]
-
-[node name="item" instance=ExtResource("1_06wtf")]
-metadata/tag = "food"
-metadata/food_type = 0
-metadata/food_value = 10.0
-metadata/cost = 0

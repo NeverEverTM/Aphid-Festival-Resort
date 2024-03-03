@@ -2,7 +2,7 @@ using System;
 using Godot;
 using Godot.Collections;
 
-public partial class Player : CharacterBody2D
+public partial class Player : CharacterBody2D, SaveSystem.ISaveFile
 {
 	[Export] private Camera2D camera;
 	[Export] private Area2D interactionArea;
@@ -15,16 +15,26 @@ public partial class Player : CharacterBody2D
 	[Export] private PackedScene invItemContainer;
 
 	public static Player Instance;
-	public static SaveData Data = new(); 
 	public static int Currency;
+	public static SaveData Data = new();
 
-	public class SaveData
+	public void WriteData()
+	{
+		throw new NotImplementedException();
+	}
+
+	public void ReadData()
+	{
+		throw new NotImplementedException();
+	}
+
+	public class SaveData : SaveSystem.ISaveData
 	{
 		public string Name { get; set; }
 		public int Level { get; set; }
 		public string Room { get; set; }
 
-		public float PositionX {get; set; }
+		public float PositionX { get; set; }
 		public float PositionY { get; set; }
 
 		public System.Collections.Generic.List<string> Inventory { get; set; }
@@ -34,10 +44,20 @@ public partial class Player : CharacterBody2D
 				"aphid_egg"
 			};
 		}
+
+		void SaveSystem.ISaveData.SaveData()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void LoadData()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	// Disable
-	public bool IsExplicitlyDisabled { get; private  set; }
+	public bool IsExplicitlyDisabled { get; private set; }
 	private bool IsDisabled, IsRunning;
 
 	// Movement Params
@@ -55,7 +75,10 @@ public partial class Player : CharacterBody2D
 
 	// Pickup Params
 	public Node2D PickupItem { private set; get; }
-	private Vector2 pickup_ground_position = new(0,8);
+
+	SaveSystem.ISaveData SaveSystem.ISaveFile.Data => throw new NotImplementedException();
+
+	private Vector2 pickup_ground_position = new(0, 8);
 	private bool pickup_isAphid;
 
 	public delegate void PickupEventHandler(string _tag);
@@ -66,14 +89,14 @@ public partial class Player : CharacterBody2D
 	// Pet Params
 	private float pet_timer;
 
-    public override void _EnterTree()
-    {
+	public override void _EnterTree()
+	{
 		Instance = this;
 		FacingDirection = Vector2.Left;
-    }
-    public override void _Ready()
-    {
-        GameManager.GlobalCamera = camera;
+	}
+	public override void _Ready()
+	{
+		GameManager.GlobalCamera = camera;
 		SetPlayerAnim("idle");
 
 		collisionActions = new Action<Node2D>[]
@@ -81,14 +104,14 @@ public partial class Player : CharacterBody2D
 			Instance.TryPet,
 		};
 
-		SaveSystem.OnLoad += () => 
+		SaveSystem.OnLoad += () =>
 		{
 			Instance.GlobalPosition = new Vector2(Data.PositionX, Data.PositionY);
 			for (int i = 0; i < Data.Inventory.Count; i++)
 				CreateInvItem(i);
 		};
-    }
-    public override void _Process(double delta)
+	}
+	public override void _Process(double delta)
 	{
 		ZIndex = (int)GlobalPosition.Y + 8;
 		Data.PositionX = GlobalPosition.X;
@@ -111,8 +134,8 @@ public partial class Player : CharacterBody2D
 		if (PickupItem != null)
 			ProcessPickupBehaviour();
 	}
-    public override void _PhysicsProcess(double delta)
-    {
+	public override void _PhysicsProcess(double delta)
+	{
 		if (MovementDirection != Vector2.Zero)
 			SetFlipDirection(MovementDirection);
 		TickFlip((float)delta);
@@ -120,7 +143,7 @@ public partial class Player : CharacterBody2D
 			return;
 		Velocity = MovementDirection * MovementSpeed;
 		MoveAndSlide();
-    }
+	}
 
 	public void SetDisabled(bool _state)
 	{
@@ -195,12 +218,12 @@ public partial class Player : CharacterBody2D
 	{
 		Array<Node2D> _collisionList = interactionArea.GetOverlappingBodies();
 
-	 	if (_collisionList.Count == 0)
+		if (_collisionList.Count == 0)
 			return;
 
 		for (int i = 0; i < _collisionList.Count; i++)
 		{
-			if(!_collisionList[i].HasMeta("tag"))
+			if (!_collisionList[i].HasMeta("tag"))
 				continue;
 			int _index = CheckForTag(_collisionList[i]);
 			if (_index != -1)
@@ -308,7 +331,7 @@ public partial class Player : CharacterBody2D
 	{
 		Data.Inventory.Remove(_item_name);
 		Node2D _item = ResortManager.CreateItem(_item_name);
-		
+
 		if (Instance.PickupItem != null)
 			Instance.Drop();
 		Instance.Pickup(_item, _item.GetMeta("tag").ToString());
@@ -318,7 +341,7 @@ public partial class Player : CharacterBody2D
 		if (Data.Inventory.Count >= 15)
 			return false;
 		Data.Inventory.Add(_item);
-        CreateInvItem(Data.Inventory.Count - 1);
+		CreateInvItem(Data.Inventory.Count - 1);
 
 		// Notify about addon
 
@@ -335,16 +358,16 @@ public partial class Player : CharacterBody2D
 		Instance.PickupItem.QueueFree();
 		Instance.PickupItem = null;
 	}
-	
+
 	private static void CreateInvItem(int _index)
 	{
 		TextureButton _item = Instance.invItemContainer.Instantiate() as TextureButton;
 		(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[Data.Inventory[_index]];
 		var _item_name = Data.Inventory[_index];
-		_item.Pressed += () => 
-		{ 
-			PullItem(_item_name); 
-			_item.QueueFree(); 
+		_item.Pressed += () =>
+		{
+			PullItem(_item_name);
+			_item.QueueFree();
 		};
 		Instance.inventoryGrid.AddChild(_item);
 	}
@@ -368,7 +391,7 @@ public partial class Player : CharacterBody2D
 	}
 	private void SetPlayerAnim(string _name)
 	{
-		var _action =  currentAnimState switch
+		var _action = currentAnimState switch
 		{
 			"behind" => "/behind",
 			_ => ""
@@ -382,7 +405,7 @@ public partial class Player : CharacterBody2D
 	private Node GetOverlappingNodeWithMeta(string _meta)
 	{
 		var _collisionList = interactionArea.GetOverlappingBodies();
-	 	if (_collisionList.Count <= 0)
+		if (_collisionList.Count <= 0)
 			return null;
 
 		for (int i = 0; i < _collisionList.Count; i++)
@@ -391,7 +414,7 @@ public partial class Player : CharacterBody2D
 			var _item = _collisionList[i];
 			if (!_item.HasMeta(_meta))
 				continue;
-					
+
 			return _item;
 		}
 		return null;
@@ -399,7 +422,7 @@ public partial class Player : CharacterBody2D
 	private Node GetOverlappingNodeWithTag(string _tag)
 	{
 		var _collisionList = interactionArea.GetOverlappingBodies();
-	 	if (_collisionList.Count <= 0)
+		if (_collisionList.Count <= 0)
 			return null;
 
 		for (int i = 0; i < _collisionList.Count; i++)
@@ -408,7 +431,7 @@ public partial class Player : CharacterBody2D
 			var _item = _collisionList[i];
 			if (!_item.HasMeta("_tag") && !((string)_item.GetMeta("tag")).Equals(_tag))
 				continue;
-					
+
 			return _item;
 		}
 		return null;

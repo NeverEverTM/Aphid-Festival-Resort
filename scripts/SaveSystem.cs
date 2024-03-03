@@ -23,7 +23,7 @@ public static class SaveSystem
 	aphidsGUID = "/aphids.guid",
 	playerData = "/player.data",
 	aphidsFolder = "/aphids",
-	resortFolder = "/resort"; 
+	resortFolder = "/resort";
 
 	// General file managment
 	public static void CreateBaseDirectories()
@@ -40,9 +40,9 @@ public static class SaveSystem
 		aphids.Add(_guid, _buddy);
 		return _guid;
 	}
-	public static void RemoveAphidInstance(Guid _guid) => 
+	public static void RemoveAphidInstance(Guid _guid) =>
 		aphids.Remove(_guid);
-	public static AphidInstance GetAphidInstance(Guid _guid) => 
+	public static AphidInstance GetAphidInstance(Guid _guid) =>
 		aphids[_guid];
 	public static void ReplaceAphidInstance(Guid _guid, AphidInstance _buddy) =>
 		aphids[_guid] = _buddy;
@@ -50,32 +50,35 @@ public static class SaveSystem
 	// Global player data
 	public static void SaveGlobalData()
 	{
-        using var _file = FileAccess.Open(GlobalDataPath, FileAccess.ModeFlags.Write);
-        _file.StorePascalString(Profile);
-    }
+		using var _file = FileAccess.Open(GlobalDataPath, FileAccess.ModeFlags.Write);
+		_file.StorePascalString(Profile);
+	}
 	public static void LoadGlobalData()
 	{
-        using var _file = FileAccess.Open(GlobalDataPath, FileAccess.ModeFlags.Read);
-        SetProfile(_file.GetPascalString());
-    }
+		using var _file = FileAccess.Open(GlobalDataPath, FileAccess.ModeFlags.Read);
+		SetProfile(_file.GetPascalString());
+	}
 
 	// ==========| Resort Saving Methods |============
 	public static async Task SaveProfile()
 	{
 		string _backupFolder = ProfilesDirectory + backupsProfile + $"/{Profile}";
-		
+
 		// Player Data
 		await SavePlayer(_backupFolder);
 		await SavePlayer(CurrentProfilePath);
 
-		// Save All Resort Data
+		// Save Aphid Data
 		await SaveAllAphids(_backupFolder, false);
 		await SaveAllAphids(CurrentProfilePath);
+
+		// Save Resort Data
+		await ResortManager.Data.SaveGroundItems();
 
 		OnSave?.Invoke();
 		GD.Print($"ProfileSave: Saved profile <{Profile}> to memory.");
 	}
-	
+
 	private static Task SavePlayer(string _path)
 	{
 		var _jsonPlayer = JsonSerializer.Serialize(Player.Data);
@@ -83,12 +86,12 @@ public static class SaveSystem
 		_file.StorePascalString(_jsonPlayer);
 		return Task.CompletedTask;
 	}
-	
+
 	private static Task SaveAllAphids(string _path, bool _logSave = true)
 	{
-		try 
-		{ 
-			foreach(KeyValuePair<Guid, AphidInstance> _pair in aphids)
+		try
+		{
+			foreach (KeyValuePair<Guid, AphidInstance> _pair in aphids)
 			{
 				var _guid = _pair.Key.ToString();
 				if (!SaveAphid($"{_path + aphidsFolder}/{_guid}", _pair.Value))
@@ -97,7 +100,7 @@ public static class SaveSystem
 					GD.Print($"Succesfully saved aphid. ID: {_guid}.");
 			}
 		}
-		catch(Exception _err)
+		catch (Exception _err)
 		{
 			GD.Print(_err.Message);
 			GD.Print(_err.StackTrace);
@@ -139,7 +142,7 @@ public static class SaveSystem
 		OnLoad?.Invoke();
 		GD.Print($"Loaded profile <{Profile}> to memory.");
 	}
-	
+
 	private static Task LoadPlayer()
 	{
 		try
@@ -148,33 +151,33 @@ public static class SaveSystem
 			var _data = _file.GetPascalString();
 			Player.Data = JsonSerializer.Deserialize<Player.SaveData>(_data);
 		}
-		catch(Exception _err)
+		catch (Exception _err)
 		{
 			GD.PrintErr(_err);
 		}
 		return Task.CompletedTask;
-	} 
-	
+	}
+
 	private static Task LoadAllAphids()
 	{
 		var _aphidFolder = CurrentProfilePath + aphidsFolder;
 		var _dir = DirAccess.Open(_aphidFolder);
 		var _files = _dir.GetFiles();
-		try 
-		{ 
+		try
+		{
 			for (int i = 0; i < _files.Length; i++)
 			{
 				var _instance = new AphidInstance();
 				if (!LoadAphid(_aphidFolder + $"/{_files[i]}", ref _instance))
 					continue;
-	
+
 				_instance.ID = _files[i];
 				aphids.Add(new Guid(_files[i]), _instance);
 				ResortManager.CreateAphid(_instance);
 				GD.Print($"Succesfully loaded aphid. ID: {_files[i]}.");
-			}	 
-		} 
-		catch(Exception _err)
+			}
+		}
+		catch (Exception _err)
 		{
 			GD.Print(_err.Message);
 			GD.Print(_err.StackTrace);
@@ -200,38 +203,29 @@ public static class SaveSystem
 	}
 
 	// ==========| Profile Managment Methods |==========
-	/// <summary>
-	/// Creates a profile based on the current set one.
-	/// </summary>
 	public static async Task CreateProfile()
 	{
 		// Create directories for current profile
 		string _backupPath = ProfilesDirectory + backupsProfile + $"/{Profile}";
-
-		DirAccess.MakeDirAbsolute(CurrentProfilePath);
-		var _dir = DirAccess.Open(CurrentProfilePath);
-		_dir.MakeDir("aphids");
-		_dir.MakeDir("resort");
-
-		// Backup profile
-		DirAccess.MakeDirAbsolute(_backupPath);
-		var _backupDir = DirAccess.Open(_backupPath);
-		_backupDir.MakeDir("aphids");
-		_backupDir.MakeDir("resort");
-
-		await SaveProfile();
+		await CreateNewProfile(CurrentProfilePath);
+		await CreateNewProfile(_backupPath);
 
 		GD.Print($"ProfileCreate: Succesfully created profile of <{Profile}>.");
 	}
-	/// <summary>
-	/// Deletes the given profile from the user data.
-	/// </summary>
-	/// <param name="_profile"></param>
+	private static async Task CreateNewProfile(string _path)
+	{
+		DirAccess.MakeDirAbsolute(_path);
+		var _backupDir = DirAccess.Open(_path);
+		_backupDir.MakeDir("aphids");
+		_backupDir.MakeDir("resort");
+		await SavePlayer(_path);
+	}
+	
 	public static Task DeleteProfile(string _profile)
 	{
 		var _path = ProjectSettings.GlobalizePath(CurrentProfilePath);
 
-		if (!_path.Contains(Profile) ||! _path.Contains("profiles"))
+		if (!_path.Contains(Profile) || !_path.Contains("profiles"))
 		{
 			GD.Print($"Cannot delete file in path: {_path}");
 			return Task.CompletedTask;
@@ -242,18 +236,27 @@ public static class SaveSystem
 		GD.Print($"ProfileDelete: Succesfully deleted profile <{_profile}>.");
 		return Task.CompletedTask;
 	}
-	/// <summary>
-	/// Sets current profile as given one, also set its folder path.
-	/// </summary>
-	/// <param name="_profile"></param>
+	public static async void ResetProfile(string _profile = defaultProfile)
+	{
+		await DeleteProfile(_profile);
+		await CreateProfile();
+	}
+	
 	public static void SetProfile(string _profile = defaultProfile)
 	{
 		CurrentProfilePath = $"{ProfilesDirectory}/{_profile}";
 		Profile = _profile;
 	}
-	public static async void ResetProfile(string _profile = defaultProfile)
+
+	public interface ISaveFile
 	{
-		await DeleteProfile(_profile);
-		await CreateProfile();
+		public ISaveData Data { get; }
+		public void WriteData();
+		public void ReadData();
+	}
+	public interface ISaveData
+	{
+		public void SaveData();
+		public void LoadData();
 	}
 }

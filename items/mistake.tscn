@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://damedqh0fm7yw"]
 
-[ext_resource type="PackedScene" uid="uid://dhgg8l8sw0dy4" path="res://scenes/entities/edible_item.tscn" id="1_mvk3k"]
+[ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_mvk3k"]
 [ext_resource type="Texture2D" uid="uid://kefp7gt8nfan" path="res://sprites/icons/mistake.tres" id="2_vf7oo"]
 
 [node name="mistake" instance=ExtResource("1_mvk3k")]

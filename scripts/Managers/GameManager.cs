@@ -29,11 +29,13 @@ public partial class GameManager : Node2D
 		public readonly int cost;
 		public readonly int unlockableLevel;
 		public readonly bool canBeBought;
-		public Item(int cost, int unlockableLevel, bool canBeBought)
+		public readonly string tag;
+		public Item(int cost, int unlockableLevel, bool canBeBought, string tag)
 		{
 			this.cost = cost;
 			this.unlockableLevel = unlockableLevel;
 			this.canBeBought = canBeBought;
+			this.tag = tag;
 		}
 	}
 	public readonly struct Food
@@ -189,7 +191,8 @@ public partial class GameManager : Node2D
 			Item _item = new(
 				cost: int.Parse(_info[1]),
 				unlockableLevel: int.Parse(_info[2]),
-				canBeBought: bool.Parse(_info[3])
+				canBeBought: bool.Parse(_info[3]),
+				tag: _info[4].ToString()
 			);
 			G_ITEMS.Add(_info[0], _item);
 		}
