@@ -258,15 +258,16 @@ public partial class MainMenu : Node2D
 		else
 			cameraMenu.Position = cameraMenu.GlobalPosition + Vector2.Up;
 	}
+	private float[] babyWeight = new float[] { 90, 10 };
 	private void SpawnBunchaOfAphidsForTheFunnies()
 	{
-		RandomNumberGenerator _rng = new();
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < GameManager.RNG.RandiRange(12, 24); i++)
 		{
 			var _aphid = aphidPrefab.Instantiate() as Aphid;
 			_aphid.Instance = new();
 			_aphid.Instance.Genes.RandomizeColors();
-			_aphid.GlobalPosition = new Vector2(_rng.RandiRange(-300, 300), _rng.RandiRange(-300, 300));
+			_aphid.Instance.Status.IsAdult = GameManager.GetRandomByWeight(babyWeight) == 0;
+			_aphid.GlobalPosition = GameManager.GetRandomVector(-300, 300);
 			AddChild(_aphid);
 		}
 	}

@@ -1,13 +1,18 @@
-[gd_scene load_steps=11 format=3 uid="uid://7oo48cet73pb"]
+[gd_scene load_steps=12 format=3 uid="uid://7oo48cet73pb"]
 
 [ext_resource type="Script" path="res://scripts/Aphid Related/Aphid.cs" id="1_alf76"]
 [ext_resource type="PackedScene" uid="uid://4elwtdodi4mk" path="res://scenes/particles/heart_particles.tscn" id="2_ld3gy"]
 [ext_resource type="PackedScene" uid="uid://3n7hc8daqmx1" path="res://scenes/particles/sleep_particles.tscn" id="3_lmnx6"]
-[ext_resource type="Texture2D" uid="uid://dfj5xclrk2mjn" path="res://skins/legs_idle_0.png" id="4_bgkuu"]
 [ext_resource type="PackedScene" uid="uid://c3yni1x81j23w" path="res://scenes/particles/anger_particle.tscn" id="4_y6tyl"]
-[ext_resource type="Texture2D" uid="uid://n82kugkafy12" path="res://skins/body_idle_0.png" id="5_pd54k"]
-[ext_resource type="Texture2D" uid="uid://bdu6g381vtdmk" path="res://skins/antenna_idle_0.png" id="6_oxr84"]
-[ext_resource type="Texture2D" uid="uid://dwakjxqkkfyf8" path="res://skins/eyes_idle_0.png" id="7_ecq4k"]
+[ext_resource type="Script" path="res://scripts/Aphid Related/AphidSkin.cs" id="5_mgt0u"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_trk2c"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rj8op"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ixtmb"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ifyyb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
 size = Vector2(34, 12)
@@ -15,16 +20,11 @@ size = Vector2(34, 12)
 [sub_resource type="CircleShape2D" id="CircleShape2D_7a8x1"]
 radius = 99.0
 
-[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("spriteBody", "eyes", "antenna", "body", "back_legs", "front_legs", "triggerArea")]
+[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea")]
 position = Vector2(-1, 0)
 motion_mode = 1
 script = ExtResource("1_alf76")
-spriteBody = NodePath("SpriteBody")
-eyes = NodePath("SpriteBody/eyes")
-antenna = NodePath("SpriteBody/antenna")
-body = NodePath("SpriteBody/body")
-back_legs = NodePath("SpriteBody/back_legs")
-front_legs = NodePath("SpriteBody/front_legs")
+skin = NodePath("SpriteBody")
 triggerArea = NodePath("TriggerArea")
 heartParticles = ExtResource("2_ld3gy")
 foodParticles = ExtResource("2_ld3gy")
@@ -33,26 +33,32 @@ angerParticles = ExtResource("4_y6tyl")
 metadata/pickup = true
 metadata/tag = "aphid"
 
-[node name="SpriteBody" type="Node2D" parent="."]
+[node name="SpriteBody" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
+script = ExtResource("5_mgt0u")
+eyes = NodePath("eyes")
+antenna = NodePath("antenna")
+body = NodePath("body")
+back_legs = NodePath("back_legs")
+front_legs = NodePath("front_legs")
 
 [node name="back_legs" type="Sprite2D" parent="SpriteBody"]
 position = Vector2(-5.5, -9.5)
-texture = ExtResource("4_bgkuu")
+texture = SubResource("CompressedTexture2D_trk2c")
 
 [node name="body" type="Sprite2D" parent="SpriteBody"]
-texture = ExtResource("5_pd54k")
+texture = SubResource("CompressedTexture2D_rj8op")
 offset = Vector2(0.5, -8.5)
 
 [node name="eyes" type="Sprite2D" parent="SpriteBody"]
-texture = ExtResource("7_ecq4k")
+texture = SubResource("CompressedTexture2D_ixtmb")
 offset = Vector2(0.5, -8.5)
 
 [node name="front_legs" type="Sprite2D" parent="SpriteBody"]
-texture = ExtResource("4_bgkuu")
+texture = SubResource("CompressedTexture2D_trk2c")
 offset = Vector2(0.5, -8.5)
 
 [node name="antenna" type="Sprite2D" parent="SpriteBody"]
-texture = ExtResource("6_oxr84")
+texture = SubResource("CompressedTexture2D_ifyyb")
 offset = Vector2(0.5, -8.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

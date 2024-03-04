@@ -251,7 +251,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveFile
 		if (_aphid.Pet())
 		{
 			animator.Play("player/pet");
-			_aphid.SetFlipDirection(GlobalPosition - _aphid.GlobalPosition);
+			_aphid.skin.SetFlipDirection(GlobalPosition - _aphid.GlobalPosition);
 			pet_timer = 2;
 		}
 	}
@@ -291,7 +291,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveFile
 			_aphid.WakeUp(true);
 
 		_aphid.SetAphidState(Aphid.AphidState.Idle);
-		_aphid.SetFlipDirection(FacingDirection, true);
+		_aphid.skin.SetFlipDirection(FacingDirection, true);
 		pickup_isAphid = true;
 		return true;
 	}
@@ -323,7 +323,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveFile
 		PickupItem.GlobalPosition = interactionArea.GlobalPosition;
 		PickupItem.ZIndex = (int)PickupItem.GlobalPosition.Y + 14;
 		if (pickup_isAphid) // flip it to face towards your facing direction
-			(PickupItem as Aphid).SetFlipDirection(FacingDirection, true);
+			(PickupItem as Aphid).skin.SetFlipDirection(FacingDirection, true);
 	}
 
 	// =======| Inventory |========

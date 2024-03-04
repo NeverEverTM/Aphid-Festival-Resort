@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdu6g381vtdmk"
-path="res://.godot/imported/antenna_idle_0.png-5e96889d5f6d72c7f45242661bda4103.ctex"
+uid="uid://2e856swkfn11"
+path="res://.godot/imported/eyes_idle.png-e4c83b431626ebf24ebb27732cb13c3c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://skins/antenna_idle_0.png"
-dest_files=["res://.godot/imported/antenna_idle_0.png-5e96889d5f6d72c7f45242661bda4103.ctex"]
+source_file="res://skins/0/eyes_idle.png"
+dest_files=["res://.godot/imported/eyes_idle.png-e4c83b431626ebf24ebb27732cb13c3c.ctex"]
 
 [params]
 

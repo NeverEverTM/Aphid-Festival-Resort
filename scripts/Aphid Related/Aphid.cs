@@ -6,8 +6,7 @@ public partial class Aphid : CharacterBody2D
 {
 	public AphidInstance Instance;
 
-	[Export] private Node2D spriteBody;
-	[Export] private Sprite2D eyes, antenna, body, back_legs, front_legs;
+	[Export] public AphidSkin skin;
 	[Export] private Area2D triggerArea;
 
 	[ExportCategory("Effects")]
@@ -51,9 +50,6 @@ public partial class Aphid : CharacterBody2D
 	// Movement Params
 	public Vector2 MovementDirection;
 	public float MovementSpeed;
-	private int walk_shutter_speed;
-	private bool legsStep, flipSwitch;
-	private Vector2 front_legs_position, back_legs_position;
 
 	// General Params
 	private RandomNumberGenerator behaviourRNG = new();
@@ -66,8 +62,6 @@ public partial class Aphid : CharacterBody2D
     {
 		// ===| Set Default Params |===
 		idlePosition = GlobalPosition;
-		front_legs_position = front_legs.Position;
-		back_legs_position = back_legs.Position;
 		food_item_position = new(25,0)
 ;
 		triggerArea.BodyEntered += OnTriggerEnter;
@@ -75,44 +69,50 @@ public partial class Aphid : CharacterBody2D
 		TriggerActions.Add("food", (Node2D n) => OnFoodTrigger(n));
 		TriggerActions.Add("player", OnPlayerTrigger);
 
-		// Timers
-		AddChild(blink_duration_timer);
+		SetTimers();
+
+		// Set Aphid Data
+		skin.SetInstance(Instance, this);
+		skin.SetSkin("idle");
+		MovementSpeed = 20 + (0.15f * Instance.Status.speed.Level);
+    }
+	private void SetTimers()
+	{
 		AddChild(blink_timer);
-		AddChild(food_pursue_timer);
-		AddChild(food_gc_timer);
-
-		blink_duration_timer.OneShot = true;
 		blink_timer.OneShot = true;
-		food_pursue_timer.OneShot = true;
-
 		blink_timer.Timeout += () =>
 		{
 			if (OurState == AphidState.Sleeping)
 				return;
-			SetSkin("blink", true, false, false, false);
+			skin.SetEyesSkin("blink");
 			blink_duration_timer.Start(0.1f);
 		};
+		
+		AddChild(blink_duration_timer);
+		blink_duration_timer.OneShot = true;
         blink_duration_timer.Timeout += () => 
 		{
 			if (OurState == AphidState.Sleeping)
 				return;
-			SetSkin("idle", true, false, false, false);
+			skin.SetEyesSkin(skin.lastEyeExpression);
 			blink_timer.Start(GameManager.RNG.RandfRange(4.5f, 6.7f));
 		};
+		
 		blink_timer.Start(GameManager.RNG.RandfRange(4.5f, 6.7f));
+		
+		AddChild(food_pursue_timer);
+		food_pursue_timer.OneShot = true;
 		food_pursue_timer.Timeout += () => 
 		{
 			food_ignore_list.Add(food_item);
 			food_item = null;
 			SetAphidState(AphidState.Idle);
 		};
+		
+		AddChild(food_gc_timer);
 		food_gc_timer.Timeout += () => food_ignore_list.Clear();
 		food_gc_timer.Start(30);
-
-		// Set Aphid Data
-		SetSkin("idle", true);
-		MovementSpeed = 20 + (0.15f * Instance.Status.speed.Level);
-    }
+	}
 
 	// ==========| Update Processes |===========
     public override void _Process(double delta)
@@ -123,6 +123,12 @@ public partial class Aphid : CharacterBody2D
 		Instance.Status.PositionX = GlobalPosition.X;
 		Instance.Status.PositionY = GlobalPosition.Y;
 		Instance.Status.Age += _delta;
+
+		if (!Instance.Status.IsAdult && Instance.Status.Age > AphidData.adulthoodAge)
+		{
+			Instance.Status.IsAdult = true;
+			skin.SetSkin("idle");
+		}
 
 		TickInteractionCooldown(_delta);
 		TickAffectionDecay(_delta);
@@ -163,10 +169,10 @@ public partial class Aphid : CharacterBody2D
 		}
 
 		MoveAndSlide();
-		DoWalkAnim();
+		skin.DoWalkAnim();
 		if (MovementDirection != Vector2.Zero)
-			SetFlipDirection(MovementDirection);
-		TickFlip(_delta);
+			skin.SetFlipDirection(MovementDirection);
+		skin.TickFlip(_delta);
     }
 
 	public void SetAphidState(AphidState _new)
@@ -181,8 +187,8 @@ public partial class Aphid : CharacterBody2D
 				IsFoodFavorite = false;
 			break;
 			case AphidState.Sleeping:
-				SetSkin("idle", true);
-				spriteBody.Position = new(0,0);
+				skin.SetSkin("idle");
+				skin.Position = new(0,0);
 				sleep_effect.Emitting = false;
 				sleep_effect = null;
 			break;
@@ -201,6 +207,10 @@ public partial class Aphid : CharacterBody2D
 		}
 
 		OurState = _new;
+	}
+	public void SetMovementDirection(Vector2 _direction)
+	{
+		MovementDirection = _direction.Normalized();
 	}
 
 	// State functions
@@ -245,9 +255,11 @@ public partial class Aphid : CharacterBody2D
 		{
 			SetMovementDirection(Vector2.Zero);
 			food_item.RemoveMeta("tag"); // Stops others from eating it
-			food_item.SetMeta("pickup", false); // Stop picking it up
-			food_item_direction = flipSwitch ? -food_item_position : food_item_position;
+			food_item.SetMeta("pickup", false);
+
+			food_item_direction = skin.IsFlipped ? -food_item_position : food_item_position;
 			food_item.GlobalPosition = GlobalPosition + food_item_direction;
+
 			(food_item.GetChild(1) as CollisionShape2D).Disabled = true;
 			food_pursue_timer.Stop();
 			gobble_timer = gobble_duration;
@@ -328,9 +340,10 @@ public partial class Aphid : CharacterBody2D
 			return;
 
 		// SLEEP!!!!!
-		SetSkin("sleep", true, false, false, true);
+		skin.SetEyesSkin("sleep");
+		skin.SetLegsSkin("sleep");
 		sleep_effect = GameManager.EmitParticles(sleepParticles, GlobalPosition);
-		spriteBody.Position = new(0,2);
+		skin.Position = new(0,2);
 		SetAphidState(AphidState.Sleeping);
 	}
 	public void WakeUp(bool _forcefully = false)
@@ -364,91 +377,6 @@ public partial class Aphid : CharacterBody2D
 			try_wake_timer = try_wake;
 		else
 			WakeUp();
-	}
-
-	// General Functions
-	public void SetMovementDirection(Vector2 _direction)
-	{
-		MovementDirection = _direction.Normalized();
-	}
-	protected virtual void DoWalkAnim()
-	{
-		if(MovementDirection == Vector2.Zero)
-		{
-			// Reset back to idle standing
-			front_legs.Position = front_legs_position;
-			back_legs.Position = back_legs_position;
-			walk_shutter_speed = 0;
-			return;
-		}
-
-		// Motion Framerate
-		if (walk_shutter_speed > 0)
-		{
-			walk_shutter_speed--;
-			return;
-		}
-		walk_shutter_speed = 4;
-		legsStep = !legsStep;
-
-		// Switch between back and front legs to make the walking motion
-		front_legs.Position = front_legs_position + (legsStep ? new Vector2(0,-1) : Vector2.Zero);
-		back_legs.Position = back_legs_position + (legsStep ? Vector2.Zero : new Vector2(0,-1));
-	}
-	public void SetFlipDirection(Vector2 _direction, bool _setAsCurrent = false)
-	{
-		// False : Facing Right - True : Facing Left
-		if (_direction.X < 0)
-			flipSwitch = true;
-		else if (_direction.X > 0)
-			flipSwitch = false;
-
-		if (_setAsCurrent)
-			spriteBody.Scale = new(flipSwitch ? 1 : -1, spriteBody.Scale.Y);
-	}
-	private void TickFlip(float _delta)
-	{
-		// False : Facing Right - True : Facing Left
-		if (flipSwitch)
-			spriteBody.Scale = new(Mathf.Lerp(spriteBody.Scale.X, 1, _delta * 3), spriteBody.Scale.Y);
-		else
-			spriteBody.Scale = new(Mathf.Lerp(spriteBody.Scale.X, -1, _delta * 3), spriteBody.Scale.Y);
-	}
-	public void SetSkin(string _action, bool _eyes = false, bool _antenna = true, bool _body = true, bool _legs = true)
-	{
-		if (_eyes)
-		{
-			eyes.Texture = GetSkinPiece("eyes", _action, Instance.Genes.EyeType);
-			eyes.SelfModulate = Instance.Genes.EyeColor;
-		}
-		if (_antenna)
-		{
-			antenna.Texture = GetSkinPiece("antenna", _action, Instance.Genes.EyeType);
-			antenna.SelfModulate = Instance.Genes.AntennaColor;
-		}
-		if (_body)
-		{
-			body.Texture = GetSkinPiece("body", _action, Instance.Genes.EyeType);;
-			body.SelfModulate = Instance.Genes.BodyColor;
-		}
-		if (_legs)
-		{
-			Texture2D _legsTexture = GetSkinPiece("legs", _action, Instance.Genes.LegType);
-			front_legs.SelfModulate = back_legs.SelfModulate = Instance.Genes.LegColor;
-			front_legs.Texture = back_legs.Texture = _legsTexture;
-		}
-	}
-	private static Texture2D GetSkinPiece(string _piece, string _action, int _id)
-	{
-		string _path = $"{GameManager.SkinsPath}/{_piece}_{_action}_{_id}";
-		if (FileAccess.FileExists(_path + ".png"))
-			_path += ".png";
-		else if (FileAccess.FileExists(_path + ".PNG"))
-			_path += ".PNG";
-		else if (FileAccess.FileExists(_path + ".svg"))
-			_path += ".svg";
-			
-		return ResourceLoader.Load<Resource>(_path) as Texture2D;
 	}
 
 	// =======| Stat Related Functions |=======
@@ -655,7 +583,7 @@ public partial class Aphid : CharacterBody2D
 		else if (_interaction == 2)
 		{
 			idlePosition = GlobalPosition;
-			SetFlipDirection(_node.GlobalPosition - GlobalPosition);
+			skin.SetFlipDirection(_node.GlobalPosition - GlobalPosition);
 		}
 	}
 	private void TickInteractionCooldown(float _delta)

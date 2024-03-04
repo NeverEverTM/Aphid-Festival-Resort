@@ -8,6 +8,8 @@ public partial class CanvasManager : CanvasLayer
 	[Export] private TextEdit name_label;
 	[Export] private BaseButton show_hash_button;
 	[Export] private TextureProgressBar bondship;
+	[Export] private TextureRect ageDisplay;
+	[Export] private Texture2D[] age = new Texture2D[2];
 	[ExportCategory("Stats Knobs")]
 	[Export] private Control hungerK;
 	[Export] private Control thirstK, affectionK;
@@ -147,6 +149,7 @@ public partial class CanvasManager : CanvasLayer
 		thirstK.SetPosition(new(aphid.Instance.Status.Thirst * 0.01f * lengthSize, offsetY));
 		affectionK.SetPosition(new(aphid.Instance.Status.Affection * 0.01f * lengthSize, offsetY));
 
+		ageDisplay.Texture = age[aphid.Instance.Status.IsAdult ? 1 : 0];
 		bondship.Value = aphid.Instance.Status.Bondship;
 	}
 }

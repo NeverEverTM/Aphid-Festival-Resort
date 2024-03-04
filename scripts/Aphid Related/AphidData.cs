@@ -31,6 +31,7 @@ public partial class AphidData : Node
 		"Axel", "Lea", "Sky",
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	};
+	public const float adulthoodAge = 600;
 
 	public class Status
 	{
@@ -63,7 +64,6 @@ public partial class AphidData : Node
 			Thirst = 50;
 			Sleepiness = 50;
 			Affection = 50;
-			Bondship = 0;
 
 			strength = new Strength();
 			intelligence = new Intelligence();

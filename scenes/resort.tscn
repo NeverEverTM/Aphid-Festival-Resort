@@ -1,10 +1,11 @@
-[gd_scene load_steps=51 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=52 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" path="res://scripts/Managers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="Script" path="res://scripts/Managers/CanvasManager.cs" id="1_f7ynu"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_qes7a"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="3_t8x5j"]
+[ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/ui/aphid_child.tres" id="5_4ptmp"]
 [ext_resource type="Texture2D" uid="uid://b6xq8t3y4ssbp" path="res://sprites/ui/gradient_progress.tres" id="5_qbdf0"]
 [ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="5_wdlmu"]
 [ext_resource type="Texture2D" uid="uid://copqb3qd6m32t" path="res://sprites/ui/cursor.png" id="6_tb351"]
@@ -334,7 +335,7 @@ ItemGroundRoot = NodePath("entityPit")
 
 [node name="entityPit" type="Node2D" parent="."]
 
-[node name="canvas" type="CanvasLayer" parent="." node_paths=PackedStringArray("info_player", "store_panel", "name_label", "show_hash_button", "bondship", "hungerK", "thirstK", "affectionK")]
+[node name="canvas" type="CanvasLayer" parent="." node_paths=PackedStringArray("info_player", "store_panel", "name_label", "show_hash_button", "bondship", "ageDisplay", "hungerK", "thirstK", "affectionK")]
 editor_description = "quick
 "
 script = ExtResource("1_f7ynu")
@@ -343,6 +344,8 @@ store_panel = NodePath("shop_panel")
 name_label = NodePath("aphid_info/bio/name_edit")
 show_hash_button = NodePath("aphid_info/bio/hash")
 bondship = NodePath("aphid_info/bio/bondship")
+ageDisplay = NodePath("aphid_info/bio/age")
+age = [ExtResource("5_4ptmp"), ExtResource("10_8bm7t")]
 hungerK = NodePath("aphid_info/aphid_stats/hunger/cursor")
 thirstK = NodePath("aphid_info/aphid_stats/thirst/cursor")
 affectionK = NodePath("aphid_info/aphid_stats/affection/cursor")
