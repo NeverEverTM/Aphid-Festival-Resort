@@ -2,10 +2,10 @@ ITEMS,cost,level,canBeBought,tag
 honey_drop,5,0,TRUE,food
 leaf,5,0,TRUE,food
 shroom,5,0,TRUE,food
-berry_juice,15,0,TRUE,food
+berry_juice,15,0,TRUE,drink
 berry,5,0,TRUE,food
-shaved_ice,7,0,TRUE,food
-water,5,0,TRUE,food
+shaved_ice,7,0,TRUE,drink
+water,5,0,TRUE,drink
 aphid_egg,200,0,TRUE,item
 aphid_egg_red,400,1,TRUE,item
 aphid_egg_green,400,1,TRUE,item

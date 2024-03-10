@@ -47,6 +47,10 @@ public partial class Aphid : CharacterBody2D
 	private float pet_timer, affection_decay_timer;
 	private const float pet_duration = 2f, affection_decay = 13.2f;
 
+	// Breeding & Production Params
+	private float[] breed_chance_weight = new float[]{ 95, 5};
+	private float[] breeding_weights = new float[]{ 65, 35};
+
 	// Movement Params
 	public Vector2 MovementDirection;
 	public float MovementSpeed;
@@ -291,7 +295,7 @@ public partial class Aphid : CharacterBody2D
 			{
 				string _id = food_item.GetMeta("id").ToString();
 				GameManager.Food _food = GameManager.G_FOOD[_id];
-				float _multi = Instance.Genes.FoodMultipliers[_food.type];
+				float _multi = Instance.Genes.FoodMultipliers[(int)_food.type];
 				if (FoodMode)
 					SetHunger(_food.value * _multi);
 				else
@@ -482,6 +486,48 @@ public partial class Aphid : CharacterBody2D
 			Sleep();
 	}
 	
+	// ========| Breeding & Production Control|==========
+	private void TickBreeding(float _delta)
+	{
+		if (!Instance.Status.IsAdult || Instance.Status.Hunger == 0 || Instance.Status.Thirst == 0)
+			return;
+
+		if (Instance.Status.EggBuildup < AphidData.breedTimer)
+			Instance.Status.EggBuildup += _delta;
+		else
+		{
+			Instance.Status.EggBuildup = 0;
+			if (GameManager.GetRandomByWeight(behaviourRNG, breed_chance_weight) == 0)
+				return;
+
+			switch(GameManager.GetRandomByWeight(behaviourRNG, breeding_weights))
+			{
+				case 0:
+				// Try finding a pardner around to mate
+				break;
+				case 1:
+				// Mate with yourself
+				break;
+			}
+		}
+	}
+	public void Breed(AphidInstance _father)
+	{
+		AphidInstance _mother = Instance;
+		AphidInstance[] _parents = new AphidInstance[] { _mother, _father };
+		AphidData.Genes _genes = new()
+		{
+			AntennaType = _parents[GameManager.RNG.RandiRange(0,1)].Genes.AntennaType,
+			EyeType = _parents[GameManager.RNG.RandiRange(0,1)].Genes.EyeType,
+			BodyType = _parents[GameManager.RNG.RandiRange(0,1)].Genes.BodyType,
+			LegType = _parents[GameManager.RNG.RandiRange(0,1)].Genes.LegType,
+			AntennaColor = GameManager.Utils.LerpColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor),
+			EyeColor = GameManager.Utils.LerpColor(_mother.Genes.EyeColor, _father.Genes.EyeColor),
+			BodyColor = GameManager.Utils.LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor),
+			LegColor = GameManager.Utils.LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor)
+		};
+	}
+
 	// =======| Collision Behaviours |========
 	public void OnTriggerEnter(Node2D _node)
 	{
@@ -516,7 +562,7 @@ public partial class Aphid : CharacterBody2D
 		(food_ignore_list.Count > 0 && food_ignore_list.Exists((Node2D _n) => CheckIfIgnore(_n, _node))))
 			return;
 
-		var _flavor = (AphidData.FoodType)(int)_node.GetMeta("food_type");
+		var _flavor = GameManager.G_FOOD[_node.GetMeta("id").ToString()].type;
 		// if Vile, reject it cause yucky, unless you like it for some reason or are starving
 		if (_flavor == AphidData.FoodType.Vile && _flavor != Instance.Genes.FoodPreference && Instance.Status.Hunger > 15)
 			return;

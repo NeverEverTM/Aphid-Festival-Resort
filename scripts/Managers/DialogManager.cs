@@ -35,7 +35,7 @@ public partial class DialogManager : Control
 				MoveToNext = true;
 		}
 
-		if (Input.IsActionPressed("discard"))
+		if (Input.IsActionPressed("cancel"))
 			DialogFinished = MoveToNext = true;
     }
 

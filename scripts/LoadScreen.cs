@@ -35,7 +35,7 @@ public partial class LoadScreen : CanvasLayer
 		for (int i = 0; i < virtualNodes.Count; i++)
 		{
             Control _leaf = leaf.Instantiate() as Control;
-            _leaf.GlobalPosition = GameManager.GetRandomVector_X(0, (int)windowSize.X, -600);
+            _leaf.GlobalPosition = GameManager.Utils.GetRandomVector_X(0, (int)windowSize.X, -600);
 			_leaf.Scale = new(scale,scale);
 			_leaf.ZIndex = GameManager.RNG.RandiRange(0, 1000);
             AddChild(_leaf);
@@ -62,7 +62,7 @@ public partial class LoadScreen : CanvasLayer
 		{
 			var _leaf = leafNodes[i];
 			_leaf.position_start = _leaf.entity.GlobalPosition;
-			_leaf.position_final = GameManager.GetRandomVector_Y(0, windowSize.Y, -600);
+			_leaf.position_final = GameManager.Utils.GetRandomVector_Y(0, windowSize.Y, -600);
 			_leaf.rotation_final = GameManager.RNG.RandiRange(-5, 5);
 			leafNodes[i] = _leaf;
 		}

@@ -21,6 +21,8 @@ public partial class MainMenu : Node2D
 	[Export] private RichTextLabel savefile_name;
 
 	private static bool HasBeenIntialized;
+	private const int resort_charLimit = 40, name_charLimit = 30;
+	private const string defaultName = "Matty";
 
 	// Button Wheel behaviour
 	private bool UsingButtonWheel = false;
@@ -41,6 +43,7 @@ public partial class MainMenu : Node2D
     public async override void _Ready()
     {
 		sweep_animator.Play("loading");
+		player_name.Text = defaultName;
 		currentMenu = start_panel;
 		new_game_button.Pressed += CreateResort;
 		SetCategory(newGameCategory);
@@ -74,8 +77,6 @@ public partial class MainMenu : Node2D
 		{
 			logo_animator.Play("slide_down");
 			sweep_animator.Play("RESET");
-			while (GameManager.IsBusy)
-				await Task.Delay(1);
 		}
 		SetButtonWheel(MenuActions.Count, () => MenuActions[category](), SwitchCategories);
 		HasBeenIntialized = true;
@@ -100,8 +101,8 @@ public partial class MainMenu : Node2D
 			if (_input.KeyLabel == Key.Backspace || _input.KeyLabel == Key.Left || _input.KeyLabel == Key.Right)
 				return;
 
-			if ((_resortIsFocused && resort_name.Text.Length >= 40) ||
-			(_playerIsFocused && player_name.Text.Length >= 30))
+			if ((_resortIsFocused && resort_name.Text.Length >= resort_charLimit) ||
+			(_playerIsFocused && player_name.Text.Length >= name_charLimit))
 				GetViewport().SetInputAsHandled();
 		}
     }
@@ -117,9 +118,7 @@ public partial class MainMenu : Node2D
 			SetMenu();
 
 		if (load_game_panel.Visible && Input.IsActionJustPressed("open_inventory"))
-		{
-			
-		}
+			DeleteResort();
 
 		if (Input.IsActionJustPressed("escape"))
 			OnExitButton();
@@ -169,16 +168,21 @@ public partial class MainMenu : Node2D
 	private async void CreateResort()
 	{
 		string _resort = resort_name.Text;
-		if (!string.IsNullOrWhiteSpace(player_name.Text))
-			Player.Data.Name = player_name.Text;
-		else
-			Player.Data.Name = "Matty";
+        Player.Data = new()
+        {
+            Name = !string.IsNullOrWhiteSpace(player_name.Text) ?
+            player_name.Text :
+            defaultName
+        };
 
-		if (string.IsNullOrWhiteSpace(_resort) || _resort.Length > 20 || _resort.Equals("default") || _resort.Equals("[backup]"))
+        // Invalid resort names
+        if (string.IsNullOrWhiteSpace(_resort) || _resort.Equals("default"))
 		{
-			GD.Print("Not a valid resort name. Resort names can only be 20 characters long.");
+			GD.Print("Not a valid resort name.");
 			return;
 		}
+
+		// Already Exists
 		SaveSystem.SetProfile(_resort);
 		if (DirAccess.DirExistsAbsolute(SaveSystem.CurrentProfilePath))
 		{
@@ -186,9 +190,9 @@ public partial class MainMenu : Node2D
 			return;
 		}
 
+		// Start the game
 		new_game_panel.Hide();
 		ResortManager.IsNewGame = true;
-
 		await SaveSystem.CreateProfile();
 		LoadResort();
 	}
@@ -197,7 +201,11 @@ public partial class MainMenu : Node2D
 		SaveSystem.SaveGlobalData();
 		_ = GameManager.LoadScene(GameManager.ResortScenePath);
 	}
-	
+	private static void DeleteResort()
+	{
+
+	}
+
 	// =======| Menu Managment |=========
 	public void CreateMenuAction(string _key, Action _action)
 	{
@@ -267,7 +275,7 @@ public partial class MainMenu : Node2D
 			_aphid.Instance = new();
 			_aphid.Instance.Genes.RandomizeColors();
 			_aphid.Instance.Status.IsAdult = GameManager.GetRandomByWeight(babyWeight) == 0;
-			_aphid.GlobalPosition = GameManager.GetRandomVector(-300, 300);
+			_aphid.GlobalPosition = GameManager.Utils.GetRandomVector(-300, 300);
 			AddChild(_aphid);
 		}
 	}

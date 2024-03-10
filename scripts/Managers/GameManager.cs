@@ -15,7 +15,7 @@ public partial class GameManager : Node2D
 		ResortScenePath = "res://scenes/resort.tscn",
 		MenuScenePath = "res://scenes/menu.tscn",
 		LoadingScreenPath = "res://scenes/loading_screen.tscn",
-		ItemPath = "res://items", 
+		ItemPath = "res://items",
 		IconPath = "res://sprites/icons",
 		SkinsPath = "res://skins",
 		DatabasesPath = "res://databases";
@@ -40,9 +40,9 @@ public partial class GameManager : Node2D
 	}
 	public readonly struct Food
 	{
-		public readonly int type;
+		public readonly AphidData.FoodType type;
 		public readonly float value;
-		public Food(int type, float value)
+		public Food(AphidData.FoodType type, float value)
 		{
 			this.type = type;
 			this.value = value;
@@ -56,20 +56,20 @@ public partial class GameManager : Node2D
 
 	public static Label BOOT_LOADING_LABEL;
 
-    public override void _EnterTree()
-    {
-        Instance = this;
+	public override void _EnterTree()
+	{
+		Instance = this;
 
 		GetViewport().SizeChanged += OnSizeChange;
 		OnSizeChange();
-    }
-    public override void _Ready()
-    {
+	}
+	public override void _Ready()
+	{
 		// Runtime Params
 		spaceState = GetWorld2D().DirectSpaceState;
-    }
-    public override void _Process(double delta)
-    {
+	}
+	public override void _Process(double delta)
+	{
 		for (int i = 0; i < particles.Count; i++)
 		{
 			if (particles[i].Emitting)
@@ -80,7 +80,7 @@ public partial class GameManager : Node2D
 
 		if (Input.IsActionJustPressed("debug_0"))
 			_ = SaveSystem.SaveProfile();
-    }
+	}
 
 	/// <summary>
 	/// Initializes primary systems before main menu boot.
@@ -115,7 +115,7 @@ public partial class GameManager : Node2D
 		ResourceLoader.ThreadLoadStatus _status;
 		BOOT_LOADING_LABEL.Text = $"{_tr} (0/{_icons.Length})";
 
-		for(int i = 0; i < _icons.Length; i++)
+		for (int i = 0; i < _icons.Length; i++)
 		{
 			string _path = $"{IconPath}/{_icons[i]}";
 			ResourceLoader.LoadThreadedRequest(_path, "", true);
@@ -136,7 +136,7 @@ public partial class GameManager : Node2D
 				Instance.GetTree().Quit(2);
 			}
 
-			G_ICONS.Add(_icons[i].Remove(_icons[i].Length - 5), ResourceLoader.LoadThreadedGet(_path) as Texture2D);	
+			G_ICONS.Add(_icons[i].Remove(_icons[i].Length - 5), ResourceLoader.LoadThreadedGet(_path) as Texture2D);
 			BOOT_LOADING_LABEL.Text = $"{_tr} ({i + 1}/{_icons.Length})";
 		}
 		return Task.CompletedTask;
@@ -148,7 +148,7 @@ public partial class GameManager : Node2D
 		ResourceLoader.ThreadLoadStatus _status;
 		BOOT_LOADING_LABEL.Text = $"{_tr} (0/{_skins.Length})";
 
-		for(int i = 0; i < _skins.Length; i++)
+		for (int i = 0; i < _skins.Length; i++)
 		{
 			if (_skins[i].EndsWith(".import"))
 				continue;
@@ -185,7 +185,7 @@ public partial class GameManager : Node2D
 	{
 		FileAccess _file = FileAccess.Open(DatabasesPath + "/items_values.csv", FileAccess.ModeFlags.Read);
 		BOOT_LOADING_LABEL.Text = _tr + $" ({Instance.Tr(_file.GetCsvLine()[0])})";
-		while(_file.GetPosition() < _file.GetLength())
+		while (_file.GetPosition() < _file.GetLength())
 		{
 			string[] _info = _file.GetCsvLine();
 			Item _item = new(
@@ -202,11 +202,11 @@ public partial class GameManager : Node2D
 	{
 		FileAccess _file = FileAccess.Open(DatabasesPath + "/foods_values.csv", FileAccess.ModeFlags.Read);
 		BOOT_LOADING_LABEL.Text += _tr + $" ({Instance.Tr(_file.GetCsvLine()[0])})";
-		while(_file.GetPosition() < _file.GetLength())
+		while (_file.GetPosition() < _file.GetLength())
 		{
 			string[] _info = _file.GetCsvLine();
 			Food _item = new(
-				type: int.Parse(_info[1]),
+				type: (AphidData.FoodType)int.Parse(_info[1]),
 				value: float.Parse(_info[2])
 			);
 			G_FOOD.Add(_info[0], _item);
@@ -226,7 +226,7 @@ public partial class GameManager : Node2D
 		windowSize = -windowSize * 0.5f;
 	}
 
-    // =====| General Utils |=====
+	// =====| General Utils |=====
 	public async static Task LoadScene(string _path)
 	{
 		IsBusy = true;
@@ -242,10 +242,7 @@ public partial class GameManager : Node2D
 		ResourceLoader.ThreadLoadStatus _status = ResourceLoader.LoadThreadedGetStatus(_path);
 
 		while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-		{
-			await Task.Delay(1);
 			_status = ResourceLoader.LoadThreadedGetStatus(_path);
-		}
 
 		if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
 		{
@@ -259,26 +256,11 @@ public partial class GameManager : Node2D
 		}
 		Instance.GetTree().ChangeSceneToPacked(ResourceLoader.LoadThreadedGet(_path) as PackedScene);
 		Instance.RequestReady();
-		await _loading.SweepLeaves();
+		await Task.Delay(4);
 		IsBusy = false;
-    }
+		await _loading.SweepLeaves();
+	}
 
-    public static Godot.Collections.Dictionary Raycast(Vector2 _position, Vector2 _direction, Godot.Collections.Array<Rid> _excludeList)
-	{
-		var query = PhysicsRayQueryParameters2D.Create(_position, _position + _direction);
-		query.Exclude = _excludeList;
-    	return Instance.spaceState.IntersectRay(query);
-	}
-	public static Godot.Collections.Dictionary Raycast(PhysicsRayQueryParameters2D _query, Vector2 _position, Vector2 _direction)
-	{
-		_query.From = _position;
-		_query.To = _position + _direction;
-    	return Instance.spaceState.IntersectRay(_query);
-	}
-	public static Vector2 GetMouseGlobalPosition()
-	{
-		return GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() + Instance.windowSize) * 0.5f;
-	}
 	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position)
 	{
 		var _item = _particles.Instantiate() as GpuParticles2D;
@@ -294,7 +276,8 @@ public partial class GameManager : Node2D
 	{
 		// We take a sum of all weights
 		float _total = 0;
-		Array.ForEach(weights, (float _weight) => {
+		Array.ForEach(weights, (float _weight) =>
+		{
 			_total += _weight;
 		});
 
@@ -314,17 +297,44 @@ public partial class GameManager : Node2D
 	}
 	public static int GetRandomByWeight(float[] weights) =>
 		GetRandomByWeight(RNG, weights);
-	public static Color GetRandomColor(bool _capColorLoss = true, bool _randomizeAlpha = false) 
+
+	public static class Utils
 	{
-		byte[] _rgba = new byte[] { (byte)RNG.RandiRange(0,255), (byte)RNG.RandiRange(0,255), 
-		(byte)RNG.RandiRange(0,255), _randomizeAlpha ? (byte)(RNG.RandiRange(0,205) + 50) : (byte)255 }; 
+		public static Godot.Collections.Dictionary Raycast(Vector2 _position, Vector2 _direction, Godot.Collections.Array<Rid> _excludeList)
+		{
+			var query = PhysicsRayQueryParameters2D.Create(_position, _position + _direction);
+			query.Exclude = _excludeList;
+			return Instance.spaceState.IntersectRay(query);
+		}
+		public static Godot.Collections.Dictionary Raycast(PhysicsRayQueryParameters2D _query, Vector2 _position, Vector2 _direction)
+		{
+			_query.From = _position;
+			_query.To = _position + _direction;
+			return Instance.spaceState.IntersectRay(_query);
+		}
+		public static Vector2 GetMouseGlobalPosition() => GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() + Instance.windowSize) * 0.5f;
+
+		public static Color GetRandomColor(bool _capColorLoss = true, bool _randomizeAlpha = false)
+		{
+			byte[] _rgba = new byte[] { (byte)RNG.RandiRange(0,255), (byte)RNG.RandiRange(0,255),
+				(byte)RNG.RandiRange(0,255), _randomizeAlpha ? (byte)(RNG.RandiRange(0,205) + 50) : (byte)255 };
+
+			if (_capColorLoss && _rgba[0] < 100 && _rgba[1] < 100 && _rgba[2] < 100)
+				_rgba[RNG.RandiRange(0, 2)] = 100;
+
+			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
+		}
+		public static Color LerpColor(Color _color1, Color _color2)
+		{
+			_color1.R = Mathf.Lerp(_color1.R, _color2.R, 0.5f);
+			_color1.G = Mathf.Lerp(_color1.G, _color2.G, 0.5f);
+			_color1.B = Mathf.Lerp(_color1.B, _color2.B, 0.5f);
+
+			return _color1;
+		}
 		
-		if (_capColorLoss && _rgba[0] < 100 && _rgba[1] < 100 && _rgba[2] < 100)
-			_rgba[RNG.RandiRange(0, 2)] = 100;
-		
-		return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
+		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
+		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
+		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));
 	}
-	public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
-	public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
-	public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));
 }

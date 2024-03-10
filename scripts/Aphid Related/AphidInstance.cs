@@ -5,6 +5,6 @@ public class AphidInstance
 	public Aphid Entity;
 	public string ID;
 
-	public enum AphidStatus { Active, Passive }
-	public AphidStatus EntityStatus = AphidStatus.Active;
+	public enum EntityStatus { Active, Passive }
+	public EntityStatus Mode = EntityStatus.Active;
 }

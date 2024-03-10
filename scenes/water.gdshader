@@ -14,7 +14,7 @@ void vertex() {
 
 void fragment() {
 	vec2 full_uv = vert/node_size;
-	vec2 scroll = vec2(full_uv.x + TIME * speed, full_uv.y + TIME * speed);
+	vec2 scroll = vec2(full_uv.x + TIME * speed * sin(TIME) * 0.0005, full_uv.y + TIME * speed);
 	vec4 noise_sample = texture(noise, scroll);
 	scroll *= distance(world_pos, full_uv);
 	

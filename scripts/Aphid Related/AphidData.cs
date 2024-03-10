@@ -31,7 +31,7 @@ public partial class AphidData : Node
 		"Axel", "Lea", "Sky",
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	};
-	public const float adulthoodAge = 600;
+	public const int adulthoodAge = 600, breedTimer = 600, deathAge = 3600;
 
 	public class Status
 	{
@@ -45,6 +45,7 @@ public partial class AphidData : Node
 
 		// Production & Breeding
 		public float EggBuildup { get; set; }
+		public float MilkBuildup { get; set; }
 
 		// Lifetime
 		public float Health { get; set; }
@@ -101,10 +102,10 @@ public partial class AphidData : Node
 		}
 		public void RandomizeColors()
 		{
-			AntennaColor = GameManager.GetRandomColor();
-			BodyColor = GameManager.GetRandomColor();
-			LegColor = GameManager.GetRandomColor();
-			EyeColor = GameManager.GetRandomColor();
+			AntennaColor = GameManager.Utils.GetRandomColor();
+			BodyColor = GameManager.Utils.GetRandomColor();
+			LegColor = GameManager.Utils.GetRandomColor();
+			EyeColor = GameManager.Utils.GetRandomColor();
 		}
 		public void SetFoodPreferences()
 		{
