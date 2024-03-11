@@ -2,7 +2,7 @@ using System;
 using Godot;
 using Godot.Collections;
 
-public partial class Player : CharacterBody2D, SaveSystem.ISaveFile
+public partial class Player : CharacterBody2D
 {
 	[Export] private Camera2D camera;
 	[Export] private Area2D interactionArea;
@@ -16,45 +16,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveFile
 
 	public static Player Instance;
 	public static int Currency;
-	public static SaveData Data = new();
-
-	public void WriteData()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void ReadData()
-	{
-		throw new NotImplementedException();
-	}
-
-	public class SaveData : SaveSystem.ISaveData
-	{
-		public string Name { get; set; }
-		public int Level { get; set; }
-		public string Room { get; set; }
-
-		public float PositionX { get; set; }
-		public float PositionY { get; set; }
-
-		public System.Collections.Generic.List<string> Inventory { get; set; }
-		public SaveData()
-		{
-			Inventory = new(){
-				"aphid_egg"
-			};
-		}
-
-		void SaveSystem.ISaveData.SaveData()
-		{
-			throw new NotImplementedException();
-		}
-
-		public void LoadData()
-		{
-			throw new NotImplementedException();
-		}
-	}
+	public static PlayerData Data;
 
 	// Disable
 	public bool IsExplicitlyDisabled { get; private set; }
@@ -75,8 +37,6 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveFile
 
 	// Pickup Params
 	public Node2D PickupItem { private set; get; }
-
-	SaveSystem.ISaveData SaveSystem.ISaveFile.Data => throw new NotImplementedException();
 
 	private Vector2 pickup_ground_position = new(0, 8);
 	private bool pickup_isAphid;

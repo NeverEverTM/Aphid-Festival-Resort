@@ -49,7 +49,7 @@ public partial class MainMenu : Node2D
 		SetCategory(newGameCategory);
 
 		CreateMenuAction(newGameCategory, OnNewGameButton);
-		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDirectory).Length > 2)
+		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDirectory).Length > 0)
 		{
 			CreateMenuAction(loadGameCategory, OnLoadGameButton);
 
@@ -83,6 +83,12 @@ public partial class MainMenu : Node2D
     }
     public override void _Input(InputEvent _event)
     {
+		if (!start_panel.Visible && Input.IsActionJustPressed("cancel"))
+			SetMenu();
+
+		if (load_game_panel.Visible && Input.IsActionJustPressed("open_inventory"))
+			ConfirmationPopup.CreateConfirmation(DeleteResort);
+
 		bool _resortIsFocused = resort_name.HasFocus(), _playerIsFocused = player_name.HasFocus();
 		if (_resortIsFocused == _playerIsFocused) // If either are on focus, proceed
 			return;
@@ -112,13 +118,6 @@ public partial class MainMenu : Node2D
 
 		if (GameManager.IsBusy)
 			return;
-
-		// Input
-		if (!start_panel.Visible && Input.IsActionJustPressed("cancel"))
-			SetMenu();
-
-		if (load_game_panel.Visible && Input.IsActionJustPressed("open_inventory"))
-			DeleteResort();
 
 		if (Input.IsActionJustPressed("escape"))
 			OnExitButton();
@@ -201,9 +200,39 @@ public partial class MainMenu : Node2D
 		SaveSystem.SaveGlobalData();
 		_ = GameManager.LoadScene(GameManager.ResortScenePath);
 	}
-	private static void DeleteResort()
+	private void DeleteResort()
 	{
+		string _profile = savefile_name.Text;
+		if (string.IsNullOrWhiteSpace(_profile))
+		{
+			GD.Print("Not a valid resort");
+			return;
+		}
 
+		SaveSystem.SetProfile(_profile);
+		if (!DirAccess.DirExistsAbsolute(SaveSystem.CurrentProfilePath))
+		{
+			GD.Print("This resort doesnt exist!");
+			return;
+		}
+
+		SaveSystem.DeleteProfile(_profile);
+
+		// Set the current wheel of filenames
+		fileNames = DirAccess.Open(SaveSystem.ProfilesDirectory).GetDirectories();
+		if (fileNames.Length == 0)
+		{
+			RemoveMenuAction(continueCategory);
+			RemoveMenuAction(loadGameCategory);
+			SetMenu();
+		}
+		else
+		{
+			if (wheePointer >= fileNames.Length)
+				wheePointer = fileNames.Length - 1;
+			SetFile();
+			SetButtonWheel(fileNames.Length, PlayFile, SetFile);
+		}
 	}
 
 	// =======| Menu Managment |=========
@@ -297,24 +326,15 @@ public partial class MainMenu : Node2D
 		SetMenu(new_game_panel);
 	private void OnLoadGameButton()
 	{
-		// Get the files and exclude default and [backup] from being showed
-		var _files = DirAccess.Open(SaveSystem.ProfilesDirectory).GetDirectories().ToList();
-		
-		if (!(_files.Count > 2))
-		{
-			RemoveMenuAction(loadGameCategory);
-			return;
-		}
-
-		_files.Remove("default");
-		_files.Remove("[backup]");
-		fileNames = _files.ToArray();
+		fileNames = DirAccess.Open(SaveSystem.ProfilesDirectory).GetDirectories();
 
 		// Set the presentation
 		savefile_name.Text = fileNames[0];
-		wheePointer = lastFileNameIndex;
+
+		if (lastFileNameIndex < fileNames.Length)
+			wheePointer = lastFileNameIndex;
 		SetMenu(load_game_panel);
-		SetButtonWheel(fileNames.Length, SetFileName, SwitchFileName);
+		SetButtonWheel(fileNames.Length, PlayFile, SetFile);
 	}
 	private void OnContinueButton()
 	{
@@ -340,12 +360,12 @@ public partial class MainMenu : Node2D
 	// Load Game behaviour
 	private string[] fileNames;
 	private int lastFileNameIndex;
-	private void SwitchFileName()
+	private void SetFile()
 	{
 		lastFileNameIndex = wheePointer;
 		savefile_name.Text = fileNames[wheePointer];
 	}
-	private void SetFileName()
+	private void PlayFile()
 	{
 		SaveSystem.SetProfile(fileNames[wheePointer]);
 		LoadResort();

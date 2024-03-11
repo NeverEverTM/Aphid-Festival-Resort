@@ -55,7 +55,7 @@ public partial class DialogManager : Control
 			MoveToNext = DialogFinished = false;
 			Instance.dialogText.Text = "";
 
-			await WriteDialog(_dialog_array[i]);
+			await WriteDialog(Instance.Tr(_dialog_array[i]));
 			await Task.Delay(1);
 			while (!MoveToNext)
 				await Task.Delay(1);

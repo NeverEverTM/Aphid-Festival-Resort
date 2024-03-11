@@ -17,6 +17,14 @@ new_player_placeholder,Type a name for yourself!,Escribe un nombre para ti!
 new_begin,Begin,Comenzar
 load_quote,Select your profile!,Selecciona tu partida!
 load_note,Use <A> <D> or the arrow keys to select a profile\nPress <L> or <Z> to delete a profile.,Usa <A> <D> o las flechas del teclado para seleccionar una partida\nPresiona <L> o <Z> para eliminar una partida.
+confirmation_warning,"Are you sure you want to do that?
+(This action cannot be reverted)
+
+Type ""Yes"" and hit Enter to confirm","¿Estas seguro que quieres hacer eso?
+(Esta accion no se puede revertir)
+
+Escribe “Si” y presiona Enter para confirmar"
+confirmation_yes,Yes,Si
 credits_note,Made in Godot 4.2\n\nThis is a Non-Profit fan game.\nRegistered trademarks and copyrights belong to Moonsprout Games\n\nInspired by the fan game Chao Resort Island\nby Nefault1st. You should check them out!\n\nEntirely developed and drawn by\nSummer(NeverEver),Hecho en Godot 4.2\n\nEste es un juego no oficial sin animo de lucro.\nMarcas registradas y derechos de autor\nle pertenecen a Moonsprout Games.\n\nInspirado por el juego Chao Resort Island\nhecho por Nefault1st. Echale un vistazo!\n\nEnteramente desarollado y dibujado por\nSummer(NeverEver)
 store_name_placeholder,Kuts Food Cabinet,Puesto de Alimentos de Kut
 store_desc_placeholder,Purchase basic ingredients for Aphid feeding.,Adquiere ingredientes basicos para alimentar Ãfidos.

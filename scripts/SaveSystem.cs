@@ -19,17 +19,20 @@ public static class SaveSystem
 	ProfilesDirectory = "user://profiles",
 	GlobalDataPath = "user://global.save",
 	defaultProfile = "default",
-	backupsProfile = "/[backup]",
 	aphidsGUID = "/aphids.guid",
-	playerData = "/player.data",
+	backupFolder = "/backup",
 	aphidsFolder = "/aphids",
 	resortFolder = "/resort";
+
+	public static readonly List<ISaveData> SaveData = new()
+	{
+		Player.Data
+	};
 
 	// General file managment
 	public static void CreateBaseDirectories()
 	{
 		DirAccess.MakeDirAbsolute(ProfilesDirectory);
-		DirAccess.MakeDirAbsolute(ProfilesDirectory + backupsProfile);
 	}
 
 	// Aphid related methods
@@ -62,29 +65,30 @@ public static class SaveSystem
 	// ==========| Resort Saving Methods |============
 	public static async Task SaveProfile()
 	{
-		string _backupFolder = ProfilesDirectory + backupsProfile + $"/{Profile}";
-
-		// Player Data
-		await SavePlayer(_backupFolder);
-		await SavePlayer(CurrentProfilePath);
+		string _backupFolder = CurrentProfilePath + backupFolder;
 
 		// Save Aphid Data
 		await SaveAllAphids(_backupFolder, false);
 		await SaveAllAphids(CurrentProfilePath);
 
-		// Save Resort Data
-		await ResortManager.Data.SaveGroundItems();
+		// Save globlal classes
+		for (int i = 0; i < SaveData.Count; i++)
+		{
+			// Save current backup version
+			try { await SaveData[i].SaveData(_backupFolder); }
+			catch (Exception _e)
+			{
+				GD.PrintErr(_e);
+				continue;
+			}
+			// Save current profile version
+			try { await SaveData[i].SaveData(CurrentProfilePath); }
+			catch (Exception _e)
+			{ GD.PrintErr(_e); }
+		}
 
 		OnSave?.Invoke();
 		GD.Print($"ProfileSave: Saved profile <{Profile}> to memory.");
-	}
-
-	private static Task SavePlayer(string _path)
-	{
-		var _jsonPlayer = JsonSerializer.Serialize(Player.Data);
-		var _file = FileAccess.Open(_path + playerData, FileAccess.ModeFlags.Write);
-		_file.StorePascalString(_jsonPlayer);
-		return Task.CompletedTask;
 	}
 
 	private static Task SaveAllAphids(string _path, bool _logSave = true)
@@ -132,57 +136,51 @@ public static class SaveSystem
 	// ==========| Resort Loading Methods |===========
 	public async static Task LoadProfile()
 	{
-		// Player Data
-		await LoadPlayer();
-
-		// Load Resort Data
 		aphids.Clear();
-		await LoadAllAphids();
+		string _backupFolder = CurrentProfilePath + backupFolder;
+
+		// Load Aphid Data
+		try { await LoadAllAphids(CurrentProfilePath); }
+		catch (Exception _e)
+		{
+			await LoadAllAphids(_backupFolder); 
+			GD.PrintErr(_e);
+		}
+
+		// Load all save data classes
+		for (int i = 0; i < SaveData.Count; i++)
+		{
+			try { await SaveData[i].LoadData(CurrentProfilePath); }
+			catch (Exception _e)
+			{
+				await SaveData[i].LoadData(_backupFolder);
+				GD.PrintErr(_e);
+				continue;
+			}
+		}
 
 		OnLoad?.Invoke();
 		GD.Print($"Loaded profile <{Profile}> to memory.");
 	}
 
-	private static Task LoadPlayer()
+	private static Task LoadAllAphids(string _path)
 	{
-		try
-		{
-			var _file = FileAccess.Open(CurrentProfilePath + playerData, FileAccess.ModeFlags.Read);
-			var _data = _file.GetPascalString();
-			Player.Data = JsonSerializer.Deserialize<Player.SaveData>(_data);
-		}
-		catch (Exception _err)
-		{
-			GD.PrintErr(_err);
-		}
-		return Task.CompletedTask;
-	}
-
-	private static Task LoadAllAphids()
-	{
-		var _aphidFolder = CurrentProfilePath + aphidsFolder;
+		var _aphidFolder = _path + aphidsFolder;
 		var _dir = DirAccess.Open(_aphidFolder);
 		var _files = _dir.GetFiles();
-		try
-		{
-			for (int i = 0; i < _files.Length; i++)
-			{
-				var _instance = new AphidInstance();
-				if (!LoadAphid(_aphidFolder + $"/{_files[i]}", ref _instance))
-					continue;
 
-				_instance.ID = _files[i];
-				aphids.Add(new Guid(_files[i]), _instance);
-				ResortManager.CreateAphid(_instance);
-				GD.Print($"Succesfully loaded aphid. ID: {_files[i]}.");
-			}
-		}
-		catch (Exception _err)
+		for (int i = 0; i < _files.Length; i++)
 		{
-			GD.Print(_err.Message);
-			GD.Print(_err.StackTrace);
-			return Task.CompletedTask;
+			var _instance = new AphidInstance();
+			if (!LoadAphid(_aphidFolder + $"/{_files[i]}", ref _instance))
+				continue;
+
+			_instance.ID = _files[i];
+			aphids.Add(new Guid(_files[i]), _instance);
+			ResortManager.CreateAphid(_instance);
+			GD.Print($"Succesfully loaded aphid. ID: {_files[i]}.");
 		}
+
 		return Task.CompletedTask;
 	}
 	private static bool LoadAphid(string _path, ref AphidInstance _instance)
@@ -202,11 +200,23 @@ public static class SaveSystem
 		return true;
 	}
 
+	public interface ISaveData
+	{
+		public Task SaveData(string _path);
+		public Task LoadData(string _path);
+	}
+
 	// ==========| Profile Managment Methods |==========
+	public static void SetProfile(string _profile = defaultProfile)
+	{
+		CurrentProfilePath = $"{ProfilesDirectory}/{_profile}";
+		Profile = _profile;
+	}
+
 	public static async Task CreateProfile()
 	{
 		// Create directories for current profile
-		string _backupPath = ProfilesDirectory + backupsProfile + $"/{Profile}";
+		string _backupPath = CurrentProfilePath + backupFolder;
 		await CreateNewProfile(CurrentProfilePath);
 		await CreateNewProfile(_backupPath);
 
@@ -215,12 +225,12 @@ public static class SaveSystem
 	private static async Task CreateNewProfile(string _path)
 	{
 		DirAccess.MakeDirAbsolute(_path);
-		var _backupDir = DirAccess.Open(_path);
-		_backupDir.MakeDir("aphids");
-		_backupDir.MakeDir("resort");
-		await SavePlayer(_path);
+		var _dir = DirAccess.Open(_path);
+		_dir.MakeDir("aphids");
+		_dir.MakeDir("resort");
+		await Player.Data.SaveData(_path);
 	}
-	
+
 	public static Task DeleteProfile(string _profile)
 	{
 		var _path = ProjectSettings.GlobalizePath(CurrentProfilePath);
@@ -240,23 +250,5 @@ public static class SaveSystem
 	{
 		await DeleteProfile(_profile);
 		await CreateProfile();
-	}
-	
-	public static void SetProfile(string _profile = defaultProfile)
-	{
-		CurrentProfilePath = $"{ProfilesDirectory}/{_profile}";
-		Profile = _profile;
-	}
-
-	public interface ISaveFile
-	{
-		public ISaveData Data { get; }
-		public void WriteData();
-		public void ReadData();
-	}
-	public interface ISaveData
-	{
-		public void SaveData();
-		public void LoadData();
 	}
 }

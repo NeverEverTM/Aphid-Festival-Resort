@@ -43,7 +43,13 @@ public partial class ResortManager : Node2D
 		if (!IsNewGame)
 			await SaveSystem.LoadProfile();
 		else
+		{
 			IsNewGame = false;
+			while (GameManager.IsBusy)
+				await Task.Delay(1);
+			await Task.Delay(100);
+			await DialogManager.OpenDialog(new string[] { "welcome_0", "welcome_1" });
+		}
 	}
 
 	// Spawning Commands, Exlcusive for the Resort since they control sensitive data
@@ -72,6 +78,7 @@ public partial class ResortManager : Node2D
 		Node2D _item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
 		_item.SetMeta("id", _item_name);
 		_item.SetMeta("tag", GameManager.G_ITEMS[_item_name].tag);
+
 		Instance.ItemGroundRoot.AddChild(_item);
 		return _item;
 	}

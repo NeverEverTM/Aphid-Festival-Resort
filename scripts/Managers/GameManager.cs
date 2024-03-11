@@ -9,12 +9,16 @@ public partial class GameManager : Node2D
 	public static Camera2D GlobalCamera;
 	public readonly static RandomNumberGenerator RNG = new();
 
+	public enum Scene { Resort, Menu }
+	public Scene scene = Scene.Menu;
+
 	public static bool IsBusy = true;
 
 	public const string
 		ResortScenePath = "res://scenes/resort.tscn",
 		MenuScenePath = "res://scenes/menu.tscn",
-		LoadingScreenPath = "res://scenes/loading_screen.tscn",
+		LoadingScreenPath = "res://scenes/ui/loading_screen.tscn",
+		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
 		ItemPath = "res://items",
 		IconPath = "res://sprites/icons",
 		SkinsPath = "res://skins",
@@ -83,7 +87,8 @@ public partial class GameManager : Node2D
 	}
 
 	/// <summary>
-	/// Initializes primary systems before main menu boot.
+	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
+	/// In order to be called again, BOOT_LOADING_LABEL must be set to a valid text display node.
 	/// </summary>
 	public async static Task INTIALIZE_GAME_PROCESS()
 	{
@@ -91,8 +96,6 @@ public partial class GameManager : Node2D
 		{
 			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_0");
 			SaveSystem.CreateBaseDirectories();
-			SaveSystem.SetProfile("default");
-			await SaveSystem.CreateProfile();
 			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_1") + " (0/?)";
 			await LOAD_ICONS();
 			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_2") + " (0/?)";

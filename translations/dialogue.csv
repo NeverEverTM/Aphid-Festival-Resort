@@ -3,3 +3,5 @@ kut_shop_0,"Only the up-most quality for the best companions.\n...Yours can also
 kut_shop_1,"So then, what is your request?",Asi que... ¿Cual es tu pedido?
 joy_welcome_0,"Hello! Your %s, right? Come on in!\nWe have prepared the resort for you already.","Hola! Tu tienes que ser %s, ¿no? Adelante!\nTenemos el complejo preparado para ti."
 joy_welcome_1,Here it is. The aphid resort!\nPlenty of space for any and all aphids that requires it.,"Y aqui esta, el complejo de áfidos!\nTodo el espacio requerido para cualquier aphid que se hospede."
+welcome_0,"Hello. This is a very early build of the game. So there isnt much to do, whoops!\nIf you feel like supporting this project through assets or programming, go to the Github page!","Si estas viendo esto, valiste madre."
+welcome_1,"You can move with WASD, interact with J, cancel with K and open inventory with L.\nSpace to pickup, click on items to select them, Shift to run and Escape to exit.","Controles son J, K, L, Escape, Shift, Espacio, y a veces clickeas en cosas"

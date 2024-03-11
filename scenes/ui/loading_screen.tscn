@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ddfk4hhfrlxpa"]
 
 [ext_resource type="Script" path="res://scripts/LoadScreen.cs" id="1_5cwbq"]
-[ext_resource type="PackedScene" uid="uid://cnrce4gppoc5m" path="res://scenes/leaf.tscn" id="2_k54b8"]
+[ext_resource type="PackedScene" uid="uid://cnrce4gppoc5m" path="res://scenes/ui/leaf.tscn" id="2_k54b8"]
 
 [node name="loading_screen" type="CanvasLayer"]
 script = ExtResource("1_5cwbq")
