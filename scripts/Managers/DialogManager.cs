@@ -3,9 +3,12 @@ using System.Threading.Tasks;
 
 public partial class DialogManager : Control
 {
-	[Export] private Control dialogBox;
+	[Export] private Control dialogBox, dialogDoneSign;
+	private AnimationPlayer dialogDoneAnimator;
 	[Export] private RichTextLabel dialogText;
+	[Export] private AudioStreamPlayer dialogAudio;
 
+	private static RandomNumberGenerator RNG = new();
 	private static DialogManager Instance;
 	public static bool IsActive;
 	private static bool MoveToNext, DialogFinished, JustPressed;
@@ -14,6 +17,7 @@ public partial class DialogManager : Control
     {
         Instance = this;
 		IsActive = false;
+		dialogDoneAnimator = dialogDoneSign.GetChild(0) as AnimationPlayer;
     }
     public override void _Process(double delta)
     {
@@ -29,6 +33,7 @@ public partial class DialogManager : Control
 				return;
 			}
 
+			// End Dialog sooner or pass to next dialog box
 			if (!DialogFinished)
 				DialogFinished = true;
 			else
@@ -40,31 +45,37 @@ public partial class DialogManager : Control
     }
 
 	// ======| Dialog Functions |=======
-    public static async Task OpenDialog(string[] _dialog_array)
+    public static async Task OpenDialog(string[] _dialog_array, string _voice, string _action = "idle")
 	{
 		if (IsActive)
 			return;
+
+		// Set dialog state
 		IsActive = JustPressed = true;
 		Player.Instance.SetDisabled(true);
-
 		if (!Instance.dialogBox.Visible)
 			Instance.dialogBox.Show();
 
+		// Get voice
+		Instance.dialogAudio.Stream = ResourceLoader.Load<AudioStream>($"{GameManager.DialogVoicePath}/{_voice}_{_action}.wav");
+
+		// Index through all dialog
 		for (int i = 0; i < _dialog_array.Length; i++)
 		{
+			Instance.dialogDoneSign.Hide();
 			MoveToNext = DialogFinished = false;
 			Instance.dialogText.Text = "";
 
 			await WriteDialog(Instance.Tr(_dialog_array[i]));
-			await Task.Delay(1);
-			while (!MoveToNext)
+			await Task.Delay(1); // padding
+			Instance.dialogDoneSign.Show();
+			Instance.dialogDoneAnimator.Play("squiggly");
+			while (!MoveToNext) // wait for the player to advance to the next box
 				await Task.Delay(1);
 		}
 
 		CloseDialog();
 	}
-	public static async Task OpenDialog(string _dialog) =>
-		await OpenDialog(new string[] { _dialog });
 	private static async Task WriteDialog(string _BBCtext)
 	{
 		for (int i = 0; i < _BBCtext.Length; i++)
@@ -74,9 +85,10 @@ public partial class DialogManager : Control
 				Instance.dialogText.Text = _BBCtext;
 				break;
 			}
-			if (i % 2 == 0)
+			if (i % 4 == 0)
 			{
-				//Sound
+				Instance.dialogAudio.PitchScale = RNG.RandfRange(0.85f, 1.21f);
+				Instance.dialogAudio.Play();
 			}
 
 			Instance.dialogText.Text += _BBCtext[i];

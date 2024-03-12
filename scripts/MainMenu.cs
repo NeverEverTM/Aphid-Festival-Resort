@@ -99,6 +99,7 @@ public partial class MainMenu : Node2D
 
 			if (_input.KeyLabel == Key.Enter)
 			{
+				new_game_button.GrabFocus();
 				GetViewport().SetInputAsHandled();
 				return;
 			}
@@ -118,9 +119,6 @@ public partial class MainMenu : Node2D
 
 		if (GameManager.IsBusy)
 			return;
-
-		if (Input.IsActionJustPressed("escape"))
-			OnExitButton();
 
 		if (UsingButtonWheel)
 			ProcessButtonWheel();
@@ -167,7 +165,7 @@ public partial class MainMenu : Node2D
 	private async void CreateResort()
 	{
 		string _resort = resort_name.Text;
-        Player.Data = new()
+        Player.SAVE = new()
         {
             Name = !string.IsNullOrWhiteSpace(player_name.Text) ?
             player_name.Text :
@@ -322,8 +320,11 @@ public partial class MainMenu : Node2D
 		SetCategory(MenuCategories[wheePointer]);
 	}
 
-	private void OnNewGameButton() =>
+	private void OnNewGameButton()
+	{
 		SetMenu(new_game_panel);
+		resort_name.GrabFocus();
+	}
 	private void OnLoadGameButton()
 	{
 		fileNames = DirAccess.Open(SaveSystem.ProfilesDirectory).GetDirectories();

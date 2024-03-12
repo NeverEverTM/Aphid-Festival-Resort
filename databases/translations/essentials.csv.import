@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://y5ka887u6wvb"
+
+[deps]
+
+files=["res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation"]
+
+source_file="res://databases/translations/essentials.csv"
+dest_files=["res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation"]
+
+[params]
+
+compress=true
+delimiter=0

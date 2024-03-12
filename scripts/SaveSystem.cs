@@ -26,7 +26,7 @@ public static class SaveSystem
 
 	public static readonly List<ISaveData> SaveData = new()
 	{
-		Player.Data
+		Player.SAVE_CONTROL
 	};
 
 	// General file managment
@@ -153,8 +153,8 @@ public static class SaveSystem
 			try { await SaveData[i].LoadData(CurrentProfilePath); }
 			catch (Exception _e)
 			{
-				await SaveData[i].LoadData(_backupFolder);
 				GD.PrintErr(_e);
+				await SaveData[i].LoadData(_backupFolder);
 				continue;
 			}
 		}
@@ -228,13 +228,15 @@ public static class SaveSystem
 		var _dir = DirAccess.Open(_path);
 		_dir.MakeDir("aphids");
 		_dir.MakeDir("resort");
-		await Player.Data.SaveData(_path);
+		await Player.SAVE_CONTROL.SaveData(_path);
 	}
 
 	public static Task DeleteProfile(string _profile)
 	{
 		var _path = ProjectSettings.GlobalizePath(CurrentProfilePath);
 
+		if (string.IsNullOrEmpty(_profile))
+			return Task.CompletedTask;
 		if (!_path.Contains(Profile) || !_path.Contains("profiles"))
 		{
 			GD.Print($"Cannot delete file in path: {_path}");

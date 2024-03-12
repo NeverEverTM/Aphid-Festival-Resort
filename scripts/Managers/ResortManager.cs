@@ -48,7 +48,7 @@ public partial class ResortManager : Node2D
 			while (GameManager.IsBusy)
 				await Task.Delay(1);
 			await Task.Delay(100);
-			await DialogManager.OpenDialog(new string[] { "welcome_0", "welcome_1" });
+			await DialogManager.OpenDialog(new string[] { "welcome_0", "welcome_1" }, "dev");
 		}
 	}
 

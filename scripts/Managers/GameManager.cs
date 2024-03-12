@@ -19,6 +19,7 @@ public partial class GameManager : Node2D
 		MenuScenePath = "res://scenes/menu.tscn",
 		LoadingScreenPath = "res://scenes/ui/loading_screen.tscn",
 		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
+		DialogVoicePath = "res://sfx/dialog",
 		ItemPath = "res://items",
 		IconPath = "res://sprites/icons",
 		SkinsPath = "res://skins",
@@ -83,7 +84,7 @@ public partial class GameManager : Node2D
 		}
 
 		if (Input.IsActionJustPressed("debug_0"))
-			_ = SaveSystem.SaveProfile();
+			_ = DialogManager.OpenDialog(new string[] { "welcome_0", "welcome_1" }, "dev");
 	}
 
 	/// <summary>

@@ -50,6 +50,10 @@ public partial class ConfirmationPopup : CanvasLayer
 			catch(Exception e) { GD.PrintErr(e); }
 			CancelConfirmation();
 		}
+		else
+		{
+			confirmation_edit.GrabFocus();
+		}
 	}
 
 	public static void CreateConfirmation(Action _event)

@@ -16,7 +16,6 @@ public partial class Player : CharacterBody2D
 
 	public static Player Instance;
 	public static int Currency;
-	public static PlayerData Data;
 
 	// Disable
 	public bool IsExplicitlyDisabled { get; private set; }
@@ -66,16 +65,16 @@ public partial class Player : CharacterBody2D
 
 		SaveSystem.OnLoad += () =>
 		{
-			Instance.GlobalPosition = new Vector2(Data.PositionX, Data.PositionY);
-			for (int i = 0; i < Data.Inventory.Count; i++)
+			Instance.GlobalPosition = new Vector2(SAVE.PositionX, SAVE.PositionY);
+			for (int i = 0; i < SAVE.Inventory.Count; i++)
 				CreateInvItem(i);
 		};
 	}
 	public override void _Process(double delta)
 	{
 		ZIndex = (int)GlobalPosition.Y + 8;
-		Data.PositionX = GlobalPosition.X;
-		Data.PositionY = GlobalPosition.Y;
+		SAVE.PositionX = GlobalPosition.X;
+		SAVE.PositionY = GlobalPosition.Y;
 
 		// Pet Timer
 		if (pet_timer > 0)
@@ -289,7 +288,7 @@ public partial class Player : CharacterBody2D
 	// =======| Inventory |========
 	private static void PullItem(string _item_name)
 	{
-		Data.Inventory.Remove(_item_name);
+		SAVE.Inventory.Remove(_item_name);
 		Node2D _item = ResortManager.CreateItem(_item_name);
 
 		if (Instance.PickupItem != null)
@@ -298,10 +297,10 @@ public partial class Player : CharacterBody2D
 	}
 	public static bool StoreItem(string _item)
 	{
-		if (Data.Inventory.Count >= 15)
+		if (SAVE.Inventory.Count >= 15)
 			return false;
-		Data.Inventory.Add(_item);
-		CreateInvItem(Data.Inventory.Count - 1);
+		SAVE.Inventory.Add(_item);
+		CreateInvItem(SAVE.Inventory.Count - 1);
 
 		// Notify about addon
 
@@ -322,8 +321,8 @@ public partial class Player : CharacterBody2D
 	private static void CreateInvItem(int _index)
 	{
 		TextureButton _item = Instance.invItemContainer.Instantiate() as TextureButton;
-		(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[Data.Inventory[_index]];
-		var _item_name = Data.Inventory[_index];
+		(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[SAVE.Inventory[_index]];
+		var _item_name = SAVE.Inventory[_index];
 		_item.Pressed += () =>
 		{
 			PullItem(_item_name);

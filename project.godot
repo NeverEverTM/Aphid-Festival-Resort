@@ -10,14 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Aphid Festival: Resort"
+config/name="Aphid Festival Resort"
 config/description="Aphid Festival Demo"
 config/version="0.0.1"
 run/main_scene="res://scenes/menu.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
-config/icon="res://sprites/icons/honey_drop.tres"
+config/icon="res://sprites/ui/leaf_cover.png"
 
 [autoload]
 
@@ -40,9 +40,9 @@ folder_colors={
 "res://items/": "orange",
 "res://scenes/": "gray",
 "res://scripts/": "red",
+"res://sfx/": "pink",
 "res://skins/": "teal",
-"res://sprites/": "purple",
-"res://translations/": "pink"
+"res://sprites/": "purple"
 }
 
 [filesystem]
@@ -126,7 +126,8 @@ open_inventory={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://translations/aphid_resort_localization.en.translation", "res://translations/aphid_resort_localization.es.translation", "res://translations/dialogue.en.translation", "res://translations/dialogue.es.translation", "res://translations/items.en.translation", "res://translations/items.es.translation")
+locale/translations=PackedStringArray("res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation")
+locale/test="en"
 
 [rendering]
 
