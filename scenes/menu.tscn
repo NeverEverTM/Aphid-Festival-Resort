@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=29 format=3 uid="uid://by6u0617yy7oe"]
 
 [ext_resource type="Script" path="res://scripts/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="2_1btwy"]
@@ -6,9 +6,13 @@
 [ext_resource type="Texture2D" uid="uid://daup0e4jm5ln" path="res://sprites/AphidFestivalResort.png" id="2_r26xg"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="2_w3mwt"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="3_7aeaj"]
+[ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="3_7vjbo"]
+[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/select.wav" id="4_fk8eh"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="6_vbc7o"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="7_c3kj0"]
+[ext_resource type="Texture2D" uid="uid://duck48iqhler" path="res://sprites/ui/heart_bg.png" id="8_85fa1"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="9_76l0k"]
+[ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/ui/aphid_adult.tres" id="9_hair0"]
 
 [sub_resource type="Animation" id="Animation_ahjwp"]
 length = 0.001
@@ -183,7 +187,7 @@ _data = {
 "slide_up": SubResource("Animation_iebcr")
 }
 
-[node name="menu" type="Node2D" node_paths=PackedStringArray("BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "sweep_animator", "logo_animator", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_name", "player_name", "savefile_name")]
+[node name="menu" type="Node2D" node_paths=PackedStringArray("BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "sweep_animator", "logo_animator", "audioPlayer", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_name", "player_name", "savefile_name")]
 script = ExtResource("1_5e31e")
 BOOT_LOADING_LABEL = NodePath("CanvasLayer/sweep_background/Label")
 cameraMenu = NodePath("Camera2D")
@@ -191,6 +195,7 @@ button_wheel = NodePath("CanvasLayer/start_panel/logo/button_wheel")
 sweep_animator = NodePath("CanvasLayer/sweep_background/AnimationPlayer")
 logo_animator = NodePath("CanvasLayer/start_panel/logo/AnimationPlayer")
 aphidPrefab = ExtResource("2_1btwy")
+audioPlayer = NodePath("AudioStreamPlayer")
 start_panel = NodePath("CanvasLayer/start_panel")
 new_game_panel = NodePath("CanvasLayer/newgame_panel")
 load_game_panel = NodePath("CanvasLayer/loadgame_panel")
@@ -200,10 +205,18 @@ new_game_button = NodePath("CanvasLayer/newgame_panel/ready/button")
 resort_name = NodePath("CanvasLayer/newgame_panel/resort_name")
 player_name = NodePath("CanvasLayer/newgame_panel/player_name")
 savefile_name = NodePath("CanvasLayer/loadgame_panel/savefile/Label")
+switchSound = ExtResource("3_7vjbo")
+selectSound = ExtResource("4_fk8eh")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -20.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-144, 144)
 zoom = Vector2(2, 2)
+
+[node name="AudioListener2D" type="AudioListener2D" parent="Camera2D"]
+current = true
 
 [node name="tilemap_resort" parent="." instance=ExtResource("3_7aeaj")]
 
@@ -476,24 +489,48 @@ grow_vertical = 2
 [node name="background" type="TextureRect" parent="CanvasLayer/credits_panel"]
 self_modulate = Color(0.137255, 0.101961, 0.447059, 0.811765)
 layout_mode = 0
-offset_left = -368.0
+offset_left = -470.0
 offset_top = -300.0
-offset_right = 417.0
+offset_right = 543.0
 offset_bottom = 339.0
 texture = ExtResource("7_c3kj0")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="CanvasLayer/credits_panel"]
 layout_mode = 0
-offset_left = -299.0
+offset_left = -356.0
 offset_top = -221.0
-offset_right = 341.0
+offset_right = 430.0
 offset_bottom = 268.0
 text = "credits_note"
 label_settings = SubResource("LabelSettings_sspec")
 horizontal_alignment = 1
-autowrap_mode = 1
+autowrap_mode = 3
 metadata/_edit_group_ = true
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/credits_panel"]
+layout_mode = 0
+offset_left = -98.0
+offset_top = 187.0
+offset_right = -34.0
+offset_bottom = 251.0
+texture = ExtResource("8_85fa1")
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/credits_panel"]
+layout_mode = 0
+offset_left = 79.0
+offset_top = 185.0
+offset_right = 143.0
+offset_bottom = 249.0
+texture = ExtResource("8_85fa1")
+
+[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/credits_panel"]
+layout_mode = 0
+offset_left = -9.0
+offset_top = 189.0
+offset_right = 55.0
+offset_bottom = 253.0
+texture = ExtResource("9_hair0")
 
 [node name="options_panel" type="Control" parent="CanvasLayer"]
 visible = false

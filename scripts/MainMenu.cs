@@ -1,8 +1,6 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using Godot;
-using System.Threading.Tasks;
 
 public partial class MainMenu : Node2D
 {
@@ -11,6 +9,7 @@ public partial class MainMenu : Node2D
 	[Export] private RichTextLabel button_wheel;
 	[Export] private AnimationPlayer sweep_animator, logo_animator;
 	[Export] private PackedScene aphidPrefab;
+	[Export] private AudioStreamPlayer audioPlayer;
 	[ExportCategory("Menu Panels")]
 	[Export] private Control start_panel;
 	[Export] private Control new_game_panel, load_game_panel, credits_panel, options_panel;
@@ -24,7 +23,9 @@ public partial class MainMenu : Node2D
 	private const int resort_charLimit = 40, name_charLimit = 30;
 	private const string defaultName = "Matty";
 
-	// Button Wheel behaviour
+	[ExportCategory("Button Wheel Behaviour")]
+	[Export] private AudioStream switchSound;
+	[Export] private AudioStream selectSound;
 	private bool UsingButtonWheel = false;
 	private Action Back, Forward;
 	private Action Interact;
@@ -63,7 +64,7 @@ public partial class MainMenu : Node2D
 		CreateMenuAction(optionsCategory, OnOptionsButton);
 		CreateMenuAction(creditsCategory, OnCreditsButton);
 		CreateMenuAction(exitCategory, OnExitButton);
-
+		
 		SpawnBunchaOfAphidsForTheFunnies();
 
 		if (!HasBeenIntialized)
@@ -78,6 +79,7 @@ public partial class MainMenu : Node2D
 			logo_animator.Play("slide_down");
 			sweep_animator.Play("RESET");
 		}
+
 		SetButtonWheel(MenuActions.Count, () => MenuActions[category](), SwitchCategories);
 		HasBeenIntialized = true;
     }
@@ -127,7 +129,11 @@ public partial class MainMenu : Node2D
 	private void ProcessButtonWheel()
 	{
         if(Input.IsActionJustPressed("interact"))
+		{
 			Interact();
+			PlaySound(selectSound);
+			return;
+		}
 
 		if(Input.IsActionJustPressed("left"))
 		{
@@ -135,6 +141,7 @@ public partial class MainMenu : Node2D
 			if (wheePointer == -1)
 				wheePointer = maxLength - 1;
 			Back();
+			PlaySound(switchSound);
 		}
 
 		if(Input.IsActionJustPressed("right"))
@@ -143,6 +150,7 @@ public partial class MainMenu : Node2D
 			if (wheePointer == maxLength)
 				wheePointer = 0;
 			Forward();
+			PlaySound(switchSound);
 		}
 	}
 	public void SetButtonWheel(int _max_length, Action _interact, Action _back, Action _forward)
@@ -269,6 +277,11 @@ public partial class MainMenu : Node2D
 	}
 
 	// Aesthetic Menu Functions
+	private void PlaySound(AudioStream _audio)
+	{
+		audioPlayer.Stream = _audio;
+		audioPlayer.Play();
+	}
 	private bool DirectionForX, DirectionForY;
 	private void DoBounceAnim()
 	{

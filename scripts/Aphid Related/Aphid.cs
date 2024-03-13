@@ -8,6 +8,11 @@ public partial class Aphid : CharacterBody2D
 
 	[Export] public AphidSkin skin;
 	[Export] private Area2D triggerArea;
+	[Export] private AudioStreamPlayer2D audioPlayer;
+
+	[ExportCategory("Sounds")]
+	[Export] private AudioStream nom;
+	[Export] public AudioStream step, idle, jump;
 
 	[ExportCategory("Effects")]
 	[Export] private PackedScene heartParticles;
@@ -22,9 +27,10 @@ public partial class Aphid : CharacterBody2D
 	private int idleRange = 100;
 	private float idle_timer, idle_timeout_timer;
 	private const float idle_timer_range = 1.15f, idle_timeout = 4f;
-	private Timer blink_timer = new(), blink_duration_timer = new();
+	private Timer blink_timer = new(), blink_duration_timer = new(), squeak_timer = new();
 
 	// Eating Params
+	public bool IsEating;
 	private Node2D food_item;
 	private Vector2 food_item_position, food_item_direction;
 	private int foodgobble_shutter_speed;
@@ -82,6 +88,14 @@ public partial class Aphid : CharacterBody2D
     }
 	private void SetTimers()
 	{
+		AddChild(squeak_timer);
+		squeak_timer.Timeout += () =>
+		{
+			if (OurState != AphidState.Sleeping)
+				PlaySound(idle, true);
+			squeak_timer.Start(behaviourRNG.RandiRange(5, 15));
+		};
+
 		AddChild(blink_timer);
 		blink_timer.OneShot = true;
 		blink_timer.Timeout += () =>
@@ -216,6 +230,13 @@ public partial class Aphid : CharacterBody2D
 	{
 		MovementDirection = _direction.Normalized();
 	}
+	public void PlaySound(AudioStream _audio, bool _pitchRand = false)
+	{
+		if (_pitchRand)
+			audioPlayer.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
+		audioPlayer.Stream = _audio;
+		audioPlayer.Play();
+	}
 
 	// State functions
     protected void Idle(float _delta)
@@ -260,6 +281,7 @@ public partial class Aphid : CharacterBody2D
 			SetMovementDirection(Vector2.Zero);
 			food_item.RemoveMeta("tag"); // Stops others from eating it
 			food_item.SetMeta("pickup", false);
+			IsEating = true;
 
 			food_item_direction = skin.IsFlipped ? -food_item_position : food_item_position;
 			food_item.GlobalPosition = GlobalPosition + food_item_direction;
@@ -283,6 +305,7 @@ public partial class Aphid : CharacterBody2D
 			+ (food_item_switch ? Vector2.Up : Vector2.Zero);
 			food_item_switch = !food_item_switch;
 			foodgobble_shutter_speed = 8;
+			PlaySound(nom, true);
 		}
 		else
 			foodgobble_shutter_speed--;
@@ -303,6 +326,7 @@ public partial class Aphid : CharacterBody2D
 				
 				food_item.QueueFree();
 			}
+			IsEating = false;
 			SetAphidState(AphidState.Idle);
 		}
 	}
@@ -336,6 +360,9 @@ public partial class Aphid : CharacterBody2D
 			}
 			SetAffection(10);
 			SetAphidState(AphidState.Idle);
+			// Animation
+			PlaySound(jump, true);
+			skin.Jump();
 		}
 	}
 	protected void Sleep()
@@ -367,11 +394,11 @@ public partial class Aphid : CharacterBody2D
 			sleep_gain_timer -= _delta;
 		else
 		{
-			SetSleepiness(behaviourRNG.RandfRange(0.75f, 1.95f));
+			SetSleepiness(-behaviourRNG.RandfRange(0.75f, 1.95f));
 			sleep_gain_timer = sleep_gain;
 		}
 
-		if (Instance.Status.Sleepiness < 80)
+		if (Instance.Status.Sleepiness > 20)
 			return;
 
 		// enough sleep, try waking up
@@ -475,7 +502,7 @@ public partial class Aphid : CharacterBody2D
 		}
 
 		// Only if we are tired, then roll a chance every few seconds to sleep
-		if (Instance.Status.Sleepiness > 25)
+		if (Instance.Status.Sleepiness < 75)
 			return;
 
 		if (try_sleep_timer > 0)
@@ -630,6 +657,7 @@ public partial class Aphid : CharacterBody2D
 		{
 			idlePosition = GlobalPosition;
 			skin.SetFlipDirection(_node.GlobalPosition - GlobalPosition);
+			PlaySound(idle, true);
 		}
 	}
 	private void TickInteractionCooldown(float _delta)

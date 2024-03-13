@@ -25,10 +25,22 @@ Type ""Yes"" and hit Enter to confirm","¿Estas seguro que quieres hacer eso?
 
 Escribe “Si” y presiona Enter para confirmar"
 confirmation_yes,Yes,Si
-credits_note,Made in Godot 4.2\n\nThis is a Non-Profit fan game.\nRegistered trademarks and copyrights belong to Moonsprout Games\n\nInspired by the fan game Chao Resort Island\nby Nefault1st. You should check them out!\n\nEntirely developed and drawn by\nSummer(NeverEver),Hecho en Godot 4.2\n\nEste es un juego no oficial sin animo de lucro.\nMarcas registradas y derechos de autor\nle pertenecen a Moonsprout Games.\n\nInspirado por el juego Chao Resort Island\nhecho por Nefault1st. Echale un vistazo!\n\nEnteramente desarollado y dibujado por\nSummer(NeverEver)
-store_name_placeholder,Kuts Food Cabinet,Puesto de Alimentos de Kut
-store_desc_placeholder,Purchase basic ingredients for Aphid feeding.,Adquiere ingredientes basicos para alimentar Ãfidos.
-bio_name_placeholder,Aphid Name,Nombre del Ãfido
+credits_note,"Made in Godot 4.2. Music made with LMMS
+“Rustling leaves” sound from Pixabay. All sound effects were created with jsfxr.
+
+Registered trademarks and copyrights belong to Moonsprout Games
+
+Inspired by the fan game Chao Resort Island by Nefault1st. 
+You should check them out!","Hecho en Godot 4.2. Musica hecha con LMMS 
+“Rustling leaves” audio de Pixabay. Efectos de sonido creados en jsfxr
+
+Marcas registradas y derechos de autor le pertenecen a Moonsprout Games.
+
+Inspirado por el juego Chao Resort Island hecho por Nefault1st. 
+Echale un vistazo!"
+store_name_placeholder,Kut’s Food Cabinet,Puesto de Alimentos de Kut
+store_desc_placeholder,Purchase basic ingredients for Aphid feeding.,Adquiere ingredientes basicos para alimentar Ãfidos.
+bio_name_placeholder,Aphid Name,Nombre del Ãfido
 flavor_0,Sweet,Dulce
 flavor_1,Sour,Agrio
 flavor_2,Salty,Salado

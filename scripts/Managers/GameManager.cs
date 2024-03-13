@@ -7,6 +7,7 @@ public partial class GameManager : Node2D
 {
 	public static GameManager Instance;
 	public static Camera2D GlobalCamera;
+	public static AudioStreamPlayer AudioPlayer;
 	public readonly static RandomNumberGenerator RNG = new();
 
 	public enum Scene { Resort, Menu }
@@ -19,7 +20,7 @@ public partial class GameManager : Node2D
 		MenuScenePath = "res://scenes/menu.tscn",
 		LoadingScreenPath = "res://scenes/ui/loading_screen.tscn",
 		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
-		DialogVoicePath = "res://sfx/dialog",
+		SFXPath = "res://sfx",
 		ItemPath = "res://items",
 		IconPath = "res://sprites/icons",
 		SkinsPath = "res://skins",
@@ -72,6 +73,11 @@ public partial class GameManager : Node2D
 	{
 		// Runtime Params
 		spaceState = GetWorld2D().DirectSpaceState;
+
+		// Set AudioPlayer
+		AudioPlayer = new();
+		AddChild(AudioPlayer);
+		AudioPlayer.VolumeDb = -20;
 	}
 	public override void _Process(double delta)
 	{
@@ -235,6 +241,7 @@ public partial class GameManager : Node2D
 	{
 		IsBusy = true;
 		Instance.CleanAllParticles();
+		StopSong();
 
 		// load the load screen
 		LoadScreen _loading = ResourceLoader.Load<PackedScene>(LoadingScreenPath).Instantiate() as LoadScreen;
@@ -264,7 +271,29 @@ public partial class GameManager : Node2D
 		IsBusy = false;
 		await _loading.SweepLeaves();
 	}
-
+	public static void PlaySong(AudioStream _song)
+	{
+		if (AudioPlayer.Stream != null)
+		{
+			StopSong().Finished += () => PlaySong(_song);
+			return;
+		}
+		AudioPlayer.Stream = _song;
+		AudioPlayer.Play();
+	}
+	private static Tween StopSong()
+	{
+		Tween tween = AudioPlayer.CreateTween();
+		tween.SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(AudioPlayer, "volume_db", -80, 1.0);
+		tween.Finished += () =>
+		{
+			AudioPlayer.Stop();
+			AudioPlayer.VolumeDb = -20;
+			AudioPlayer.Stream = null;
+		};
+		return tween;
+	}
 	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position)
 	{
 		var _item = _particles.Instantiate() as GpuParticles2D;
@@ -336,7 +365,7 @@ public partial class GameManager : Node2D
 
 			return _color1;
 		}
-		
+
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
 		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));

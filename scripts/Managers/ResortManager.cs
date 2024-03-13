@@ -6,6 +6,9 @@ public partial class ResortManager : Node2D
 	[Export] public PackedScene aphidPrefab;
 	[Export] public Node2D ItemGroundRoot;
 
+	[ExportGroup("Music")]
+	[Export] private AudioStream day_0;
+
 	public static ResortManager Instance;
 	public static SaveData Data = new(); 
 	public static bool IsNewGame;
@@ -40,6 +43,7 @@ public partial class ResortManager : Node2D
 
     public override async void _Ready()
 	{
+		GameManager.PlaySong(day_0);
 		if (!IsNewGame)
 			await SaveSystem.LoadProfile();
 		else

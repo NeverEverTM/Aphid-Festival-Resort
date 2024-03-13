@@ -241,8 +241,7 @@ public partial class Player : CharacterBody2D
 	}
 	private bool OnAphidPickup(Aphid _aphid)
 	{
-		// If aphid is eating or drinking, cant interrupt
-		if (_aphid.OurState == Aphid.AphidState.Eating || _aphid.OurState == Aphid.AphidState.Drinking)
+		if (_aphid.IsEating)
 			return false;
 
 		// if sleeping, get annoyed
@@ -252,6 +251,7 @@ public partial class Player : CharacterBody2D
 		_aphid.SetAphidState(Aphid.AphidState.Idle);
 		_aphid.skin.SetFlipDirection(FacingDirection, true);
 		pickup_isAphid = true;
+		_aphid.PlaySound(_aphid.idle, true);
 		return true;
 	}
 	public void Drop(bool _setPosition = true)

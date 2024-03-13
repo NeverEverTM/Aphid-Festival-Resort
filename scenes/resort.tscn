@@ -1,9 +1,10 @@
-[gd_scene load_steps=57 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=59 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" path="res://scripts/Managers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="Script" path="res://scripts/Managers/CanvasManager.cs" id="1_f7ynu"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_qes7a"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
+[ext_resource type="AudioStream" uid="uid://bk1f0d2jdxqee" path="res://sfx/music/day_0.wav" id="3_j1ial"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="3_t8x5j"]
 [ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/ui/aphid_child.tres" id="5_4ptmp"]
 [ext_resource type="Texture2D" uid="uid://b6xq8t3y4ssbp" path="res://sprites/ui/gradient_progress.tres" id="5_qbdf0"]
@@ -26,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="20_qhpvf"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="20_vysaa"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="20_xk6tt"]
-[ext_resource type="AudioStream" uid="uid://ccdhfou85u7u5" path="res://sfx/dialog/dev_idle.wav" id="21_ckdvb"]
+[ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="21_ckdvb"]
 [ext_resource type="Script" path="res://scripts/KitchenStore.cs" id="21_j3pjv"]
 [ext_resource type="Texture2D" uid="uid://bwskfqr44kaqq" path="res://icon.svg" id="22_fy5ob"]
 [ext_resource type="Texture2D" uid="uid://drg6rhqrbp6j3" path="res://sprites/characters/Kut/idle_0.tres" id="22_xi3t0"]
@@ -133,6 +134,33 @@ shader = ExtResource("8_i043l")
 shader_parameter/mix_amount = 0.0
 shader_parameter/gradient = ExtResource("5_qbdf0")
 
+[sub_resource type="Animation" id="Animation_vqegb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:size")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(78, 80)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(467, 276)]
+}
+
 [sub_resource type="Animation" id="Animation_yyexv"]
 resource_name = "squiggly"
 length = 2.0
@@ -160,33 +188,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(-2, -2, -2),
 "update": 0,
 "values": [Vector2(474, 276), Vector2(468, 286), Vector2(474, 276)]
-}
-
-[sub_resource type="Animation" id="Animation_vqegb"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:size")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(78, 80)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(467, 276)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7mn38"]
@@ -311,6 +312,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(-1200, -299)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_3dg7i"]
 resource_name = "open"
@@ -338,10 +351,63 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(-1200, -299), Vector2(-545, -299)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_5lpko"]
+resource_name = "close"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("item_info:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(-2, 0.5),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(700, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("item_box:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(-2, 0.5),
+"update": 0,
+"values": [Vector2(-545, -299), Vector2(-1200, -299)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0prst"]
 _data = {
 "RESET": SubResource("Animation_ei7ps"),
+"close": SubResource("Animation_5lpko"),
 "open": SubResource("Animation_3dg7i")
 }
 
@@ -398,15 +464,15 @@ size = Vector2(72.6913, 29.9024)
 script = ExtResource("1_ay1ca")
 aphidPrefab = ExtResource("3_d14m5")
 ItemGroundRoot = NodePath("entityPit")
+day_0 = ExtResource("3_j1ial")
 
 [node name="entityPit" type="Node2D" parent="."]
 
-[node name="canvas" type="CanvasLayer" parent="." node_paths=PackedStringArray("info_player", "store_panel", "name_label", "show_hash_button", "bondship", "ageDisplay", "hungerK", "thirstK", "affectionK")]
+[node name="canvas" type="CanvasLayer" parent="." node_paths=PackedStringArray("info_player", "name_label", "show_hash_button", "bondship", "ageDisplay", "hungerK", "thirstK", "affectionK")]
 editor_description = "quick
 "
 script = ExtResource("1_f7ynu")
 info_player = NodePath("aphid_info/animator")
-store_panel = NodePath("shop_panel")
 name_label = NodePath("aphid_info/bio/name_edit")
 show_hash_button = NodePath("aphid_info/bio/hash")
 bondship = NodePath("aphid_info/bio/bondship")
@@ -660,16 +726,15 @@ texture = ExtResource("20_qhpvf")
 
 [node name="dialog" type="RichTextLabel" parent="canvas/dialog_box"]
 layout_mode = 0
-offset_left = -443.0
-offset_top = 175.0
-offset_right = 490.0
-offset_bottom = 314.0
+offset_left = -448.0
+offset_top = 171.0
+offset_right = 491.0
+offset_bottom = 319.0
 theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/normal_font_size = 30
 text = "qwertyuiopasdfghjklñzxcvbnm QWERTYUIOPASDFGHJKLÑZXCVBNM 1234567890 íÜ,.;:-_{}[]´+¨* 
 ABC
-ABC
-ABC"
+ggggggggg"
 scroll_active = false
 
 [node name="dialogAudio" type="AudioStreamPlayer" parent="canvas/dialog_box"]
@@ -925,20 +990,22 @@ texture_normal = ExtResource("20_xk6tt")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="canvas/shop_panel"]
+[node name="store_animator" type="AnimationPlayer" parent="canvas/shop_panel"]
 libraries = {
 "": SubResource("AnimationLibrary_0prst")
 }
 
 [node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
 
-[node name="kitchen_counter" type="Node2D" parent="." node_paths=PackedStringArray("triggerArea", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "buyItem", "storeAnimator")]
+[node name="kitchen_counter" type="Node2D" parent="." node_paths=PackedStringArray("triggerArea", "dialogArea", "storePanel", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "buyItem", "storeAnimator")]
 z_index = -449
 y_sort_enabled = true
 position = Vector2(470, -449)
 scale = Vector2(0.949219, 0.854167)
 script = ExtResource("21_j3pjv")
 triggerArea = NodePath("trigger_store")
+dialogArea = NodePath("trigger_dialog")
+storePanel = NodePath("../canvas/shop_panel/store_animator")
 itemGrid = NodePath("../canvas/shop_panel/item_box/item_container")
 itemName = NodePath("../canvas/shop_panel/item_info/name/name_text")
 itemDescription = NodePath("../canvas/shop_panel/item_info/desc/desc_text")
@@ -946,7 +1013,7 @@ itemCost = NodePath("../canvas/shop_panel/item_info/cost/cost_text")
 itemIcon = NodePath("../canvas/shop_panel/item_info/icon/image")
 buyItem = NodePath("../canvas/shop_panel/item_info/buy_button")
 itemContainer = ExtResource("19_xfhfg")
-storeAnimator = NodePath("../canvas/shop_panel/AnimationPlayer")
+storeAnimator = NodePath("../canvas/shop_panel/store_animator")
 
 [node name="kut" type="Sprite2D" parent="kitchen_counter"]
 position = Vector2(-7.37448, -37.4634)

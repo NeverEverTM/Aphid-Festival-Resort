@@ -2,8 +2,9 @@ using Godot;
 
 public partial class KitchenStore : Node2D
 {
-	[Export] private Area2D triggerArea;
+	[Export] private Area2D triggerArea, dialogArea;
 	[ExportCategory("Store")]
+	[Export] private AnimationPlayer storePanel;
 	[Export] private GridContainer itemGrid;
 	[Export] private Label itemName, itemDescription, itemCost;
 	[Export] private TextureRect itemIcon;
@@ -11,44 +12,48 @@ public partial class KitchenStore : Node2D
 	[Export] private PackedScene itemContainer;
 	[Export] private AnimationPlayer storeAnimator;
 
-	private bool IsNearby, IsActive;
+	private bool IsActive;
 	private string currentItem;
 	private int currentCost;
+	private enum Trigger { None, Store, Dialog }
+	private Trigger trigger = Trigger.None;
 
 	public override void _Ready()
 	{
-		triggerArea.AreaEntered += (Area2D _node) => IsNearby = true;
-		triggerArea.AreaExited += (Area2D _node) => IsNearby = false;
+		triggerArea.AreaEntered += (Area2D _node) => trigger = Trigger.Store;
+		triggerArea.AreaExited += (Area2D _node) => trigger = Trigger.None;
+		dialogArea.AreaEntered += (Area2D _node) => trigger = Trigger.Dialog;
+		dialogArea.AreaExited += (Area2D _node) => trigger = Trigger.None;
 		buyItem.Pressed += PurchaseItem;
 	}
 
 	public override void _Process(double delta)
 	{
-		if (!IsNearby)
+		if (trigger == Trigger.None)
 			return;
 
 		if (IsActive)
 		{
-			// Deactivate store after you are fully out
-			if (!DialogManager.IsActive && !CanvasManager.IsInMenu)
+			if (!CanvasManager.IsInMenu)
 				CloseStore();
 			return;
 		}
 
 		if (Input.IsActionJustPressed("interact"))
-			OpenStore();
-	}
+		{
+			if (trigger == Trigger.Store)
+				OpenStore();
+			else if (!DialogManager.IsActive)
+				_ = DialogManager.OpenDialog(new string[] { "kut_shop_0", "kut_shop_1" }, "kut");
+        }
+    }
 
-	// Store
-	public void OpenStore()
+    // Store
+    public void OpenStore()
 	{
 		IsActive = true;
-
-		if (Player.Instance.PickupItem != null)
-			Player.Instance.Drop();
-		//await DialogManager.OpenDialog(new string[] { Tr("kut_shop_0"), Tr("kut_shop_1") } );
 		CreateShelf();
-		CanvasManager.SetMenu(CanvasManager.Instance.store_panel);
+		CanvasManager.SetMenu(storePanel);
 		storeAnimator.Play("open");
 	}
 	private void CloseStore()

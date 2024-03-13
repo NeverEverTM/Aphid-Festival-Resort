@@ -5,6 +5,7 @@ using Godot;
 public partial class LoadScreen : CanvasLayer
 {
 	[Export] private PackedScene leaf;
+	[Export] private AudioStreamPlayer leaves;
 
 	// Process Params
 	private readonly List<Vector2> virtualNodes = new();
@@ -48,6 +49,8 @@ public partial class LoadScreen : CanvasLayer
 			});
 		}
 
+		leaves.PitchScale = new RandomNumberGenerator().RandfRange(leaves.PitchScale - 0.09f, leaves.PitchScale + 0.09f);
+		leaves.Play();
 		while(true)
 		{
 			await Task.Delay(1);

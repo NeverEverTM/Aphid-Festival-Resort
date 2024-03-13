@@ -1,10 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://7oo48cet73pb"]
+[gd_scene load_steps=16 format=3 uid="uid://7oo48cet73pb"]
 
 [ext_resource type="Script" path="res://scripts/Aphid Related/Aphid.cs" id="1_alf76"]
 [ext_resource type="PackedScene" uid="uid://4elwtdodi4mk" path="res://scenes/particles/heart_particles.tscn" id="2_ld3gy"]
+[ext_resource type="AudioStream" uid="uid://hnoe61jvevo3" path="res://sfx/aphid/nom.wav" id="2_sfwmr"]
+[ext_resource type="AudioStream" uid="uid://b8x1ph1bsw1a1" path="res://sfx/aphid/step.wav" id="3_3pcii"]
 [ext_resource type="PackedScene" uid="uid://3n7hc8daqmx1" path="res://scenes/particles/sleep_particles.tscn" id="3_lmnx6"]
+[ext_resource type="AudioStream" uid="uid://ceq01lqjvnef0" path="res://sfx/aphid/idle.wav" id="4_7u1am"]
 [ext_resource type="PackedScene" uid="uid://c3yni1x81j23w" path="res://scenes/particles/anger_particle.tscn" id="4_y6tyl"]
 [ext_resource type="Script" path="res://scripts/Aphid Related/AphidSkin.cs" id="5_mgt0u"]
+[ext_resource type="AudioStream" uid="uid://etu7uln52eqi" path="res://sfx/aphid/jump.wav" id="5_mp4ag"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_trk2c"]
 
@@ -20,18 +24,29 @@ size = Vector2(34, 12)
 [sub_resource type="CircleShape2D" id="CircleShape2D_7a8x1"]
 radius = 99.0
 
-[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea")]
+[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea", "audioPlayer")]
 position = Vector2(-1, 0)
 motion_mode = 1
 script = ExtResource("1_alf76")
 skin = NodePath("SpriteBody")
 triggerArea = NodePath("TriggerArea")
+audioPlayer = NodePath("audioPlayer")
+nom = ExtResource("2_sfwmr")
+step = ExtResource("3_3pcii")
+idle = ExtResource("4_7u1am")
+jump = ExtResource("5_mp4ag")
 heartParticles = ExtResource("2_ld3gy")
 foodParticles = ExtResource("2_ld3gy")
 sleepParticles = ExtResource("3_lmnx6")
 angerParticles = ExtResource("4_y6tyl")
 metadata/pickup = true
 metadata/tag = "aphid"
+
+[node name="audioPlayer" type="AudioStreamPlayer2D" parent="."]
+volume_db = -20.0
+max_distance = 200.0
+attenuation = 0.5
+max_polyphony = 20
 
 [node name="SpriteBody" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
 script = ExtResource("5_mgt0u")

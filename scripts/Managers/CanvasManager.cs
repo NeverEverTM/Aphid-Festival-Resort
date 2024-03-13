@@ -3,7 +3,6 @@ using Godot;
 public partial class CanvasManager : CanvasLayer
 {
 	[Export] private AnimationPlayer info_player;
-	[Export] public Control store_panel;
 	[ExportCategory("Bio")]
 	[Export] private TextEdit name_label;
 	[Export] private BaseButton show_hash_button;
@@ -16,7 +15,8 @@ public partial class CanvasManager : CanvasLayer
 
 	public static CanvasManager Instance;
 	public static bool IsInFocus, IsInMenu;
-	private static Control currentMenu, currentFocus;
+	private static Control currentFocus;
+	private static AnimationPlayer currentMenu;
 	private const int offsetY = -9, lengthSize = 240;
 	private Aphid aphid;
 
@@ -65,14 +65,17 @@ public partial class CanvasManager : CanvasLayer
 		}
     }
 
-	public static void SetMenu(Control _menu)
+	public static void SetMenu(AnimationPlayer _menu)
 	{
-		currentMenu?.Hide();
+		if (Player.Instance.PickupItem != null)
+			Player.Instance.Drop();
+		
+		currentMenu?.Play("close");
 		if (_menu == currentMenu)
 			CloseMenu();
 		else
 		{
-			_menu.Show();
+			_menu.Play("open");
 			currentMenu = _menu;
 			Player.Instance.SetDisabled(true);
 			IsInMenu = true;
@@ -80,7 +83,7 @@ public partial class CanvasManager : CanvasLayer
 	}
 	public static void CloseMenu()
 	{
-		currentMenu?.Hide();
+		currentMenu?.Play("close");
 		currentMenu = null;
 		Player.Instance.SetDisabled(false);
 		IsInMenu = false;
