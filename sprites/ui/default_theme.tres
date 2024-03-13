@@ -20,6 +20,12 @@ shadow_size = 1
 [resource]
 default_font = ExtResource("1_kgla5")
 default_font_size = 40
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(0.364706, 0.768627, 0.85098, 1)
+Button/colors/font_hover_color = Color(0.364706, 0.768627, 0.85098, 1)
+Button/colors/font_hover_pressed_color = Color(0.94902, 0.8, 0.145098, 1)
+Button/colors/font_outline_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
+Button/colors/font_pressed_color = Color(0.94902, 0.8, 0.145098, 1)
 TextEdit/colors/background_color = Color(0.0745098, 0.27451, 0.176471, 0)
 TextEdit/colors/font_placeholder_color = Color(0.305882, 0.611765, 0.458824, 0.6)
 TextEdit/styles/normal = SubResource("StyleBoxFlat_i1e6c")

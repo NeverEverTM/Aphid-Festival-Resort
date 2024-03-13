@@ -15,7 +15,6 @@ public partial class Player : CharacterBody2D
 	[Export] private PackedScene invItemContainer;
 
 	public static Player Instance;
-	public static int Currency;
 
 	// Disable
 	public bool IsExplicitlyDisabled { get; private set; }
@@ -52,6 +51,9 @@ public partial class Player : CharacterBody2D
 	{
 		Instance = this;
 		FacingDirection = Vector2.Left;
+
+		if (ResortManager.IsNewGame)
+			Instance.CreateInvItem(0);
 	}
 	public override void _Ready()
 	{
@@ -62,19 +64,12 @@ public partial class Player : CharacterBody2D
 		{
 			Instance.TryPet,
 		};
-
-		SaveSystem.OnLoad += () =>
-		{
-			Instance.GlobalPosition = new Vector2(SAVE.PositionX, SAVE.PositionY);
-			for (int i = 0; i < SAVE.Inventory.Count; i++)
-				CreateInvItem(i);
-		};
 	}
 	public override void _Process(double delta)
 	{
 		ZIndex = (int)GlobalPosition.Y + 8;
-		SAVE.PositionX = GlobalPosition.X;
-		SAVE.PositionY = GlobalPosition.Y;
+		savedata.PositionX = GlobalPosition.X;
+		savedata.PositionY = GlobalPosition.Y;
 
 		// Pet Timer
 		if (pet_timer > 0)
@@ -286,49 +281,49 @@ public partial class Player : CharacterBody2D
 	}
 
 	// =======| Inventory |========
-	private static void PullItem(string _item_name)
+	private void PullItem(string _item_name)
 	{
-		SAVE.Inventory.Remove(_item_name);
+		savedata.Inventory.Remove(_item_name);
 		Node2D _item = ResortManager.CreateItem(_item_name);
 
-		if (Instance.PickupItem != null)
-			Instance.Drop();
-		Instance.Pickup(_item, _item.GetMeta("tag").ToString());
+		if (PickupItem != null)
+			Drop();
+		Pickup(_item, _item.GetMeta("tag").ToString());
 	}
-	public static bool StoreItem(string _item)
+	public bool StoreItem(string _item)
 	{
-		if (SAVE.Inventory.Count >= 15)
+		if (savedata.Inventory.Count >= 15)
 			return false;
-		SAVE.Inventory.Add(_item);
-		CreateInvItem(SAVE.Inventory.Count - 1);
+		savedata.Inventory.Add(_item);
+		CreateInvItem(savedata.Inventory.Count - 1);
 
 		// Notify about addon
 
 		return true;
 	}
-	public static void StoreCurrentItem()
+	public void StoreCurrentItem()
 	{
-		if (Instance.PickupItem.GetMeta("tag").ToString() == "aphid")
+		if (PickupItem.GetMeta("tag").ToString() == "aphid")
 			return;
 
-		if (!StoreItem(Instance.PickupItem.GetMeta("id").ToString()))
+		if (!StoreItem(PickupItem.GetMeta("id").ToString()))
 			return;
 
-		Instance.PickupItem.QueueFree();
-		Instance.PickupItem = null;
+		PickupItem.QueueFree();
+		PickupItem = null;
 	}
 
-	private static void CreateInvItem(int _index)
+	private void CreateInvItem(int _index)
 	{
-		TextureButton _item = Instance.invItemContainer.Instantiate() as TextureButton;
-		(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[SAVE.Inventory[_index]];
-		var _item_name = SAVE.Inventory[_index];
+		TextureButton _item = invItemContainer.Instantiate() as TextureButton;
+		(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[savedata.Inventory[_index]];
+		var _item_name = savedata.Inventory[_index];
 		_item.Pressed += () =>
 		{
 			PullItem(_item_name);
 			_item.QueueFree();
 		};
-		Instance.inventoryGrid.AddChild(_item);
+		inventoryGrid.AddChild(_item);
 	}
 
 	// General Functions

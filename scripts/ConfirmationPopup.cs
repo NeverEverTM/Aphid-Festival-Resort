@@ -27,8 +27,8 @@ public partial class ConfirmationPopup : CanvasLayer
 
 			if (Input.IsActionJustPressed("cancel"))
 			{
-				CancelConfirmation();
 				GetViewport().SetInputAsHandled();
+				CancelConfirmation();
 				return;
 			}
 
@@ -69,5 +69,6 @@ public partial class ConfirmationPopup : CanvasLayer
         IsConfirming = false;
         givenAction = null;
         currentPopup.QueueFree();
+		currentPopup = null;
     }
 }

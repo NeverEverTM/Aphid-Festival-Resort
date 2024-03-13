@@ -104,7 +104,7 @@ public partial class KitchenStore : Node2D
 		//if (Player.Currency - currentCost < 0)
 		//return; // TODO: Some notif about this
 
-		Player.Currency -= currentCost;
-		Player.StoreItem(currentItem);
+		// Player.SAVE.Currency -= currentCost;
+		Player.Instance.StoreItem(currentItem);
 	}
 }

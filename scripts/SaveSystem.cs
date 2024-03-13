@@ -10,11 +10,6 @@ public static class SaveSystem
 	public static string Profile { get; private set; }
 	public static string CurrentProfilePath { get; private set; }
 
-	public delegate void SavingEventHandler();
-	public static event SavingEventHandler OnSave;
-	public delegate void LoadingEventHandler();
-	public static event LoadingEventHandler OnLoad;
-
 	public const string
 	ProfilesDirectory = "user://profiles",
 	GlobalDataPath = "user://global.save",
@@ -26,7 +21,7 @@ public static class SaveSystem
 
 	public static readonly List<ISaveData> SaveData = new()
 	{
-		Player.SAVE_CONTROL
+		Player.savecontroller
 	};
 
 	// General file managment
@@ -87,8 +82,7 @@ public static class SaveSystem
 			{ GD.PrintErr(_e); }
 		}
 
-		OnSave?.Invoke();
-		GD.Print($"ProfileSave: Saved profile <{Profile}> to memory.");
+		GD.Print($"ProfileSave: Saved profile <{Profile}> to <{ProjectSettings.GlobalizePath(CurrentProfilePath)}>.");
 	}
 
 	private static Task SaveAllAphids(string _path, bool _logSave = true)
@@ -159,7 +153,6 @@ public static class SaveSystem
 			}
 		}
 
-		OnLoad?.Invoke();
 		GD.Print($"Loaded profile <{Profile}> to memory.");
 	}
 
@@ -222,13 +215,13 @@ public static class SaveSystem
 
 		GD.Print($"ProfileCreate: Succesfully created profile of <{Profile}>.");
 	}
-	private static async Task CreateNewProfile(string _path)
+	private static Task CreateNewProfile(string _path)
 	{
 		DirAccess.MakeDirAbsolute(_path);
 		var _dir = DirAccess.Open(_path);
 		_dir.MakeDir("aphids");
 		_dir.MakeDir("resort");
-		await Player.SAVE_CONTROL.SaveData(_path);
+		return Task.CompletedTask;
 	}
 
 	public static Task DeleteProfile(string _profile)

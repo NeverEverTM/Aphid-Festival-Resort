@@ -15,12 +15,12 @@ public partial class MainMenu : Node2D
 	[Export] private Control new_game_panel, load_game_panel, credits_panel, options_panel;
 	[ExportCategory("New Game Behaviour")]
 	[Export] private BaseButton new_game_button;
-	[Export] private TextEdit resort_name, player_name;
+	[Export] private TextEdit resort_input_name, player_input_name;
 	[ExportCategory("Load Game Behaviour")]
 	[Export] private RichTextLabel savefile_name;
 
 	private static bool HasBeenIntialized;
-	private const int resort_charLimit = 40, name_charLimit = 30;
+	private const int resort_charLimit = 40, name_charLimit = 15;
 	private const string defaultName = "Matty";
 
 	[ExportCategory("Button Wheel Behaviour")]
@@ -32,7 +32,7 @@ public partial class MainMenu : Node2D
 	private int maxLength, wheePointer;
 
 	// Categories for button wheel
-	private const string newGameCategory = "new_game", loadGameCategory = "load_game",optionsCategory = "options", continueCategory = "continue",
+	private const string newGameCategory = "new_game", loadGameCategory = "load_game", optionsCategory = "options", continueCategory = "continue",
 	creditsCategory = "credits", exitCategory = "exit";
 	private string category = newGameCategory;
 	private readonly List<string> MenuCategories = new();
@@ -41,10 +41,10 @@ public partial class MainMenu : Node2D
 	private Control currentMenu;
 	private readonly Dictionary<string, Action> MenuActions = new();
 
-    public async override void _Ready()
-    {
+	public async override void _Ready()
+	{
 		sweep_animator.Play("loading");
-		player_name.Text = defaultName;
+		player_input_name.Text = defaultName;
 		currentMenu = start_panel;
 		new_game_button.Pressed += CreateResort;
 		SetCategory(newGameCategory);
@@ -64,7 +64,7 @@ public partial class MainMenu : Node2D
 		CreateMenuAction(optionsCategory, OnOptionsButton);
 		CreateMenuAction(creditsCategory, OnCreditsButton);
 		CreateMenuAction(exitCategory, OnExitButton);
-		
+
 		SpawnBunchaOfAphidsForTheFunnies();
 
 		if (!HasBeenIntialized)
@@ -82,20 +82,11 @@ public partial class MainMenu : Node2D
 
 		SetButtonWheel(MenuActions.Count, () => MenuActions[category](), SwitchCategories);
 		HasBeenIntialized = true;
-    }
-    public override void _Input(InputEvent _event)
-    {
-		if (!start_panel.Visible && Input.IsActionJustPressed("cancel"))
-			SetMenu();
-
-		if (load_game_panel.Visible && Input.IsActionJustPressed("open_inventory"))
-			ConfirmationPopup.CreateConfirmation(DeleteResort);
-
-		bool _resortIsFocused = resort_name.HasFocus(), _playerIsFocused = player_name.HasFocus();
-		if (_resortIsFocused == _playerIsFocused) // If either are on focus, proceed
-			return;
-
-		if (_event is InputEventKey && _event.IsPressed())
+	}
+	public override void _Input(InputEvent _event)
+	{
+		bool _resortIsFocused = resort_input_name.HasFocus(), _playerIsFocused = player_input_name.HasFocus();
+		if ((_resortIsFocused || _playerIsFocused) && _event is InputEventKey && _event.IsPressed())
 		{
 			InputEventKey _input = _event as InputEventKey;
 
@@ -110,13 +101,20 @@ public partial class MainMenu : Node2D
 			if (_input.KeyLabel == Key.Backspace || _input.KeyLabel == Key.Left || _input.KeyLabel == Key.Right)
 				return;
 
-			if ((_resortIsFocused && resort_name.Text.Length >= resort_charLimit) ||
-			(_playerIsFocused && player_name.Text.Length >= name_charLimit))
+			if ((_resortIsFocused && resort_input_name.Text.Length >= resort_charLimit) ||
+			(_playerIsFocused && player_input_name.Text.Length >= name_charLimit))
 				GetViewport().SetInputAsHandled();
+			return;
 		}
-    }
-    public override void _Process(double delta)
-    {
+
+		if (!start_panel.Visible && Input.IsActionJustPressed("cancel"))
+			SetMenu();
+
+		if (load_game_panel.Visible && Input.IsActionJustPressed("open_inventory"))
+			ConfirmationPopup.CreateConfirmation(DeleteResort);
+	}
+	public override void _Process(double delta)
+	{
 		DoBounceAnim();
 
 		if (GameManager.IsBusy)
@@ -124,18 +122,18 @@ public partial class MainMenu : Node2D
 
 		if (UsingButtonWheel)
 			ProcessButtonWheel();
-    }
-	
+	}
+
 	private void ProcessButtonWheel()
 	{
-        if(Input.IsActionJustPressed("interact"))
+		if (Input.IsActionJustPressed("interact"))
 		{
 			Interact();
 			PlaySound(selectSound);
 			return;
 		}
 
-		if(Input.IsActionJustPressed("left"))
+		if (Input.IsActionJustPressed("left"))
 		{
 			wheePointer--;
 			if (wheePointer == -1)
@@ -144,7 +142,7 @@ public partial class MainMenu : Node2D
 			PlaySound(switchSound);
 		}
 
-		if(Input.IsActionJustPressed("right"))
+		if (Input.IsActionJustPressed("right"))
 		{
 			wheePointer++;
 			if (wheePointer == maxLength)
@@ -169,19 +167,13 @@ public partial class MainMenu : Node2D
 		button_wheel.Hide();
 		UsingButtonWheel = false;
 	}
-	
+
 	private async void CreateResort()
 	{
-		string _resort = resort_name.Text;
-        Player.SAVE = new()
-        {
-            Name = !string.IsNullOrWhiteSpace(player_name.Text) ?
-            player_name.Text :
-            defaultName
-        };
+		string _resort = resort_input_name.Text;
 
-        // Invalid resort names
-        if (string.IsNullOrWhiteSpace(_resort) || _resort.Equals("default"))
+		// Invalid resort names
+		if (string.IsNullOrWhiteSpace(_resort) || _resort.Equals("default"))
 		{
 			GD.Print("Not a valid resort name.");
 			return;
@@ -198,6 +190,11 @@ public partial class MainMenu : Node2D
 		// Start the game
 		new_game_panel.Hide();
 		ResortManager.IsNewGame = true;
+		Player.savedata = new()
+		{
+			Name = !string.IsNullOrWhiteSpace(player_input_name.Text) ? player_input_name.Text : defaultName,
+			Inventory = new() { "aphid_egg" }
+		};
 		await SaveSystem.CreateProfile();
 		LoadResort();
 	}
@@ -335,8 +332,10 @@ public partial class MainMenu : Node2D
 
 	private void OnNewGameButton()
 	{
+		resort_input_name.Text = "";
+		player_input_name.Text = "";
+		resort_input_name.GrabFocus();
 		SetMenu(new_game_panel);
-		resort_name.GrabFocus();
 	}
 	private void OnLoadGameButton()
 	{
@@ -354,7 +353,7 @@ public partial class MainMenu : Node2D
 	{
 		var _profile = FileAccess.Open(SaveSystem.GlobalDataPath, FileAccess.ModeFlags.Read).GetPascalString();
 		SaveSystem.SetProfile(_profile);
-		
+
 		if (string.IsNullOrWhiteSpace(_profile) || !DirAccess.DirExistsAbsolute(SaveSystem.CurrentProfilePath))
 		{
 			RemoveMenuAction(continueCategory);

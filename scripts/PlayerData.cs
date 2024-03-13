@@ -1,6 +1,7 @@
 using Godot;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public partial class Player : CharacterBody2D
 {
@@ -13,17 +14,17 @@ public partial class Player : CharacterBody2D
 		public float PositionX { get; set; }
 		public float PositionY { get; set; }
 
-		public System.Collections.Generic.List<string> Inventory { get; set; }
+		public List<string> Inventory { get; set; }
+		public int Currency { get; set; }
 
 		public SaveFile()
 		{
-			Inventory = new() { "aphid_egg" };
 			Room = "resort_golden_grounds";
 		}
 	}
 
-	public static SaveFile SAVE = new();
-	public static SaveFileController SAVE_CONTROL = new();
+	public static SaveFile savedata;
+	public static SaveFileController savecontroller = new();
 
 	public class SaveFileController : SaveSystem.ISaveData
 	{
@@ -31,7 +32,7 @@ public partial class Player : CharacterBody2D
 		public Task SaveData(string _path)
 		{
 			using var _file = FileAccess.Open(_path + playerData, FileAccess.ModeFlags.Write);
-			var _jsonPlayer = JsonSerializer.Serialize(SAVE);
+			var _jsonPlayer = JsonSerializer.Serialize(savedata);
 			_file.StorePascalString(_jsonPlayer);
 
 			return Task.CompletedTask;
@@ -39,17 +40,29 @@ public partial class Player : CharacterBody2D
 
 		public Task LoadData(string _path)
 		{
-			using var _file = FileAccess.Open(_path + playerData, FileAccess.ModeFlags.Read);
+			string _fullPath = _path + playerData;
+			if (!FileAccess.FileExists(_fullPath)) // Does it exist?
+			{
+				savedata = new();
+				GD.PrintErr("This player data does not exist!");
+				return Task.CompletedTask;
+			}
+
+			using var _file = FileAccess.Open(_fullPath, FileAccess.ModeFlags.Read);
 			var _data = _file.GetPascalString();
 
-			if (_data == string.Empty)
+			if (_data == string.Empty) // Is it empty?
 			{
-				SAVE = new();
+				savedata = new();
 				GD.PrintErr("This player data was empty!");
 				return Task.CompletedTask;
 			}
 
-			SAVE = JsonSerializer.Deserialize<SaveFile>(_data);
+			// Deseralize and load data into memory
+			savedata = JsonSerializer.Deserialize<SaveFile>(_data);
+			Instance.GlobalPosition = new Vector2(savedata.PositionX, savedata.PositionY);
+			for (int i = 0; i < savedata.Inventory.Count; i++)
+				Instance.CreateInvItem(i);
 			return Task.CompletedTask;
 		}
 	}

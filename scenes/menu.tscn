@@ -187,7 +187,7 @@ _data = {
 "slide_up": SubResource("Animation_iebcr")
 }
 
-[node name="menu" type="Node2D" node_paths=PackedStringArray("BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "sweep_animator", "logo_animator", "audioPlayer", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_name", "player_name", "savefile_name")]
+[node name="menu" type="Node2D" node_paths=PackedStringArray("BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "sweep_animator", "logo_animator", "audioPlayer", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_input_name", "player_input_name", "savefile_name")]
 script = ExtResource("1_5e31e")
 BOOT_LOADING_LABEL = NodePath("CanvasLayer/sweep_background/Label")
 cameraMenu = NodePath("Camera2D")
@@ -202,8 +202,8 @@ load_game_panel = NodePath("CanvasLayer/loadgame_panel")
 credits_panel = NodePath("CanvasLayer/credits_panel")
 options_panel = NodePath("CanvasLayer/options_panel")
 new_game_button = NodePath("CanvasLayer/newgame_panel/ready/button")
-resort_name = NodePath("CanvasLayer/newgame_panel/resort_name")
-player_name = NodePath("CanvasLayer/newgame_panel/player_name")
+resort_input_name = NodePath("CanvasLayer/newgame_panel/resort_name")
+player_input_name = NodePath("CanvasLayer/newgame_panel/player_name")
 savefile_name = NodePath("CanvasLayer/loadgame_panel/savefile/Label")
 switchSound = ExtResource("3_7vjbo")
 selectSound = ExtResource("4_fk8eh")
@@ -244,10 +244,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 214.0
-offset_top = -476.0
-offset_right = 914.0
-offset_bottom = 24.0
+offset_left = 213.5
+offset_top = -476.5
+offset_right = 913.5
+offset_bottom = 23.5
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_r26xg")
@@ -287,6 +287,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("9_76l0k")
 
 [node name="resort_name" type="TextEdit" parent="CanvasLayer/newgame_panel"]
 layout_mode = 1
@@ -305,8 +306,6 @@ focus_neighbor_top = NodePath("../ready/button")
 focus_neighbor_bottom = NodePath("../player_name")
 focus_next = NodePath("../player_name")
 focus_previous = NodePath("../ready/button")
-theme_override_fonts/font = ExtResource("2_w3mwt")
-theme_override_font_sizes/font_size = 40
 placeholder_text = "new_resort_placeholder"
 context_menu_enabled = false
 shortcut_keys_enabled = false
@@ -331,8 +330,6 @@ focus_neighbor_top = NodePath("../resort_name")
 focus_neighbor_bottom = NodePath("../ready/button")
 focus_next = NodePath("../ready/button")
 focus_previous = NodePath("../resort_name")
-theme_override_fonts/font = ExtResource("2_w3mwt")
-theme_override_font_sizes/font_size = 40
 placeholder_text = "new_player_placeholder"
 context_menu_enabled = false
 shortcut_keys_enabled = false
@@ -351,19 +348,14 @@ texture = ExtResource("6_vbc7o")
 
 [node name="button" type="Button" parent="CanvasLayer/newgame_panel/ready"]
 layout_mode = 0
-offset_left = 6.0
+offset_left = 3.0
 offset_top = 1.0
-offset_right = 335.0
+offset_right = 332.0
 offset_bottom = 86.0
 focus_neighbor_top = NodePath("../../player_name")
 focus_neighbor_bottom = NodePath("../../resort_name")
 focus_next = NodePath("../../resort_name")
 focus_previous = NodePath("../../player_name")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.439216, 0.596078, 0, 1)
-theme_override_colors/font_hover_color = Color(0.901961, 0.682353, 0, 1)
-theme_override_fonts/font = ExtResource("2_w3mwt")
-theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxEmpty_xxlsd")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_x3koq")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_fnu4v")
@@ -546,8 +538,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_right = 1422.0
-offset_bottom = 903.0
+offset_left = -576.0
+offset_top = -648.0
+offset_right = 846.0
+offset_bottom = 255.0
 grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("2_fmpp6")
@@ -558,11 +552,16 @@ libraries = {
 }
 
 [node name="Label" type="Label" parent="CanvasLayer/sweep_background"]
-layout_mode = 0
-offset_left = 944.0
-offset_top = 640.0
-offset_right = 1313.0
-offset_bottom = 688.0
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -369.0
+offset_top = -48.0
+grow_horizontal = 0
+grow_vertical = 0
 theme = ExtResource("9_76l0k")
 text = "Loading..."
 text_direction = 2
