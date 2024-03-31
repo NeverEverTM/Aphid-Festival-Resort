@@ -12,7 +12,7 @@ public partial class AphidData : Node
 		0.05f,
 		0.15f
 	};
-	public static string[] NameArchive = new string[]
+	public readonly static string[] NameArchive = new string[]
 	{
 		"Apuff", "Kiwi", "Brassmo",
 		"Alphred", "Sumi", "Summer",
@@ -21,7 +21,7 @@ public partial class AphidData : Node
 		"Apy", "Alpha", "Crow",
 		"Azure", "Arty", "A.P.I",
 		"Atlas", "Amelia", "Audrey",
-		"Abraham", "Charlie", "Madeline",
+		"Alex", "Charlie", "Madeline",
 		"Ape", "Axye", "Theo", "Jeb",
 		"Apu", "Arthur", "MissingNo",
 		"Ace", "Amber", "Atheleya",
@@ -31,7 +31,7 @@ public partial class AphidData : Node
 		"Axel", "Lea", "Sky",
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	};
-	public const int adulthoodAge = 600, breedTimer = 600, deathAge = 3600;
+	public const int adulthoodAge = 1200, breedTimer = 600, deathAge = 7200;
 
 	public class Status
 	{
@@ -44,7 +44,11 @@ public partial class AphidData : Node
 		public float Bondship { get; set; }
 
 		// Production & Breeding
-		public float EggBuildup { get; set; }
+		public float BreedBuildup { get; set; }
+		/// <summary>
+		/// 0 : None, 1 : With Itself, 2 : With Partner
+		/// </summary>
+		public int BreedMode { get; set; }
 		public float MilkBuildup { get; set; }
 
 		// Lifetime
@@ -55,6 +59,7 @@ public partial class AphidData : Node
 		// State
 		public float PositionX { get; set; }
 		public float PositionY { get; set; }
+		public Aphid.AphidState LastActiveState { set; get; }
 
 		// Gen Data
 		public Status()
@@ -65,39 +70,31 @@ public partial class AphidData : Node
 			Thirst = 50;
 			Sleepiness = 50;
 			Affection = 50;
-
-			strength = new Strength();
-			intelligence = new Intelligence();
-			speed = new Speed();
-			stamina = new Stamina();
 		}
-
-		// Abilities
-		public IAphidAbility strength;
-		public IAphidAbility intelligence;
-		public IAphidAbility speed;
-		public IAphidAbility stamina;
-    }
+	}
 	public record Genes
 	{
-		public Color AntennaColor {get; set; }
-		public Color BodyColor {get; set; }
-		public Color LegColor {get; set; }
-		public Color EyeColor {get; set; }
+		public Color AntennaColor { get; set; }
+		public Color BodyColor { get; set; }
+		public Color LegColor { get; set; }
+		public Color EyeColor { get; set; }
 
-		public int LegType {get; set; }
-		public int BodyType {get; set; }
-		public int AntennaType {get; set; }
-		public int EyeType {get; set; }
+		public int LegType { get; set; }
+		public int BodyType { get; set; }
+		public int AntennaType { get; set; }
+		public int EyeType { get; set; }
 
-		public FoodType FoodPreference {get; set; }
-		public float[] FoodMultipliers {get; set; }
+		public FoodType FoodPreference { get; set; }
+		public float[] FoodMultipliers { get; set; }
 
-		public List<IAphidSkill> Skills  {get; set; }
+		public Dictionary<string, IAphidAbility> Abilities { get; set; }
 
 		public Genes()
 		{
-			Skills = new();
+			Abilities = new()
+			{
+				//"stamina", new IAphidSkill()
+			};
 			SetFoodPreferences();
 		}
 		public void RandomizeColors()
@@ -110,7 +107,7 @@ public partial class AphidData : Node
 		public void SetFoodPreferences()
 		{
 			FoodPreference = (FoodType)GameManager.GetRandomByWeight(flavor_weights);
-			FoodMultipliers = new float[]{ 
+			FoodMultipliers = new float[]{
 				GetMultiplier(FoodType.Sweet),
 				GetMultiplier(FoodType.Sour),
 				GetMultiplier(FoodType.Salty),
@@ -124,67 +121,38 @@ public partial class AphidData : Node
 			0.5f + (_type == FoodPreference ? 0.5f : 0) + GameManager.RNG.Randf();
 	}
 
-	public abstract class IAphidAbility
+	public interface IAphidAbility
 	{
-		public abstract string Id { get; }
 		public int Points { get; set; }
 		public int Level { get; set; }
 
-		public delegate void LevelUpEventHandler();
-		public event LevelUpEventHandler OnLevelUp;
-
+		public virtual void SetPoints(int _points)
+		{
+			if (_points > 9)
+				return;
+			Points = _points;
+			if (Points < 0) // Clamp at zero, cant level down
+				Points = 0;
+		}
 		public virtual void GivePoints(int _points)
 		{
 			if (_points > 10)
 				return;
 			Points += _points;
-			if (_points > 10)
+			if (Points > 9) // Level up once you reach 10 points
 			{
 				Level++;
 				Points -= 10;
 			}
-			OnLevelUp?.Invoke(); 
+			else if (Points < 0) // Clamp at zero, cant level down
+				Points = 0;
+			OnLevelUp();
 		}
 		public virtual void GiveLevel(int _level)
 		{
 			Level += _level;
-			OnLevelUp?.Invoke(); 
+			OnLevelUp();
 		}
-	}
-    public partial class Stamina : IAphidAbility
-    {
-        public override string Id => "Stamina";
-    }
-    public partial class Intelligence : IAphidAbility
-    {
-        public override string Id => "Intelligence";
-    }
-	public partial class Strength : IAphidAbility
-    {
-        public override string Id => "Strength";
-    }
-	public partial class Speed : IAphidAbility
-    {
-        public override string Id => "Speed";
-    }
-
-    public interface IAphidSkill 
-	{
-		public string Id { get; }
-	}
-	public class Production : IAphidSkill
-	{
-		public string Id => "Production";
-
-		public float Quality;
-		public int Produce;
-	}
-	public class Combat : IAphidSkill
-	{
-		public string Id => "Combat";
-	}
-	public class Finder : IAphidSkill
-	{
-		public string Id => "Finder";
+		public void OnLevelUp();
 	}
 }

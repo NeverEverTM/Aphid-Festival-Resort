@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://cxjsuahuuuonu"]
 
 [ext_resource type="Shader" path="res://scenes/water.gdshader" id="1_k5dm7"]
-[ext_resource type="TileSet" uid="uid://c8bp7321wr03y" path="res://sprites/resort_ground.tres" id="2_cvlx1"]
+[ext_resource type="TileSet" uid="uid://c8bp7321wr03y" path="res://sprites/tilesets/resort_ground.tres" id="2_cvlx1"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_xhs7q"]
 noise_type = 2

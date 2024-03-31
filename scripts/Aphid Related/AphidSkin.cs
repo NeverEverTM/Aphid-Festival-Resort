@@ -13,11 +13,11 @@ public partial class AphidSkin : Node2D
 	/// So if aphid is happy and blinks, it doesnt reset back to idle.
 	/// </summary>
 	public string lastEyeExpression = "idle", currentEyeExpression;
+	public bool IsFlipped, OverrideMovementAnim;
 
 	private int walk_shutter;
 	private const int walk_shutter_speed = 8;
 	private bool legsStep;
-	public bool IsFlipped;
 	private Vector2 front_legs_position, back_legs_position;
 
 	public void SetInstance(AphidInstance _instance, Aphid _aphid)
@@ -36,7 +36,6 @@ public partial class AphidSkin : Node2D
 		SetBodySkin(_action);
 		SetLegsSkin(_action);
 	}
-
 	private Texture2D GetSkinPiece(int _id, string _piece, string _action = "idle")
 	{
 		string _path = $"{GameManager.SkinsPath}/{_id}/";
@@ -78,33 +77,7 @@ public partial class AphidSkin : Node2D
 		front_legs.Texture = back_legs.Texture = _legsTexture;
 	}
 
-	// ===============| ANIMATIONS |=================
-	public virtual void DoWalkAnim()
-	{
-		if (MyAphid.MovementDirection == Vector2.Zero)
-		{
-			// Reset back to idle standing
-			front_legs.Position = front_legs_position;
-			back_legs.Position = back_legs_position;
-			walk_shutter = 0;
-			return;
-		}
-
-		// Motion Framerate
-		if (walk_shutter > 0)
-		{
-			walk_shutter--;
-			return;
-		}
-		walk_shutter = walk_shutter_speed;
-		legsStep = !legsStep;
-
-		// Switch between back and front legs to make the walking motion
-		front_legs.Position = front_legs_position + (legsStep ? new Vector2(0, -1) : Vector2.Zero);
-		back_legs.Position = back_legs_position + (legsStep ? Vector2.Zero : new Vector2(0, -1));
-
-		MyAphid.PlaySound(MyAphid.step, true);
-	}
+	// ===============| FLIP DIRECTION |=================
 	public void SetFlipDirection(Vector2 _direction, bool _setAsCurrent = false)
 	{
 		// False : Facing Right - True : Facing Left
@@ -124,19 +97,74 @@ public partial class AphidSkin : Node2D
 		else
 			Scale = new(Mathf.Lerp(Scale.X, -1, _delta * 3), Scale.Y);
 	}
-	public void Jump()
+	// ===============| ANIMATIONS |=================
+	public virtual void DoWalkAnim()
+	{
+		// Motion Framerate
+		if (walk_shutter > 0)
+		{
+			walk_shutter--;
+			return;
+		}
+		walk_shutter = walk_shutter_speed;
+		legsStep = !legsStep;
+
+		// Switch between back and front legs to make the walking motion
+		front_legs.Position = front_legs_position + (legsStep ? new Vector2(0, -1) : Vector2.Zero);
+		back_legs.Position = back_legs_position + (legsStep ? Vector2.Zero : new Vector2(0, -1));
+
+		MyAphid.PlaySound(MyAphid.sound_step, true);
+	}
+	/// <summary>
+	/// Makes sure there is actual movement active. Use DoWalkAnim instead if you dont need this check
+	/// </summary>
+	public void StartWalking()
+	{
+		if (OverrideMovementAnim)
+			return;
+
+		if (MyAphid.MovementDirection == Vector2.Zero)
+		{
+			// Reset back to idle standing
+			front_legs.Position = front_legs_position;
+			back_legs.Position = back_legs_position;
+			return;
+		}
+
+		DoWalkAnim();
+	}
+
+	public void DoJumpAnim()
 	{
 		Tween tween = CreateTween();
 		tween.SetEase(Tween.EaseType.Out);
+		tween.SetTrans(Tween.TransitionType.Bounce);
 		tween.TweenProperty(this, "position", new Vector2(0, -5), 0.15);
 		tween.Finished += PullDown;
+		SoundManager.CreateSound2D(MyAphid.sound_jump, MyAphid.GlobalPosition, true);
 	}
-	private async void PullDown()
+	private void PullDown()
 	{
-		await Task.Delay(100);
 		Tween tween = CreateTween();
 		tween.SetEase(Tween.EaseType.In);
+		tween.SetTrans(Tween.TransitionType.Bounce);
 		tween.TweenProperty(this, "position", new Vector2(0, 0), 0.15);
-		MyAphid.PlaySound(MyAphid.idle, true);
+	}
+	
+	public async Task DoDanceAnim()
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			SetFlipDirection(IsFlipped ? Vector2.Right : Vector2.Left);
+			DoJumpAnim();
+			await Task.Delay(400);
+		}
+		int _ticks = 60;
+		while(_ticks > 0)
+		{
+			DoWalkAnim();
+			_ticks--;
+			await Task.Delay(16);
+		}
 	}
 }

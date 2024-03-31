@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public static class SaveSystem
 {
-	private static readonly Dictionary<Guid, AphidInstance> aphids = new();
+	public static readonly Dictionary<Guid, AphidInstance> aphids = new();
 	public static string Profile { get; private set; }
 	public static string CurrentProfilePath { get; private set; }
 
@@ -219,6 +219,13 @@ public static class SaveSystem
 	{
 		DirAccess.MakeDirAbsolute(_path);
 		var _dir = DirAccess.Open(_path);
+
+		if (_dir == null)
+		{
+			GD.PrintErr(DirAccess.GetOpenError());
+			return Task.CompletedTask;
+		}
+
 		_dir.MakeDir("aphids");
 		_dir.MakeDir("resort");
 		return Task.CompletedTask;

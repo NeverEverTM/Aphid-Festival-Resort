@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1go4uvd135xi"
-path="res://.godot/imported/kut_sprite.png-554dff454d4fed540bda3c8ad7ccb969.ctex"
+path="res://.godot/imported/kut_sprite.png-afd3fcb341155e4ca20e63c3ee472b25.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/characters/Kut/kut_sprite.png"
-dest_files=["res://.godot/imported/kut_sprite.png-554dff454d4fed540bda3c8ad7ccb969.ctex"]
+source_file="res://sprites/characters/kut/kut_sprite.png"
+dest_files=["res://.godot/imported/kut_sprite.png-afd3fcb341155e4ca20e63c3ee472b25.ctex"]
 
 [params]
 

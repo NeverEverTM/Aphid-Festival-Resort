@@ -43,8 +43,11 @@ public partial class Player : CharacterBody2D
 			string _fullPath = _path + playerData;
 			if (!FileAccess.FileExists(_fullPath)) // Does it exist?
 			{
-				savedata = new();
-				GD.PrintErr("This player data does not exist!");
+                savedata = new()
+                {
+                    Inventory = new()
+                };
+                GD.PrintErr("This player data does not exist!");
 				return Task.CompletedTask;
 			}
 

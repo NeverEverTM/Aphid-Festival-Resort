@@ -11,20 +11,20 @@ public partial class Aphid : CharacterBody2D
 	[Export] private AudioStreamPlayer2D audioPlayer;
 
 	[ExportCategory("Sounds")]
-	[Export] private AudioStream nom;
-	[Export] public AudioStream step, idle, jump;
+	[Export] private AudioStream sound_nom;
+	[Export] public AudioStream sound_idle, sound_baby_idle, sound_step, sound_jump;
 
 	[ExportCategory("Effects")]
 	[Export] private PackedScene heartParticles;
 	[Export] private PackedScene foodParticles, sleepParticles, angerParticles;
 
 	// Aphid state
-	public enum AphidState { Idle, Eating, Drinking, Sleeping, Playing, Petting }
+	public enum AphidState { Idle, Eat, Drink, Sleep, Play, Pet, Breed, Harvest, Train }
 	public AphidState OurState = AphidState.Idle;
 
 	// Idling Params
-	private Vector2 idlePosition;
-	private int idleRange = 100;
+	private Vector2 idle_position;
+	private int idle_rand_range = 100;
 	private float idle_timer, idle_timeout_timer;
 	private const float idle_timer_range = 1.15f, idle_timeout = 4f;
 	private Timer blink_timer = new(), blink_duration_timer = new(), squeak_timer = new();
@@ -34,7 +34,7 @@ public partial class Aphid : CharacterBody2D
 	private Node2D food_item;
 	private Vector2 food_item_position, food_item_direction;
 	private int foodgobble_shutter_speed;
-	private bool IsFoodFavorite, FoodMode, food_item_switch;
+	private bool is_food_favorite, current_food_mode, food_item_switch;
 	private float gobble_timer, hunger_decay_timer;
 	private const float gobble_duration = 2f, hunger_decay = 10.5f, food_pursue_duration = 5f;
 	private Timer food_pursue_timer = new(), food_gc_timer = new();
@@ -44,18 +44,21 @@ public partial class Aphid : CharacterBody2D
 	private const float thirst_decay = 6.8f;
 
 	// Sleeping Params
-	private float sleep_decay_timer, sleep_gain_timer, try_sleep_timer, try_wake_timer;
-	private const float sleep_decay = 10.5f, sleep_gain = 4.5f, try_sleep = 2.4f, try_wake = 2.4f;
+	private float sleep_decay_timer, sleep_gain_timer;
+	private const float sleep_decay = 10.5f, sleep_gain = 4.5f;
 	private GpuParticles2D sleep_effect;
-	private float[] sleep_weights = new float[] { 90, 10 };
 
 	// Petting Params And Affection too
 	private float pet_timer, affection_decay_timer;
 	private const float pet_duration = 2f, affection_decay = 13.2f;
 
-	// Breeding & Production Params
-	private float[] breed_chance_weight = new float[] { 95, 5 };
+	// Breeding Params
+	public bool IsBreeding;
 	private float[] breeding_weights = new float[] { 65, 35 };
+	private Aphid breed_partner;
+	private const int breed_timeout = 60, breed_partner_timeout = 10;
+	private float breed_timeout_timer, breed_partner_timeout_timer;
+	private GpuParticles2D breed_effect;
 
 	// Movement Params
 	public Vector2 MovementDirection;
@@ -71,7 +74,7 @@ public partial class Aphid : CharacterBody2D
 	public override void _Ready()
 	{
 		// ===| Set Default Params |===
-		idlePosition = GlobalPosition;
+		idle_position = GlobalPosition;
 		food_item_position = new(25, 0)
 ;
 		triggerArea.BodyEntered += OnTriggerEnter;
@@ -91,8 +94,8 @@ public partial class Aphid : CharacterBody2D
 		AddChild(squeak_timer);
 		squeak_timer.Timeout += () =>
 		{
-			if (OurState != AphidState.Sleeping)
-				PlaySound(idle, true);
+			if (OurState != AphidState.Sleep)
+				SoundManager.CreateSound2D(sound_idle, GlobalPosition, true);
 			squeak_timer.Start(behaviourRNG.RandiRange(5, 15));
 		};
 
@@ -100,7 +103,7 @@ public partial class Aphid : CharacterBody2D
 		blink_timer.OneShot = true;
 		blink_timer.Timeout += () =>
 		{
-			if (OurState == AphidState.Sleeping)
+			if (OurState == AphidState.Sleep)
 				return;
 			skin.SetEyesSkin("blink");
 			blink_duration_timer.Start(0.1f);
@@ -110,8 +113,10 @@ public partial class Aphid : CharacterBody2D
 		blink_duration_timer.OneShot = true;
 		blink_duration_timer.Timeout += () =>
 		{
-			if (OurState == AphidState.Sleeping)
+			if (OurState == AphidState.Sleep)
 				return;
+			if (skin.lastEyeExpression == "blink")
+				skin.lastEyeExpression = "idle";
 			skin.SetEyesSkin(skin.lastEyeExpression);
 			blink_timer.Start(GameManager.RNG.RandfRange(4.5f, 6.7f));
 		};
@@ -131,11 +136,26 @@ public partial class Aphid : CharacterBody2D
 		food_gc_timer.Timeout += () => food_ignore_list.Clear();
 		food_gc_timer.Start(30);
 	}
+	private void OnStartupState()
+	{
+		switch (Instance.Status.LastActiveState)
+		{
+			case AphidState.Sleep:
+				Sleep();
+				break;
+			case AphidState.Breed:
+				if (Instance.Status.BreedMode == 0)
+					return;
+				SetBreed(Instance.Status.BreedMode);
+				break;
+		}
+	}
 
 	// ==========| Update Processes |===========
 	public override void _Process(double delta)
 	{
 		float _delta = (float)delta;
+		Instance.Status.LastActiveState = OurState;
 		ZIndex = (int)GlobalPosition.Y;
 
 		Instance.Status.PositionX = GlobalPosition.X;
@@ -153,44 +173,52 @@ public partial class Aphid : CharacterBody2D
 		TickHungerDecay(_delta);
 		TickThirstDecay(_delta);
 		TickSleepDecay(_delta);
+		TickBreeding(_delta);
 	}
 	public override void _PhysicsProcess(double delta)
 	{
 		float _delta = (float)delta;
-		Velocity = MovementDirection * MovementSpeed;
-		var _collisionList = triggerArea.GetOverlappingBodies();
 
+		// Set default movement state
+		Velocity = MovementDirection * MovementSpeed;
+		skin.StartWalking();
+		if (MovementDirection != Vector2.Zero)
+			skin.SetFlipDirection(MovementDirection);
+		skin.TickFlip(_delta);
+
+		// Register triggers areas
+		var _collisionList = triggerArea.GetOverlappingBodies();
 		if (_collisionList.Count > 0)
 		{
 			for (int i = 0; i < _collisionList.Count; i++)
 				OnTriggerEnter(_collisionList[i]);
 		}
 
+		// State update processes
 		switch (OurState)
 		{
 			case AphidState.Idle:
-				Idle(_delta);
+				OnIdleLoop(_delta);
 				break;
-			case AphidState.Eating:
-			case AphidState.Drinking:
+			case AphidState.Eat:
+			case AphidState.Drink:
 				if (gobble_timer > 0)
 					TickFoodGobble(_delta);
 				else
 					WaddleToFood();
 				break;
-			case AphidState.Petting:
+			case AphidState.Pet:
 				TickPetTime(_delta);
 				break;
-			case AphidState.Sleeping:
+			case AphidState.Sleep:
 				TickSleepRecover(_delta);
+				break;
+			case AphidState.Breed:
+				OnBreedLoop(_delta);
 				break;
 		}
 
 		MoveAndSlide();
-		skin.DoWalkAnim();
-		if (MovementDirection != Vector2.Zero)
-			skin.SetFlipDirection(MovementDirection);
-		skin.TickFlip(_delta);
 	}
 
 	public void SetAphidState(AphidState _new)
@@ -199,16 +227,27 @@ public partial class Aphid : CharacterBody2D
 		SetMovementDirection(Vector2.Zero);
 		switch (OurState)
 		{
-			case AphidState.Eating:
-			case AphidState.Drinking:
+			case AphidState.Eat:
+			case AphidState.Drink:
 				food_item = null;
-				IsFoodFavorite = false;
+				is_food_favorite = false;
 				break;
-			case AphidState.Sleeping:
+			case AphidState.Sleep:
 				skin.SetSkin("idle");
 				skin.Position = new(0, 0);
-				sleep_effect.Emitting = false;
+				sleep_effect.OneShot = true;
 				sleep_effect = null;
+				break;
+			case AphidState.Breed:
+				IsBreeding = false;
+				skin.OverrideMovementAnim = false;
+				TriggerActions.Remove("aphid");
+				breed_partner = null;
+				if (breed_effect != null)
+				{
+					breed_effect.OneShot = true;
+					breed_effect = null;
+				}
 				break;
 		}
 
@@ -217,10 +256,13 @@ public partial class Aphid : CharacterBody2D
 		{
 			case AphidState.Idle:
 				idle_timer = behaviourRNG.RandfRange(idle_timer_range, idle_timer_range * 2);
-				idlePosition = GlobalPosition;
+				idle_position = GlobalPosition;
 				break;
-			case AphidState.Petting:
+			case AphidState.Pet:
 				pet_timer = pet_duration;
+				break;
+			case AphidState.Breed:
+				skin.OverrideMovementAnim = true;
 				break;
 		}
 
@@ -229,6 +271,17 @@ public partial class Aphid : CharacterBody2D
 	public void SetMovementDirection(Vector2 _direction)
 	{
 		MovementDirection = _direction.Normalized();
+	}
+	public void CallTowards(Vector2 _position)
+	{
+		if (OurState == AphidState.Idle == (OurState == AphidState.Play))
+			return;
+
+		SetAphidState(AphidState.Idle);
+		skin.DoJumpAnim();
+		idle_timer = 0;
+		idle_position = _position;
+		idle_timeout_timer = -10;
 	}
 	public void PlaySound(AudioStream _audio, bool _pitchRand = false)
 	{
@@ -239,7 +292,7 @@ public partial class Aphid : CharacterBody2D
 	}
 
 	// State functions
-	protected void Idle(float _delta)
+	protected void OnIdleLoop(float _delta)
 	{
 		// standing still wait time
 		if (idle_timer > 0)
@@ -249,20 +302,20 @@ public partial class Aphid : CharacterBody2D
 		}
 
 		// we are close to idle pos, generate a new one and stand still for a few seconds
-		if (GlobalPosition.DistanceTo(idlePosition) < 20)
+		if (GlobalPosition.DistanceTo(idle_position) < 20)
 		{
-			idlePosition = new Vector2(behaviourRNG.RandfRange(-idleRange, idleRange), behaviourRNG.RandfRange(-idleRange, idleRange)) + GlobalPosition;
+			idle_position = new Vector2(behaviourRNG.RandfRange(-idle_rand_range, idle_rand_range), behaviourRNG.RandfRange(-idle_rand_range, idle_rand_range)) + GlobalPosition;
 			SetMovementDirection(Vector2.Zero);
 			idle_timer = behaviourRNG.RandfRange(idle_timer_range, idle_timer_range * 2);
 			return;
 		}
 
 		// move to idle pos, timeout if you cant
-		SetMovementDirection(idlePosition - GlobalPosition);
+		SetMovementDirection(idle_position - GlobalPosition);
 		idle_timeout_timer += _delta;
 		if (idle_timeout_timer > idle_timeout)
 		{
-			idlePosition = GlobalPosition;
+			idle_position = GlobalPosition;
 			idle_timeout_timer = 0;
 		}
 	}
@@ -305,7 +358,7 @@ public partial class Aphid : CharacterBody2D
 			+ (food_item_switch ? Vector2.Up : Vector2.Zero);
 			food_item_switch = !food_item_switch;
 			foodgobble_shutter_speed = 8;
-			PlaySound(nom, true);
+			PlaySound(sound_nom, true);
 		}
 		else
 			foodgobble_shutter_speed--;
@@ -319,7 +372,7 @@ public partial class Aphid : CharacterBody2D
 				string _id = food_item.GetMeta("id").ToString();
 				GameManager.Food _food = GameManager.G_FOOD[_id];
 				float _multi = Instance.Genes.FoodMultipliers[(int)_food.type];
-				if (FoodMode)
+				if (current_food_mode)
 					SetHunger(_food.value * _multi);
 				else
 					SetThirst(_food.value * _multi);
@@ -333,17 +386,17 @@ public partial class Aphid : CharacterBody2D
 	public bool Pet()
 	{
 		// no petties while crunching grub, or already petting
-		if (gobble_timer > 0 || OurState == AphidState.Petting)
+		if (gobble_timer > 0 || OurState == AphidState.Pet)
 			return false;
 
 		// Get ANGY if awoken
-		if (OurState == AphidState.Sleeping)
+		if (OurState == AphidState.Sleep)
 		{
 			WakeUp(true);
 			return false;
 		}
 
-		SetAphidState(AphidState.Petting);
+		SetAphidState(AphidState.Pet);
 		return true;
 	}
 	protected void TickPetTime(float _delta)
@@ -360,9 +413,7 @@ public partial class Aphid : CharacterBody2D
 			}
 			SetAffection(10);
 			SetAphidState(AphidState.Idle);
-			// Animation
-			PlaySound(jump, true);
-			skin.Jump();
+			skin.DoJumpAnim();
 		}
 	}
 	protected void Sleep()
@@ -375,7 +426,7 @@ public partial class Aphid : CharacterBody2D
 		skin.SetLegsSkin("sleep");
 		sleep_effect = GameManager.EmitParticles(sleepParticles, GlobalPosition);
 		skin.Position = new(0, 2);
-		SetAphidState(AphidState.Sleeping);
+		SetAphidState(AphidState.Sleep);
 	}
 	public void WakeUp(bool _forcefully = false)
 	{
@@ -398,15 +449,12 @@ public partial class Aphid : CharacterBody2D
 			sleep_gain_timer = sleep_gain;
 		}
 
+		// bare minimum sleep
 		if (Instance.Status.Sleepiness > 20)
 			return;
 
-		// enough sleep, try waking up
-		if (try_wake_timer > 0)
-			try_wake_timer -= _delta;
-		else if (GameManager.GetRandomByWeight(behaviourRNG, sleep_weights) != 1)
-			try_wake_timer = try_wake;
-		else
+		// 1 in 20000 chance to wake up, increased by the less sleepiness you have
+		if (behaviourRNG.RandiRange(0, (int)(1000 * Instance.Status.Sleepiness)) == 0)
 			WakeUp();
 	}
 
@@ -426,7 +474,7 @@ public partial class Aphid : CharacterBody2D
 		{
 			SetHunger(-1);
 
-			hunger_decay_timer = OurState == AphidState.Sleeping ?
+			hunger_decay_timer = OurState == AphidState.Sleep ?
 				hunger_decay * 2f :
 				hunger_decay;
 		}
@@ -446,7 +494,7 @@ public partial class Aphid : CharacterBody2D
 		{
 			SetThirst(-1);
 
-			thirst_decay_timer = OurState == AphidState.Sleeping ?
+			thirst_decay_timer = OurState == AphidState.Sleep ?
 				thirst_decay * 2f :
 				thirst_decay;
 		}
@@ -467,7 +515,7 @@ public partial class Aphid : CharacterBody2D
 	}
 	protected virtual void TickAffectionDecay(float _delta)
 	{
-		if (OurState == AphidState.Petting)
+		if (OurState == AphidState.Pet)
 			return;
 
 		if (affection_decay_timer > 0)
@@ -476,7 +524,7 @@ public partial class Aphid : CharacterBody2D
 		{
 			SetAffection(-1);
 			affection_decay_timer =
-			OurState == AphidState.Sleeping ?
+			OurState == AphidState.Sleep ?
 				affection_decay * 2f :
 				affection_decay;
 		}
@@ -490,7 +538,7 @@ public partial class Aphid : CharacterBody2D
 	}
 	protected virtual void TickSleepDecay(float _delta)
 	{
-		if (OurState == AphidState.Sleeping)
+		if (OurState == AphidState.Sleep)
 			return;
 
 		if (sleep_decay_timer > 0)
@@ -501,42 +549,105 @@ public partial class Aphid : CharacterBody2D
 			sleep_decay_timer = sleep_decay;
 		}
 
-		// Only if we are tired, then roll a chance every few seconds to sleep
+		// Only if we are tired
 		if (Instance.Status.Sleepiness < 75)
 			return;
 
-		if (try_sleep_timer > 0)
-			try_sleep_timer -= _delta;
-		else if (GameManager.GetRandomByWeight(behaviourRNG, sleep_weights) != 1)
-			try_sleep_timer = try_sleep;
-		else
+		// 1 in 25000 chance to sleep, chances increase the more sleepiness you have
+		if (behaviourRNG.RandiRange(0, (int)(1000 * 100 - Instance.Status.Sleepiness)) == 0)
 			Sleep();
 	}
 
 	// ========| Breeding & Production Control|==========
-	private void TickBreeding(float _delta)
+	// the breeding timer and the conditions to tick down
+	protected virtual void TickBreeding(float _delta)
 	{
 		if (!Instance.Status.IsAdult || Instance.Status.Hunger < 10 || Instance.Status.Thirst < 10)
 			return;
 
-		if (Instance.Status.EggBuildup < AphidData.breedTimer)
-			Instance.Status.EggBuildup += _delta;
+		if (Instance.Status.BreedBuildup < AphidData.breedTimer)
+			Instance.Status.BreedBuildup += _delta;
+		else if (OurState == AphidState.Idle && SaveSystem.aphids.Count <= 32)
+			SetBreed();
+	}
+	// tries breeding, if succesful, trigger breeding state and related effects
+	public async void SetBreed(int _mode = -1)
+	{
+		// Set breed state
+		SetAphidState(AphidState.Breed);
+		breed_effect = GameManager.EmitParticles(heartParticles, GlobalPosition);
+		breed_effect.OneShot = false;
+
+		// Set breed mode
+		if (_mode == -1)
+			_mode = GameManager.GetRandomByWeight(behaviourRNG, breeding_weights);
+		Instance.Status.BreedMode = _mode;
+
+		if (_mode == 0)
+		{
+			// Try finding a pardner around to mate
+			TriggerActions.Add("aphid", OnBreedTrigger);
+			breed_timeout_timer = breed_timeout;
+		}
 		else
 		{
-			Instance.Status.EggBuildup = 0;
-			if (GameManager.GetRandomByWeight(behaviourRNG, breed_chance_weight) == 0)
-				return;
-
-			if (GameManager.GetRandomByWeight(behaviourRNG, breeding_weights) == 0)
-			{
-				// Try finding a pardner around to mate
-				Breed(Instance);
-			}
-			else
-				// Mate with yourself
-				Breed(Instance);
+			// Mate with yourself
+			IsBreeding = true;
+			await skin.DoDanceAnim();
+			Breed(Instance);
 		}
 	}
+	// the state update process of breeding
+	protected async virtual void OnBreedLoop(float _delta)
+	{
+		if (IsBreeding) // If already on it, dont bother
+			return;
+
+		if (breed_timeout_timer > 0)
+			breed_timeout_timer -= _delta;
+		else
+			SetAphidState(AphidState.Idle);
+
+		// as long as we have a valid partner, wait for them
+		if (!IsInstanceValid(breed_partner))
+			breed_partner = null;
+
+		if (breed_partner != null)
+		{
+			if (breed_partner_timeout_timer > 0)
+				breed_partner_timeout_timer -= _delta;
+			else
+			{
+				breed_partner = null;
+				return;
+			}
+
+			Vector2 _magnitude = breed_partner.GlobalPosition - GlobalPosition;
+			// Checks for distance, done this way because aphids have a larger horizontal hitbox
+			// so 20 X units may not be close enough, but 20 Y units is
+			if (_magnitude.X < 50 && _magnitude.X > -50 && _magnitude.Y < 20 && _magnitude.Y > -20)
+			{
+				// Set both to breed
+				IsBreeding = breed_partner.IsBreeding = true;
+				breed_partner.SetAphidState(AphidState.Breed);
+				// Dance
+				breed_partner.skin.SetFlipDirection(_magnitude);
+				skin.SetFlipDirection(GlobalPosition - breed_partner.GlobalPosition);
+				_ = breed_partner.skin.DoDanceAnim();
+				await skin.DoDanceAnim();
+
+				// BREED
+				Breed(breed_partner.Instance);
+				return;
+			}
+
+			if (behaviourRNG.RandiRange(0, 1000) == 0)
+				SoundManager.CreateSound2D(sound_idle, GlobalPosition, true);
+		}
+		else // else do your mating dance
+			skin.DoWalkAnim();
+	}
+	// The actual breed that causes an egg to spawn, also sets aphids back to normal
 	public void Breed(AphidInstance _father)
 	{
 		AphidInstance _mother = Instance;
@@ -552,9 +663,15 @@ public partial class Aphid : CharacterBody2D
 			BodyColor = GameManager.Utils.LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor),
 			LegColor = GameManager.Utils.LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor)
 		};
-		Node2D _egg = ResortManager.CreateItem("aphid_egg");
-		_egg.GlobalPosition = _mother.Entity.GlobalPosition + (_father.Entity.GlobalPosition - _mother.Entity.GlobalPosition) / 2;
-		(_egg as AphidHatch).naturalGenes = _genes;
+		AphidHatch _egg = ResortManager.CreateItem("aphid_egg", _mother.Entity.GlobalPosition + (_father.Entity.GlobalPosition - _mother.Entity.GlobalPosition) / 2) as AphidHatch;
+		_egg.naturalGenes = _genes;
+		_egg.IsNatural = true;
+
+		Instance.Status.BreedBuildup = 0;
+		_father.Status.BreedBuildup = 0;
+		Instance.Status.BreedMode = 0;
+		_father.Entity.SetAphidState(AphidState.Idle);
+		SetAphidState(AphidState.Idle);
 	}
 
 	// =======| Collision Behaviours |========
@@ -567,17 +684,18 @@ public partial class Aphid : CharacterBody2D
 		if (TriggerActions.ContainsKey(_tag))
 			TriggerActions[_tag](_node);
 	}
+
 	protected virtual void OnFoodTrigger(Node2D _node, bool _mode = true)
 	{
 		switch (OurState) // Anything that is not a valid state, returns
 		{
 			case AphidState.Idle:
 				break;
-			case AphidState.Eating:
+			case AphidState.Eat:
 				if (!_mode)
 					return;
 				break;
-			case AphidState.Drinking:
+			case AphidState.Drink:
 				if (_mode) // _mode is to reutilize this code for drink items :bigbren: 
 					return;
 				break;
@@ -614,7 +732,7 @@ public partial class Aphid : CharacterBody2D
 		{
 			// if either are a favorite or neither, check which one is closer
 			// else if this one isnt a favorite, ignore it, this means if it IS, just grab it
-			if (_isfavorite == IsFoodFavorite)
+			if (_isfavorite == is_food_favorite)
 			{
 				if (GlobalPosition.DistanceTo(_node.GlobalPosition) > GlobalPosition.DistanceTo(food_item.GlobalPosition))
 					return;
@@ -626,11 +744,11 @@ public partial class Aphid : CharacterBody2D
 		// Set current food item to pursue
 		food_item = _node;
 		food_pursue_timer.Start(food_pursue_duration);
-		IsFoodFavorite = _isfavorite;
-		FoodMode = _mode;
+		is_food_favorite = _isfavorite;
+		current_food_mode = _mode;
 
 		if (OurState == AphidState.Idle)
-			SetAphidState(_mode ? AphidState.Eating : AphidState.Drinking);
+			SetAphidState(_mode ? AphidState.Eat : AphidState.Drink);
 	}
 	private static bool CheckIfIgnore(Node2D _n, Node2D _node)
 	{
@@ -638,6 +756,7 @@ public partial class Aphid : CharacterBody2D
 			return false;
 		return _n.Equals(_node);
 	}
+
 	protected virtual void OnPlayerTrigger(Node2D _node)
 	{
 		if (OurState != AphidState.Idle)
@@ -652,19 +771,35 @@ public partial class Aphid : CharacterBody2D
 		int _interaction = GameManager.GetRandomByWeight(behaviourRNG, player_seek_weights);
 		if (_interaction == 1 && Instance.Status.Bondship >= 20)
 		{
-			idlePosition = _node.GlobalPosition;
+			idle_position = _node.GlobalPosition;
 			idle_timeout_timer = 0;
 		}
 		else if (_interaction == 2)
 		{
-			idlePosition = GlobalPosition;
+			idle_position = GlobalPosition;
 			skin.SetFlipDirection(_node.GlobalPosition - GlobalPosition);
-			PlaySound(idle, true);
+			SoundManager.CreateSound2D(sound_idle, GlobalPosition, true);
 		}
 	}
 	private void TickInteractionCooldown(float _delta)
 	{
 		if (interaction_cd_timer > 0)
 			interaction_cd_timer -= _delta;
+	}
+
+	// constantly calls aphids around to complete the breeding process
+	private void OnBreedTrigger(Node2D _node)
+	{
+		Aphid _aphid = _node as Aphid;
+
+		if (breed_partner != null || !_aphid.Instance.Status.IsAdult || _aphid.Instance.Status.Hunger == 0 || _aphid.Instance.Status.Thirst == 0)
+			return;
+
+		if (_aphid.OurState == AphidState.Idle)
+		{
+			breed_partner = _aphid;
+			breed_partner_timeout_timer = breed_partner_timeout;
+			_aphid.CallTowards(GlobalPosition + (skin.IsFlipped ? Vector2.Left : Vector2.Right) * 5);
+		}
 	}
 }

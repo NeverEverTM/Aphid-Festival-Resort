@@ -8,11 +8,14 @@ public partial class Player : CharacterBody2D
 	[Export] private Area2D interactionArea;
 	[Export] private Node2D spriteBody;
 	[Export] private AnimationPlayer animator;
+	[Export] private AudioStreamPlayer2D audioPlayer;
 	[ExportCategory("Inventory")]
 	[Export] private Control inventory_panel;
 	[Export] private AnimationPlayer inventory_player;
 	[Export] private HBoxContainer inventoryGrid;
 	[Export] private PackedScene invItemContainer;
+	[ExportGroup("Sounds")]
+	[Export] private AudioStream sound_whistle;
 
 	public static Player Instance;
 
@@ -46,6 +49,10 @@ public partial class Player : CharacterBody2D
 
 	// Pet Params
 	private float pet_timer;
+
+	// Input Params
+	private int interact_hold_cycles;
+	private bool interact_is_being_held;
 
 	public override void _EnterTree()
 	{
@@ -93,8 +100,11 @@ public partial class Player : CharacterBody2D
 		if (MovementDirection != Vector2.Zero)
 			SetFlipDirection(MovementDirection);
 		TickFlip((float)delta);
+
 		if (IsDisabled)
 			return;
+
+		ReadHeldInput();
 		Velocity = MovementDirection * MovementSpeed;
 		MoveAndSlide();
 	}
@@ -166,6 +176,20 @@ public partial class Player : CharacterBody2D
 
 		IsRunning = Input.IsActionPressed("run");
 	}
+	private void ReadHeldInput()
+	{
+		interact_is_being_held = Input.IsActionPressed("interact");
+
+		if (interact_is_being_held)
+		{
+			interact_hold_cycles++;
+			if (interact_hold_cycles == 30)
+				CallAllNearbyAphids();
+		}
+		else
+			interact_hold_cycles = 0;
+			
+	}
 
 	// ======| Interactions |=======
 	private void TryInteract()
@@ -209,6 +233,18 @@ public partial class Player : CharacterBody2D
 			pet_timer = 2;
 		}
 	}
+	private void CallAllNearbyAphids()
+	{
+		PlaySound(sound_whistle);
+		for (int i = 0; i < ResortManager.AphidsList.Count; i++)
+		{
+			Aphid _aphid = ResortManager.AphidsList[i];
+			if (_aphid == PickupItem) // Dont call an Aphid if you are goddamn holding it
+				continue;
+			if (_aphid.GlobalPosition.DistanceTo(GlobalPosition) < 400)
+				_aphid.CallTowards(GlobalPosition);
+		}
+	}
 
 	// ======| Pickup |========
 	private void TryPickup()
@@ -239,14 +275,18 @@ public partial class Player : CharacterBody2D
 		if (_aphid.IsEating)
 			return false;
 
+		// Cant pick up while they breed
+		// if (_aphid.OurState == Aphid.AphidState.Breed)
+		// 	return false;
+		
 		// if sleeping, get annoyed
-		if (_aphid.OurState == Aphid.AphidState.Sleeping)
+		if (_aphid.OurState == Aphid.AphidState.Sleep)
 			_aphid.WakeUp(true);
 
 		_aphid.SetAphidState(Aphid.AphidState.Idle);
 		_aphid.skin.SetFlipDirection(FacingDirection, true);
 		pickup_isAphid = true;
-		_aphid.PlaySound(_aphid.idle, true);
+		SoundManager.CreateSound2D(_aphid.sound_idle, _aphid.GlobalPosition, true);
 		return true;
 	}
 	public void Drop(bool _setPosition = true)
@@ -284,7 +324,7 @@ public partial class Player : CharacterBody2D
 	private void PullItem(string _item_name)
 	{
 		savedata.Inventory.Remove(_item_name);
-		Node2D _item = ResortManager.CreateItem(_item_name);
+		Node2D _item = ResortManager.CreateItem(_item_name, GlobalPosition);
 
 		if (PickupItem != null)
 			Drop();
@@ -326,7 +366,7 @@ public partial class Player : CharacterBody2D
 		inventoryGrid.AddChild(_item);
 	}
 
-	// General Functions
+	// ==========| General Functions |=============
 	public void SetFlipDirection(Vector2 _direction)
 	{
 		// True : Facing Right - False : Facing Left
@@ -343,17 +383,27 @@ public partial class Player : CharacterBody2D
 		else
 			spriteBody.Scale = new(Mathf.Lerp(spriteBody.Scale.X, 1, _delta * 6), spriteBody.Scale.Y);
 	}
-	private void SetPlayerAnim(string _name)
+	public void SetPlayerAnim(string _name)
 	{
 		var _action = currentAnimState switch
 		{
-			"behind" => "/behind",
+			"behind" => "/behind", // Currently unused (Maybe itll remain unused?)
 			_ => ""
 		};
 		var _anim = $"player{_action}/{_name}";
 		if (_anim.Equals(animator.CurrentAnimation))
 			return;
 		animator.Play($"player{_action}/{_name}");
+	}
+	public void PlaySound(AudioStream _audio, bool _pitchRand = false)
+	{
+		AudioStreamPlayer2D _player = audioPlayer.Duplicate() as AudioStreamPlayer2D;
+		AddChild(_player);
+		if (_pitchRand)
+			_player.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
+		_player.Stream = _audio;
+		_player.GlobalPosition = GlobalPosition;
+		_player.Play();
 	}
 
 	private Node GetOverlappingNodeWithMeta(string _meta)

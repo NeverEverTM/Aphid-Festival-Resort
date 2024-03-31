@@ -29,9 +29,12 @@
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="20_xk6tt"]
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="21_ckdvb"]
 [ext_resource type="Script" path="res://scripts/KitchenStore.cs" id="21_j3pjv"]
-[ext_resource type="Texture2D" uid="uid://bwskfqr44kaqq" path="res://icon.svg" id="22_fy5ob"]
-[ext_resource type="Texture2D" uid="uid://drg6rhqrbp6j3" path="res://sprites/characters/Kut/idle_0.tres" id="22_xi3t0"]
-[ext_resource type="Texture2D" uid="uid://bo78n4vayue5u" path="res://sprites/characters/Kut/idle_1.tres" id="23_om6jw"]
+[ext_resource type="AudioStream" uid="uid://deyj10uei0gk1" path="res://sfx/ui/kaching.wav" id="28_12dyb"]
+[ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/entities/character.tscn" id="28_py445"]
+[ext_resource type="Texture2D" uid="uid://dxql7r1r5qc7k" path="res://sprites/props/resort_table.png" id="30_hexyg"]
+[ext_resource type="Texture2D" uid="uid://bw0hptrwhbx07" path="res://sprites/props/box_1.tres" id="31_ttjlq"]
+[ext_resource type="Texture2D" uid="uid://c6whq8nn4cumv" path="res://sprites/props/box_0.tres" id="32_fdvne"]
+[ext_resource type="Texture2D" uid="uid://ci8b7hx82gd02" path="res://sprites/props/resort_rug.png" id="33_mtgjl"]
 
 [sub_resource type="Animation" id="Animation_lw7og"]
 length = 0.001
@@ -327,7 +330,6 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_5lpko"]
 resource_name = "close"
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -411,54 +413,17 @@ _data = {
 "open": SubResource("Animation_3dg7i")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jwpkn"]
-size = Vector2(23.683, 18.9629)
-
-[sub_resource type="Animation" id="Animation_novud"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:texture")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [ExtResource("22_xi3t0")]
-}
-
-[sub_resource type="Animation" id="Animation_uy4p8"]
-resource_name = "idle"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:texture")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [ExtResource("22_xi3t0"), ExtResource("23_om6jw")]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_k3jym"]
-_data = {
-"RESET": SubResource("Animation_novud"),
-"idle": SubResource("Animation_uy4p8")
-}
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hty1o"]
-size = Vector2(245.85, 24.381)
+size = Vector2(96.9217, 28.0975)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rk45n"]
+size = Vector2(63.2099, 14.0489)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b1soq"]
+size = Vector2(36.8724, 14.0489)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2hapi"]
-size = Vector2(96.3868, 19.3659)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xx8w8"]
-size = Vector2(72.6913, 29.9024)
+size = Vector2(93.4938, 12.0244)
 
 [node name="resort" type="Node2D" node_paths=PackedStringArray("ItemGroundRoot")]
 script = ExtResource("1_ay1ca")
@@ -997,14 +962,14 @@ libraries = {
 
 [node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
 
-[node name="kitchen_counter" type="Node2D" parent="." node_paths=PackedStringArray("triggerArea", "dialogArea", "storePanel", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "buyItem", "storeAnimator")]
+[node name="kitchen_counter" type="Node2D" parent="." node_paths=PackedStringArray("triggerArea", "storePanel", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "buyItem", "storeAnimator")]
 z_index = -449
 y_sort_enabled = true
 position = Vector2(470, -449)
 scale = Vector2(0.949219, 0.854167)
 script = ExtResource("21_j3pjv")
 triggerArea = NodePath("trigger_store")
-dialogArea = NodePath("trigger_dialog")
+buySound = ExtResource("28_12dyb")
 storePanel = NodePath("../canvas/shop_panel/store_animator")
 itemGrid = NodePath("../canvas/shop_panel/item_box/item_container")
 itemName = NodePath("../canvas/shop_panel/item_info/name/name_text")
@@ -1015,64 +980,67 @@ buyItem = NodePath("../canvas/shop_panel/item_info/buy_button")
 itemContainer = ExtResource("19_xfhfg")
 storeAnimator = NodePath("../canvas/shop_panel/store_animator")
 
-[node name="kut" type="Sprite2D" parent="kitchen_counter"]
-position = Vector2(-7.37448, -37.4634)
-scale = Vector2(0.748971, 0.801829)
-texture = ExtResource("22_xi3t0")
-
-[node name="StaticBody2D" type="StaticBody2D" parent="kitchen_counter/kut"]
-position = Vector2(11.2527, 52.3955)
-scale = Vector2(1.24725, 1.07795)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/kut/StaticBody2D"]
-position = Vector2(-10.1498, -7.97184)
-shape = SubResource("RectangleShape2D_jwpkn")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="kitchen_counter/kut"]
-libraries = {
-"": SubResource("AnimationLibrary_k3jym")
-}
+[node name="kut" parent="kitchen_counter" instance=ExtResource("28_py445")]
+position = Vector2(-6.32098, -38.6341)
+lines = 2
+character = "kut"
+action = "shop"
 
 [node name="counter" type="Sprite2D" parent="kitchen_counter"]
-position = Vector2(-7.37449, 5.52441)
-scale = Vector2(0.419753, 0.571647)
-texture = ExtResource("20_qhpvf")
+position = Vector2(-4.214, -3.51221)
+texture = ExtResource("30_hexyg")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="kitchen_counter/counter"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/counter/StaticBody2D"]
-position = Vector2(-0.563904, 12.5715)
+position = Vector2(0, 8.19501)
 shape = SubResource("RectangleShape2D_hty1o")
 
-[node name="grocery_deco" type="Sprite2D" parent="kitchen_counter"]
-position = Vector2(-101.136, -33.9512)
-scale = Vector2(0.5, 0.554878)
-texture = ExtResource("22_fy5ob")
+[node name="large_box" type="Sprite2D" parent="kitchen_counter"]
+position = Vector2(-75.8518, -11.7073)
+texture = ExtResource("31_ttjlq")
 
-[node name="grocery_box_deco" type="Sprite2D" parent="kitchen_counter"]
-position = Vector2(123.259, -12.878)
-scale = Vector2(0.291152, 0.323171)
-texture = ExtResource("22_fy5ob")
+[node name="top_box" type="Sprite2D" parent="kitchen_counter/large_box"]
+position = Vector2(12.642, -31.6097)
+texture = ExtResource("32_fdvne")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="kitchen_counter/large_box"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/large_box/StaticBody2D"]
+position = Vector2(-3.05176e-05, 9.36584)
+shape = SubResource("RectangleShape2D_rk45n")
+
+[node name="box" type="Sprite2D" parent="kitchen_counter"]
+position = Vector2(46.3539, -11.7073)
+rotation = 1.5708
+texture = ExtResource("32_fdvne")
+
+[node name="above_box" type="Sprite2D" parent="kitchen_counter/box"]
+position = Vector2(-31.6097, -5.26749)
+rotation = 1.5708
+texture = ExtResource("32_fdvne")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="kitchen_counter/box"]
+position = Vector2(-1.19209e-05, -1.05351)
+rotation = -1.5708
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/box/StaticBody2D2"]
+position = Vector2(1.58014, 9.36591)
+shape = SubResource("RectangleShape2D_b1soq")
+
+[node name="rug" type="Sprite2D" parent="kitchen_counter"]
+position = Vector2(-4.21399, 55.0244)
+texture = ExtResource("33_mtgjl")
 
 [node name="trigger_store" type="Area2D" parent="kitchen_counter"]
-position = Vector2(-4.21399, 21.0732)
+position = Vector2(-5.26749, 25.7561)
 input_pickable = false
 monitorable = false
 metadata/store = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/trigger_store"]
-position = Vector2(-3.16052, 9.36585)
+position = Vector2(0.660614, 4.84149)
 shape = SubResource("RectangleShape2D_2hapi")
-
-[node name="trigger_dialog" type="Area2D" parent="kitchen_counter"]
-position = Vector2(-8.42798, -12.878)
-input_pickable = false
-monitorable = false
-metadata/store = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/trigger_dialog"]
-position = Vector2(1.58029, 4.41461)
-shape = SubResource("RectangleShape2D_xx8w8")
 
 [node name="player" parent="." node_paths=PackedStringArray("inventory_panel", "inventory_player", "inventoryGrid") instance=ExtResource("5_wdlmu")]
 position = Vector2(-2, 0)
@@ -1080,3 +1048,9 @@ inventory_panel = NodePath("../canvas/inventory")
 inventory_player = NodePath("../canvas/inventory/animator")
 inventoryGrid = NodePath("../canvas/inventory/anchor/inventory_container")
 invItemContainer = ExtResource("18_t720b")
+
+[node name="joy" parent="." instance=ExtResource("28_py445")]
+position = Vector2(-135, -34)
+lines = 2
+character = "joy"
+action = "welcome"

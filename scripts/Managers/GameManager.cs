@@ -7,7 +7,6 @@ public partial class GameManager : Node2D
 {
 	public static GameManager Instance;
 	public static Camera2D GlobalCamera;
-	public static AudioStreamPlayer AudioPlayer;
 	public readonly static RandomNumberGenerator RNG = new();
 
 	public enum Scene { Resort, Menu }
@@ -75,18 +74,34 @@ public partial class GameManager : Node2D
 		spaceState = GetWorld2D().DirectSpaceState;
 
 		// Set AudioPlayer
-		AudioPlayer = new();
-		AddChild(AudioPlayer);
-		AudioPlayer.VolumeDb = -20;
+		AddChild(SoundManager.MusicPlayer);
+		SoundManager.SFXPlayer.VolumeDb = SoundManager.SFXPlayer2D.VolumeDb = SoundManager.MusicPlayer.VolumeDb = -20;
 	}
 	public override void _Process(double delta)
 	{
+		// Cleans particles periodically once finished
 		for (int i = 0; i < particles.Count; i++)
 		{
 			if (particles[i].Emitting)
 				continue;
 			particles[i].QueueFree();
 			particles.RemoveAt(i);
+		}
+
+		// Cleans sounds periodically once finished
+		for (int i = 0; i < SoundManager.SoundEntities.Count; i++)
+		{
+			if (SoundManager.SoundEntities[i].Playing)
+				continue;
+			SoundManager.SoundEntities[i].QueueFree();
+			SoundManager.SoundEntities.RemoveAt(i);
+		}
+		for (int i = 0; i < SoundManager.Sound2DEntities.Count; i++)
+		{
+			if (SoundManager.Sound2DEntities[i].Playing)
+				continue;
+			SoundManager.Sound2DEntities[i].QueueFree();
+			SoundManager.Sound2DEntities.RemoveAt(i);
 		}
 
 		if (Input.IsActionJustPressed("debug_0"))
@@ -241,7 +256,7 @@ public partial class GameManager : Node2D
 	{
 		IsBusy = true;
 		Instance.CleanAllParticles();
-		StopSong();
+		SoundManager.StopSong();
 
 		// load the load screen
 		LoadScreen _loading = ResourceLoader.Load<PackedScene>(LoadingScreenPath).Instantiate() as LoadScreen;
@@ -270,29 +285,6 @@ public partial class GameManager : Node2D
 		await Task.Delay(4);
 		IsBusy = false;
 		await _loading.SweepLeaves();
-	}
-	public static void PlaySong(AudioStream _song)
-	{
-		if (AudioPlayer.Stream != null)
-		{
-			StopSong().Finished += () => PlaySong(_song);
-			return;
-		}
-		AudioPlayer.Stream = _song;
-		AudioPlayer.Play();
-	}
-	private static Tween StopSong()
-	{
-		Tween tween = AudioPlayer.CreateTween();
-		tween.SetEase(Tween.EaseType.Out);
-		tween.TweenProperty(AudioPlayer, "volume_db", -80, 1.0);
-		tween.Finished += () =>
-		{
-			AudioPlayer.Stop();
-			AudioPlayer.VolumeDb = -20;
-			AudioPlayer.Stream = null;
-		};
-		return tween;
 	}
 	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position)
 	{
@@ -347,13 +339,10 @@ public partial class GameManager : Node2D
 		}
 		public static Vector2 GetMouseGlobalPosition() => GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() + Instance.windowSize) * 0.5f;
 
-		public static Color GetRandomColor(bool _capColorLoss = true, bool _randomizeAlpha = false)
+		public static Color GetRandomColor(bool _randomizeAlpha = false)
 		{
 			byte[] _rgba = new byte[] { (byte)RNG.RandiRange(0,255), (byte)RNG.RandiRange(0,255),
 				(byte)RNG.RandiRange(0,255), _randomizeAlpha ? (byte)(RNG.RandiRange(0,205) + 50) : (byte)255 };
-
-			if (_capColorLoss && _rgba[0] < 100 && _rgba[1] < 100 && _rgba[2] < 100)
-				_rgba[RNG.RandiRange(0, 2)] = 100;
 
 			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
 		}

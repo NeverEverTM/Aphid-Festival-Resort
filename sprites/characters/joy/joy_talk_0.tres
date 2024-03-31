@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://b4rpfocmm411k"]
+
+[ext_resource type="Texture2D" uid="uid://cwecy5ses13x5" path="res://sprites/characters/joy/joy_sheet.png" id="1_aq27k"]
+
+[resource]
+atlas = ExtResource("1_aq27k")
+region = Rect2(0, 64, 32, 64)

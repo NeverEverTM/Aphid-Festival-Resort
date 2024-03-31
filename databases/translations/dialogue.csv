@@ -7,9 +7,12 @@ Tu... tambíen puedes disfrutar de mis platillos refinados, supongo."
 kut_shop_1,"You will have to pay for the ingredients regardless.[...]
 Resort rules say so.","Tendras que pagar por los ingredientes de todas formas.[...]
 Reglas del resort."
-joy_welcome_0,"Hello! Your %s, right? Come on in![...]
-We have prepared the resort for you already.","Hola! Tu tienes que ser %s, ¿no? Adelante!\nTenemos el complejo preparado para ti."
-joy_welcome_1,Here it is. The aphid resort!\nPlenty of space for any and all aphids that requires it.,"Y aqui esta, el complejo de áfidos!\nTodo el espacio requerido para cualquier aphid que se hospede."
+joy_welcome_0,"Hello![...] You are [name], right? Come on in![...]
+We have prepared the resort for you already.","Hola![...] Tu tienes que ser [name], ¿no? Adelante![...]
+Tenemos el complejo preparado para ti."
+joy_welcome_1,"Here it is. The aphid resort![...]
+Quite cozy, isnt it?","Y aqui esta, el complejo de áfidos!
+Agradable ¿No lo es?"
 welcome_0,"This is a very early build of the game. So expect a lot of broken and missing things![...]
 If you feel like supporting this project through assets or programming, go to the Github page![...]
 For the moment, breeding and some basic aphid interactions should be unlocked.","Esto es una build muy temprana del juego (y lenguaje). Así que preparate para maximo sufrimiento[...]

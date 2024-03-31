@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://7oo48cet73pb"]
+[gd_scene load_steps=17 format=3 uid="uid://7oo48cet73pb"]
 
 [ext_resource type="Script" path="res://scripts/Aphid Related/Aphid.cs" id="1_alf76"]
 [ext_resource type="PackedScene" uid="uid://4elwtdodi4mk" path="res://scenes/particles/heart_particles.tscn" id="2_ld3gy"]
@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://b8x1ph1bsw1a1" path="res://sfx/aphid/step.wav" id="3_3pcii"]
 [ext_resource type="PackedScene" uid="uid://3n7hc8daqmx1" path="res://scenes/particles/sleep_particles.tscn" id="3_lmnx6"]
 [ext_resource type="AudioStream" uid="uid://ceq01lqjvnef0" path="res://sfx/aphid/idle.wav" id="4_7u1am"]
+[ext_resource type="AudioStream" uid="uid://6fh756sb2rwv" path="res://sfx/aphid/baby_idle.wav" id="4_pag5w"]
 [ext_resource type="PackedScene" uid="uid://c3yni1x81j23w" path="res://scenes/particles/anger_particle.tscn" id="4_y6tyl"]
 [ext_resource type="Script" path="res://scripts/Aphid Related/AphidSkin.cs" id="5_mgt0u"]
 [ext_resource type="AudioStream" uid="uid://etu7uln52eqi" path="res://sfx/aphid/jump.wav" id="5_mp4ag"]
@@ -31,10 +32,11 @@ script = ExtResource("1_alf76")
 skin = NodePath("SpriteBody")
 triggerArea = NodePath("TriggerArea")
 audioPlayer = NodePath("audioPlayer")
-nom = ExtResource("2_sfwmr")
-step = ExtResource("3_3pcii")
-idle = ExtResource("4_7u1am")
-jump = ExtResource("5_mp4ag")
+sound_nom = ExtResource("2_sfwmr")
+sound_idle = ExtResource("4_7u1am")
+sound_baby_idle = ExtResource("4_pag5w")
+sound_step = ExtResource("3_3pcii")
+sound_jump = ExtResource("5_mp4ag")
 heartParticles = ExtResource("2_ld3gy")
 foodParticles = ExtResource("2_ld3gy")
 sleepParticles = ExtResource("3_lmnx6")

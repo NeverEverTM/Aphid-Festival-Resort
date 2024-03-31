@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="2_1btwy"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
-[ext_resource type="Texture2D" uid="uid://daup0e4jm5ln" path="res://sprites/AphidFestivalResort.png" id="2_r26xg"]
+[ext_resource type="Texture2D" uid="uid://daup0e4jm5ln" path="res://sprites/ui/AphidFestivalResort.png" id="2_r26xg"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="2_w3mwt"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="3_7aeaj"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="3_7vjbo"]

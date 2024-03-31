@@ -35,7 +35,7 @@ public partial class CanvasManager : CanvasLayer
     public override void _Process(double delta)
     {
         if (Input.IsActionJustPressed("escape"))
-			BackToMenu();
+			BackToTitle();
 
 		if (Input.IsActionJustPressed("cancel"))
 			EscapeMenu();
@@ -93,7 +93,7 @@ public partial class CanvasManager : CanvasLayer
 		if (currentMenu != null)
 			CloseMenu();
 	}
-	public static async void BackToMenu()
+	public static async void BackToTitle()
 	{
 		if (!GameManager.IsBusy && !DialogManager.IsActive)
 		{

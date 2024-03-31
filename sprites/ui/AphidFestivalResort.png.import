@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dkws5ge41rhjm"
-path="res://.godot/imported/item_sprites.png-e8ad620d3d7f4058bd9473f89c56de21.ctex"
+uid="uid://daup0e4jm5ln"
+path="res://.godot/imported/AphidFestivalResort.png-3296bbd42d54f68ede1a1f0d48667434.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/item_sprites.png"
-dest_files=["res://.godot/imported/item_sprites.png-e8ad620d3d7f4058bd9473f89c56de21.ctex"]
+source_file="res://sprites/ui/AphidFestivalResort.png"
+dest_files=["res://.godot/imported/AphidFestivalResort.png-3296bbd42d54f68ede1a1f0d48667434.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://daup0e4jm5ln"
-path="res://.godot/imported/AphidFestivalResort.png-b9f26948c63e6b292cf737921786ea69.ctex"
+uid="uid://eo125tpin4j3"
+path="res://.godot/imported/menu_border_active.png-c690a7f35ffbe3bdcf67e53940666e8d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/AphidFestivalResort.png"
-dest_files=["res://.godot/imported/AphidFestivalResort.png-b9f26948c63e6b292cf737921786ea69.ctex"]
+source_file="res://sprites/ui/menu_border_active.png"
+dest_files=["res://.godot/imported/menu_border_active.png-c690a7f35ffbe3bdcf67e53940666e8d.ctex"]
 
 [params]
 
