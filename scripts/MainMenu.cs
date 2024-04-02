@@ -173,7 +173,7 @@ public partial class MainMenu : Node2D
 		string _resort = resort_input_name.Text;
 
 		// Invalid resort names
-		if (string.IsNullOrWhiteSpace(_resort) || _resort.IsValidFileName() || _resort.Equals("default"))
+		if (string.IsNullOrWhiteSpace(_resort) || !_resort.IsValidFileName() || _resort.Equals("default"))
 		{
 			GD.Print("Not a valid resort name.");
 			return;
