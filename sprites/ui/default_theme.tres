@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://c26milatu6udv"]
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://c26milatu6udv"]
 
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="1_kgla5"]
+[ext_resource type="StyleBox" uid="uid://dxni6lp0btors" path="res://border_bg.tres" id="3_0my7e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i1e6c"]
 content_margin_left = 14.0
@@ -26,6 +27,14 @@ Button/colors/font_hover_color = Color(0.364706, 0.768627, 0.85098, 1)
 Button/colors/font_hover_pressed_color = Color(0.94902, 0.8, 0.145098, 1)
 Button/colors/font_outline_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
 Button/colors/font_pressed_color = Color(0.94902, 0.8, 0.145098, 1)
+GridContainer/constants/h_separation = 8
+GridContainer/constants/v_separation = 8
+OptionButton/constants/h_separation = 8
+OptionButton/constants/modulate_arrow = 1
+OptionButton/styles/focus = ExtResource("3_0my7e")
+OptionButton/styles/hover = ExtResource("3_0my7e")
+OptionButton/styles/normal = ExtResource("3_0my7e")
+OptionButton/styles/pressed = ExtResource("3_0my7e")
 TextEdit/colors/background_color = Color(0.0745098, 0.27451, 0.176471, 0)
 TextEdit/colors/font_placeholder_color = Color(0.305882, 0.611765, 0.458824, 0.6)
 TextEdit/styles/normal = SubResource("StyleBoxFlat_i1e6c")

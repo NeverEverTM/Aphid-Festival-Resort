@@ -1,0 +1,157 @@
+[gd_scene load_steps=9 format=3 uid="uid://ba1ev1heaa3s6"]
+
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="1_fjlrd"]
+[ext_resource type="Script" path="res://scripts/gui/OptionsMenu.cs" id="2_eio0f"]
+[ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="3_01nd0"]
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_d5s5m"]
+[ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/ui/aphid_adult.tres" id="5_bialj"]
+[ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/ui/aphid_child.tres" id="6_fnwq8"]
+[ext_resource type="Texture2D" uid="uid://be65y2gqbnjq0" path="res://sprites/ui/pencil.tres" id="6_ghwfp"]
+[ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/icon_blogs.png" id="6_qdykg"]
+
+[node name="options_panel" type="Control" node_paths=PackedStringArray("musicSlider", "soundSlider", "saveFolderButton", "windowMode", "language")]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_fjlrd")
+script = ExtResource("2_eio0f")
+musicSlider = NodePath("music/HSlider")
+soundSlider = NodePath("sound/HSlider")
+saveFolderButton = NodePath("save_folder_button")
+windowMode = NodePath("windowMode")
+language = NodePath("language")
+
+[node name="music" type="TextureRect" parent="."]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = -177.0
+offset_top = -201.0
+offset_right = 193.0
+offset_bottom = -99.0
+texture = ExtResource("3_d5s5m")
+
+[node name="Label" type="Label" parent="music"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 11.0
+offset_right = 287.0
+offset_bottom = 59.0
+text = "options_music"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="music"]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 58.0
+offset_right = 189.0
+offset_bottom = 74.0
+scale = Vector2(2, 2)
+max_value = 1.0
+step = 0.01
+value = 0.5
+scrollable = false
+
+[node name="sound" type="TextureRect" parent="."]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = -178.0
+offset_top = -67.0
+offset_right = 193.0
+offset_bottom = 36.0
+texture = ExtResource("3_d5s5m")
+
+[node name="Label" type="Label" parent="sound"]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 12.0
+offset_right = 307.0
+offset_bottom = 61.0
+text = "options_sounds"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="sound"]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 56.0
+offset_right = 187.0
+offset_bottom = 73.0
+scale = Vector2(2, 2)
+max_value = 1.0
+step = 0.01
+value = 0.5
+scrollable = false
+
+[node name="windowMode" type="OptionButton" parent="."]
+layout_mode = 0
+offset_left = -172.0
+offset_top = 61.0
+offset_right = 181.0
+offset_bottom = 137.0
+expand_icon = true
+item_count = 2
+selected = 0
+popup/item_0/text = "options_windowed"
+popup/item_0/icon = ExtResource("6_fnwq8")
+popup/item_0/id = 0
+popup/item_1/text = "options_fullscreen"
+popup/item_1/icon = ExtResource("5_bialj")
+popup/item_1/id = 1
+
+[node name="screen" type="OptionButton" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 159.0
+offset_top = -153.0
+offset_right = 512.0
+offset_bottom = -77.0
+expand_icon = true
+item_count = 2
+selected = 0
+popup/item_0/text = "options_screen?"
+popup/item_0/icon = ExtResource("6_fnwq8")
+popup/item_0/id = 1
+popup/item_1/text = "options_fullscreen"
+popup/item_1/icon = ExtResource("5_bialj")
+popup/item_1/id = 0
+
+[node name="language" type="OptionButton" parent="."]
+layout_mode = 0
+offset_left = -169.0
+offset_top = 167.0
+offset_right = 184.0
+offset_bottom = 243.0
+expand_icon = true
+item_count = 2
+selected = 0
+popup/item_0/text = "English"
+popup/item_0/icon = ExtResource("6_ghwfp")
+popup/item_0/id = 0
+popup/item_1/text = "Español"
+popup/item_1/icon = ExtResource("6_ghwfp")
+popup/item_1/id = 1
+
+[node name="save_folder_button" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = -342.0
+offset_top = -50.0
+offset_right = -234.0
+offset_bottom = 60.0
+texture_normal = ExtResource("6_qdykg")
+stretch_mode = 4
+
+[node name="leaf" type="TextureRect" parent="save_folder_button"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 35.0
+offset_right = 118.0
+offset_bottom = 124.0
+texture = ExtResource("3_01nd0")

@@ -1,23 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://7oo48cet73pb"]
+[gd_scene load_steps=9 format=3 uid="uid://7oo48cet73pb"]
 
-[ext_resource type="Script" path="res://scripts/Aphid Related/Aphid.cs" id="1_alf76"]
-[ext_resource type="PackedScene" uid="uid://4elwtdodi4mk" path="res://scenes/particles/heart_particles.tscn" id="2_ld3gy"]
-[ext_resource type="AudioStream" uid="uid://hnoe61jvevo3" path="res://sfx/aphid/nom.wav" id="2_sfwmr"]
-[ext_resource type="AudioStream" uid="uid://b8x1ph1bsw1a1" path="res://sfx/aphid/step.wav" id="3_3pcii"]
-[ext_resource type="PackedScene" uid="uid://3n7hc8daqmx1" path="res://scenes/particles/sleep_particles.tscn" id="3_lmnx6"]
-[ext_resource type="AudioStream" uid="uid://ceq01lqjvnef0" path="res://sfx/aphid/idle.wav" id="4_7u1am"]
-[ext_resource type="AudioStream" uid="uid://6fh756sb2rwv" path="res://sfx/aphid/baby_idle.wav" id="4_pag5w"]
-[ext_resource type="PackedScene" uid="uid://c3yni1x81j23w" path="res://scenes/particles/anger_particle.tscn" id="4_y6tyl"]
-[ext_resource type="Script" path="res://scripts/Aphid Related/AphidSkin.cs" id="5_mgt0u"]
-[ext_resource type="AudioStream" uid="uid://etu7uln52eqi" path="res://sfx/aphid/jump.wav" id="5_mp4ag"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_trk2c"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rj8op"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ixtmb"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ifyyb"]
+[ext_resource type="Script" path="res://scripts/aphid/Aphid.cs" id="1_acxg7"]
+[ext_resource type="Script" path="res://scripts/aphid/AphidSkin.cs" id="2_xeinf"]
+[ext_resource type="Texture2D" uid="uid://u3pou85pb7is" path="res://skins/0/legs_idle.png" id="12_kek4f"]
+[ext_resource type="Texture2D" uid="uid://hnyudgy17eqv" path="res://skins/0/body_idle.png" id="13_7fxmg"]
+[ext_resource type="Texture2D" uid="uid://2e856swkfn11" path="res://skins/0/eyes_idle.png" id="14_7wf6h"]
+[ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://skins/0/antenna_idle.png" id="15_tax8g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
 size = Vector2(34, 12)
@@ -28,19 +16,10 @@ radius = 99.0
 [node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea", "audioPlayer")]
 position = Vector2(-1, 0)
 motion_mode = 1
-script = ExtResource("1_alf76")
+script = ExtResource("1_acxg7")
 skin = NodePath("SpriteBody")
 triggerArea = NodePath("TriggerArea")
 audioPlayer = NodePath("audioPlayer")
-sound_nom = ExtResource("2_sfwmr")
-sound_idle = ExtResource("4_7u1am")
-sound_baby_idle = ExtResource("4_pag5w")
-sound_step = ExtResource("3_3pcii")
-sound_jump = ExtResource("5_mp4ag")
-heartParticles = ExtResource("2_ld3gy")
-foodParticles = ExtResource("2_ld3gy")
-sleepParticles = ExtResource("3_lmnx6")
-angerParticles = ExtResource("4_y6tyl")
 metadata/pickup = true
 metadata/tag = "aphid"
 
@@ -51,7 +30,7 @@ attenuation = 0.5
 max_polyphony = 20
 
 [node name="SpriteBody" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
-script = ExtResource("5_mgt0u")
+script = ExtResource("2_xeinf")
 eyes = NodePath("eyes")
 antenna = NodePath("antenna")
 body = NodePath("body")
@@ -59,23 +38,27 @@ back_legs = NodePath("back_legs")
 front_legs = NodePath("front_legs")
 
 [node name="back_legs" type="Sprite2D" parent="SpriteBody"]
+use_parent_material = true
 position = Vector2(-5.5, -9.5)
-texture = SubResource("CompressedTexture2D_trk2c")
+texture = ExtResource("12_kek4f")
 
 [node name="body" type="Sprite2D" parent="SpriteBody"]
-texture = SubResource("CompressedTexture2D_rj8op")
+use_parent_material = true
+texture = ExtResource("13_7fxmg")
 offset = Vector2(0.5, -8.5)
 
 [node name="eyes" type="Sprite2D" parent="SpriteBody"]
-texture = SubResource("CompressedTexture2D_ixtmb")
+texture = ExtResource("14_7wf6h")
 offset = Vector2(0.5, -8.5)
 
 [node name="front_legs" type="Sprite2D" parent="SpriteBody"]
-texture = SubResource("CompressedTexture2D_trk2c")
+use_parent_material = true
+texture = ExtResource("12_kek4f")
 offset = Vector2(0.5, -8.5)
 
 [node name="antenna" type="Sprite2D" parent="SpriteBody"]
-texture = SubResource("CompressedTexture2D_ifyyb")
+use_parent_material = true
+texture = ExtResource("15_tax8g")
 offset = Vector2(0.5, -8.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -1,68 +1,111 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Godot;
+using System.Text.Json;
 
-public partial class ResortManager : Node2D
+public partial class ResortManager : Node2D, SaveSystem.ISaveData
 {
+	[Export] public string Resort;
 	[Export] public PackedScene aphidPrefab;
-	[Export] public Node2D ItemGroundRoot;
-
-	[ExportGroup("Music")]
-	[Export] private AudioStream day_0;
+	[Export] public Node2D EntityRoot;
 
 	public static ResortManager Instance;
 	public static bool IsNewGame;
 	public static readonly List<Aphid> AphidsList = new();
 
-	public SaveData Data = new(); 
+	public string CLASS_ID => class_id_dummy;
+	private string class_id_dummy;
+	public static Savefile Data = new();
 
-	public class SaveData
+	public class Savefile
 	{
 		public GroundItem[] Items { get; set; }
 		public struct GroundItem
 		{
-			public Vector2 Position {get; set;}
-			public string Id {get;set;} 
-		}
-		public Task SaveGroundItems()
-		{
-			int _count = Instance.ItemGroundRoot.GetChildCount();
-			GroundItem[] _list = new GroundItem[_count];
-			for (int i = 0; i < _count; i++)
-			{
-				Node2D _item = Instance.ItemGroundRoot.GetChild(i) as Node2D;
-				_list[i] = new()
-				{
-					Id = _item.GetMeta("id").ToString(),
-					Position = _item.GlobalPosition
-				};
-			}
-			return Task.CompletedTask;
+			public int PositionX { get; set; }
+			public int PositionY { get; set; }
+			public string Id { get; set; }
 		}
 	}
+	public string SaveData()
+	{
+		// Save items in the ground
+		int _count = Instance.EntityRoot.GetChildCount();
+		Data.Items = new Savefile.GroundItem[_count];
+		for (int i = 0; i < _count; i++)
+		{
+			Node2D _item = Instance.EntityRoot.GetChild(i) as Node2D;
+			Data.Items[i] = new()
+			{
+				Id = _item.GetMeta("id").ToString(),
+				PositionX = (int)_item.GlobalPosition.X,
+				PositionY = (int)_item.GlobalPosition.Y
+			};
+		}
+		return JsonSerializer.Serialize(Data);
+	}
 
-    public override void _EnterTree()
+	public Task LoadData(string _json)
+	{
+		Data = JsonSerializer.Deserialize<Savefile>(_json);
+
+		// load items in the ground
+		for (int i = 0; i < Data.Items.Length; i++)
+			CreateItem(Data.Items[i].Id, new(Data.Items[i].PositionX, Data.Items[i].PositionY));
+
+		return Task.CompletedTask;
+	}
+
+	public override void _EnterTree()
 	{
 		Instance = this;
 		AphidsList.Clear();
+		class_id_dummy = Resort + "-resort_data";
+		SaveSystem.AddToProfileData(Instance);
 	}
-
-    public override async void _Ready()
+	public override async void _Ready()
 	{
+		// On New game, put intro cutscene, otherwise just load normally
 		if (!IsNewGame)
-			await SaveSystem.LoadProfile();
+			await SaveSystem.LoadProfileData();
 		else
 		{
 			IsNewGame = false;
-			SaveSystem.aphids.Clear();
 			while (GameManager.IsBusy)
 				await Task.Delay(1);
 			await Task.Delay(200);
 			await DialogManager.OpenDialog(new string[] { "welcome_0", "welcome_1" }, "dev");
+			Player.Instance.StoreItem("aphid_egg");
+			Player.Instance.StoreItem("aphid_egg");
+			Player.Instance.StoreItem("aphid_egg");
+			await SaveSystem.SaveProfileData();
 		}
-		SoundManager.PlaySong(day_0);
+
+		// Set Resort music loop
+		SoundManager.MusicPlayer.Finished += CheckSongToPlay;
+		static void FinishedSignal()
+		{
+			SoundManager.MusicPlayer.Finished -= CheckSongToPlay;
+			GameManager.OnPreLoadScene -= FinishedSignal;
+		};
+		GameManager.OnPreLoadScene += FinishedSignal;
+		CheckSongToPlay();
 	}
 
+	public static async void CheckSongToPlay()
+	{
+		await Task.Delay(1000);
+		string[] _raw_files = DirAccess.GetFilesAt(GameManager.MusicPath);
+		// for some reason, the exported project cannot get access to "music.mp3" files
+		// using DirAccess.GetFilesAt(), it will only find "music.mp3.imported" ones and return those
+		// however for some WEIRD reason, if you just reference it anyways by trimming the ".import"
+		// it will find the supposedly non-existent .mp3 file
+		string _file = _raw_files[GameManager.RNG.RandiRange(0, _raw_files.Length - 1)].TrimSuffix(".import");
+		SoundManager.PlaySong(_file);
+	}
+
+	// =========| Object Creation |===============
 	public static Aphid CreateAphid(AphidInstance _instance)
 	{
 		Aphid _aphid = Instance.aphidPrefab.Instantiate() as Aphid;
@@ -95,7 +138,6 @@ public partial class ResortManager : Node2D
 		AphidsList.Add(_aphid);
 		return _aphid;
 	}
-
 	public static Node2D CreateItem(string _item_name, Vector2 _position)
 	{
 		string _path = $"{GameManager.ItemPath}/{_item_name}.tscn";
@@ -111,7 +153,7 @@ public partial class ResortManager : Node2D
 		_item.GlobalPosition = _position;
 		_item.ZIndex = (int)_item.GlobalPosition.Y;
 
-		Instance.ItemGroundRoot.AddChild(_item);
+		Instance.EntityRoot.AddChild(_item);
 		return _item;
 	}
 }

@@ -13,7 +13,6 @@ scale = Vector2(0.5, 0.5)
 keep_pressed_outside = true
 texture_normal = ExtResource("1_lljrg")
 texture_pressed = ExtResource("2_fd65q")
-texture_hover = ExtResource("2_fd65q")
 texture_focused = ExtResource("3_bv7cy")
 stretch_mode = 0
 

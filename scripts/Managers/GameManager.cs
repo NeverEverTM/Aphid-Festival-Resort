@@ -9,6 +9,9 @@ public partial class GameManager : Node2D
 	public static Camera2D GlobalCamera;
 	public readonly static RandomNumberGenerator RNG = new();
 
+	public delegate void LoadSceneHandler();
+	public static event LoadSceneHandler OnPreLoadScene, OnPostLoadScene;
+
 	public enum Scene { Resort, Menu }
 	public Scene scene = Scene.Menu;
 
@@ -18,7 +21,9 @@ public partial class GameManager : Node2D
 		ResortScenePath = "res://scenes/resort.tscn",
 		MenuScenePath = "res://scenes/menu.tscn",
 		LoadingScreenPath = "res://scenes/ui/loading_screen.tscn",
-		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
+		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn";
+	public const string
+		MusicPath = "res://sfx/music",
 		SFXPath = "res://sfx",
 		ItemPath = "res://items",
 		IconPath = "res://sprites/icons",
@@ -68,14 +73,11 @@ public partial class GameManager : Node2D
 		GetViewport().SizeChanged += OnSizeChange;
 		OnSizeChange();
 	}
+	////// GAMEMANAGER READY GETS CALLED WHEN LOADING NEW ROOT SCENE
 	public override void _Ready()
 	{
 		// Runtime Params
 		spaceState = GetWorld2D().DirectSpaceState;
-
-		// Set AudioPlayer
-		AddChild(SoundManager.MusicPlayer);
-		SoundManager.SFXPlayer.VolumeDb = SoundManager.SFXPlayer2D.VolumeDb = SoundManager.MusicPlayer.VolumeDb = -20;
 	}
 	public override void _Process(double delta)
 	{
@@ -87,27 +89,12 @@ public partial class GameManager : Node2D
 			particles[i].QueueFree();
 			particles.RemoveAt(i);
 		}
-
-		// Cleans sounds periodically once finished
-		for (int i = 0; i < SoundManager.SoundEntities.Count; i++)
-		{
-			if (SoundManager.SoundEntities[i].Playing)
-				continue;
-			SoundManager.SoundEntities[i].QueueFree();
-			SoundManager.SoundEntities.RemoveAt(i);
-		}
-		for (int i = 0; i < SoundManager.Sound2DEntities.Count; i++)
-		{
-			if (SoundManager.Sound2DEntities[i].Playing)
-				continue;
-			SoundManager.Sound2DEntities[i].QueueFree();
-			SoundManager.Sound2DEntities.RemoveAt(i);
-		}
-
-		if (Input.IsActionJustPressed("debug_0"))
-			_ = DialogManager.OpenDialog(new string[] { "welcome_0", "welcome_1" }, "dev");
 	}
-
+	private void OnSizeChange()
+	{
+		windowSize = GetViewport().GetVisibleRect().Size;
+		windowSize = -windowSize * 0.5f;
+	}
 	/// <summary>
 	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
 	/// In order to be called again, BOOT_LOADING_LABEL must be set to a valid text display node.
@@ -116,13 +103,13 @@ public partial class GameManager : Node2D
 	{
 		try
 		{
-			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_0");
-			SaveSystem.CreateBaseDirectories();
 			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_1") + " (0/?)";
 			await LOAD_ICONS();
 			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_2") + " (0/?)";
 			await LOAD_SKINS();
-			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_3");
+			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_3") + " (0/?)";
+			await LOAD_SFX();
+			BOOT_LOADING_LABEL.Text = Instance.Tr("BOOT_4");
 			await LOAD_DATABASES();
 			BOOT_LOADING_LABEL.Visible = false;
 			IsBusy = false;
@@ -133,6 +120,12 @@ public partial class GameManager : Node2D
 			Instance.GetTree().Quit(1);
 		}
 	}
+	public async static Task PREPARE_GAME_PROCESS()
+	{
+		SaveSystem.CreateBaseDirectories();
+		await SaveSystem.LoadGlobalData();
+	}
+
 	private static Task LOAD_ICONS()
 	{
 		string[] _icons = DirAccess.GetFilesAt(IconPath);
@@ -156,7 +149,7 @@ public partial class GameManager : Node2D
 				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
 					GD.PushError($"Item <{_icons[i]}> is not a valid resource or request.");
 				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-					GD.PushError($"Icon <{_icons[i]}> esd not able to be loaded.");
+					GD.PushError($"Icon <{_icons[i]}> was not able to be loaded.");
 
 				Instance.GetTree().Quit(2);
 			}
@@ -178,20 +171,20 @@ public partial class GameManager : Node2D
 			if (_skins[i].EndsWith(".import"))
 				continue;
 
+			// start thread and await for its response
 			string _path = $"{SkinsPath}/{_skins[i]}";
 			ResourceLoader.LoadThreadedRequest(_path, "", true);
 			_status = ResourceLoader.LoadThreadedGetStatus(_path);
 			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-			{
 				_status = ResourceLoader.LoadThreadedGetStatus(_path);
-			}
 
+			// action states
 			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
 			{
 				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
 					GD.PrintErr($"Item <{_skins[i]}> is not a valid resource or request.");
 				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-					GD.PrintErr($"Icon <{_skins[i]}> esd not able to be loaded.");
+					GD.PrintErr($"Icon <{_skins[i]}> was not able to be loaded.");
 
 				Instance.GetTree().Quit(2);
 			}
@@ -200,9 +193,68 @@ public partial class GameManager : Node2D
 		}
 		return Task.CompletedTask;
 	}
-	private static async Task LOAD_DATABASES()
+	private static Task LOAD_SFX()
 	{
+		// Get all SFX paths (only checks folders at SFX root folder)
+		List<string> _sfx = new();
+		string[] _directories = DirAccess.GetDirectoriesAt(SFXPath);
+		for (int i = 0; i < _directories.Length; i++)
+			SEARCH_SFX_FOLDER(SFXPath + $"/{_directories[i]}", ref _sfx);
+		SEARCH_SFX_FOLDER(SFXPath, ref _sfx);
+		
+		// Begin loading all sfx assets
+		string[] _resources = _sfx.ToArray();
 		string _tr = Instance.Tr("BOOT_3");
+		ResourceLoader.ThreadLoadStatus _status;
+		BOOT_LOADING_LABEL.Text = $"{_tr} (0/{_resources.Length})";
+
+		for (int i = 0; i < _resources.Length; i++)
+		{
+			// Start thread and wait for its response
+			ResourceLoader.LoadThreadedRequest(_resources[i], "", true);
+			_status = ResourceLoader.LoadThreadedGetStatus(_resources[i]);
+			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
+				_status = ResourceLoader.LoadThreadedGetStatus(_resources[i]);
+
+			// action states
+			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
+			{
+				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
+					GD.PrintErr($"Item <{_resources[i]}> is not a valid resource or request.");
+				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
+					GD.PrintErr($"Icon <{_resources[i]}> was not able to be loaded.");
+
+				Instance.GetTree().Quit(2);
+			}
+
+			BOOT_LOADING_LABEL.Text = $"{_tr} ({i + 1}/{_resources.Length})";
+		}
+
+		// Load aphid SFX
+		string _path = $"{SFXPath}/aphid/";
+		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(_path + "nom.wav");
+		Aphid.Audio_Idle = ResourceLoader.Load<AudioStream>(_path + "idle.wav");
+		Aphid.Audio_Idle_Baby = ResourceLoader.Load<AudioStream>(_path + "baby_idle.wav");
+		Aphid.Audio_Step = ResourceLoader.Load<AudioStream>(_path + "step.wav");
+		Aphid.Audio_Jump = ResourceLoader.Load<AudioStream>(_path + "jump.wav");
+		Aphid.Audio_Hurt = ResourceLoader.Load<AudioStream>(_path + "hurt.wav");
+		Aphid.Audio_Boing = ResourceLoader.Load<AudioStream>(_path + "boing.wav");
+
+		return Task.CompletedTask;
+	}
+	private static void SEARCH_SFX_FOLDER(string _path, ref List<string> _sfx)
+	{
+		string[] _files = DirAccess.GetFilesAt(_path);
+		for (int a = 0; a < _files.Length; a++)
+		{
+			if (_files[a].EndsWith(".import"))
+				continue;
+			_sfx.Add($"{_path}/{_files[a]}");
+		}
+	}
+	private async static Task LOAD_DATABASES()
+	{
+		string _tr = Instance.Tr("BOOT_4");
 		await LOAD_ITEM_VALUES(_tr);
 		await LOAD_FOOD_VALUES(_tr);
 	}
@@ -239,24 +291,38 @@ public partial class GameManager : Node2D
 		return Task.CompletedTask;
 	}
 
+	// =====| Functions |=====
+	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position)
+	{
+		var _item = _particles.Instantiate() as GpuParticles2D;
+		_item.GlobalPosition = _position;
+		_item.Emitting = true;
+
+		Instance.AddChild(_item);
+		Instance.particles.Add(_item);
+
+		return _item;
+	}
+	public static GpuParticles2D EmitParticles(string _name, Vector2 _position) =>
+		EmitParticles(ResourceLoader.Load<PackedScene>($"res://scenes/particles/{_name}.tscn"), _position);
 	public void CleanAllParticles()
 	{
 		for (int i = 0; i < particles.Count; i++)
 			particles[i].QueueFree();
 		particles.Clear();
 	}
-	private void OnSizeChange()
-	{
-		windowSize = GetViewport().GetVisibleRect().Size;
-		windowSize = -windowSize * 0.5f;
-	}
 
-	// =====| General Utils |=====
+	public static void CleanSaveData()
+	{
+		SaveSystem.AphidsOnResort.Clear();
+		SaveSystem.ProfileData.Clear();
+	}
 	public async static Task LoadScene(string _path)
 	{
 		IsBusy = true;
+		OnPreLoadScene?.Invoke();
 		Instance.CleanAllParticles();
-		SoundManager.StopSong();
+		SoundManager.CleanAllSounds();
 
 		// load the load screen
 		LoadScreen _loading = ResourceLoader.Load<PackedScene>(LoadingScreenPath).Instantiate() as LoadScreen;
@@ -264,7 +330,7 @@ public partial class GameManager : Node2D
 		await _loading.CreateLeaves();
 
 		// await for scene creation
-		ResourceLoader.LoadThreadedRequest(_path, "", true);
+		ResourceLoader.LoadThreadedRequest(_path);
 		ResourceLoader.ThreadLoadStatus _status = ResourceLoader.LoadThreadedGetStatus(_path);
 
 		while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
@@ -280,23 +346,16 @@ public partial class GameManager : Node2D
 			IsBusy = false;
 			Instance.GetTree().Quit(2);
 		}
+
+		// set scene and request ready/events
 		Instance.GetTree().ChangeSceneToPacked(ResourceLoader.LoadThreadedGet(_path) as PackedScene);
 		Instance.RequestReady();
-		await Task.Delay(4);
+		OnPostLoadScene?.Invoke();
+		await Task.Delay(1);
 		IsBusy = false;
 		await _loading.SweepLeaves();
 	}
-	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position)
-	{
-		var _item = _particles.Instantiate() as GpuParticles2D;
-		_item.GlobalPosition = _position;
-		_item.Emitting = true;
 
-		Instance.AddChild(_item);
-		Instance.particles.Add(_item);
-
-		return _item;
-	}
 	public static int GetRandomByWeight(RandomNumberGenerator _engine, float[] weights)
 	{
 		// We take a sum of all weights
@@ -346,14 +405,8 @@ public partial class GameManager : Node2D
 
 			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
 		}
-		public static Color LerpColor(Color _color1, Color _color2)
-		{
-			_color1.R = Mathf.Lerp(_color1.R, _color2.R, 0.5f);
-			_color1.G = Mathf.Lerp(_color1.G, _color2.G, 0.5f);
-			_color1.B = Mathf.Lerp(_color1.B, _color2.B, 0.5f);
-
-			return _color1;
-		}
+		public static Color LerpColor(Color _color1, Color _color2) =>
+			_color1.Blend(_color2);
 
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);

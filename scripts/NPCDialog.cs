@@ -1,19 +1,20 @@
 using Godot;
+using System.Collections.Generic;
 
-public partial class NPCDialog : Sprite2D
+public partial class NPCDialog : AnimatedSprite2D
 {
 	[Export] private Area2D dialogArea;
-	[Export] private AnimationPlayer animator;
 	[ExportCategory("Dialog Params")]
-	[Export] private int lines;
-	[Export] private string character, action;
+	[Export] private string character;
+	[Export] private string action;
 	private bool IsNearby, IsFlipped;
 
 	public override void _Ready()
 	{
+		ZIndex = (int)GlobalPosition.Y + 20;
 		dialogArea.AreaEntered += (Area2D _node) => IsNearby = true;
 		dialogArea.AreaExited += (Area2D _node) => IsNearby = false;
-		animator.Play($"{character}/idle");
+		Play($"{character}_idle");
 	}
 
 	public override void _Input(InputEvent @event)
@@ -30,13 +31,18 @@ public partial class NPCDialog : Sprite2D
 		TickFlip((float)delta);
     private async void ActivateDialog()
 	{
-		string[] _lines = new string[lines];
-		for (int i = 0; i < _lines.Length; i++)
-			_lines[i] = $"{character}_{action}_{i}";
-			animator.Play($"{character}/talk");
+		List<string> _dialogue = new();
+		for (int i = 0; i < 99; i++)
+		{
+			string _line = $"{character}_{action}_{i}";
+			if (Tr(_line) == _line)
+				break;
+			_dialogue.Add(_line);
+		}
+		Play($"{character}_talk");
 		SetFlipDirection(Player.Instance.GlobalPosition - GlobalPosition);
-		await DialogManager.OpenDialog(_lines, character);
-		animator.Play($"{character}/idle");
+		await DialogManager.OpenDialog(_dialogue.ToArray(), character);
+		Play($"{character}_idle");
 	}
 
 	public void SetFlipDirection(Vector2 _direction)

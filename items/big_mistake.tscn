@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_xdrh8"]
 [ext_resource type="Texture2D" uid="uid://dackluogv1m7p" path="res://sprites/icons/big_mistake.tres" id="2_5f6oq"]
-[ext_resource type="PackedScene" uid="uid://dsumfeixta5kj" path="res://scenes/particles/mistake_particles.tscn" id="3_f2vgl"]
+[ext_resource type="PackedScene" uid="uid://dsumfeixta5kj" path="res://scenes/particles/mistake.tscn" id="3_f2vgl"]
 
 [node name="big_mistake" instance=ExtResource("1_xdrh8")]
 metadata/food_type = 4

@@ -1,18 +1,22 @@
-[gd_scene load_steps=29 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=35 format=3 uid="uid://by6u0617yy7oe"]
 
-[ext_resource type="Script" path="res://scripts/MainMenu.cs" id="1_5e31e"]
-[ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="2_1btwy"]
+[ext_resource type="Script" path="res://scripts/gui/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
 [ext_resource type="Texture2D" uid="uid://daup0e4jm5ln" path="res://sprites/ui/AphidFestivalResort.png" id="2_r26xg"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="2_w3mwt"]
+[ext_resource type="PackedScene" uid="uid://cq4p2dvw7fsfh" path="res://scenes/entities/fakeAphid.tscn" id="2_yvqow"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="3_7aeaj"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="3_7vjbo"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/select.wav" id="4_fk8eh"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="6_vbc7o"]
-[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="7_c3kj0"]
 [ext_resource type="Texture2D" uid="uid://duck48iqhler" path="res://sprites/ui/heart_bg.png" id="8_85fa1"]
+[ext_resource type="Texture2D" uid="uid://v4b2uxe72p3y" path="res://sprites/ui/github-mark-white.png" id="8_ao5k5"]
+[ext_resource type="Texture2D" uid="uid://cyp5ykw0lep0c" path="res://sprites/ui/itchio-logo-textless-white.png" id="9_8g0pq"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="9_76l0k"]
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/ui/aphid_adult.tres" id="9_hair0"]
+[ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="10_8uix6"]
+[ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="11_wl7ma"]
+[ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/mosaic_menu_bg.png" id="12_gxjbm"]
 
 [sub_resource type="Animation" id="Animation_ahjwp"]
 length = 0.001
@@ -67,9 +71,20 @@ font_color = Color(0.760784, 0.772549, 0.764706, 1)
 outline_size = 10
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glayg"]
+shader = ExtResource("11_wl7ma")
+shader_parameter/speed = 0.3
+shader_parameter/node_size = Vector2(16, 16)
+shader_parameter/color = Color(0.513726, 0.188235, 0.231373, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_sspec"]
 font = ExtResource("2_w3mwt")
 font_size = 32
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_6iqyf"]
+font_size = 25
 
 [sub_resource type="Animation" id="Animation_i25o6"]
 length = 0.001
@@ -187,15 +202,17 @@ _data = {
 "slide_up": SubResource("Animation_iebcr")
 }
 
-[node name="menu" type="Node2D" node_paths=PackedStringArray("BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "sweep_animator", "logo_animator", "audioPlayer", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_input_name", "player_input_name", "savefile_name")]
+[node name="menu" type="Node2D" node_paths=PackedStringArray("BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "hover_start", "sweep_animator", "logo_animator", "githubButton", "itchioButton", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_input_name", "player_input_name", "savefile_name")]
 script = ExtResource("1_5e31e")
 BOOT_LOADING_LABEL = NodePath("CanvasLayer/sweep_background/Label")
 cameraMenu = NodePath("Camera2D")
 button_wheel = NodePath("CanvasLayer/start_panel/logo/button_wheel")
+hover_start = NodePath("CanvasLayer/start_panel/logo/hover_start")
 sweep_animator = NodePath("CanvasLayer/sweep_background/AnimationPlayer")
 logo_animator = NodePath("CanvasLayer/start_panel/logo/AnimationPlayer")
-aphidPrefab = ExtResource("2_1btwy")
-audioPlayer = NodePath("AudioStreamPlayer")
+aphidPrefab = ExtResource("2_yvqow")
+githubButton = NodePath("CanvasLayer/bottom_bar/github")
+itchioButton = NodePath("CanvasLayer/bottom_bar/itch_io")
 start_panel = NodePath("CanvasLayer/start_panel")
 new_game_panel = NodePath("CanvasLayer/newgame_panel")
 load_game_panel = NodePath("CanvasLayer/loadgame_panel")
@@ -214,6 +231,7 @@ volume_db = -20.0
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-144, 144)
 zoom = Vector2(2, 2)
+position_smoothing_enabled = true
 
 [node name="AudioListener2D" type="AudioListener2D" parent="Camera2D"]
 current = true
@@ -272,6 +290,17 @@ bbcode_enabled = true
 text = "[center]< Start >[/center]"
 scroll_active = false
 language = "eng"
+
+[node name="hover_start" type="RichTextLabel" parent="CanvasLayer/start_panel/logo"]
+layout_mode = 0
+offset_left = 56.4062
+offset_top = 527.495
+offset_right = 627.406
+offset_bottom = 582.495
+theme = ExtResource("9_76l0k")
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+bbcode_enabled = true
+text = "Press A or B to start"
 
 [node name="newgame_panel" type="Control" parent="CanvasLayer"]
 visible = false
@@ -463,6 +492,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
+[node name="options_panel" parent="CanvasLayer" instance=ExtResource("10_8uix6")]
+visible = false
+
 [node name="credits_panel" type="Control" parent="CanvasLayer"]
 visible = false
 layout_mode = 3
@@ -479,14 +511,15 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="background" type="TextureRect" parent="CanvasLayer/credits_panel"]
-self_modulate = Color(0.137255, 0.101961, 0.447059, 0.811765)
+self_modulate = Color(0.282353, 0.113725, 0.180392, 0.811765)
+material = SubResource("ShaderMaterial_glayg")
 layout_mode = 0
-offset_left = -470.0
-offset_top = -300.0
-offset_right = 543.0
-offset_bottom = 339.0
-texture = ExtResource("7_c3kj0")
-expand_mode = 1
+offset_left = -695.0
+offset_top = -405.0
+offset_right = 768.0
+offset_bottom = 499.0
+texture = ExtResource("12_gxjbm")
+stretch_mode = 1
 
 [node name="Label" type="Label" parent="CanvasLayer/credits_panel"]
 layout_mode = 0
@@ -524,12 +557,45 @@ offset_right = 55.0
 offset_bottom = 253.0
 texture = ExtResource("9_hair0")
 
-[node name="options_panel" type="Control" parent="CanvasLayer"]
-visible = false
+[node name="bottom_bar" type="Control" parent="CanvasLayer"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -648.0
 offset_right = 40.0
-offset_bottom = 40.0
+offset_bottom = -608.0
+grow_vertical = 0
+theme = ExtResource("9_76l0k")
+
+[node name="github" type="TextureButton" parent="CanvasLayer/bottom_bar"]
+layout_mode = 0
+offset_left = 15.261
+offset_top = 576.113
+offset_right = 245.261
+offset_bottom = 801.113
+scale = Vector2(0.25, 0.25)
+texture_normal = ExtResource("8_ao5k5")
+
+[node name="itch_io" type="TextureButton" parent="CanvasLayer/bottom_bar"]
+layout_mode = 0
+offset_left = 83.87
+offset_top = 577.598
+offset_right = 1283.87
+offset_bottom = 1657.6
+scale = Vector2(0.05, 0.05)
+texture_normal = ExtResource("9_8g0pq")
+
+[node name="versioning" type="Label" parent="CanvasLayer/bottom_bar"]
+layout_mode = 0
+offset_left = 893.638
+offset_top = 601.685
+offset_right = 1345.64
+offset_bottom = 649.685
+text = "alpha 0.1.0.0v"
+label_settings = SubResource("LabelSettings_6iqyf")
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="sweep_background" type="TextureRect" parent="CanvasLayer"]
 visible = false

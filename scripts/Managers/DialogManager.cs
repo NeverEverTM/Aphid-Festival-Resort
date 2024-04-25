@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 public partial class DialogManager : Control
 {
-	[Export] private Control dialogBox, dialogDoneSign;
+	[Export] private Control dialogDoneSign;
 	[Export] private RichTextLabel dialogText;
 	[Export] private AudioStreamPlayer dialogAudio;
 	private AnimationPlayer dialogDoneAnimator;
@@ -70,8 +70,8 @@ public partial class DialogManager : Control
 
 		// Set dialog state
 		IsActive = JustPressed = true;
-		if (!Instance.dialogBox.Visible)
-			Instance.dialogBox.Show();
+		if (!Instance.Visible)
+			Instance.Show();
 
 		if (Player.Instance.PickupItem != null)
 			Player.Instance.Drop();
@@ -138,7 +138,7 @@ public partial class DialogManager : Control
 	{
 		IsActive = false;
 		Player.Instance.SetDisabled(false);
-		Instance.dialogBox.Hide();
+		Instance.Hide();
 	}
 	private static int RegisterDialogCommand(int _index)
 	{
@@ -187,6 +187,6 @@ public partial class DialogManager : Control
     public class PlayerNameCommand : IDialogCommand
     {
         public void Execute(int _index) =>
-            Dialog = Dialog.Insert(_index, Player.savedata.Name);
+            Dialog = Dialog.Insert(_index, Player.Data.Name);
     }
 }

@@ -1,0 +1,13 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://dxni6lp0btors"]
+
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_vdk7h"]
+
+[resource]
+texture = ExtResource("1_vdk7h")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+modulate_color = Color(0.627451, 0.054902, 0.239216, 1)

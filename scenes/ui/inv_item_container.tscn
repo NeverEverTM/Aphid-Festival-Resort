@@ -1,11 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://boxaly7dtxe0r"]
+[gd_scene load_steps=5 format=3 uid="uid://boxaly7dtxe0r"]
 
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_wjg32"]
+[ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="2_1b0ib"]
 [ext_resource type="Texture2D" uid="uid://dlh8bljak1r51" path="res://sprites/icons/honey_drop.tres" id="2_6uvhf"]
+[ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="3_aqeq3"]
 
 [node name="inv_item_container" type="TextureButton"]
 self_modulate = Color(0.87451, 0, 0.435294, 1)
 texture_normal = ExtResource("1_wjg32")
+texture_pressed = ExtResource("2_1b0ib")
+texture_focused = ExtResource("3_aqeq3")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0

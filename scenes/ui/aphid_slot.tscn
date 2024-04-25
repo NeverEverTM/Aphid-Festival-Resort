@@ -1,0 +1,61 @@
+[gd_scene load_steps=8 format=3 uid="uid://d7m5e6tlxyve"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_m4hsb"]
+[ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://skins/0/antenna_idle.png" id="2_3dtyu"]
+[ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="2_hglfq"]
+[ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="3_0fk3s"]
+[ext_resource type="Texture2D" uid="uid://u3pou85pb7is" path="res://skins/0/legs_idle.png" id="3_305uj"]
+[ext_resource type="Texture2D" uid="uid://hnyudgy17eqv" path="res://skins/0/body_idle.png" id="4_3mrfw"]
+[ext_resource type="Texture2D" uid="uid://2e856swkfn11" path="res://skins/0/eyes_idle.png" id="5_g48mr"]
+
+[node name="aphid_slot" type="TextureButton"]
+size_flags_stretch_ratio = 2.0
+texture_normal = ExtResource("1_m4hsb")
+texture_pressed = ExtResource("2_hglfq")
+texture_hover = ExtResource("2_hglfq")
+texture_focused = ExtResource("3_0fk3s")
+
+[node name="antenna" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -36.6811
+offset_top = -42.0677
+offset_right = 163.319
+offset_bottom = 157.932
+texture = ExtResource("2_3dtyu")
+stretch_mode = 5
+
+[node name="back_legs" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -54.0
+offset_top = -46.0
+offset_right = 146.0
+offset_bottom = 154.0
+texture = ExtResource("3_305uj")
+stretch_mode = 5
+
+[node name="body" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -36.0
+offset_top = -42.0
+offset_right = 164.0
+offset_bottom = 158.0
+texture = ExtResource("4_3mrfw")
+stretch_mode = 5
+
+[node name="eyes" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -37.6811
+offset_top = -42.0677
+offset_right = 162.319
+offset_bottom = 157.932
+texture = ExtResource("5_g48mr")
+stretch_mode = 5
+
+[node name="legs" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -36.0
+offset_top = -42.0
+offset_right = 164.0
+offset_bottom = 158.0
+texture = ExtResource("3_305uj")
+stretch_mode = 5
