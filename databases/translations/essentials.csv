@@ -68,8 +68,10 @@ generations_description,"Here you can see all the aphids you have raised through
 "
 generations_owner,Owned By,Dueño De
 generations_parent,Children of,Crío de
-store_name_placeholder,Kut’s Food Cabinet,Puesto de Alimentos de Kut
-store_desc_placeholder,Purchase basic ingredients for Aphid feeding.,Adquiere ingredientes basicos para alimentar Ãfidos.
+store_kut_name,Kut’s Food Cabinet,Puesto de Alimentos de Kut
+store_kut_desc,Purchase basic ingredients for Aphid feeding.,Adquiere ingredientes basicos para alimentar Ãfidos.
+store_golden_name,Golden Name,Golden Name
+store_golden_desc,Golden Desc,Golden Desc
 bio_name_placeholder,Aphid Name,Nombre del Ãfido
 flavor_0,Sweet,Dulce
 flavor_1,Sour,Agrio

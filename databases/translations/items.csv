@@ -5,6 +5,8 @@ leaf_name,Crunchy Leaf,Hoja Crujiente
 leaf_desc,"A dry leaf, good for a snack but could be better.","Una hoja seca, un buen snack pero se podria combinar con algo más."
 shroom_name,Mushroom,Hongo
 shroom_desc,"A sour, chewwy shroom that is better cooked.","Un hongo agrio y gomoso, cocinado es preferible."
+berry_name,Fruity Berry ,Baya Frutal
+berry_desc,"A type of berry commonly cultivated in the Settlement, unlike the ones used as currency, this one tastes sweet.","Un tipo de baya comunmente cultivada en la region, a diferencia de las monetarias, esta es dulce."
 spicy_berry_name,Spicy Berry,Baya Picante
 spicy_berry_desc,"A blazing hot berry, increases strength, at a stamina cost.","Una baya ardiente de sabor, aumenta la fuerza, pero reduce el aguante."
 water_name,Clear Water,Agua Fresca
@@ -13,10 +15,36 @@ shaved_ice_name,Shaved Ice,Hielo Granizado
 shaved_ice_desc,"A cone of shaved ice, its not icecream, but it is refreshing!","Un cono de hielo granizado, es solo agua congelada, pero todavia refresca! "
 berry_juice_name,Berry Juice,Jugo de Baya
 berry_juice_desc,A refreshing drink made of locally grown berries.,Una bebida refrescante hecha con bayas de los campos dorados.
+leaf_honey_name,Honey'd Leaf,Hoja Endulzada
+leaf_honey_desc,"With a crunchy texture, yet sweet taste.","Con una textura crujiente, pero dulce sabor."
+leaf_salad_name,Leaf Salad,Ensalada de Hojas
+leaf_salad_desc,Leaves that had been chopped up to look more presentable.,"Hojas que han sido picadas y cortadas, lo cual las hace parecer más decentes."
+mushroom_salad_name,Mushroom Salad,Ensalada de Hongos
+mushroom_salad_desc,"The texture on it is quite unique, leaves you feeling dazed.","Un sabor unico, combinado con la textura variada del platillo."
+cooked_shroom_name,Cooked Shroom,Hongo Cocido
+cooked_shroom_desc,"Now that is cooked, it aint that bad, decent if one can say so.","Ahora que esta cocinado, no es tan malo como uno pensaria, por la mayor parte."
+cold_salad_name,Cold Salad,Ensalada Gélida
+cold_salad_desc,Effectively a frozen leaf salad. Edible despite all.,Effectivamente una ensalada de hojas congelada. Comestible ante todo pronostico.
+mushroom_gummies_name,Mushroom Gummies,Gomitas de Hongo
+mushroom_gummies_desc,A candy made of mushroom that tastes surprisingly well.,Un dulce hecho de hongo que sorprendentemente tiene buen sabor.
+glazed_honey_name,Glazed Honey,Miel Glaseada
+glazed_honey_desc,A common delicacy in the Bee Kingdom.,Una delicadez comun en el Reino de las Abejas.
+roasted_berries_name,Roasted Berries,Bayas Asadas
+roasted_berries_desc,The heat applied has made it taste all the sweeter than before.,Asarlas ha hecho que sean mas dulces que antes.
 mistake_name,Mistake,Decepción
 mistake_desc,"Perfectly good ingredients, gone to waste. Who would want this?!",Ingredientes de calidad a la basura. ¡¿Quién comeria esto?!
 big_mistake_name,Big Mistake,Mega Decepción
 big_mistake_desc,"Please, stop.","Porfavor, para."
+flour_bag_name,Bag of Flour,Saco de Harina
+flour_bag_desc,"Used for many recipes, and preferably, not consumed raw.","Principalmente, su uso es para recetas. No es recomendable que sea consumido."
+dry_bread_name,Dry Bread,Pan Seco
+dry_bread_desc,"A fine piece of bread that will leave you thirsty, for more! ... well, both.","Una deliciosa barra de pan que te dejara sediento, por más! ... bueno, ambas."
+icecream_name,Ice Cream,Helado
+icecream_desc,"A dessert best served cold, it does not have any particular flavour at the moment.","Un maravilloso postre, mejor servido frio, actualmente sin un sabor en particular."
+honey_icecream_name,Honey Ice Cream,Helado de Miel
+honey_icecream_desc,"A honey-flavoured icecream, so sweet and refresing!","Un helado de sabor miel, super delicioso y refrescante!"
+abomihoney_name,Abomihoney,Abomimiel
+abomihoney_desc,The result of applying way too much heat to hone- Ow! it bit me!,El resultado de calentar miel por demasiad- Ay! Pero que me ha mordido!
 aphid_egg_name,Aphid Egg,Huevo de Afido
 aphid_egg_desc,"A standard aphid egg, they soon after grow into a tiny lil Aphid.",Un huevo común de Áfido. De aquí crece un pequeñin.
 aphid_egg_red_name,Red Aphid Egg,Huevo Rojo de Afido

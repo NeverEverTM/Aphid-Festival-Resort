@@ -29,7 +29,7 @@ public partial class Aphid : CharacterBody2D
 	}
 
 	// Aphid state
-	public enum AphidState { Idle, Eat, Drink, Sleep, Play, Pet, Breed, Train }
+	public enum AphidState { Idle, Eat, Sleep, Play, Pet, Breed, Train }
 	public AphidState OurState = AphidState.Idle;
 	public bool IsDisabled;
 
@@ -45,7 +45,7 @@ public partial class Aphid : CharacterBody2D
 	private Node2D food_item;
 	private Vector2 food_item_position, food_item_direction;
 	private int foodgobble_shutter_speed;
-	private bool is_food_favorite, current_food_mode, food_item_switch;
+	private bool is_food_favorite, food_item_switch;
 	private float gobble_timer, hunger_decay_timer;
 	private const float gobble_duration = 2f, hunger_decay = 10.5f, food_pursue_duration = 5f;
 	private Timer food_pursue_timer = new(), food_gc_timer = new();
@@ -92,7 +92,6 @@ public partial class Aphid : CharacterBody2D
 		food_item_position = new(25, 0)
 ;
 		triggerArea.BodyEntered += OnTriggerEnter;
-		TriggerActions.Add("drink", (Node2D n) => OnFoodTrigger(n, false));
 		TriggerActions.Add("food", (Node2D n) => OnFoodTrigger(n));
 		TriggerActions.Add("player", OnPlayerTrigger);
 
@@ -211,7 +210,6 @@ public partial class Aphid : CharacterBody2D
 				OnIdleLoop(_delta);
 				break;
 			case AphidState.Eat:
-			case AphidState.Drink:
 				if (gobble_timer > 0)
 					TickFoodGobble(_delta);
 				else
@@ -238,7 +236,6 @@ public partial class Aphid : CharacterBody2D
 		switch (OurState)
 		{
 			case AphidState.Eat:
-			case AphidState.Drink:
 				food_item = null;
 				is_food_favorite = false;
 				break;
@@ -349,7 +346,15 @@ public partial class Aphid : CharacterBody2D
 			food_item_direction = skin.IsFlipped ? -food_item_position : food_item_position;
 			food_item.GlobalPosition = GlobalPosition + food_item_direction;
 
-			(food_item.GetChild(1) as CollisionShape2D).Disabled = true;
+			for (int i = 0; i < food_item.GetChildCount(); i++)
+			{
+				if (food_item.GetChild(i).IsClass("CollisionShape2D"))
+				{
+					(food_item.GetChild(i) as CollisionShape2D).Disabled = true;
+					break;
+				}
+			}
+			
 			food_pursue_timer.Stop();
 			gobble_timer = gobble_duration;
 		}
@@ -382,10 +387,11 @@ public partial class Aphid : CharacterBody2D
 				string _id = food_item.GetMeta("id").ToString();
 				GameManager.Food _food = GameManager.G_FOOD[_id];
 				float _multi = Instance.Genes.FoodMultipliers[(int)_food.type];
-				if (current_food_mode)
-					SetHunger(_food.value * _multi);
-				else
-					SetThirst(_food.value * _multi);
+				if (_food.food_value > 0)
+					SetHunger(_food.food_value * _multi);
+
+				if (_food.drink_value > 0)
+					SetThirst(_food.drink_value * _multi);
 
 				food_item.QueueFree();
 			}
@@ -617,7 +623,7 @@ public partial class Aphid : CharacterBody2D
 		skin.Material = null;
 		// result
 		Instance.Status.MilkBuildup = 0;
-		Player.Data.Currency += Instance.Status.IsAdult ? 10 : 5;
+		Player.Data.Currency += Instance.Status.IsAdult ? AphidData.moneyPerHarvest_adult : AphidData.moneyPerHarvest_baby;
 	}
 	protected virtual void TickProduction(float _delta)
 	{
@@ -776,44 +782,32 @@ public partial class Aphid : CharacterBody2D
 			TriggerActions[_tag](_node);
 	}
 
-	protected virtual void OnFoodTrigger(Node2D _node, bool _mode = true)
+	protected virtual void OnFoodTrigger(Node2D _node)
 	{
-		switch (OurState) // Anything that is not a valid state, returns
-		{
-			case AphidState.Idle:
-				break;
-			case AphidState.Eat:
-				if (!_mode)
-					return;
-				break;
-			case AphidState.Drink:
-				if (_mode) // _mode is to reutilize this code for drink items :bigbren: 
-					return;
-				break;
-			default:
-				return;
-		}
-
-		// if is now consuming, already pursuing said item, or its marked for ignore, dont bother
-		if (gobble_timer > 0 ||
+		// if is 1-currently consuming, 2- in the wrong state, 
+		// 3-already pursuing said item, or 4-its marked for ignore, dont bother
+		if (IsEating || (OurState == AphidState.Idle == (OurState == AphidState.Eat)) ||
 		(food_item != null && food_item.Equals(_node)) ||
 		(food_ignore_list.Count > 0 && food_ignore_list.Exists((Node2D _n) => CheckIfIgnore(_n, _node))))
 			return;
 
-		var _flavor = GameManager.G_FOOD[_node.GetMeta("id").ToString()].type;
-		// if Vile, reject it cause yucky, unless you like it for some reason or are starving
-		if (_flavor == AphidData.FoodType.Vile && _flavor != Instance.Genes.FoodPreference && Instance.Status.Hunger > 15)
+		var _foodItem = GameManager.G_FOOD[_node.GetMeta("id").ToString()];
+		var _flavor = _foodItem.type;
+		// if Vile, reject it cause yucky, unless you like it for some reason
+		if (_flavor == AphidData.FoodType.Vile && _flavor != Instance.Genes.FoodPreference)
 			return;
-		// If not hungy/thirsty, dont bother, unless is your favorite
+
+		// If not hungy/thirsty, cancel, items that give both, wait until you are full to return
+		// favorites ignore how full you are
 		var _isfavorite = Instance.Genes.FoodPreference == _flavor;
-		if (_mode)
+		if (!_isfavorite)
 		{
-			if (Instance.Status.Hunger > 85 && !_isfavorite)
+			bool _givesFood = _foodItem.drink_value > 0, _givesDrink = _foodItem.food_value > 0;
+
+			if (_givesDrink && Instance.Status.Thirst >= (_givesFood ? 100 : 80)) 
 				return;
-		}
-		else
-		{
-			if (Instance.Status.Thirst > 85 && !_isfavorite)
+
+			if (_givesFood && Instance.Status.Hunger >= (_givesDrink ? 100 : 80)) 
 				return;
 		}
 
@@ -836,10 +830,9 @@ public partial class Aphid : CharacterBody2D
 		food_item = _node;
 		food_pursue_timer.Start(food_pursue_duration);
 		is_food_favorite = _isfavorite;
-		current_food_mode = _mode;
 
 		if (OurState == AphidState.Idle)
-			SetAphidState(_mode ? AphidState.Eat : AphidState.Drink);
+			SetAphidState(AphidState.Eat);
 	}
 	private static bool CheckIfIgnore(Node2D _n, Node2D _node)
 	{

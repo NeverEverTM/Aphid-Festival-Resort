@@ -45,7 +45,7 @@ public partial class MainMenu : Node2D
 	{
 		if (!HasBeenIntialized)
 			await GameManager.PREPARE_GAME_PROCESS();
-			
+
 		// instance variables
 		sweep_animator.Play("loading");
 		player_input_name.Text = defaultName;
@@ -82,17 +82,18 @@ public partial class MainMenu : Node2D
 			GameManager.BOOT_LOADING_LABEL = BOOT_LOADING_LABEL;
 			await GameManager.INTIALIZE_GAME_PROCESS();
 			SpawnBunchaOfAphidsForTheFunnies();
+			hover_start.Text = $"[wave amp=50.0 freq=5.0 connected=1][center]{Tr("press_start")}[/center][/wave]";
 			logo_animator.Play("slide_down");
 			sweep_animator.Play("slide_up");
 		}
 		else
 		{
 			SpawnBunchaOfAphidsForTheFunnies();
+			SetHoverStart();
 			logo_animator.Play("slide_down");
 			sweep_animator.Play("RESET");
 		}
 
-		hover_start.Text = $"[wave amp=50.0 freq=5.0 connected=1][center]{Tr("press_start")}[/center][/wave]";
 		HasBeenIntialized = true;
 	}
 	public override void _Input(InputEvent _event)
@@ -101,7 +102,7 @@ public partial class MainMenu : Node2D
 			return;
 
 		bool _resortIsFocused = resort_input_name.HasFocus(), _playerIsFocused = player_input_name.HasFocus();
-		if (!start_panel.Visible && ((Input.IsActionJustPressed("cancel") && !_resortIsFocused && !_playerIsFocused) 
+		if (!start_panel.Visible && ((Input.IsActionJustPressed("cancel") && !_resortIsFocused && !_playerIsFocused)
 		|| Input.IsActionJustPressed("escape")))
 		{
 			SetMenu();
@@ -117,7 +118,7 @@ public partial class MainMenu : Node2D
 			{
 				if (_resortIsFocused)
 					new_game_button.GrabFocus();
-				else  if (_playerIsFocused)
+				else if (_playerIsFocused)
 					resort_input_name.GrabFocus();
 				else
 					player_input_name.GrabFocus();
@@ -128,7 +129,7 @@ public partial class MainMenu : Node2D
 			{
 				if (_resortIsFocused)
 					player_input_name.GrabFocus();
-				else  if (_playerIsFocused)
+				else if (_playerIsFocused)
 					new_game_button.GrabFocus();
 				else
 					resort_input_name.GrabFocus();
@@ -173,11 +174,13 @@ public partial class MainMenu : Node2D
 
 		// "Press to Start" prompt
 		if (hover_start.Visible && Input.IsActionJustPressed("interact"))
-		{
-			hover_start.Hide();
-			SetButtonWheel(MenuActions.Count, () => MenuActions[category](), SwitchCategories);
-			SoundManager.CreateSound(selectSound);
-		}
+			SetHoverStart();
+	}
+	private void SetHoverStart()
+	{
+		hover_start.Hide();
+		SetButtonWheel(MenuActions.Count, () => MenuActions[category](), SwitchCategories);
+		SoundManager.CreateSound(Aphid.Audio_Idle);
 	}
 
 	private void ProcessButtonWheel()

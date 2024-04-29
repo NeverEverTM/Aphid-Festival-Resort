@@ -230,9 +230,26 @@ public static class SaveSystem
 		/// Attempts to use the loaded data to set itself up.
 		/// </summary>
 		public Task LoadData(string _json);
+		public Task SetData();
 	}
 
 	// ==========| Profile Managment Methods |==========
+	// Used for new games to set default vaules to all serializeables
+	public static async Task SetProfileData()
+	{
+		// Load all save data classes
+		for (int i = 0; i < ProfileData.Count; i++)
+		{
+			try
+			{
+				await ProfileData[i].SetData();
+			}
+			catch (Exception _err)
+			{
+				GD.PrintErr(_err);
+			}
+		}
+	}
 	public static void SetProfile(string _profile = defaultProfile)
 	{
 		CurrentProfilePath = $"{ProfilesDirectory}/{_profile}";

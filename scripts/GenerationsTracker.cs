@@ -23,6 +23,12 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
     {
         return JsonSerializer.Serialize(Data);
     }
+    public Task SetData()
+	{
+		Data = new();
+		return Task.CompletedTask;
+	}
+    
     public class Savefile
     {
         public Dictionary<Guid, AphidData.Genes> Generations { get; set; }

@@ -31,7 +31,8 @@ public partial class AphidData : Node
 		"Axel", "Lea", "Sky",
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	};
-	public const int adulthoodAge = 900, breedTimer = 600, deathAge = 7000, productionCooldown = 120;
+	public const int adulthoodAge = 900, breedTimer = 600, deathAge = 7000, productionCooldown = 120,
+		moneyPerHarvest_baby = 5, moneyPerHarvest_adult = 10;
 
 	public class Status
 	{

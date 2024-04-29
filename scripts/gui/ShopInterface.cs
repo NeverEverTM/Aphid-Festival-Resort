@@ -1,51 +1,29 @@
+using System.Collections.Generic;
 using Godot;
 
-public partial class KitchenStore : Node2D
+// Used for the UI interface you interact with
+public partial class ShopInterface : Control
 {
-	[Export] private Area2D triggerArea;
-	[Export] private AudioStream buySound, selectSound;
-	[ExportCategory("Store")]
+	[Export] private string shopTag;
+	[Export] private ShopEntity entity;
 	[Export] private AnimationPlayer storePanel;
 	[Export] private GridContainer itemGrid;
 	[Export] private Label itemName, itemDescription, itemCost;
 	[Export] private TextureRect itemIcon;
 	[Export] private PackedScene itemContainer;
 
-	private bool IsActive, IsNearby;
+	[Export] private AudioStream buySound, selectSound;
 	private string currentItem;
 	private int currentCost;
 
-	public override void _Ready()
-	{
-		triggerArea.AreaEntered += (Area2D _node) => IsNearby = true;
-		triggerArea.AreaExited += (Area2D _node) => IsNearby = false;
-	}
-
-	public override void _Process(double delta)
-	{
-		if (!IsNearby)
-			return;
-
-		if (IsActive)
-		{
-			if (!CanvasManager.IsInMenu)
-				IsActive = false;
-			return;
-		}
-
-		if (Input.IsActionJustPressed("interact"))
-			OpenStore();
-	}
-
-	// Store
 	public void OpenStore()
 	{
-		IsActive = true;
+		entity.IsActive = true;
 
 		// Reset the expositor
 		currentItem = string.Empty;
-		itemName.Text = Tr("store_name_placeholder");
-		itemDescription.Text = Tr("store_desc_placeholder");
+		itemName.Text = Tr($"store_{shopTag}_name");
+		itemDescription.Text = Tr($"store_{shopTag}_desc");
 		itemCost.Text = "$";
 		itemIcon.Texture = null;
 		CleanShelf();
@@ -58,24 +36,23 @@ public partial class KitchenStore : Node2D
 	// ===============| Shelf products |=============
 	private void CreateShelf()
 	{
-		string[] _globalItems = DirAccess.GetFilesAt(GameManager.ItemPath);
-
 		// Create items
-		for (int i = 0; i < _globalItems.Length; i++)
+		foreach (KeyValuePair<string, GameManager.Item> _pair in GameManager.G_ITEMS)
 		{
-			string _itemName = _globalItems[i].Remove(_globalItems[i].Length - 5); // delete the .tscn extension
-			if (!GameManager.G_ITEMS[_itemName].canBeBought)
+			// is it related to this store?
+			if (!_pair.Value.shopTag.Equals(shopTag))
 				continue;
 
-			TextureButton _item = itemContainer.Instantiate() as TextureButton;
+			// create item slot
+			TextureButton _itemSlot = itemContainer.Instantiate() as TextureButton;
+			itemGrid.AddChild(_itemSlot);
 
-			if (!GameManager.G_ICONS.ContainsKey(_itemName))
-				(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS["missing"];
-			else
-				(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[_itemName];
-			_item.Pressed += () => GetShelfItem(_itemName);
+			// set icon
+			(_itemSlot.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS
+			[GameManager.G_ICONS.ContainsKey(_pair.Key) ? _pair.Key : "missing"];
 
-			itemGrid.AddChild(_item);
+			// set behaviour
+			_itemSlot.Pressed += () => GetShelfItem(_pair.Key);
 		}
 	}
 	private void CleanShelf()

@@ -42,11 +42,15 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 			GD.PrintErr("This player data was empty!");
 			return Task.CompletedTask;
 		}
-		
 		Data = JsonSerializer.Deserialize<SaveFile>(_json);
 		Instance.GlobalPosition = new Vector2(Data.PositionX, Data.PositionY);
 		for (int i = 0; i < Data.Inventory.Count; i++)
 			Instance.CreateInvItem(i);
+		return Task.CompletedTask;
+	}
+	public Task SetData()
+	{
+		Data = new();
 		return Task.CompletedTask;
 	}
 }

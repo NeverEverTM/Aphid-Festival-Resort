@@ -1,8 +1,38 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddw72xf4o5h3x"]
+[gd_scene load_steps=8 format=3 uid="uid://ddw72xf4o5h3x"]
 
 [ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_xdrh8"]
 [ext_resource type="Texture2D" uid="uid://dackluogv1m7p" path="res://sprites/icons/big_mistake.tres" id="2_5f6oq"]
 [ext_resource type="PackedScene" uid="uid://dsumfeixta5kj" path="res://scenes/particles/mistake.tscn" id="3_f2vgl"]
+[ext_resource type="Texture2D" uid="uid://00e3bwje1sas" path="res://sprites/icons/missing.tres" id="4_ag2rd"]
+
+[sub_resource type="Curve" id="Curve_2bjqr"]
+_data = [Vector2(0, 0.969811), 0.0, 0.0, 0, 0, Vector2(1, 0.0339622), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_x7yw8"]
+curve = SubResource("Curve_2bjqr")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_umrmf"]
+lifetime_randomness = 1.0
+particle_flag_disable_z = true
+inherit_velocity_ratio = 1.0
+spread = 180.0
+initial_velocity_min = 15.0
+initial_velocity_max = 15.0
+angular_velocity_min = -67.55
+angular_velocity_max = 109.09
+orbit_velocity_min = -0.71
+orbit_velocity_max = 0.715
+gravity = Vector3(0, 0, 0)
+scale_min = 0.25
+scale_max = 0.5
+alpha_curve = SubResource("CurveTexture_x7yw8")
+turbulence_noise_strength = 18.55
+turbulence_noise_scale = 10.0
+turbulence_noise_speed = Vector3(-0.15, 0.425, 0)
+turbulence_noise_speed_random = 4.0
+turbulence_influence_min = 0.45
+turbulence_influence_max = 1.0
 
 [node name="big_mistake" instance=ExtResource("1_xdrh8")]
 metadata/food_type = 4
@@ -11,4 +41,10 @@ metadata/food_value = 20.0
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("2_5f6oq")
 
-[node name="GPU_HeartParticles" parent="." index="2" instance=ExtResource("3_f2vgl")]
+[node name="GPU_Particles" parent="." index="2" instance=ExtResource("3_f2vgl")]
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_umrmf")
+texture = ExtResource("4_ag2rd")
+explosiveness = 0.6
+interpolate = false
+fract_delta = false

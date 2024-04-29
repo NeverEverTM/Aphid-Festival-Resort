@@ -46,4 +46,9 @@ public partial class OptionsManager : Node, SaveSystem.ISaveData
 
         return Task.CompletedTask;
     }
+    public Task SetData()
+	{
+		Data = new();
+		return Task.CompletedTask;
+	}
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=86 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=87 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" path="res://scripts/managers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="Script" path="res://scripts/managers/CanvasManager.cs" id="1_f7ynu"]
@@ -29,7 +29,7 @@
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="20_vysaa"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="20_xk6tt"]
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="21_ckdvb"]
-[ext_resource type="Script" path="res://scripts/gui/KitchenStore.cs" id="21_j3pjv"]
+[ext_resource type="Script" path="res://scripts/gui/ShopInterface.cs" id="21_j3pjv"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="26_wywci"]
 [ext_resource type="Script" path="res://scripts/GenerationsTracker.cs" id="27_tn61h"]
 [ext_resource type="AudioStream" uid="uid://deyj10uei0gk1" path="res://sfx/ui/kaching.wav" id="28_12dyb"]
@@ -50,6 +50,7 @@
 [ext_resource type="Texture2D" uid="uid://cu26vowepfgr4" path="res://sprites/ui/image1.PNG" id="38_vxrb6"]
 [ext_resource type="Texture2D" uid="uid://bfv23e4fa8qa7" path="res://sprites/ui/image2.PNG" id="39_25jco"]
 [ext_resource type="Texture2D" uid="uid://cygbj5vvsndv0" path="res://sprites/ui/image3.PNG" id="40_q0sqj"]
+[ext_resource type="Script" path="res://scripts/gui/ShopEntity.cs" id="47_fuwni"]
 
 [sub_resource type="Animation" id="Animation_5upln"]
 length = 0.001
@@ -737,6 +738,9 @@ shader_parameter/number_of_images = Vector2(1, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_gopes"]
 font_size = 30
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hqa00"]
+size = Vector2(95, 26)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hty1o"]
 size = Vector2(96.9217, 28.0975)
 
@@ -745,9 +749,6 @@ size = Vector2(63.2099, 14.0489)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b1soq"]
 size = Vector2(36.8724, 14.0489)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_2hapi"]
-size = Vector2(93.4938, 12.0244)
 
 [node name="resort" type="Node2D" node_paths=PackedStringArray("EntityRoot")]
 script = ExtResource("1_ay1ca")
@@ -853,10 +854,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 121.0
-offset_top = 327.0
-offset_right = 121.0
-offset_bottom = 327.0
+offset_left = -455.0
+offset_top = 3.0
+offset_right = -455.0
+offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_stretch_ratio = 14.62
@@ -1128,7 +1129,7 @@ libraries = {
 "": SubResource("AnimationLibrary_7mn38")
 }
 
-[node name="shop_panel" type="Control" parent="canvas"]
+[node name="shop_panel" type="Control" parent="canvas" node_paths=PackedStringArray("entity", "storePanel", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon")]
 visible = false
 layout_mode = 3
 anchors_preset = 8
@@ -1143,9 +1144,21 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("19_1ygmy")
+script = ExtResource("21_j3pjv")
+shopTag = "kut"
+entity = NodePath("../../kitchen")
+storePanel = NodePath("store_animator")
+itemGrid = NodePath("item_box/ScrollContainer/item_container")
+itemName = NodePath("item_info/name/name_text")
+itemDescription = NodePath("item_info/desc/desc_text")
+itemCost = NodePath("item_info/cost/cost_text")
+itemIcon = NodePath("item_info/icon/image")
+itemContainer = ExtResource("19_xfhfg")
+buySound = ExtResource("28_12dyb")
+selectSound = ExtResource("29_v56ow")
 
 [node name="item_box" type="TextureRect" parent="canvas/shop_panel"]
-self_modulate = Color(0.537255, 0.364706, 0.109804, 1)
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
 offset_left = -1200.0
 offset_top = -299.0
@@ -1153,73 +1166,75 @@ offset_right = -714.0
 offset_bottom = 346.0
 texture = ExtResource("1_qes7a")
 
-[node name="item_container" type="GridContainer" parent="canvas/shop_panel/item_box"]
+[node name="ScrollContainer" type="ScrollContainer" parent="canvas/shop_panel/item_box"]
 layout_mode = 0
-offset_left = 46.0
-offset_top = 59.0
-offset_right = 570.0
-offset_bottom = 751.0
-scale = Vector2(0.75, 0.75)
-columns = 4
+offset_left = 37.0
+offset_top = 52.0
+offset_right = 457.0
+offset_bottom = 592.0
 
-[node name="item" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item_container" type="GridContainer" parent="canvas/shop_panel/item_box/ScrollContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="item" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item2" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item2" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item3" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item3" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item4" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item4" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item5" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item5" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item6" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item6" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item7" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item7" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item8" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item8" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item9" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item9" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item10" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item10" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item11" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item11" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item12" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item12" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item13" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item13" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item14" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item14" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item15" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item15" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item16" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item16" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item17" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item17" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item18" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item18" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item19" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item19" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
-[node name="item20" parent="canvas/shop_panel/item_box/item_container" instance=ExtResource("19_xfhfg")]
+[node name="item20" parent="canvas/shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("19_xfhfg")]
 layout_mode = 2
 
 [node name="item_info" type="Control" parent="canvas/shop_panel"]
@@ -1229,7 +1244,7 @@ offset_right = 740.0
 offset_bottom = 40.0
 
 [node name="name" type="TextureRect" parent="canvas/shop_panel/item_info"]
-self_modulate = Color(0.666667, 0.254902, 0, 1)
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
 offset_left = -12.0
 offset_top = 18.0
@@ -1244,62 +1259,35 @@ offset_left = 35.0
 offset_top = 13.0
 offset_right = 557.0
 offset_bottom = 67.0
-text = "store_name_placeholder"
+text = "store_kut_desc"
 autowrap_mode = 3
-
-[node name="cost" type="TextureRect" parent="canvas/shop_panel/item_info"]
-self_modulate = Color(0.666667, 0.254902, 0, 1)
-layout_mode = 0
-offset_left = 23.0
-offset_top = -63.0
-offset_right = 211.0
-offset_bottom = 17.0
-texture = ExtResource("20_qhpvf")
-expand_mode = 1
-
-[node name="cost_text" type="Label" parent="canvas/shop_panel/item_info/cost"]
-layout_mode = 0
-offset_left = 68.0
-offset_top = 15.0
-offset_right = 167.0
-offset_bottom = 69.0
-text = "$"
-autowrap_mode = 3
-
-[node name="icon" type="TextureRect" parent="canvas/shop_panel/item_info/cost"]
-layout_mode = 0
-offset_left = 19.0
-offset_top = 17.0
-offset_right = 59.0
-offset_bottom = 57.0
-texture = ExtResource("20_vysaa")
 
 [node name="desc" type="TextureRect" parent="canvas/shop_panel/item_info"]
-self_modulate = Color(0.537255, 0.364706, 0.109804, 1)
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
 offset_left = -10.0
 offset_top = 76.0
 offset_right = 585.0
-offset_bottom = 340.0
-texture = ExtResource("20_qhpvf")
+offset_bottom = 355.0
+texture = ExtResource("30_4ye0s")
 expand_mode = 1
 
 [node name="desc_text" type="Label" parent="canvas/shop_panel/item_info/desc"]
 layout_mode = 0
 offset_left = 51.0
-offset_top = 27.0
+offset_top = 38.0
 offset_right = 542.0
-offset_bottom = 235.0
-text = "store_desc_placeholder"
+offset_bottom = 240.0
+text = "store_kut_desc"
 autowrap_mode = 3
 
 [node name="icon" type="TextureRect" parent="canvas/shop_panel/item_info"]
-self_modulate = Color(0.537255, 0.364706, 0.109804, 1)
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
-offset_left = 239.0
-offset_top = -267.0
-offset_right = 523.0
-offset_bottom = 5.0
+offset_left = 3.0
+offset_top = -277.0
+offset_right = 287.0
+offset_bottom = -5.0
 texture = ExtResource("1_qes7a")
 
 [node name="image" type="TextureRect" parent="canvas/shop_panel/item_info/icon"]
@@ -1309,6 +1297,33 @@ offset_top = 38.0
 offset_right = 238.0
 offset_bottom = 229.0
 expand_mode = 1
+
+[node name="cost" type="TextureRect" parent="canvas/shop_panel/item_info"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = 51.0
+offset_top = -48.0
+offset_right = 239.0
+offset_bottom = 13.0
+texture = ExtResource("30_4ye0s")
+expand_mode = 1
+
+[node name="cost_text" type="Label" parent="canvas/shop_panel/item_info/cost"]
+layout_mode = 0
+offset_left = 67.0
+offset_top = 7.0
+offset_right = 166.0
+offset_bottom = 61.0
+text = "$213"
+autowrap_mode = 3
+
+[node name="icon" type="TextureRect" parent="canvas/shop_panel/item_info/cost"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 9.0
+offset_right = 57.0
+offset_bottom = 49.0
+texture = ExtResource("20_vysaa")
 
 [node name="store_animator" type="AnimationPlayer" parent="canvas/shop_panel"]
 libraries = {
@@ -1783,77 +1798,66 @@ frame_progress = 0.0
 character = "kut"
 action = "shop"
 
-[node name="kitchen_counter" type="Node2D" parent="." node_paths=PackedStringArray("triggerArea", "storePanel", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon")]
+[node name="kitchen" type="Node2D" parent="." node_paths=PackedStringArray("triggerArea", "shopInterface")]
 z_index = -449
 y_sort_enabled = true
-position = Vector2(470, -449)
-scale = Vector2(0.949219, 0.854167)
-script = ExtResource("21_j3pjv")
+position = Vector2(469, -449)
+script = ExtResource("47_fuwni")
 triggerArea = NodePath("trigger_store")
-buySound = ExtResource("28_12dyb")
-selectSound = ExtResource("29_v56ow")
-storePanel = NodePath("../canvas/shop_panel/store_animator")
-itemGrid = NodePath("../canvas/shop_panel/item_box/item_container")
-itemName = NodePath("../canvas/shop_panel/item_info/name/name_text")
-itemDescription = NodePath("../canvas/shop_panel/item_info/desc/desc_text")
-itemCost = NodePath("../canvas/shop_panel/item_info/cost/cost_text")
-itemIcon = NodePath("../canvas/shop_panel/item_info/icon/image")
-itemContainer = ExtResource("19_xfhfg")
+shopInterface = NodePath("../canvas/shop_panel")
 
-[node name="counter" type="Sprite2D" parent="kitchen_counter"]
-position = Vector2(-4.214, -3.51221)
+[node name="trigger_store" type="Area2D" parent="kitchen"]
+position = Vector2(-21, 22)
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/trigger_store"]
+position = Vector2(16.5, 16)
+shape = SubResource("RectangleShape2D_hqa00")
+
+[node name="counter" type="Sprite2D" parent="kitchen"]
+position = Vector2(-4.21399, -3.51221)
 texture = ExtResource("30_hexyg")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="kitchen_counter/counter"]
+[node name="StaticBody2D" type="StaticBody2D" parent="kitchen/counter"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/counter/StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/counter/StaticBody2D"]
 position = Vector2(0, 8.19501)
 shape = SubResource("RectangleShape2D_hty1o")
 
-[node name="large_box" type="Sprite2D" parent="kitchen_counter"]
+[node name="large_box" type="Sprite2D" parent="kitchen"]
 position = Vector2(-75.8518, -11.7073)
 texture = ExtResource("31_ttjlq")
 
-[node name="top_box" type="Sprite2D" parent="kitchen_counter/large_box"]
+[node name="top_box" type="Sprite2D" parent="kitchen/large_box"]
 position = Vector2(12.642, -31.6097)
 texture = ExtResource("32_fdvne")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="kitchen_counter/large_box"]
+[node name="StaticBody2D" type="StaticBody2D" parent="kitchen/large_box"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/large_box/StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/large_box/StaticBody2D"]
 position = Vector2(-3.05176e-05, 9.36584)
 shape = SubResource("RectangleShape2D_rk45n")
 
-[node name="box" type="Sprite2D" parent="kitchen_counter"]
+[node name="box" type="Sprite2D" parent="kitchen"]
 position = Vector2(46.3539, -11.7073)
 rotation = 1.5708
 texture = ExtResource("32_fdvne")
 
-[node name="above_box" type="Sprite2D" parent="kitchen_counter/box"]
+[node name="above_box" type="Sprite2D" parent="kitchen/box"]
 position = Vector2(-31.6097, -5.26749)
 texture = ExtResource("32_fdvne")
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="kitchen_counter/box"]
+[node name="StaticBody2D2" type="StaticBody2D" parent="kitchen/box"]
 position = Vector2(-1.19209e-05, -1.05351)
 rotation = -1.5708
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/box/StaticBody2D2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/box/StaticBody2D2"]
 position = Vector2(1.58014, 9.36591)
 shape = SubResource("RectangleShape2D_b1soq")
 
-[node name="rug" type="Sprite2D" parent="kitchen_counter"]
+[node name="rug" type="Sprite2D" parent="kitchen"]
 position = Vector2(-4.21399, 55.0244)
 texture = ExtResource("33_mtgjl")
-
-[node name="trigger_store" type="Area2D" parent="kitchen_counter"]
-position = Vector2(-5.26749, 25.7561)
-input_pickable = false
-monitorable = false
-metadata/store = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_counter/trigger_store"]
-position = Vector2(0.660614, 4.84149)
-shape = SubResource("RectangleShape2D_2hapi")
 
 [node name="joy" parent="." instance=ExtResource("28_py445")]
 position = Vector2(-759, -161)

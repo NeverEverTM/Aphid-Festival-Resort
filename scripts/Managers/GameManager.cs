@@ -38,24 +38,26 @@ public partial class GameManager : Node2D
 	{
 		public readonly int cost;
 		public readonly int unlockableLevel;
-		public readonly bool canBeBought;
 		public readonly string tag;
-		public Item(int cost, int unlockableLevel, bool canBeBought, string tag)
+		public readonly string shopTag;
+		public Item(int cost, int unlockableLevel, string tag, string shopTag)
 		{
 			this.cost = cost;
 			this.unlockableLevel = unlockableLevel;
-			this.canBeBought = canBeBought;
 			this.tag = tag;
+			this.shopTag = shopTag;
 		}
 	}
 	public readonly struct Food
 	{
 		public readonly AphidData.FoodType type;
-		public readonly float value;
-		public Food(AphidData.FoodType type, float value)
+		public readonly float food_value;
+		public readonly float drink_value;
+		public Food(AphidData.FoodType type, float food_value, float drink_value)
 		{
 			this.type = type;
-			this.value = value;
+			this.food_value = food_value;
+			this.drink_value = drink_value;
 		}
 	}
 
@@ -268,8 +270,8 @@ public partial class GameManager : Node2D
 			Item _item = new(
 				cost: int.Parse(_info[1]),
 				unlockableLevel: int.Parse(_info[2]),
-				canBeBought: bool.Parse(_info[3]),
-				tag: _info[4].ToString()
+				tag: _info[3].ToString(),
+				shopTag: _info[4].ToString()
 			);
 			G_ITEMS.Add(_info[0], _item);
 		}
@@ -284,7 +286,8 @@ public partial class GameManager : Node2D
 			string[] _info = _file.GetCsvLine();
 			Food _item = new(
 				type: (AphidData.FoodType)int.Parse(_info[1]),
-				value: float.Parse(_info[2])
+				food_value: float.Parse(_info[2]),
+				drink_value: float.Parse(_info[3])
 			);
 			G_FOOD.Add(_info[0], _item);
 		}

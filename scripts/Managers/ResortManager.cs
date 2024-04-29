@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 using Godot;
 using System.Text.Json;
 
@@ -45,7 +44,6 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 		}
 		return JsonSerializer.Serialize(Data);
 	}
-
 	public Task LoadData(string _json)
 	{
 		Data = JsonSerializer.Deserialize<Savefile>(_json);
@@ -54,6 +52,11 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 		for (int i = 0; i < Data.Items.Length; i++)
 			CreateItem(Data.Items[i].Id, new(Data.Items[i].PositionX, Data.Items[i].PositionY));
 
+		return Task.CompletedTask;
+	}
+	public Task SetData()
+	{
+		Data = new();
 		return Task.CompletedTask;
 	}
 
@@ -67,6 +70,7 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 	public override async void _Ready()
 	{
 		// On New game, put intro cutscene, otherwise just load normally
+		await SaveSystem.SetProfileData();
 		if (!IsNewGame)
 			await SaveSystem.LoadProfileData();
 		else
@@ -140,14 +144,31 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 	}
 	public static Node2D CreateItem(string _item_name, Vector2 _position)
 	{
+		Node2D _item;
 		string _path = $"{GameManager.ItemPath}/{_item_name}.tscn";
-		if (!ResourceLoader.Exists(_path))
+		if (ResourceLoader.Exists(_path))
+			// this is used if an item has a more complex structure or contains extra data, thus needing an unique node
+			_item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
+		else
 		{
-			GD.PrintErr($"{_item_name} is not a valid .tscn in the folder");
-			return null;
+			// create a new item dynamically
+			_item = new RigidBody2D(){
+				GravityScale = 0
+			};
+			_item.AddChild(new CollisionShape2D()
+			{
+				Shape = new CircleShape2D()
+				{
+					Radius = 5
+				}
+			});
+			_item.AddChild(new Sprite2D()
+			{
+				Texture = GameManager.G_ICONS[GameManager.G_ICONS.ContainsKey(_item_name) ? _item_name : "missing"]
+			});
 		}
 
-		Node2D _item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
+		_item.SetMeta("pickup", true);
 		_item.SetMeta("id", _item_name);
 		_item.SetMeta("tag", GameManager.G_ITEMS[_item_name].tag);
 		_item.GlobalPosition = _position;
