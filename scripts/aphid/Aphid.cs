@@ -6,6 +6,10 @@ using Godot;
 public partial class Aphid : CharacterBody2D
 {
 	public AphidInstance Instance;
+	/// <summary>
+	/// For aphids that do not belong to the player, acting as NPCs.
+	/// </summary>
+	public bool IS_FAKE = false;
 
 	[Export] public AphidSkin skin;
 	[Export] private Area2D triggerArea;
@@ -47,21 +51,21 @@ public partial class Aphid : CharacterBody2D
 	private int foodgobble_shutter_speed;
 	private bool is_food_favorite, food_item_switch;
 	private float gobble_timer, hunger_decay_timer;
-	private const float gobble_duration = 2f, hunger_decay = 10.5f, food_pursue_duration = 5f;
+	private const float gobble_duration = 2f, hunger_decay = 14.5f, food_pursue_duration = 5f;
 	private Timer food_pursue_timer = new(), food_gc_timer = new();
 	private readonly List<Node2D> food_ignore_list = new();
 	// Drinking Params (Drinking shares values with Eating but not the other way around)
 	private float thirst_decay_timer;
-	private const float thirst_decay = 6.8f;
+	private const float thirst_decay = 8.8f;
 
 	// Sleeping Params
 	private float sleep_decay_timer, sleep_gain_timer;
-	private const float sleep_decay = 10.5f, sleep_gain = 4.5f;
+	private const float sleep_decay = 9.5f, sleep_gain = 4.5f;
 	private GpuParticles2D sleep_effect;
 
 	// Petting Params And Affection too
 	private float pet_timer, affection_decay_timer;
-	private const float pet_duration = 2f, affection_decay = 13.2f;
+	private const float affection_decay = 13.2f;
 
 	// Breeding Params
 	public bool IsBreeding;
@@ -89,19 +93,18 @@ public partial class Aphid : CharacterBody2D
 	{
 		// ===| Set Default Params |===
 		idle_position = GlobalPosition;
-		food_item_position = new(25, 0)
-;
-		triggerArea.BodyEntered += OnTriggerEnter;
-		TriggerActions.Add("food", (Node2D n) => OnFoodTrigger(n));
-		TriggerActions.Add("player", OnPlayerTrigger);
-
+		food_item_position = new(25, -10);
 		SetTimers();
 
 		// Set Aphid Data
-
 		skin.SetInstance(Instance, this);
 		skin.SetSkin("idle");
 		MovementSpeed = 20; // + (0.15f * Instance.Genes.Level);
+
+		// Triggers
+		triggerArea.BodyEntered += OnTriggerEnter;
+		TriggerActions.Add("food", (Node2D n) => OnFoodTrigger(n));
+		TriggerActions.Add("player", OnPlayerTrigger);
 	}
 	private void SetTimers()
 	{
@@ -155,6 +158,7 @@ public partial class Aphid : CharacterBody2D
 		switch (Instance.Status.LastActiveState)
 		{
 			case AphidState.Sleep:
+				GD.Print("was sleepy");
 				Sleep();
 				break;
 			case AphidState.Breed:
@@ -168,9 +172,11 @@ public partial class Aphid : CharacterBody2D
 	// ==========| Update Processes |===========
 	public override void _Process(double delta)
 	{
+		if (IS_FAKE)
+			return;
+
 		float _delta = (float)delta;
 		Instance.Status.LastActiveState = OurState;
-		ZIndex = (int)GlobalPosition.Y;
 
 		Instance.Status.PositionX = GlobalPosition.X;
 		Instance.Status.PositionY = GlobalPosition.Y;
@@ -194,6 +200,13 @@ public partial class Aphid : CharacterBody2D
 		if (MovementDirection != Vector2.Zero)
 			skin.SetFlipDirection(MovementDirection);
 		skin.TickFlip(_delta);
+
+		if (IS_FAKE)
+		{
+			OnIdleLoop(_delta);
+			MoveAndSlide();
+			return;
+		}
 
 		// Register triggers areas
 		var _collisionList = triggerArea.GetOverlappingBodies();
@@ -266,7 +279,7 @@ public partial class Aphid : CharacterBody2D
 				idle_position = GlobalPosition;
 				break;
 			case AphidState.Pet:
-				pet_timer = pet_duration;
+				pet_timer = AphidData.PET_DURATION;
 				break;
 			case AphidState.Breed:
 				skin.OverrideMovementAnim = true;
@@ -343,7 +356,8 @@ public partial class Aphid : CharacterBody2D
 			food_item.SetMeta("pickup", false);
 			IsEating = true;
 
-			food_item_direction = skin.IsFlipped ? -food_item_position : food_item_position;
+			food_item_direction.X = skin.IsFlipped ? -food_item_position.X : food_item_position.X;
+			food_item_direction.Y = food_item_position.Y;
 			food_item.GlobalPosition = GlobalPosition + food_item_direction;
 
 			for (int i = 0; i < food_item.GetChildCount(); i++)
@@ -495,6 +509,14 @@ public partial class Aphid : CharacterBody2D
 	}
 	public virtual async void Die()
 	{
+		// If you got saved to generations but didnt got removed from current, then discard yourself now
+		if (GenerationsTracker.Data.Generations.ContainsKey(new Guid(Instance.ID)))
+		{
+			SaveSystem.RemoveAphidInstance(Guid.Parse(Instance.ID));
+			QueueFree(); 
+			return;
+		}
+
 		SetAphidState(AphidState.Idle);
 		IsDisabled = true;
 
@@ -666,7 +688,7 @@ public partial class Aphid : CharacterBody2D
 		// Set breed mode
 		if (_mode == -1)
 		{
-			if (SaveSystem.AphidsOnResort.Count == 1) 
+			if (SaveSystem.Aphids.Count == 1) 
 				_mode = 1; // This is to make sure new games get a second aphid as soon as possible
 			else
 				_mode = GameManager.GetRandomByWeight(behaviourRNG, breeding_weights);
@@ -788,7 +810,7 @@ public partial class Aphid : CharacterBody2D
 		// 3-already pursuing said item, or 4-its marked for ignore, dont bother
 		if (IsEating || (OurState == AphidState.Idle == (OurState == AphidState.Eat)) ||
 		(food_item != null && food_item.Equals(_node)) ||
-		(food_ignore_list.Count > 0 && food_ignore_list.Exists((Node2D _n) => CheckIfIgnore(_n, _node))))
+		(food_ignore_list.Count > 0 && food_ignore_list.Exists((Node2D _n) => CheckIfEqual(_n, _node))))
 			return;
 
 		var _foodItem = GameManager.G_FOOD[_node.GetMeta("id").ToString()];
@@ -802,7 +824,7 @@ public partial class Aphid : CharacterBody2D
 		var _isfavorite = Instance.Genes.FoodPreference == _flavor;
 		if (!_isfavorite)
 		{
-			bool _givesFood = _foodItem.drink_value > 0, _givesDrink = _foodItem.food_value > 0;
+			bool _givesFood = _foodItem.food_value > 0, _givesDrink = _foodItem.drink_value > 0;
 
 			if (_givesDrink && Instance.Status.Thirst >= (_givesFood ? 100 : 80)) 
 				return;
@@ -834,7 +856,7 @@ public partial class Aphid : CharacterBody2D
 		if (OurState == AphidState.Idle)
 			SetAphidState(AphidState.Eat);
 	}
-	private static bool CheckIfIgnore(Node2D _n, Node2D _node)
+	private static bool CheckIfEqual(Node2D _n, Node2D _node)
 	{
 		if (!IsInstanceValid(_n))
 			return false;

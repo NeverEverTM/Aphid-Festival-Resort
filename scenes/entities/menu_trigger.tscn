@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cum5tqdw2hog8"]
+
+[ext_resource type="Script" path="res://scripts/entities/MenuTrigger.cs" id="1_eqw3p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hqa00"]
+size = Vector2(95, 26)
+
+[node name="menu_trigger" type="Node2D" node_paths=PackedStringArray("triggerArea")]
+z_index = -449
+y_sort_enabled = true
+position = Vector2(469, -449)
+script = ExtResource("1_eqw3p")
+triggerArea = NodePath("trigger_store")
+
+[node name="trigger_store" type="Area2D" parent="."]
+position = Vector2(-21, 22)
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="trigger_store"]
+z_index = 4096
+position = Vector2(16.5, 16)
+shape = SubResource("RectangleShape2D_hqa00")

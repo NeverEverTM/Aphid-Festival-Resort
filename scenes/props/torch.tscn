@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3 uid="uid://bb52au54cdw8j"]
+
+[ext_resource type="Texture2D" uid="uid://dbeu087woc2bk" path="res://sprites/props/stick_torch.png" id="1_3nqrg"]
+[ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="2_3bisd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2tb6"]
+atlas = ExtResource("1_3nqrg")
+region = Rect2(0, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c32xs"]
+atlas = ExtResource("1_3nqrg")
+region = Rect2(32, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k4yky"]
+atlas = ExtResource("1_3nqrg")
+region = Rect2(64, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p46q6"]
+atlas = ExtResource("1_3nqrg")
+region = Rect2(96, 0, 32, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4bf7d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t2tb6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c32xs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k4yky")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p46q6")
+}],
+"loop": true,
+"name": &"lit",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yissn"]
+radius = 6.08276
+
+[node name="torch" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_4bf7d")
+animation = &"idle"
+offset = Vector2(0, -28)
+
+[node name="light" type="PointLight2D" parent="."]
+position = Vector2(-3, -36)
+enabled = false
+color = Color(0.862745, 0.666667, 0.172549, 1)
+range_z_min = -1
+range_z_max = 1
+texture = ExtResource("2_3bisd")
+texture_scale = 2.0
+height = 10.0
+metadata/_edit_lock_ = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(6, -3)
+shape = SubResource("CircleShape2D_yissn")

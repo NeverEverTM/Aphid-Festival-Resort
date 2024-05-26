@@ -32,20 +32,21 @@ public partial class LoadScreen : CanvasLayer
 				virtualNodes.Add(new(x, y));
 		}
 
+		RandomNumberGenerator _RNG = new();
 		// Spawn all the leaves above the screen and prepare their positions
 		for (int i = 0; i < virtualNodes.Count; i++)
 		{
             Control _leaf = leaf.Instantiate() as Control;
             _leaf.GlobalPosition = GameManager.Utils.GetRandomVector_X(0, (int)windowSize.X, -600);
 			_leaf.Scale = new(scale,scale);
-			_leaf.ZIndex = GameManager.RNG.RandiRange(0, 1000);
+			_leaf.ZIndex = _RNG.RandiRange(0, 1000);
             AddChild(_leaf);
 			leafNodes.Add(new()
 			{
 				entity = _leaf,
 				position_start = _leaf.GlobalPosition,
 				position_final = virtualNodes[i],
-				rotation_final = GameManager.RNG.RandiRange(-5, 5)
+				rotation_final = _RNG.RandiRange(-5, 5)
 			});
 		}
 		
@@ -60,12 +61,14 @@ public partial class LoadScreen : CanvasLayer
 	public async Task SweepLeaves()
 	{
 		windowSize = GetViewport().GetVisibleRect().Size;
+
+		RandomNumberGenerator _RNG = new();
 		for (int i = 0; i < leafNodes.Count; i++)
 		{
 			var _leaf = leafNodes[i];
 			_leaf.position_start = _leaf.entity.GlobalPosition;
 			_leaf.position_final = GameManager.Utils.GetRandomVector_Y(0, windowSize.Y, -600);
-			_leaf.rotation_final = GameManager.RNG.RandiRange(-5, 5);
+			_leaf.rotation_final = _RNG.RandiRange(-5, 5);
 			leafNodes[i] = _leaf;
 		}
 		IsDone = false;

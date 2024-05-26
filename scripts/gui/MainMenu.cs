@@ -4,11 +4,13 @@ using Godot;
 
 public partial class MainMenu : Node2D
 {
+	[Export] private CanvasLayer canvas;
 	[Export] private Label BOOT_LOADING_LABEL;
 	[Export] private Camera2D cameraMenu;
 	[Export] private RichTextLabel button_wheel, hover_start;
 	[Export] private AnimationPlayer sweep_animator, logo_animator;
 	[Export] private PackedScene aphidPrefab;
+	[Export] private Node2D entityRoot;
 	[Export] private TextureButton githubButton, itchioButton;
 	[ExportCategory("Menu Panels")]
 	[Export] private Control start_panel;
@@ -229,54 +231,55 @@ public partial class MainMenu : Node2D
 
 	private async void CreateResort()
 	{
-		string _resort = resort_input_name.Text;
+		string _resortName = resort_input_name.Text;
+
+		// Its a secreeeeeet
+		if (_resortName == "iblamemar")
+		{
+			Cheats.IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt = true;
+			SoundManager.CreateSound(Player.Audio_Whistle);
+			return;
+		}
 
 		// Invalid resort names
-		if (string.IsNullOrWhiteSpace(_resort) || !_resort.IsValidFileName() || _resort.Equals("default"))
+		if (string.IsNullOrWhiteSpace(_resortName) || !_resortName.IsValidFileName())
 		{
-			GD.Print("Not a valid resort name.");
+			GameManager.CreatePopup("warning_invalid_name", canvas);
 			return;
 		}
 
 		// Already Exists
-		SaveSystem.SetProfile(_resort);
+		SaveSystem.SetProfile(_resortName);
 		if (DirAccess.DirExistsAbsolute(SaveSystem.CurrentProfilePath))
 		{
-			GD.Print("This resort already exists! Move it away from the profiles folder or delete it.");
+			GameManager.CreatePopup("warning_already_exists", canvas);
 			return;
 		}
 
 		// Start the game
 		new_game_panel.Hide();
 		ResortManager.IsNewGame = true;
-		Player.Data.Name = !string.IsNullOrWhiteSpace(player_input_name.Text) ? player_input_name.Text : defaultName;
+		Player.NewName = !string.IsNullOrWhiteSpace(player_input_name.Text) ? player_input_name.Text : defaultName;
 		await SaveSystem.CreateProfile();
 		LoadResort();
 	}
 	private void DeleteResort()
 	{
 		string _profile = savefile_name.Text;
-		if (string.IsNullOrWhiteSpace(_profile))
-		{
-			GD.Print("Not a valid resort");
-			return;
-		}
 
 		SaveSystem.SetProfile(_profile);
 		if (!DirAccess.DirExistsAbsolute(SaveSystem.CurrentProfilePath))
 		{
-			GD.Print("This resort doesnt exist!");
+			GameManager.CreatePopup("warning_invalid_resort", canvas);
 			return;
 		}
 
 		SaveSystem.DeleteProfile(_profile);
-		if (OptionsManager.Data.LastPlayedResort == SaveSystem.Profile)
-			OptionsManager.Data.LastPlayedResort = string.Empty;
-		SaveSystem.SetProfile(SaveSystem.defaultProfile);
-
+		SoundManager.CreateSound(Aphid.Audio_Hurt);
+		
 		// Set the current wheel of filenames
 		fileNames = DirAccess.Open(SaveSystem.ProfilesDirectory).GetDirectories();
-		if (fileNames.Length == 0) // if no more savefiles, quit and delete access buttons
+		if (fileNames.Length == 0) // if no more savefiles, remove "continue" and "load game" buttons
 		{
 			RemoveMenuAction(continueCategory);
 			RemoveMenuAction(loadGameCategory);
@@ -288,6 +291,11 @@ public partial class MainMenu : Node2D
 				wheePointer = fileNames.Length - 1;
 			SetFile();
 			SetButtonWheel(fileNames.Length, PlayFile, SetFile);
+			if (OptionsManager.Data.LastPlayedResort == SaveSystem.Profile)
+			{
+				OptionsManager.Data.LastPlayedResort = string.Empty;
+				SaveSystem.SetProfile(fileNames[0]);
+			}
 		}
 	}
 	private static async void LoadResort()
@@ -365,12 +373,14 @@ public partial class MainMenu : Node2D
 	{
 		for (int i = 0; i < GameManager.RNG.RandiRange(12, 24); i++)
 		{
-			var _aphid = aphidPrefab.Instantiate() as FakeAphid;
+			var _aphid = aphidPrefab.Instantiate() as Aphid;
+			_aphid.IS_FAKE = true;
 			_aphid.Instance = new();
 			_aphid.Instance.Genes.RandomizeColors();
 			_aphid.Instance.Status.IsAdult = GameManager.GetRandomByWeight(babyWeight) == 0;
 			_aphid.GlobalPosition = GameManager.Utils.GetRandomVector(-300, 300);
-			AddChild(_aphid);
+			entityRoot.AddChild(_aphid);
+			_aphid.skin.SetSkin("idle");
 		}
 	}
 

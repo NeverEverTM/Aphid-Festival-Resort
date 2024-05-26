@@ -1,6 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://3xvnhmpi2hr1"]
+[gd_scene load_steps=8 format=3 uid="uid://3xvnhmpi2hr1"]
 
 [ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="1_axjjm"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_sih33"]
+light_mode = 1
 
 [sub_resource type="Curve" id="Curve_qasph"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -28,6 +31,7 @@ turbulence_noise_scale = 6.28
 
 [node name="GPU_HeartParticles" type="GPUParticles2D"]
 z_index = 1000
+material = SubResource("CanvasItemMaterial_sih33")
 amount = 2
 process_material = SubResource("ParticleProcessMaterial_41uej")
 texture = ExtResource("1_axjjm")

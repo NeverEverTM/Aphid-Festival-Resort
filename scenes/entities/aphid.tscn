@@ -17,7 +17,7 @@ radius = 99.0
 position = Vector2(-1, 0)
 motion_mode = 1
 script = ExtResource("1_acxg7")
-skin = NodePath("SpriteBody")
+skin = NodePath("anchor/SpriteBody")
 triggerArea = NodePath("TriggerArea")
 audioPlayer = NodePath("audioPlayer")
 metadata/pickup = true
@@ -29,40 +29,48 @@ max_distance = 200.0
 attenuation = 0.5
 max_polyphony = 20
 
-[node name="SpriteBody" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
-script = ExtResource("2_xeinf")
-eyes = NodePath("eyes")
-antenna = NodePath("antenna")
-body = NodePath("body")
-back_legs = NodePath("back_legs")
-front_legs = NodePath("front_legs")
+[node name="anchor" type="Node2D" parent="."]
+editor_description = "This anchor is used to offset the sprite body, since animations can affect the position of the latter."
+position = Vector2(0, -8)
 
-[node name="back_legs" type="Sprite2D" parent="SpriteBody"]
+[node name="SpriteBody" type="Node2D" parent="anchor" node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
+process_mode = 1
+script = ExtResource("2_xeinf")
+eyes = NodePath("CanvasGroup/eyes")
+antenna = NodePath("CanvasGroup/antenna")
+body = NodePath("CanvasGroup/body")
+back_legs = NodePath("CanvasGroup/back_legs")
+front_legs = NodePath("CanvasGroup/front_legs")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="anchor/SpriteBody"]
+use_parent_material = true
+
+[node name="back_legs" type="Sprite2D" parent="anchor/SpriteBody/CanvasGroup"]
 use_parent_material = true
 position = Vector2(-5.5, -9.5)
 texture = ExtResource("12_kek4f")
 
-[node name="body" type="Sprite2D" parent="SpriteBody"]
+[node name="body" type="Sprite2D" parent="anchor/SpriteBody/CanvasGroup"]
 use_parent_material = true
 texture = ExtResource("13_7fxmg")
 offset = Vector2(0.5, -8.5)
 
-[node name="eyes" type="Sprite2D" parent="SpriteBody"]
+[node name="eyes" type="Sprite2D" parent="anchor/SpriteBody/CanvasGroup"]
 texture = ExtResource("14_7wf6h")
 offset = Vector2(0.5, -8.5)
 
-[node name="front_legs" type="Sprite2D" parent="SpriteBody"]
+[node name="front_legs" type="Sprite2D" parent="anchor/SpriteBody/CanvasGroup"]
 use_parent_material = true
 texture = ExtResource("12_kek4f")
 offset = Vector2(0.5, -8.5)
 
-[node name="antenna" type="Sprite2D" parent="SpriteBody"]
+[node name="antenna" type="Sprite2D" parent="anchor/SpriteBody/CanvasGroup"]
 use_parent_material = true
 texture = ExtResource("15_tax8g")
 offset = Vector2(0.5, -8.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, 5)
+position = Vector2(1, -6)
 shape = SubResource("RectangleShape2D_5soec")
 
 [node name="TriggerArea" type="Area2D" parent="."]

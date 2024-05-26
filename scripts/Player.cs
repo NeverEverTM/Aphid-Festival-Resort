@@ -10,12 +10,11 @@ public partial class Player : CharacterBody2D
 	[Export] private AnimationPlayer animator;
 	[Export] private AudioStreamPlayer2D audioPlayer;
 	[ExportCategory("Inventory")]
-	[Export]private Control inventory_panel;
+	[Export] private Control inventory_panel;
 	[Export] private AnimationPlayer inventory_player;
 	[Export] private HBoxContainer inventoryGrid;
 	[Export] private PackedScene invItemContainer;
-	[ExportGroup("Sounds")]
-	[Export] private AudioStream sound_whistle;
+	public static AudioStream Audio_Whistle;
 
 	public static Player Instance;
 
@@ -39,7 +38,7 @@ public partial class Player : CharacterBody2D
 	// Pickup Params
 	public Node2D PickupItem { private set; get; }
 
-	private Vector2 pickup_ground_position = new(0, 8);
+	private Vector2 pickupitem_position = new(25, -10), pickup_ground_position = new(0, 4);
 	private bool pickup_isAphid;
 
 	public delegate void PickupEventHandler(string _tag);
@@ -70,10 +69,16 @@ public partial class Player : CharacterBody2D
 		{
 			Instance.TryAphidInteract,
 		};
+
+		SetFlipDirection(MovementDirection);
+		Vector2 _position;
+		_position.X = flipSwitch ? pickupitem_position.X : -pickupitem_position.X;
+		_position.Y = pickupitem_position.Y;
+		interactionArea.Position = _position;
 	}
 	public override void _Process(double delta)
 	{
-		ZIndex = (int)GlobalPosition.Y + 8;
+		//ZIndex = (int)GlobalPosition.Y + 8;
 
 		// pet timer
 		if (IsPetting)
@@ -91,15 +96,19 @@ public partial class Player : CharacterBody2D
 		// Disable functions if any of the left conditions is met, or is explicitly disabled
 		IsDisabled = IsPetting || CanvasManager.IsInFocus || IsExplicitlyDisabled;
 
-		interactionArea.Position = FacingDirection * 25;
-
 		if (PickupItem != null)
 			ProcessPickupBehaviour();
 	}
 	public override void _PhysicsProcess(double delta)
 	{
 		if (MovementDirection != Vector2.Zero)
+		{
 			SetFlipDirection(MovementDirection);
+			Vector2 _position;
+			_position.X = flipSwitch ? pickupitem_position.X : -pickupitem_position.X;
+			_position.Y = pickupitem_position.Y;
+			interactionArea.Position = _position;
+		}
 		TickFlip((float)delta);
 
 		Vector2 _lastVector = MovementDirection;
@@ -122,7 +131,7 @@ public partial class Player : CharacterBody2D
 		if (_state)
 			SetPlayerAnim("idle");
 		if (inventory_panel.Visible)
-			inventory_player.Play("slide_down");
+			SetInventory();
 	}
 
 	// =========| Input Related |========
@@ -133,14 +142,10 @@ public partial class Player : CharacterBody2D
 		var _left = Input.IsActionPressed("left");
 		var _right = Input.IsActionPressed("right");
 
-		if (_left)
-			FacingDirection = Vector2.Left;
-		else if (_right)
-			FacingDirection = Vector2.Right;
+		FacingDirection = new(-(_left ? 1 : 0) + (_right ? 1 : 0), 0);
 
 		MovementDirection = new Vector2((_left ? -1 : 0) + (_right ? 1 : 0),
 			(_up ? -1 : 0) + (_down ? 1 : 0)).Normalized();
-
 	}
 	private void DoWalkAnim(Vector2 _lastVector)
 	{
@@ -163,7 +168,7 @@ public partial class Player : CharacterBody2D
 	private void ReadKeyInput(bool _disabled = false)
 	{
 		if (Input.IsActionJustPressed("open_generations"))
-			CanvasManager.OpenMenu(CanvasManager.Instance.generations_panel);
+			GenerationsTracker.OpenMenu();
 
 		if (_disabled) // allows to change menus while in a menu
 			return;
@@ -189,17 +194,7 @@ public partial class Player : CharacterBody2D
 		}
 
 		if (Input.IsActionJustPressed("open_inventory"))
-		{
-			if (!inventory_panel.Visible)
-			{
-				inventory_player.Play("slide_up");
-				// Grab first item as focus
-				if (inventoryGrid.GetChildCount() > 0)
-					(inventoryGrid.GetChild(0) as Control).GrabFocus();
-			}
-			else
-				inventory_player.Play("slide_down");
-		}
+			SetInventory();
 
 		IsRunning = Input.IsActionPressed("run");
 	}
@@ -277,17 +272,17 @@ public partial class Player : CharacterBody2D
 				animator.Play("player/pet");
 				_aphid.skin.SetFlipDirection(GlobalPosition - _aphid.GlobalPosition);
 				MovementDirection = Vector2.Zero;
-				pet_timer = 2;
+				pet_timer = AphidData.PET_DURATION;
 				IsPetting = true;
 			}
 		}
 	}
 	private void CallAllNearbyAphids()
 	{
-		PlaySound(sound_whistle);
-		for (int i = 0; i < ResortManager.AphidsList.Count; i++)
+		PlaySound(Audio_Whistle);
+		for (int i = 0; i < ResortManager.Instance.AphidsOnResort.Count; i++)
 		{
-			Aphid _aphid = ResortManager.AphidsList[i];
+			Aphid _aphid = ResortManager.Instance.AphidsOnResort[i];
 			if (_aphid == PickupItem) // Dont call an Aphid if you are goddamn holding it
 				continue;
 			if (_aphid.GlobalPosition.DistanceTo(GlobalPosition) < 400)
@@ -340,7 +335,6 @@ public partial class Player : CharacterBody2D
 		pickup_isAphid = false;
 		if (_setPosition)
 			PickupItem.GlobalPosition = interactionArea.GlobalPosition + pickup_ground_position;
-		PickupItem.ZIndex = (int)PickupItem.GlobalPosition.Y;
 		PickupItem.ProcessMode = ProcessModeEnum.Inherit;
 		PickupItem = null;
 	}
@@ -360,12 +354,32 @@ public partial class Player : CharacterBody2D
 
 		// Put it in front of you at the right depth
 		PickupItem.GlobalPosition = interactionArea.GlobalPosition;
-		PickupItem.ZIndex = (int)PickupItem.GlobalPosition.Y + 14;
 		if (pickup_isAphid) // flip it to face towards your facing direction
 			(PickupItem as Aphid).skin.SetFlipDirection(FacingDirection, true);
 	}
 
 	// =======| Inventory |========
+	public void SetInventory()
+	{
+		if (!inventory_panel.Visible)
+		{
+			CreateInventory();
+			inventory_player.Play("slide_up");
+			// Grab first item as focus
+			if (inventoryGrid.GetChildCount() > 0)
+				inventoryGrid.GetChild(0).CallDeferred(Control.MethodName.GrabFocus);
+		}
+		else
+			inventory_player.Play("slide_down");
+	}
+	private void CreateInventory()
+	{
+		for (int i = 0; i < inventoryGrid.GetChildCount(); i++)
+			inventoryGrid.GetChild(i).QueueFree();
+
+		for (int i = 0; i < Data.Inventory.Count; i++)
+			CreateInvItem(i);
+	}
 	private void PullItem(string _item_name)
 	{
 		if (Data.Inventory.Count == 0 || !Data.Inventory.Contains(_item_name))
@@ -393,8 +407,9 @@ public partial class Player : CharacterBody2D
 		if (Data.Inventory.Count == 0 || _index >= Data.Inventory.Count)
 			return;
 
-		// get rid of inventory slot
-		inventoryGrid.GetChild(_index).QueueFree();
+		// get rid of inventory slot if inventory is visible
+		if (inventory_panel.Visible)
+			inventoryGrid.GetChild(_index).QueueFree();
 
 		if (PickupItem != null)
 			Drop();
@@ -407,7 +422,9 @@ public partial class Player : CharacterBody2D
 		if (Data.Inventory.Count >= 15)
 			return false;
 		Data.Inventory.Add(_item);
-		CreateInvItem(Data.Inventory.Count - 1);
+
+		if (inventory_panel.Visible)
+			CreateInvItem(Data.Inventory.Count - 1);
 
 		return true;
 	}
@@ -429,10 +446,7 @@ public partial class Player : CharacterBody2D
 		_item.SetMeta("id", _item_name);
 
 		// check for available icon
-		if (!GameManager.G_ICONS.ContainsKey(Data.Inventory[_index]))
-			(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS["missing"];
-		else
-			(_item.GetChild(0) as TextureRect).Texture = GameManager.G_ICONS[Data.Inventory[_index]];
+		(_item.GetChild(0) as TextureRect).Texture = GameManager.GetIcon(_item_name);
 
 		// press function
 		_item.Pressed += () =>

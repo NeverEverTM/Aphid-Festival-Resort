@@ -31,8 +31,9 @@ public partial class AphidData : Node
 		"Axel", "Lea", "Sky",
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	};
-	public const int adulthoodAge = 900, breedTimer = 600, deathAge = 7000, productionCooldown = 120,
-		moneyPerHarvest_baby = 5, moneyPerHarvest_adult = 10;
+	public const int adulthoodAge = 1200, breedTimer = 1200, deathAge = 7200, productionCooldown = 120,
+		moneyPerHarvest_baby = 4, moneyPerHarvest_adult = 8;
+	public const float PET_DURATION = 1;
 
 	public class Status
 	{
@@ -120,7 +121,7 @@ public partial class AphidData : Node
 				GetMultiplier(FoodType.Sour),
 				GetMultiplier(FoodType.Salty),
 				GetMultiplier(FoodType.Bitter),
-				FoodPreference == FoodType.Vile ? GetMultiplier(FoodType.Vile) - 0.65f : -0.5f, // the rare Vile preference
+				FoodPreference == FoodType.Vile ? GetMultiplier(FoodType.Vile) : -1, // the rare Vile preference
 				GetMultiplier(FoodType.Bland) - 0.4f,
 				1
 			};

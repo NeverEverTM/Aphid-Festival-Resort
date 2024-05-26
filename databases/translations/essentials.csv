@@ -1,11 +1,13 @@
 ,en,es
-BOOT_0,Booting up...,Iniciando...
-BOOT_1,Loading Icons...,Cargando Iconos...
-BOOT_2,Loading Skins...,Cargando Skins...
-BOOT_3,Loading SFX...,Cargando SFX...
-BOOT_4,Loading Databases...,Cargando Datos...
-ITEMS,Items,Objectos
-FOOD,Food,Comida
+BOOT_0,Loading Icons...,Cargando Iconos...
+BOOT_1,Loading Skins...,Cargando Skins...
+BOOT_2,Loading SFX...,Cargando SFX...
+BOOT_ITEMS,Creating Items...,Creando Objectos...
+BOOT_FOODS,Tagging Food...,Etiquetando Comida...
+BOOT_RECIPES,Building Recipes,Escribiendo Recetas...
+warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. Puede que no exista?
+warning_invalid_name,"This resort name is not valid, be sure to exclude invalid filename characters.","Este nombre de complejo no es valido, asegurate de excluir caracteres de nombre de archivo invalidos."
+warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
 press_start,Press J or C to start!,Presiona J o C para empezar!
 new_game,New Game,Nueva Partida
 load_game,Load Game,Cargar Partida
@@ -64,14 +66,14 @@ Marcas registradas y derechos de autor le pertenecen a Moonsprout Games.
 Inspirado por el juego Chao Resort Island hecho por Nefault1st. 
 Echale un vistazo!"
 generations_description,"Here you can see all the aphids you have raised through your time in the resort.
-","Aquí podras ver a todas las mascotas que has criado a traves del tiempo en el complejo.
-"
+Double click on an aphid to mark its location in the map.","Aquí podras ver a todas las mascotas que has criado a traves del tiempo en el complejo.
+Haz doble click para marcar la ubicacion de una mascota en el mapa."
 generations_owner,Owned By,Dueño De
 generations_parent,Children of,Crío de
-store_kut_name,Kut’s Food Cabinet,Puesto de Alimentos de Kut
-store_kut_desc,Purchase basic ingredients for Aphid feeding.,Adquiere ingredientes basicos para alimentar Ãfidos.
-store_golden_name,Golden Name,Golden Name
-store_golden_desc,Golden Desc,Golden Desc
+store_item_shop_name,Azzy’s Food Cabinet,Puesto de Alimentos de Azzy
+store_item_shop_desc,Purchase basic items for Aphid caretaking.,Adquiere objectos basicos para el cuidado de Ãfidos.
+resort_golden_name,Golden Plains,Golden Plains
+resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.",
 bio_name_placeholder,Aphid Name,Nombre del Ãfido
 flavor_0,Sweet,Dulce
 flavor_1,Sour,Agrio

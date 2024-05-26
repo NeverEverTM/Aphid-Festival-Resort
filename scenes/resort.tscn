@@ -1,26 +1,28 @@
-[gd_scene load_steps=87 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=97 format=3 uid="uid://dsw70b8747xh8"]
 
-[ext_resource type="Script" path="res://scripts/managers/ResortManager.cs" id="1_ay1ca"]
-[ext_resource type="Script" path="res://scripts/managers/CanvasManager.cs" id="1_f7ynu"]
+[ext_resource type="Script" path="res://scripts/controllers/ResortManager.cs" id="1_ay1ca"]
+[ext_resource type="Script" path="res://scripts/gui/CanvasManager.cs" id="1_f7ynu"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_qes7a"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="3_t8x5j"]
-[ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/ui/aphid_child.tres" id="5_4ptmp"]
+[ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/icons/aphid_child.tres" id="5_4ptmp"]
 [ext_resource type="Texture2D" uid="uid://b6xq8t3y4ssbp" path="res://sprites/ui/gradient_progress.tres" id="5_qbdf0"]
 [ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="5_wdlmu"]
 [ext_resource type="Texture2D" uid="uid://copqb3qd6m32t" path="res://sprites/ui/cursor.png" id="6_tb351"]
+[ext_resource type="Texture2D" uid="uid://sgkiuo2x4mba" path="res://sprites/ui/weather_night.png" id="7_1qilm"]
 [ext_resource type="Texture2D" uid="uid://dlh8bljak1r51" path="res://sprites/icons/honey_drop.tres" id="7_wwwmv"]
-[ext_resource type="Script" path="res://scripts/gui/PauseMenu.cs" id="7_xkrpi"]
+[ext_resource type="Script" path="res://scripts/panels/PauseMenu.cs" id="7_xkrpi"]
 [ext_resource type="Texture2D" uid="uid://c0puuwb5wmu7b" path="res://sprites/particles/heart_sprite.tres" id="8_8703i"]
 [ext_resource type="Texture2D" uid="uid://citpisbl80p5f" path="res://sprites/ui/heart_frame.png" id="8_bi36n"]
 [ext_resource type="Shader" path="res://sprites/ui/stat_gradient.gdshader" id="8_i043l"]
+[ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="9_1kxtk"]
 [ext_resource type="Texture2D" uid="uid://duck48iqhler" path="res://sprites/ui/heart_bg.png" id="9_6ycou"]
 [ext_resource type="Texture2D" uid="uid://bn3tnbbaha27c" path="res://sprites/ui/hashtag.tres" id="9_e687m"]
-[ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/ui/aphid_adult.tres" id="10_8bm7t"]
+[ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="10_8bm7t"]
 [ext_resource type="Script" path="res://scripts/gui/AphidInfo.cs" id="10_r1njs"]
 [ext_resource type="Texture2D" uid="uid://cokhm2yr7lq64" path="res://sprites/ui/heart_full.tres" id="11_a3tmg"]
 [ext_resource type="Texture2D" uid="uid://dogbh66vh54p3" path="res://sprites/particles/water_sprite.tres" id="13_blwg5"]
-[ext_resource type="Script" path="res://scripts/managers/DialogManager.cs" id="18_o8e8r"]
+[ext_resource type="Script" path="res://scripts/gui/DialogManager.cs" id="18_o8e8r"]
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="18_t720b"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="19_1ygmy"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="19_l0dmi"]
@@ -29,9 +31,9 @@
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="20_vysaa"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="20_xk6tt"]
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="21_ckdvb"]
-[ext_resource type="Script" path="res://scripts/gui/ShopInterface.cs" id="21_j3pjv"]
+[ext_resource type="Script" path="res://scripts/panels/ShopInterface.cs" id="21_j3pjv"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="26_wywci"]
-[ext_resource type="Script" path="res://scripts/GenerationsTracker.cs" id="27_tn61h"]
+[ext_resource type="Script" path="res://scripts/panels/GenerationsTracker.cs" id="27_tn61h"]
 [ext_resource type="AudioStream" uid="uid://deyj10uei0gk1" path="res://sfx/ui/kaching.wav" id="28_12dyb"]
 [ext_resource type="PackedScene" uid="uid://d7m5e6tlxyve" path="res://scenes/ui/aphid_slot.tscn" id="28_becax"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/select.wav" id="28_bptx4"]
@@ -39,18 +41,207 @@
 [ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/entities/character.tscn" id="28_py445"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="29_v56ow"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="30_4ye0s"]
-[ext_resource type="Texture2D" uid="uid://dxql7r1r5qc7k" path="res://sprites/props/resort_table.png" id="30_hexyg"]
 [ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/mosaic_menu_bg.png" id="30_ntcu4"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="31_5beww"]
-[ext_resource type="Texture2D" uid="uid://bw0hptrwhbx07" path="res://sprites/props/box_1.tres" id="31_ttjlq"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="32_6mow7"]
-[ext_resource type="Texture2D" uid="uid://c6whq8nn4cumv" path="res://sprites/props/box_0.tres" id="32_fdvne"]
-[ext_resource type="Texture2D" uid="uid://ci8b7hx82gd02" path="res://sprites/props/resort_rug.png" id="33_mtgjl"]
 [ext_resource type="Shader" path="res://scripts/shaders/outline.gdshader" id="38_ivysc"]
 [ext_resource type="Texture2D" uid="uid://cu26vowepfgr4" path="res://sprites/ui/image1.PNG" id="38_vxrb6"]
 [ext_resource type="Texture2D" uid="uid://bfv23e4fa8qa7" path="res://sprites/ui/image2.PNG" id="39_25jco"]
 [ext_resource type="Texture2D" uid="uid://cygbj5vvsndv0" path="res://sprites/ui/image3.PNG" id="40_q0sqj"]
-[ext_resource type="Script" path="res://scripts/gui/ShopEntity.cs" id="47_fuwni"]
+[ext_resource type="Script" path="res://scripts/panels/KitchenMenu.cs" id="45_7i22a"]
+[ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="46_m3kv0"]
+[ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="47_1xrkf"]
+[ext_resource type="PackedScene" uid="uid://cum5tqdw2hog8" path="res://scenes/entities/menu_trigger.tscn" id="51_xwwsq"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kugfj"]
+font_size = 75
+font_color = Color(0, 0, 0, 0.87451)
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_prhwt"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("weater_bg/weather_text:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(15, 233)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("weater_bg/weather_text:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("weater_bg/weather_text:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("weater_bg:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(224, -406)]
+}
+
+[sub_resource type="Animation" id="Animation_f24s7"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_vdyy6"]
+resource_name = "open"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("weater_bg/weather_text:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.7, 1.5),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector2(-250, 255), Vector2(28, 255)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("weater_bg/weather_text:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("weater_bg/weather_text:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.7, 1.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.1),
+"transitions": PackedFloat32Array(-0.5, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("weater_bg:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.1),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector2(-135, 77), Vector2(224, -276)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4mtcm"]
+_data = {
+"RESET": SubResource("Animation_prhwt"),
+"close": SubResource("Animation_f24s7"),
+"open": SubResource("Animation_vdyy6")
+}
 
 [sub_resource type="Animation" id="Animation_5upln"]
 length = 0.001
@@ -738,19 +929,183 @@ shader_parameter/number_of_images = Vector2(1, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_gopes"]
 font_size = 30
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hqa00"]
-size = Vector2(95, 26)
+[sub_resource type="Animation" id="Animation_qi47v"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("menu_bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.545098)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("upper_anchor:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("inventory:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-519, 223)]
+}
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hty1o"]
-size = Vector2(96.9217, 28.0975)
+[sub_resource type="Animation" id="Animation_w3b3j"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, -2),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("menu_bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 0.545098), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("upper_anchor:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector2(23, -71), Vector2(0, -1000)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("inventory:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(-500, 223), Vector2(-500, 2000)]
+}
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rk45n"]
-size = Vector2(63.2099, 14.0489)
+[sub_resource type="Animation" id="Animation_jp3uy"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("menu_bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.545098)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("upper_anchor:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector2(0, -1000), Vector2(23, -71)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("inventory:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 2),
+"update": 0,
+"values": [Vector2(-500, 2000), Vector2(-500, 223)]
+}
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b1soq"]
-size = Vector2(36.8724, 14.0489)
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mo613"]
+_data = {
+"RESET": SubResource("Animation_qi47v"),
+"close": SubResource("Animation_w3b3j"),
+"open": SubResource("Animation_jp3uy")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rn78v"]
+shader = ExtResource("28_kxep1")
+shader_parameter/speed = 0.2
+shader_parameter/node_size = Vector2(64, 64)
+shader_parameter/color = Color(0.827451, 0.52549, 0.14902, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a4pua"]
+size = Vector2(94, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yg471"]
+size = Vector2(44, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hh5jb"]
+size = Vector2(60, 21)
 
 [node name="resort" type="Node2D" node_paths=PackedStringArray("EntityRoot")]
+y_sort_enabled = true
 script = ExtResource("1_ay1ca")
 Resort = "golden"
 aphidPrefab = ExtResource("3_d14m5")
@@ -765,13 +1120,16 @@ inventory_player = NodePath("../canvas/inventory/animator")
 inventoryGrid = NodePath("../canvas/inventory/anchor/inventory_container")
 invItemContainer = ExtResource("18_t720b")
 
-[node name="canvas" type="CanvasLayer" parent="." node_paths=PackedStringArray("generations_panel", "currency_text")]
+[node name="canvas" type="CanvasLayer" parent="." node_paths=PackedStringArray("currency_text", "weather_text", "weather_bg", "weather_player")]
 process_mode = 3
 editor_description = "quick
 "
 script = ExtResource("1_f7ynu")
-generations_panel = NodePath("generations_panel/AnimationPlayer")
 currency_text = NodePath("berries_bar/amount")
+weather_text = NodePath("datetime/weater_bg/weather_text")
+weather_sprites = Array[Texture2D]([ExtResource("9_1kxtk"), ExtResource("7_1qilm")])
+weather_bg = NodePath("datetime/weater_bg")
+weather_player = NodePath("datetime/AnimationPlayer")
 
 [node name="berries_bar" type="TextureRect" parent="canvas"]
 self_modulate = Color(0.964706, 0.196078, 0.407843, 1)
@@ -804,6 +1162,47 @@ offset_bottom = 55.0
 theme = ExtResource("19_1ygmy")
 text = "086"
 horizontal_alignment = 1
+
+[node name="datetime" type="Control" parent="canvas"]
+visible = false
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -224.0
+offset_top = -80.0
+offset_right = -224.0
+offset_bottom = -80.0
+grow_vertical = 0
+
+[node name="weater_bg" type="TextureRect" parent="canvas/datetime"]
+self_modulate = Color(0.435066, 0.32983, 0.823487, 1)
+layout_mode = 0
+offset_left = 224.0
+offset_top = -406.0
+offset_right = 584.999
+offset_bottom = -49.0
+texture = ExtResource("9_1kxtk")
+stretch_mode = 4
+
+[node name="weather_text" type="Label" parent="canvas/datetime/weater_bg"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 233.0
+offset_right = 231.0
+offset_bottom = 321.0
+grow_vertical = 0
+theme = ExtResource("19_1ygmy")
+text = "02/06"
+label_settings = SubResource("LabelSettings_kugfj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="canvas/datetime"]
+libraries = {
+"": SubResource("AnimationLibrary_4mtcm")
+}
 
 [node name="inventory" type="Control" parent="canvas"]
 visible = false
@@ -854,10 +1253,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -455.0
-offset_top = 3.0
-offset_right = -455.0
-offset_bottom = 3.0
+offset_left = 121.0
+offset_top = 327.0
+offset_right = 121.0
+offset_bottom = 327.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_stretch_ratio = 14.62
@@ -1145,7 +1544,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("19_1ygmy")
 script = ExtResource("21_j3pjv")
-shopTag = "kut"
+shopTag = "item_shop"
 entity = NodePath("../../kitchen")
 storePanel = NodePath("store_animator")
 itemGrid = NodePath("item_box/ScrollContainer/item_container")
@@ -1330,7 +1729,7 @@ libraries = {
 "": SubResource("AnimationLibrary_0prst")
 }
 
-[node name="generations_panel" type="Control" parent="canvas" node_paths=PackedStringArray("descriptionLabel", "aphidContainer")]
+[node name="generations_panel" type="Control" parent="canvas" node_paths=PackedStringArray("animPlayer", "descriptionLabel", "aphidContainer")]
 visible = false
 layout_mode = 3
 anchors_preset = 8
@@ -1346,6 +1745,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("19_1ygmy")
 script = ExtResource("27_tn61h")
+animPlayer = NodePath("AnimationPlayer")
 descriptionLabel = NodePath("description/RichTextLabel")
 aphidSlot = ExtResource("28_becax")
 aphidContainer = NodePath("ScrollContainer/GridContainer")
@@ -1379,6 +1779,12 @@ layout_mode = 2
 columns = 8
 
 [node name="aphid_slot" parent="canvas/generations_panel/ScrollContainer/GridContainer" instance=ExtResource("28_becax")]
+layout_mode = 2
+
+[node name="aphid_slot2" parent="canvas/generations_panel/ScrollContainer/GridContainer" instance=ExtResource("28_becax")]
+layout_mode = 2
+
+[node name="aphid_slot3" parent="canvas/generations_panel/ScrollContainer/GridContainer" instance=ExtResource("28_becax")]
 layout_mode = 2
 
 [node name="description" type="TextureRect" parent="canvas/generations_panel"]
@@ -1789,77 +2195,289 @@ label_settings = SubResource("LabelSettings_gopes")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="cooking_menu" type="Control" parent="canvas" node_paths=PackedStringArray("animPlayer", "ingredient1Button", "ingredient2Button", "resultButton", "redoRecipe", "ingredient1Icon", "ingredient2Icon", "resultIcon", "resultName", "inventoryGrid")]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -18.0
+offset_right = 20.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("19_1ygmy")
+script = ExtResource("45_7i22a")
+animPlayer = NodePath("AnimationPlayer")
+invItemContainer = ExtResource("18_t720b")
+ingredient1Button = NodePath("upper_anchor/ingredient_1")
+ingredient2Button = NodePath("upper_anchor/ingredient_2")
+resultButton = NodePath("upper_anchor/result")
+redoRecipe = NodePath("upper_anchor/redoButton")
+ingredient1Icon = NodePath("upper_anchor/ingredient_1/icon")
+ingredient2Icon = NodePath("upper_anchor/ingredient_2/icon")
+resultIcon = NodePath("upper_anchor/result/icon")
+resultName = NodePath("upper_anchor/result/itemName/Label")
+inventoryGrid = NodePath("inventory/inventory_container2")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="canvas/cooking_menu"]
+libraries = {
+"": SubResource("AnimationLibrary_mo613")
+}
+
+[node name="menu_bg" type="TextureRect" parent="canvas/cooking_menu"]
+self_modulate = Color(1, 1, 1, 0.545098)
+material = SubResource("ShaderMaterial_rn78v")
+layout_mode = 0
+offset_left = -1020.0
+offset_top = -453.0
+offset_right = 1119.0
+offset_bottom = 714.0
+texture = ExtResource("30_ntcu4")
+stretch_mode = 1
+
+[node name="upper_anchor" type="Control" parent="canvas/cooking_menu"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="bar_0" type="TextureRect" parent="canvas/cooking_menu/upper_anchor"]
+self_modulate = Color(0.4, 0.0705882, 0.196078, 1)
+layout_mode = 0
+offset_left = -272.0
+offset_top = -131.0
+offset_right = 322.0
+offset_bottom = -108.0
+texture = ExtResource("20_qhpvf")
+expand_mode = 1
+
+[node name="bar_1" type="TextureRect" parent="canvas/cooking_menu/upper_anchor"]
+self_modulate = Color(0.4, 0.0705882, 0.196078, 1)
+layout_mode = 0
+offset_left = 11.0
+offset_top = -123.0
+offset_right = 231.0
+offset_bottom = -100.0
+rotation = 1.5708
+texture = ExtResource("20_qhpvf")
+expand_mode = 1
+
+[node name="ingredient_1" type="TextureButton" parent="canvas/cooking_menu/upper_anchor"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = -353.0
+offset_top = -158.0
+offset_right = -203.0
+offset_bottom = -8.0
+focus_neighbor_left = NodePath("../ingredient_2")
+focus_neighbor_right = NodePath("../ingredient_2")
+focus_next = NodePath("../ingredient_2")
+focus_previous = NodePath(".")
+texture_normal = ExtResource("1_qes7a")
+texture_pressed = ExtResource("46_m3kv0")
+texture_hover = ExtResource("46_m3kv0")
+texture_focused = ExtResource("47_1xrkf")
+stretch_mode = 4
+
+[node name="icon" type="TextureRect" parent="canvas/cooking_menu/upper_anchor/ingredient_1"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 124.0
+offset_bottom = 124.0
+stretch_mode = 4
+
+[node name="ingredient_2" type="TextureButton" parent="canvas/cooking_menu/upper_anchor"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = 223.0
+offset_top = -158.0
+offset_right = 373.0
+offset_bottom = -8.0
+texture_normal = ExtResource("1_qes7a")
+texture_pressed = ExtResource("46_m3kv0")
+texture_hover = ExtResource("46_m3kv0")
+texture_focused = ExtResource("47_1xrkf")
+stretch_mode = 4
+
+[node name="icon" type="TextureRect" parent="canvas/cooking_menu/upper_anchor/ingredient_2"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 124.0
+offset_bottom = 124.0
+stretch_mode = 4
+
+[node name="result" type="TextureButton" parent="canvas/cooking_menu/upper_anchor"]
+self_modulate = Color(0.533333, 0.254902, 0.803922, 1)
+layout_mode = 0
+offset_left = -96.0
+offset_top = -38.0
+offset_right = 104.0
+offset_bottom = 162.0
+texture_normal = ExtResource("1_qes7a")
+texture_pressed = ExtResource("46_m3kv0")
+texture_hover = ExtResource("46_m3kv0")
+texture_focused = ExtResource("47_1xrkf")
+stretch_mode = 4
+
+[node name="icon" type="TextureRect" parent="canvas/cooking_menu/upper_anchor/result"]
+layout_mode = 0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 175.0
+offset_bottom = 175.0
+expand_mode = 1
+stretch_mode = 4
+
+[node name="itemName" type="TextureRect" parent="canvas/cooking_menu/upper_anchor/result"]
+visible = false
+self_modulate = Color(0.870588, 0, 0.309804, 1)
+layout_mode = 0
+offset_left = -98.0
+offset_top = 209.0
+offset_right = 285.0
+offset_bottom = 277.0
+texture = ExtResource("30_4ye0s")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="canvas/cooking_menu/upper_anchor/result/itemName"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 9.0
+offset_right = 364.0
+offset_bottom = 59.0
+text = "Mushroom Gummies"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="redoButton" type="CheckButton" parent="canvas/cooking_menu/upper_anchor"]
+layout_mode = 0
+offset_left = -63.0
+offset_top = -144.0
+offset_right = 65.0
+offset_bottom = -96.0
+text = "Lock
+"
+alignment = 1
+
+[node name="inventory" type="TextureRect" parent="canvas/cooking_menu"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -519.0
+offset_top = 223.0
+offset_right = 547.0
+offset_bottom = 373.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("30_4ye0s")
+
+[node name="inventory_container2" type="HBoxContainer" parent="canvas/cooking_menu/inventory"]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 41.0
+offset_right = 2012.0
+offset_bottom = 169.0
+scale = Vector2(0.5, 0.5)
+
+[node name="inv_item_container" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container2" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container3" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container4" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container13" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container14" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container15" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container5" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container6" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container7" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container8" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container9" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container10" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container11" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
+[node name="inv_item_container12" parent="canvas/cooking_menu/inventory/inventory_container2" instance=ExtResource("18_t720b")]
+layout_mode = 2
+
 [node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
+metadata/_edit_lock_ = true
+
+[node name="kitchen" parent="." node_paths=PackedStringArray("menuInterface") instance=ExtResource("51_xwwsq")]
+menuInterface = NodePath("../canvas/shop_panel")
+
+[node name="CollisionShape2D" parent="kitchen/trigger_store" index="0"]
+position = Vector2(15, 1)
+shape = SubResource("RectangleShape2D_a4pua")
 
 [node name="kut" parent="." instance=ExtResource("28_py445")]
-position = Vector2(465, -486)
+position = Vector2(792, -224)
 animation = &"kut_idle"
 frame_progress = 0.0
 character = "kut"
 action = "shop"
 
-[node name="kitchen" type="Node2D" parent="." node_paths=PackedStringArray("triggerArea", "shopInterface")]
-z_index = -449
-y_sort_enabled = true
-position = Vector2(469, -449)
-script = ExtResource("47_fuwni")
-triggerArea = NodePath("trigger_store")
-shopInterface = NodePath("../canvas/shop_panel")
+[node name="CollisionShape2D" parent="kut/trigger_dialog" index="0"]
+position = Vector2(8.42798, 36.878)
+shape = SubResource("RectangleShape2D_yg471")
 
-[node name="trigger_store" type="Area2D" parent="kitchen"]
-position = Vector2(-21, 22)
-monitorable = false
+[node name="shop" parent="." node_paths=PackedStringArray("menuInterface") instance=ExtResource("51_xwwsq")]
+position = Vector2(798, -233)
+menuInterface = NodePath("../canvas/cooking_menu")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/trigger_store"]
-position = Vector2(16.5, 16)
-shape = SubResource("RectangleShape2D_hqa00")
+[node name="azzy" parent="." instance=ExtResource("28_py445")]
+position = Vector2(462, -455)
+animation = &"azzy_talk"
+frame_progress = 0.0
+character = "azzy"
+action = "idle"
 
-[node name="counter" type="Sprite2D" parent="kitchen"]
-position = Vector2(-4.21399, -3.51221)
-texture = ExtResource("30_hexyg")
-
-[node name="StaticBody2D" type="StaticBody2D" parent="kitchen/counter"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/counter/StaticBody2D"]
-position = Vector2(0, 8.19501)
-shape = SubResource("RectangleShape2D_hty1o")
-
-[node name="large_box" type="Sprite2D" parent="kitchen"]
-position = Vector2(-75.8518, -11.7073)
-texture = ExtResource("31_ttjlq")
-
-[node name="top_box" type="Sprite2D" parent="kitchen/large_box"]
-position = Vector2(12.642, -31.6097)
-texture = ExtResource("32_fdvne")
-
-[node name="StaticBody2D" type="StaticBody2D" parent="kitchen/large_box"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/large_box/StaticBody2D"]
-position = Vector2(-3.05176e-05, 9.36584)
-shape = SubResource("RectangleShape2D_rk45n")
-
-[node name="box" type="Sprite2D" parent="kitchen"]
-position = Vector2(46.3539, -11.7073)
-rotation = 1.5708
-texture = ExtResource("32_fdvne")
-
-[node name="above_box" type="Sprite2D" parent="kitchen/box"]
-position = Vector2(-31.6097, -5.26749)
-texture = ExtResource("32_fdvne")
-
-[node name="StaticBody2D2" type="StaticBody2D" parent="kitchen/box"]
-position = Vector2(-1.19209e-05, -1.05351)
-rotation = -1.5708
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen/box/StaticBody2D2"]
-position = Vector2(1.58014, 9.36591)
-shape = SubResource("RectangleShape2D_b1soq")
-
-[node name="rug" type="Sprite2D" parent="kitchen"]
-position = Vector2(-4.21399, 55.0244)
-texture = ExtResource("33_mtgjl")
+[node name="CollisionShape2D" parent="azzy/trigger_dialog" index="0"]
+position = Vector2(9, 38.5)
+shape = SubResource("RectangleShape2D_hh5jb")
 
 [node name="joy" parent="." instance=ExtResource("28_py445")]
-position = Vector2(-759, -161)
+position = Vector2(83, -216)
+animation = &"joy_idle"
+frame_progress = 0.0
 character = "joy"
 action = "idle"
+
+[editable path="canvas/generations_panel/ScrollContainer/GridContainer/aphid_slot"]
+[editable path="kitchen"]
+[editable path="kut"]
+[editable path="shop"]
+[editable path="azzy"]

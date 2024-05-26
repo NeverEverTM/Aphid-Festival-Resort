@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://b30qrkcyopep6"]
+
+[ext_resource type="Texture2D" uid="uid://dxql7r1r5qc7k" path="res://sprites/props/resort_table.png" id="1_lypfa"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2j0ix"]
+size = Vector2(96, 16)
+
+[node name="resort_table" type="Sprite2D"]
+position = Vector2(405, -405)
+texture = ExtResource("1_lypfa")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_2j0ix")

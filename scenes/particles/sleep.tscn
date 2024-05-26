@@ -1,6 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://3n7hc8daqmx1"]
+[gd_scene load_steps=8 format=3 uid="uid://3n7hc8daqmx1"]
 
 [ext_resource type="Texture2D" uid="uid://bhqjw65pvvtmq" path="res://sprites/particles/sleep_sprite.tres" id="1_b18rq"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1mep3"]
+light_mode = 1
 
 [sub_resource type="Curve" id="Curve_qasph"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -35,6 +38,7 @@ turbulence_noise_scale = 10.0
 
 [node name="GPU_HeartParticles" type="GPUParticles2D"]
 z_index = 1000
+material = SubResource("CanvasItemMaterial_1mep3")
 amount = 2
 amount_ratio = 0.7179
 process_material = SubResource("ParticleProcessMaterial_41uej")

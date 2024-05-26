@@ -1,7 +1,24 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://c26milatu6udv"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://c26milatu6udv"]
 
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_37fpf"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="1_kgla5"]
-[ext_resource type="StyleBox" uid="uid://dxni6lp0btors" path="res://border_bg.tres" id="3_0my7e"]
+[ext_resource type="StyleBox" uid="uid://dr2mf5bmmc0m0" path="res://button_style.tres" id="2_t5o42"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n56tp"]
+texture = ExtResource("1_37fpf")
+expand_margin_left = 5.0
+expand_margin_top = 10.0
+expand_margin_right = 5.0
+expand_margin_bottom = 10.0
+modulate_color = Color(0.67451, 0, 0.231373, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gx173"]
+texture = ExtResource("1_37fpf")
+expand_margin_left = 5.0
+expand_margin_top = 10.0
+expand_margin_right = 5.0
+expand_margin_bottom = 10.0
+modulate_color = Color(0.898039, 0.203922, 0.356863, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i1e6c"]
 content_margin_left = 14.0
@@ -22,19 +39,29 @@ shadow_size = 1
 default_font = ExtResource("1_kgla5")
 default_font_size = 40
 Button/colors/font_color = Color(1, 1, 1, 1)
-Button/colors/font_focus_color = Color(0.364706, 0.768627, 0.85098, 1)
-Button/colors/font_hover_color = Color(0.364706, 0.768627, 0.85098, 1)
-Button/colors/font_hover_pressed_color = Color(0.94902, 0.8, 0.145098, 1)
+Button/colors/font_hover_color = Color(1, 0.627451, 0.709804, 1)
+Button/colors/font_hover_pressed_color = Color(0.694118, 0.164706, 0.231373, 1)
 Button/colors/font_outline_color = Color(0.0588235, 0.0588235, 0.0588235, 1)
-Button/colors/font_pressed_color = Color(0.94902, 0.8, 0.145098, 1)
+Button/colors/font_pressed_color = Color(1, 0.392157, 0.52549, 1)
+Button/styles/disabled = ExtResource("2_t5o42")
+Button/styles/focus = ExtResource("2_t5o42")
+Button/styles/hover = SubResource("StyleBoxTexture_n56tp")
+Button/styles/normal = ExtResource("2_t5o42")
+Button/styles/pressed = SubResource("StyleBoxTexture_gx173")
+CheckButton/colors/font_hover_color = Color(0.984314, 0.517647, 0.576471, 1)
+CheckButton/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+CheckButton/styles/focus = ExtResource("2_t5o42")
+CheckButton/styles/hover = ExtResource("2_t5o42")
+CheckButton/styles/hover_pressed = ExtResource("2_t5o42")
 GridContainer/constants/h_separation = 8
 GridContainer/constants/v_separation = 8
 OptionButton/constants/h_separation = 8
 OptionButton/constants/modulate_arrow = 1
-OptionButton/styles/focus = ExtResource("3_0my7e")
-OptionButton/styles/hover = ExtResource("3_0my7e")
-OptionButton/styles/normal = ExtResource("3_0my7e")
-OptionButton/styles/pressed = ExtResource("3_0my7e")
+OptionButton/styles/focus = ExtResource("2_t5o42")
+OptionButton/styles/hover = ExtResource("2_t5o42")
+OptionButton/styles/normal = ExtResource("2_t5o42")
+OptionButton/styles/normal_mirrored = ExtResource("2_t5o42")
+OptionButton/styles/pressed = ExtResource("2_t5o42")
 TextEdit/colors/background_color = Color(0.0745098, 0.27451, 0.176471, 0)
 TextEdit/colors/font_placeholder_color = Color(0.305882, 0.611765, 0.458824, 0.6)
 TextEdit/styles/normal = SubResource("StyleBoxFlat_i1e6c")

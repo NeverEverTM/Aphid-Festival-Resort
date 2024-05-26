@@ -12,18 +12,20 @@ config_version=5
 
 config/name="Aphid Festival Resort"
 config/description="Aphid Festival Demo"
-config/version="0.1.1.0"
+config/version="0.2.1.0"
 run/main_scene="res://scenes/menu.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://sprites/ui/leaf_cover.png"
+config/windows_native_icon="res://sprites/icon.ico"
 
 [autoload]
 
-GameManager="*res://scripts/managers/GameManager.cs"
-OptionsManager="*res://scripts/managers/OptionsManager.cs"
-SoundManager="*res://scripts/managers/SoundManager.cs"
+GameManager="*res://scripts/GameManager.cs"
+OptionsManager="*res://scripts/controllers/OptionsManager.cs"
+SoundManager="*res://scripts/controllers/SoundManager.cs"
+Cheats="*res://scripts/Cheats.cs"
 
 [display]
 

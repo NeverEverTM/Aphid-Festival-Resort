@@ -28,7 +28,7 @@ public partial class AphidHatch : RigidBody2D
 
 	private void HatchDefault()
 	{
-		Aphid _aphid = ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y),
+		ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y),
 			new()
 			{
 				AntennaColor = colors[0],
@@ -41,7 +41,7 @@ public partial class AphidHatch : RigidBody2D
 	}
 	private void HatchNatural()
 	{
-		Aphid _aphid = ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y), naturalGenes);
+		ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y), naturalGenes);
 		QueueFree();
 	}
 }

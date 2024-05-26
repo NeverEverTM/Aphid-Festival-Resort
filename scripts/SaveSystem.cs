@@ -1,24 +1,25 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 public static class SaveSystem
 {
-	public static readonly Dictionary<Guid, AphidInstance> AphidsOnResort = new();
+	public static readonly Dictionary<Guid, AphidInstance> Aphids = new();
 	public static string Profile { get; private set; }
 	public static string CurrentProfilePath { get; private set; }
 
 	public const string
 	ProfilesDirectory = "user://profiles",
 	defaultProfile = "default",
-	aphidsGUID = "/aphids.guid",
 	backupFolder = "/backup",
-	aphidsFolder = "/aphids",
-	dataFolder = "/data";
+	aphidsFolder = "/aphids/",
+	resortsFolder = "/resorts/",
+	jsonExtension = ".json";
 
-	public static readonly List<ISaveData> ProfileData = new();
+	public static List<ISaveData> ProfileData = new();
 	public static readonly List<ISaveData> GlobalData = new();
 
 	public static void CreateBaseDirectories()
@@ -31,7 +32,7 @@ public static class SaveSystem
 	public static void AddToProfileData(ISaveData _data)
 	{
 		ProfileData.Add(_data);
-		GD.Print($"ProfileData: <{_data.CLASS_ID}> has been set as serializeable profile data.");
+		GD.Print($"ProfileData: <{_data.GetId()}> has been set as serializeable profile data.");
 	}
 	/// <summary>
 	/// Allows a class to store and load serializeable data for use in the application.
@@ -39,7 +40,7 @@ public static class SaveSystem
 	public static void AddToGlobalData(ISaveData _data)
 	{
 		GlobalData.Add(_data);
-		GD.Print($"GlobalData: <{_data.CLASS_ID}> has been set as serializeable global data.");
+		GD.Print($"GlobalData: <{_data.GetId()}> has been set as serializeable global data.");
 	}
 
 	// Aphid related methods
@@ -47,15 +48,27 @@ public static class SaveSystem
 	{
 		Guid _guid = Guid.NewGuid();
 		_buddy.ID = _guid.ToString();
-		AphidsOnResort.Add(_guid, _buddy);
+		Aphids.Add(_guid, _buddy);
 		return _guid;
 	}
-	public static void RemoveAphidInstance(Guid _guid) =>
-		AphidsOnResort.Remove(_guid);
-	public static AphidInstance GetAphidInstance(Guid _guid) =>
-		AphidsOnResort[_guid];
+	public static void RemoveAphidInstance(Guid _guid)
+	{
+		if (!Aphids.ContainsKey(_guid))
+		{
+			GD.PrintErr("SaveSystem: (RemoveAphidInstance)", _guid, " does not exist.");
+			return;
+		}
+		Aphids.Remove(_guid);
+	}
+	public static AphidInstance GetAphidInstance(Guid _guid)
+	{
+		if (Aphids.ContainsKey(_guid))
+			return Aphids[_guid];
+
+		return null;
+	}
 	public static void ReplaceAphidInstance(Guid _guid, AphidInstance _buddy) =>
-		AphidsOnResort[_guid] = _buddy;
+		Aphids[_guid] = _buddy;
 
 	// Data used for user experience
 	public static void SaveGlobalData()
@@ -63,7 +76,7 @@ public static class SaveSystem
 		for (int i = 0; i < GlobalData.Count; i++)
 		{
 			string _json = GlobalData[i].SaveData();
-			using var _profile = FileAccess.Open("user://" + $"{GlobalData[i].CLASS_ID}.json", FileAccess.ModeFlags.Write);
+			using var _profile = FileAccess.Open("user://" + $"{GlobalData[i].GetId()}.json", FileAccess.ModeFlags.Write);
 			_profile.StorePascalString(_json);
 		}
 		GD.Print("GlobalSave: Data has been saved.");
@@ -72,7 +85,7 @@ public static class SaveSystem
 	{
 		for (int i = 0; i < GlobalData.Count; i++)
 		{
-			string _path = "user://" + $"{GlobalData[i].CLASS_ID}.json";
+			string _path = "user://" + $"{GlobalData[i].GetId()}.json";
 			if (!FileAccess.FileExists(_path))
 				continue;
 			using var _profile = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
@@ -86,37 +99,53 @@ public static class SaveSystem
 	{
 		string _backupFolder = CurrentProfilePath + backupFolder;
 
+		// save game data
+		await SaveClassData(GameData.Instance);
+
 		// Save Aphid Data
 		await SaveAllAphids(_backupFolder, false);
 		await SaveAllAphids(CurrentProfilePath);
 
 		// Save serialized classes
 		for (int i = 0; i < ProfileData.Count; i++)
-		{
-			string _json = ProfileData[i].SaveData();
+			await SaveClassData(ProfileData[i]);
+
+		Logger.Print($"ProfileSave: Saved profile <{Profile}> to <{ProjectSettings.GlobalizePath(CurrentProfilePath)}>.", Logger.LogPriority.Log);
+	}
+	private static Task SaveClassData(ISaveData _class)
+	{
+		try{
+			string _json = _class.SaveData();
 			// Save current backup version
-			using var _backup = FileAccess.Open(_backupFolder + dataFolder + $"/{ProfileData[i].CLASS_ID}.json", FileAccess.ModeFlags.Write);
+			using var _backup = FileAccess.Open(CurrentProfilePath + backupFolder + _class.GetDataPath() + _class.GetId() + jsonExtension, FileAccess.ModeFlags.Write);
 			_backup.StorePascalString(_json);
 			// Save current profile version
-			using var _profile = FileAccess.Open(CurrentProfilePath + dataFolder + $"/{ProfileData[i].CLASS_ID}.json", FileAccess.ModeFlags.Write);
+			using var _profile = FileAccess.Open(CurrentProfilePath + _class.GetDataPath() + _class.GetId() + jsonExtension, FileAccess.ModeFlags.Write);
 			_profile.StorePascalString(_json);
 		}
-
-		GD.Print($"ProfileSave: Saved profile <{Profile}> to <{ProjectSettings.GlobalizePath(CurrentProfilePath)}>.");
+		catch (Exception _e)
+		{
+			Logger.Print($"ProfileSave: Error on saving class <{_class.GetId()}>" + _e, Logger.LogPriority.Error);
+		}
+		return Task.CompletedTask;
 	}
 
 	private static Task SaveAllAphids(string _path, bool _logSave = true)
 	{
 		try
 		{
-			foreach (KeyValuePair<Guid, AphidInstance> _pair in AphidsOnResort)
+			using var _stream = FileAccess.Open($"{_path + aphidsFolder}/aphids.json", FileAccess.ModeFlags.Write);
+
+			foreach (KeyValuePair<Guid, AphidInstance> _pair in Aphids)
 			{
 				var _guid = _pair.Key.ToString();
-				if (!SaveAphid($"{_path + aphidsFolder}/{_guid}", _pair.Value))
+				if (!SaveAphid(_stream, _pair.Value))
 					continue;
 				else if (_logSave)
-					GD.Print($"Succesfully saved aphid. ID: {_guid}.");
+					Logger.Print($"Succesfully saved aphid. ID: {_guid}.", Logger.LogPriority.Log);
 			}
+
+			_stream.Close();
 		}
 		catch (Exception _err)
 		{
@@ -126,16 +155,15 @@ public static class SaveSystem
 		}
 		return Task.CompletedTask;
 	}
-	private static bool SaveAphid(string _path, AphidInstance _data)
+	private static bool SaveAphid(FileAccess _stream, AphidInstance _data)
 	{
 		try
 		{
-			// Open a new file using the guid as name, write both the status and genes inside of it
-			using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Write);
-			string _json = JsonSerializer.Serialize(_data.Status);
-			_file.StorePascalString(_json);
-			_json = JsonSerializer.Serialize(_data.Genes);
-			_file.StorePascalString(_json);
+			// Open the stream and write both the status and genes inside of it
+			_stream.StorePascalString(_data.ID);
+			_stream.StorePascalString(JsonSerializer.Serialize(_data.Status));
+			_stream.StorePascalString(JsonSerializer.Serialize(_data.Genes));
+			_stream.Flush();
 		}
 		catch (Exception _err)
 		{
@@ -150,8 +178,14 @@ public static class SaveSystem
 	// ==========| Resort Loading Methods |===========
 	public static async Task LoadProfileData()
 	{
-		AphidsOnResort.Clear();
 		string _backupFolder = CurrentProfilePath + backupFolder;
+		ProfileData = ProfileData.OrderByDescending(_profile => _profile.LoadOrderPriority).ToList();
+		Aphids.Clear();
+
+		// load GameData first and check for compability problems
+		await LoadClassData(GameData.Instance);
+		if (BackwardsCompatibility.CheckVersionCompatibility().Result)
+			return;
 
 		// Load Aphid Data
 		try { await LoadAllAphids(CurrentProfilePath); }
@@ -163,51 +197,61 @@ public static class SaveSystem
 
 		// Load all save data classes
 		for (int i = 0; i < ProfileData.Count; i++)
+			await LoadClassData(ProfileData[i]);
+
+		Logger.Print($"ProfileLoad: Loaded profile <{Profile}> to memory.", Logger.LogPriority.Log);
+	}
+	private static async Task<bool> LoadClassData(ISaveData _class)
+	{
+		string _relativePath = _class.GetDataPath() + _class.GetId() + jsonExtension;
+		try
 		{
+			using var _stream = FileAccess.Open(CurrentProfilePath + _relativePath, FileAccess.ModeFlags.Read);
+			await _class.LoadData(_stream.GetPascalString());
+			return true;
+		}
+		catch (Exception _e)
+		{
+			Logger.Print($"ProfileLoad: {_class.GetId()} was not able to be loaded." + _e, Logger.LogPriority.Warning);
 			try
 			{
-				using var _profile = FileAccess.Open(CurrentProfilePath + dataFolder + $"/{ProfileData[i].CLASS_ID}.json", FileAccess.ModeFlags.Read);
-				await ProfileData[i].LoadData(_profile.GetPascalString());
+				using var _stream_backup = FileAccess.Open(CurrentProfilePath + backupFolder + _relativePath, FileAccess.ModeFlags.Read);
+				await _class.LoadData(_stream_backup.GetPascalString());
+				return true;
 			}
-			catch (Exception _e)
+			catch (Exception _e_backup)
 			{
-				GD.PrintErr(_e);
-				using var _profile = FileAccess.Open(_backupFolder + dataFolder + $"/{ProfileData[i].CLASS_ID}.json", FileAccess.ModeFlags.Read);
-				await ProfileData[i].LoadData(_profile.GetPascalString());
-				continue;
+				Logger.Print($"[CRITICAL] ProfileLoad: Backup for {_class.GetId()} was not able to be loaded." + _e_backup, Logger.LogPriority.Error);
+				await _class.SetData();
 			}
+			return false; // Something went REALLY bad
 		}
-
-		GD.Print($"ProfileLoad: Loaded profile <{Profile}> to memory.");
 	}
 
 	private static Task LoadAllAphids(string _path)
 	{
-		var _aphidFolder = _path + aphidsFolder;
-		var _dir = DirAccess.Open(_aphidFolder);
-		var _files = _dir.GetFiles();
+		using var _stream = FileAccess.Open(_path + aphidsFolder + "aphids.json", FileAccess.ModeFlags.Read);
 
-		for (int i = 0; i < _files.Length; i++)
+		while (_stream.GetPosition() < _stream.GetLength())
 		{
 			var _instance = new AphidInstance();
-			if (!LoadAphid(_aphidFolder + $"/{_files[i]}", ref _instance))
+			if (!LoadAphid(_stream, ref _instance))
 				continue;
 
-			_instance.ID = _files[i];
-			AphidsOnResort.Add(new Guid(_files[i]), _instance);
+			Aphids.Add(new Guid(_instance.ID), _instance);
 			ResortManager.CreateAphid(_instance);
-			GD.Print($"Succesfully loaded aphid. ID: {_files[i]}.");
+			GD.Print($"Succesfully loaded aphid. ID: {_instance.ID}.");
 		}
 
 		return Task.CompletedTask;
 	}
-	private static bool LoadAphid(string _path, ref AphidInstance _instance)
+	private static bool LoadAphid(FileAccess _stream, ref AphidInstance _instance)
 	{
 		try
 		{
-			using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
-			_instance.Status = JsonSerializer.Deserialize<AphidData.Status>(_file.GetPascalString());
-			_instance.Genes = JsonSerializer.Deserialize<AphidData.Genes>(_file.GetPascalString());
+			_instance.ID = _stream.GetPascalString();
+			_instance.Status = JsonSerializer.Deserialize<AphidData.Status>(_stream.GetPascalString());
+			_instance.Genes = JsonSerializer.Deserialize<AphidData.Genes>(_stream.GetPascalString());
 		}
 		catch (Exception _err)
 		{
@@ -216,21 +260,6 @@ public static class SaveSystem
 			return false;
 		}
 		return true;
-	}
-
-	public interface ISaveData
-	{
-		public string CLASS_ID { get; }
-		/// <summary>
-		/// Attempts to save data of the game before serializing the data class.
-		/// Returns the class to serialize.
-		/// </summary>
-		public string SaveData();
-		/// <summary>
-		/// Attempts to use the loaded data to set itself up.
-		/// </summary>
-		public Task LoadData(string _json);
-		public Task SetData();
 	}
 
 	// ==========| Profile Managment Methods |==========
@@ -277,7 +306,7 @@ public static class SaveSystem
 		}
 
 		_dir.MakeDir("aphids");
-		_dir.MakeDir("data");
+		_dir.MakeDir("resorts");
 		return Task.CompletedTask;
 	}
 
@@ -302,5 +331,142 @@ public static class SaveSystem
 	{
 		await DeleteProfile(_profile);
 		await CreateProfile();
+	}
+
+	public interface ISaveData
+	{
+		/// <summary>
+		/// The load order priority of this class, it goes from highest to lowest, so 0 > 100. 
+		/// </summary>
+		public int LoadOrderPriority { get => 0; }
+		/// <summary>
+		/// Gets the public ISaveData ID of this class.
+		/// </summary>
+		public string GetId();
+		/// <summary>
+		/// Gets the path to data location (Defaults to root of its relative folder)
+		/// </summary>
+		public string GetDataPath()
+		{
+			return "/";
+		}
+		/// <summary>
+		/// Attempts to save data of the game before serializing the data class.
+		/// Returns the class to serialize.
+		/// </summary>
+		public string SaveData();
+		/// <summary>
+		/// Attempts to use the loaded data to set itself up.
+		/// </summary>
+		public Task LoadData(string _json);
+		public Task SetData();
+	}
+
+	public static class BackwardsCompatibility
+	{
+		public const string dataFolder = "/data";
+
+		/// <summary>
+		/// Checks if certain processes for this savefile need to be done to upgrade it between versions.
+		/// </summary>
+		/// <returns>A Task with a bool return type, this marks wheter it replaces the current profile load method.</returns>
+		public static async Task<bool> CheckVersionCompatibility()
+		{
+			switch (GameData.Data.Version)
+			{
+				case 120:
+					if (DirAccess.DirExistsAbsolute(CurrentProfilePath + dataFolder))
+					{
+						await May2024Fix();
+						return true;
+					}
+					break;
+			}
+			return false;
+		}
+
+		private static async Task May2024Fix()
+		{
+			// Load data and rename it to "..._Legacy"
+			GD.PrintRich("[color=green]Upgrading savefile to Version 120. Critical Error is completely intentional[/color]");
+			await LoadProfileData_Legacy();
+			string _legacy_path = ProjectSettings.GlobalizePath(ProfilesDirectory + $"/{Profile}_Legacy");
+			System.IO.Directory.Move(ProjectSettings.GlobalizePath(CurrentProfilePath), _legacy_path);
+			// Recreate the profile from scrtach and save to it, then delete the legacy save
+			await CreateProfile();
+			await SaveProfileData();
+
+			System.IO.Directory.Delete(_legacy_path, true);
+		}
+		private static async Task LoadProfileData_Legacy()
+		{
+			Aphids.Clear();
+			string _backupFolder = CurrentProfilePath + backupFolder;
+
+			// Load Aphid Data
+			try { await LoadAllAphids_Legacy(CurrentProfilePath); }
+			catch (Exception _e)
+			{
+				await LoadAllAphids_Legacy(_backupFolder);
+				GD.PrintErr(_e);
+			}
+
+			// Load all save data classes
+			for (int i = 0; i < ProfileData.Count; i++)
+			{
+				try
+				{
+					using var _profile = FileAccess.Open(CurrentProfilePath + dataFolder + $"/{ProfileData[i].GetId()}.json", FileAccess.ModeFlags.Read);
+					await ProfileData[i].LoadData(_profile.GetPascalString());
+				}
+				catch (Exception _e)
+				{
+					GD.PrintErr(_e);
+					using var _profile = FileAccess.Open(_backupFolder + dataFolder + $"/{ProfileData[i].GetId()}.json", FileAccess.ModeFlags.Read);
+					await ProfileData[i].LoadData(_profile.GetPascalString());
+					continue;
+				}
+			}
+
+			GD.Print($"ProfileLoad: Loaded profile <{Profile}> to memory.");
+		}
+		private static Task LoadAllAphids_Legacy(string _path)
+		{
+			var _aphidFolder = _path + aphidsFolder;
+			var _dir = DirAccess.Open(_aphidFolder);
+			var _files = _dir.GetFiles();
+
+			for (int i = 0; i < _files.Length; i++)
+			{
+				if (_files[i].EndsWith("aphids.json"))
+					continue;
+				var _instance = new AphidInstance();
+				if (!LoadAphid_Legacy(_aphidFolder + $"/{_files[i]}", ref _instance))
+					continue;
+
+				_instance.ID = _files[i];
+				Aphids.Add(new Guid(_files[i]), _instance);
+				ResortManager.CreateAphid(_instance);
+				GD.Print($"Succesfully loaded aphid. ID: {_files[i]}.");
+			}
+
+			return Task.CompletedTask;
+		}
+		private static bool LoadAphid_Legacy(string _path, ref AphidInstance _instance)
+		{
+			try
+			{
+				using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
+				_instance.Status = JsonSerializer.Deserialize<AphidData.Status>(_file.GetPascalString());
+				_instance.Genes = JsonSerializer.Deserialize<AphidData.Genes>(_file.GetPascalString());
+			}
+			catch (Exception _err)
+			{
+				GD.PrintErr(_err.Message);
+				GD.PrintErr(_err.StackTrace);
+				return false;
+			}
+			return true;
+		}
 	}
 }

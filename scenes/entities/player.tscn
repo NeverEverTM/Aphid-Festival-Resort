@@ -1,7 +1,6 @@
-[gd_scene load_steps=23 format=3 uid="uid://b2tg0d8sg4vd0"]
+[gd_scene load_steps=22 format=3 uid="uid://b2tg0d8sg4vd0"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_02bb8"]
-[ext_resource type="AudioStream" uid="uid://cv5a0x5ojrrc2" path="res://sfx/whistle.wav" id="2_to2we"]
 [ext_resource type="Texture2D" uid="uid://cqevegmh5gxj7" path="res://sprites/characters/player/idle_2.tres" id="2_xh8k8"]
 [ext_resource type="Texture2D" uid="uid://bv8r0sviyw4n0" path="res://sprites/characters/player/idle_0.tres" id="3_ckls5"]
 [ext_resource type="Texture2D" uid="uid://b3e2joloyghby" path="res://sprites/characters/player/idle_1.tres" id="4_qbxa8"]
@@ -14,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cw4kls74t20om" path="res://sprites/characters/player/run_2.tres" id="11_njehf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r3o6d"]
-size = Vector2(24, 10)
+size = Vector2(19, 10)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5p45l"]
 
@@ -126,8 +125,6 @@ interactionArea = NodePath("interaction_area")
 spriteBody = NodePath("Sprite2D")
 animator = NodePath("Sprite2D/AnimationPlayer")
 audioPlayer = NodePath("AudioStreamPlayer2D")
-sound_whistle = ExtResource("2_to2we")
-metadata/player = "names_goes_here"
 metadata/tag = "player"
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
@@ -137,10 +134,11 @@ max_distance = 200.0
 bus = &"Sounds"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 10)
+position = Vector2(0.5, -3)
 shape = SubResource("RectangleShape2D_r3o6d")
 
 [node name="triggerArea" type="Area2D" parent="."]
+position = Vector2(1, -11)
 monitoring = false
 priority = 1000
 
@@ -149,6 +147,7 @@ position = Vector2(0, 10)
 shape = SubResource("CircleShape2D_5p45l")
 
 [node name="interaction_area" type="Area2D" parent="."]
+y_sort_enabled = true
 position = Vector2(33, 0)
 monitorable = false
 
@@ -156,6 +155,7 @@ monitorable = false
 shape = SubResource("RectangleShape2D_c4xmv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -15)
 texture = ExtResource("2_xh8k8")
 offset = Vector2(0, -17)
 flip_h = true
@@ -167,7 +167,7 @@ libraries = {
 }
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(-2, 0)
+position = Vector2(0, -20)
 zoom = Vector2(2, 2)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="Camera2D"]

@@ -3,7 +3,6 @@ using Godot;
 
 public partial class ConfirmationPopup : CanvasLayer
 {
-	public static bool IsConfirming;
 	private static ConfirmationPopup currentPopup;
 	private static Action givenAction;
 
@@ -58,15 +57,16 @@ public partial class ConfirmationPopup : CanvasLayer
 
 	public static void CreateConfirmation(Action _event)
     {
+		if (IsInstanceValid(currentPopup))
+			currentPopup.QueueFree();
+
 		currentPopup = ResourceLoader.Load<PackedScene>(GameManager.ConfirmationWindowPath).Instantiate() as ConfirmationPopup;
         GameManager.Instance.GetTree().Root.AddChild(currentPopup);
-		IsConfirming = true;
         givenAction = _event;
     }
 
     public static void CancelConfirmation()
     {
-        IsConfirming = false;
         givenAction = null;
         currentPopup.QueueFree();
 		currentPopup = null;

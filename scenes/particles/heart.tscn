@@ -1,6 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://4elwtdodi4mk"]
+[gd_scene load_steps=6 format=3 uid="uid://4elwtdodi4mk"]
 
 [ext_resource type="Texture2D" uid="uid://c0puuwb5wmu7b" path="res://sprites/particles/heart_sprite.tres" id="1_dt6u5"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_do3f1"]
+light_mode = 1
 
 [sub_resource type="Curve" id="Curve_qasph"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -29,6 +32,7 @@ turbulence_noise_scale = 6.28
 
 [node name="GPU_HeartParticles" type="GPUParticles2D"]
 z_index = 1000
+material = SubResource("CanvasItemMaterial_do3f1")
 emitting = false
 amount = 5
 process_material = SubResource("ParticleProcessMaterial_41uej")

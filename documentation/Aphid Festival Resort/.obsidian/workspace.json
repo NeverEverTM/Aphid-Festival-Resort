@@ -13,13 +13,26 @@
             "state": {
               "type": "markdown",
               "state": {
+                "file": "Major Version Goals.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "64fe77d3366bc06b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
                 "file": "Development Log.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -147,12 +160,15 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "0d6018243b375601",
+  "active": "64fe77d3366bc06b",
   "lastOpenFiles": [
+    "Changelogs.md",
+    "Major Version Goals.md",
+    "Development Log.md",
+    "Aphid Behaviour.md",
     "Food Types & Cooking.md",
     "databases/dialogue_translation.ods",
     "databases/essentials_translation.ods",
-    "Development Log.md",
     "databases/essentials.ods",
     "databases/dialogue.ods",
     "databases/items_values.ods",

@@ -10,4 +10,8 @@ colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0.584314, 0.74902, 0.282353, 1
 metadata/cost = 0
 
 [node name="Sprite2D" parent="." index="0"]
+position = Vector2(0, -6)
 texture = ExtResource("2_4cs5i")
+
+[node name="CollisionShape2D" parent="." index="1"]
+position = Vector2(0, -4)
