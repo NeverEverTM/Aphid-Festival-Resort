@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d37xbgvixol22"
-path="res://.godot/imported/eyes_baby_idle.png-b0b412c6dd60fb4737d4303ed8d14c26.ctex"
+uid="uid://cv7dlc6ju141o"
+path="res://.godot/imported/eyes_sleep.png-093860bb1d7de9daca28539e64eb7ac1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://skins/0/eyes_baby_idle.png"
-dest_files=["res://.godot/imported/eyes_baby_idle.png-b0b412c6dd60fb4737d4303ed8d14c26.ctex"]
+source_file="res://databases/skins/0/eyes_sleep.png"
+dest_files=["res://.godot/imported/eyes_sleep.png-093860bb1d7de9daca28539e64eb7ac1.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://def4q88x7y54n"
-path="res://.godot/imported/antenna_baby_idle.png-cd094cf7604c0b3fbd58fbf6d00bc1f1.ctex"
+uid="uid://duwts272md31"
+path="res://.godot/imported/icon_folder.png-863b24d51d4947916768091499683458.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://skins/0/antenna_baby_idle.png"
-dest_files=["res://.godot/imported/antenna_baby_idle.png-cd094cf7604c0b3fbd58fbf6d00bc1f1.ctex"]
+source_file="res://sprites/ui/icon_folder.png"
+dest_files=["res://.godot/imported/icon_folder.png-863b24d51d4947916768091499683458.ctex"]
 
 [params]
 

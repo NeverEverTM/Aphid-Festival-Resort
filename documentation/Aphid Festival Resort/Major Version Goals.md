@@ -3,12 +3,12 @@ Here is described the roadmap for most feature implementations, this does not in
 
 April 25th was the deadline for Version 0.1
 September 2024 is the estimated deadline for Version 0.2
-## Version 0.1 (100%)
+## Version 0.1 ([100%])
 - Base aphids, able to breed and mix-match, complex behaviour.
 - Multiple savefiles capacity
 - The goddang base game
 ## Version 0.2 (25%)
-- Cooking mechanics similar to that in the game
+- [DONE] Cooking mechanics similar to that in the game
 - Resort customization with the ability to place furniture
 - Aphid able to learn skills through small minigames within the resort grounds
 - Aphid interactables, such as toys.

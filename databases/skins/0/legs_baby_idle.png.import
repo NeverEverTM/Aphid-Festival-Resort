@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://duwts272md31"
-path="res://.godot/imported/icon_blogs.png-6b902461af2a9d32ba5a6a88d3a14223.ctex"
+uid="uid://dc343hj4kbhik"
+path="res://.godot/imported/legs_baby_idle.png-4f9d9309dcf6f555389b0ef63c75b4bb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/ui/icon_blogs.png"
-dest_files=["res://.godot/imported/icon_blogs.png-6b902461af2a9d32ba5a6a88d3a14223.ctex"]
+source_file="res://databases/skins/0/legs_baby_idle.png"
+dest_files=["res://.godot/imported/legs_baby_idle.png-4f9d9309dcf6f555389b0ef63c75b4bb.ctex"]
 
 [params]
 

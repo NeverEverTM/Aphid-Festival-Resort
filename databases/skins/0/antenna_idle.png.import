@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u3pou85pb7is"
-path="res://.godot/imported/legs_idle.png-17f22fb997101c1b0ad035e940ff758e.ctex"
+uid="uid://dqqlmjovquo6w"
+path="res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9f87e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://skins/0/legs_idle.png"
-dest_files=["res://.godot/imported/legs_idle.png-17f22fb997101c1b0ad035e940ff758e.ctex"]
+source_file="res://databases/skins/0/antenna_idle.png"
+dest_files=["res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9f87e.ctex"]
 
 [params]
 

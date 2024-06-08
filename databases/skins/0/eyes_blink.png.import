@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b33l6pipdetpo"
-path="res://.godot/imported/legs_baby_sleep.png-d14e50bd4a0e869932abd2815cf0a63a.ctex"
+uid="uid://bugdmu4oer5sy"
+path="res://.godot/imported/eyes_blink.png-2955107992f33cc32c4ff929db6fa8b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://skins/0/legs_baby_sleep.png"
-dest_files=["res://.godot/imported/legs_baby_sleep.png-d14e50bd4a0e869932abd2815cf0a63a.ctex"]
+source_file="res://databases/skins/0/eyes_blink.png"
+dest_files=["res://.godot/imported/eyes_blink.png-2955107992f33cc32c4ff929db6fa8b9.ctex"]
 
 [params]
 

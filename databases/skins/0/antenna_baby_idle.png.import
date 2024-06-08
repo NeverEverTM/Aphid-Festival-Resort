@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bugdmu4oer5sy"
-path="res://.godot/imported/eyes_blink.png-28643451fb7a394df71eb67f77e3fd11.ctex"
+uid="uid://def4q88x7y54n"
+path="res://.godot/imported/antenna_baby_idle.png-78a7e57429ccb20f5f4f14890d355c4b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://skins/0/eyes_blink.png"
-dest_files=["res://.godot/imported/eyes_blink.png-28643451fb7a394df71eb67f77e3fd11.ctex"]
+source_file="res://databases/skins/0/antenna_baby_idle.png"
+dest_files=["res://.godot/imported/antenna_baby_idle.png-78a7e57429ccb20f5f4f14890d355c4b.ctex"]
 
 [params]
 

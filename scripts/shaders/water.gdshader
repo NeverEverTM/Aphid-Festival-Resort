@@ -19,7 +19,7 @@ void fragment() {
 	scroll *= distance(world_pos, full_uv);
 	
 	noise_sample.rgb /= 4.0;
-	noise_sample.rgb -= 0.1 - sin(TIME) * 0.1;
+	noise_sample.rgb -= 0.3;
 	noise_sample.b = 0.75;
 	noise_sample.a = 0.0;
 	
