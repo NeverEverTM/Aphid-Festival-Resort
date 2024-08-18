@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/aphid/Aphid.cs" id="1_acxg7"]
 [ext_resource type="Script" path="res://scripts/aphid/AphidSkin.cs" id="2_xeinf"]
-[ext_resource type="Texture2D" uid="uid://u3pou85pb7is" path="res://skins/0/legs_idle.png" id="12_kek4f"]
-[ext_resource type="Texture2D" uid="uid://hnyudgy17eqv" path="res://skins/0/body_idle.png" id="13_7fxmg"]
-[ext_resource type="Texture2D" uid="uid://2e856swkfn11" path="res://skins/0/eyes_idle.png" id="14_7wf6h"]
-[ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://skins/0/antenna_idle.png" id="15_tax8g"]
+[ext_resource type="Texture2D" uid="uid://u3pou85pb7is" path="res://databases/skins/0/legs_idle.png" id="12_kek4f"]
+[ext_resource type="Texture2D" uid="uid://hnyudgy17eqv" path="res://databases/skins/0/body_idle.png" id="13_7fxmg"]
+[ext_resource type="Texture2D" uid="uid://2e856swkfn11" path="res://databases/skins/0/eyes_idle.png" id="14_7wf6h"]
+[ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://databases/skins/0/antenna_idle.png" id="15_tax8g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
 size = Vector2(34, 12)

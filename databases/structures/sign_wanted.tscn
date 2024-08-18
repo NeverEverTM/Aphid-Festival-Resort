@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://1tjx226ob00c"]
+
+[ext_resource type="Texture2D" uid="uid://dvva1n813sfio" path="res://sprites/props/sign_wanted.png" id="1_jmi5n"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yvpct"]
+size = Vector2(32, 4)
+
+[node name="sign_wanted" type="Sprite2D"]
+texture = ExtResource("1_jmi5n")
+offset = Vector2(0, -24)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_yvpct")

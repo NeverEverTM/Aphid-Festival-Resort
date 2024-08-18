@@ -7,7 +7,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 {
 	public static SaveFile Data = new();
 	public string GetId() => "player_data";
-	public static string NewName; 
+	public static string NewName { get; set; }
 
 	public class SaveFile
 	{
@@ -19,13 +19,23 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 		public float PositionY { get; set; }
 
 		public List<string> Inventory { get; set; }
-		public int Currency { get; set; } 
+		public List<string> Storage { get; set; }
+		public int Currency { get; private set; } 
 
 		public SaveFile()
 		{
 			Room = "resort_golden_grounds";
 			Inventory = new();
+			Storage = new();
 			Currency = 30;
+		}
+		public void SetCurrency(int _amount, bool _setToValue = false)
+		{
+			if (_setToValue)
+				Currency = _amount;
+			else
+				Currency += _amount;
+			CanvasManager.UpdateCurrency();
 		}
 	}
 
@@ -45,8 +55,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 		}
 		Data = JsonSerializer.Deserialize<SaveFile>(_json);
 		Instance.GlobalPosition = new Vector2(Data.PositionX, Data.PositionY);
-		for (int i = 0; i < Data.Inventory.Count; i++)
-			Instance.CreateInvItem(i);
+		CanvasManager.UpdateCurrency();
 		return Task.CompletedTask;
 	}
 	public Task SetData()

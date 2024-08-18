@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ba1ev1heaa3s6"]
+[gd_scene load_steps=10 format=3 uid="uid://ba1ev1heaa3s6"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="1_fjlrd"]
 [ext_resource type="Script" path="res://scripts/panels/OptionsMenu.cs" id="2_eio0f"]
@@ -7,7 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="5_bialj"]
 [ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/icons/aphid_child.tres" id="6_fnwq8"]
 [ext_resource type="Texture2D" uid="uid://be65y2gqbnjq0" path="res://sprites/ui/pencil.tres" id="6_ghwfp"]
-[ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/icon_blogs.png" id="6_qdykg"]
+[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="6_jwgu8"]
+[ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/icon_folder.png" id="6_qdykg"]
 
 [node name="options_panel" type="Control" node_paths=PackedStringArray("musicSlider", "soundSlider", "saveFolderButton", "windowMode", "language")]
 light_mask = 0
@@ -84,6 +85,10 @@ offset_right = 134.0
 offset_bottom = 135.0
 texture_normal = ExtResource("6_qdykg")
 stretch_mode = 4
+script = ExtResource("6_jwgu8")
+PressedColor = Color(0.533333, 0.533333, 0.533333, 1)
+FocusColor = Color(0.282353, 0.572549, 0.788235, 1)
+HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
 
 [node name="sound" type="TextureRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)

@@ -2,10 +2,9 @@ using Godot;
 
 public partial class AphidInfo : Control
 {
-	[Export] private AnimationPlayer aphid_info_panel;
+	[Export] private AnimationPlayer menu_player;
 	[ExportCategory("Bio")]
 	[Export] private TextEdit name_label;
-	[Export] private BaseButton show_hash_button;
 	[Export] private TextureProgressBar bondship;
 	[Export] private TextureRect ageDisplay;
 	[Export] private Texture2D[] age = new Texture2D[2];
@@ -19,22 +18,24 @@ public partial class AphidInfo : Control
 	public override void _Ready()
 	{
 		name_label.FocusEntered += () => CanvasManager.SetFocus(name_label);
-		name_label.FocusExited += SetName;
-		show_hash_button.Pressed += CopyHash;
-
+		name_label.FocusExited += SetAphidName;
 
 		Player.Instance.OnPickup += OnAphidPickup;
 		Player.Instance.OnDrop += OnAphidDrop;
 	}
 	public override void _Input(InputEvent _event)
 	{
-		if (!CanvasManager.IsInFocus)
+		if (!Visible)
+			return;
+
+		if (!CanvasManager.IsFocus(name_label))
 			return;
 
 		if (_event is InputEventKey && _event.IsPressed())
 		{
 			InputEventKey _input = _event as InputEventKey;
 
+			// unfocus
 			if (_input.KeyLabel == Key.Enter)
 			{
 				GetViewport().SetInputAsHandled();
@@ -46,25 +47,24 @@ public partial class AphidInfo : Control
 			if (_input.KeyLabel == Key.Backspace || _input.KeyLabel == Key.Left || _input.KeyLabel == Key.Right)
 				return;
 
+			// limit for name length
 			if (name_label.Text.Length > 20)
 				GetViewport().SetInputAsHandled();
 		}
 	}
 
-	private void SetName()
+	private void SetAphidName()
 	{
-		if (aphid == null)
+		if (CanvasManager.IsFocus(name_label))
+			CanvasManager.RemoveFocus();
+
+		if (aphid == null )
+			return;
+
+		if (string.IsNullOrWhiteSpace(name_label.Text))
 			return;
 
 		aphid.Instance.Genes.Name = name_label.Text;
-		CanvasManager.RemoveFocus();
-	}
-	private void CopyHash()
-	{
-		if (aphid == null)
-			return;
-
-		DisplayServer.ClipboardSet(aphid.Instance.ID);
 	}
 
 	private void OnAphidPickup(string _tag)
@@ -72,14 +72,14 @@ public partial class AphidInfo : Control
 		if (_tag != "aphid")
 			return;
 
-		aphid_info_panel.Play("swipe_right");
+		menu_player.Play("swipe_right");
 		aphid = Player.Instance.PickupItem as Aphid;
 		UpdateAphidInfo();
 	}
 	private void OnAphidDrop()
 	{
 		aphid = null;
-		aphid_info_panel.Play("swipe_left");
+		menu_player.Play("swipe_left");
 	}
 	private void UpdateAphidInfo()
 	{

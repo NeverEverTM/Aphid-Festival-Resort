@@ -1,0 +1,2246 @@
+[gd_scene load_steps=83 format=3 uid="uid://dd1kgkvs8hkc6"]
+
+[ext_resource type="Script" path="res://scripts/gui/ResortGUI.cs" id="1_i0o2h"]
+[ext_resource type="Material" uid="uid://cwaid2g5ctnpy" path="res://scripts/shaders/unshaded.tres" id="2_hniuu"]
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_yrmm3"]
+[ext_resource type="Texture2D" uid="uid://cv3cq1quo8mf6" path="res://sprites/ui/icon_build.png" id="4_iu7p2"]
+[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="5_i34va"]
+[ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/icon_x.png" id="6_iw7vy"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="7_uocqb"]
+[ext_resource type="Script" path="res://scripts/panels/GenerationsTracker.cs" id="8_pnptv"]
+[ext_resource type="PackedScene" uid="uid://d7m5e6tlxyve" path="res://scenes/ui/aphid_slot.tscn" id="9_0hi6w"]
+[ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="10_i403g"]
+[ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/mosaic_menu_bg.png" id="11_62duh"]
+[ext_resource type="Script" path="res://scripts/gui/AphidInfo.cs" id="12_j87mf"]
+[ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/icons/aphid_child.tres" id="13_g2nlu"]
+[ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="14_d577d"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="15_ghqbq"]
+[ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="16_1fh83"]
+[ext_resource type="Texture2D" uid="uid://bn3tnbbaha27c" path="res://sprites/ui/hashtag.tres" id="17_imyhv"]
+[ext_resource type="Texture2D" uid="uid://citpisbl80p5f" path="res://sprites/ui/heart_frame.png" id="18_nefsf"]
+[ext_resource type="Texture2D" uid="uid://duck48iqhler" path="res://sprites/ui/heart_bg.png" id="19_oe4yt"]
+[ext_resource type="Texture2D" uid="uid://cokhm2yr7lq64" path="res://sprites/ui/heart_full.tres" id="20_liv8f"]
+[ext_resource type="Shader" path="res://scripts/shaders/stat_gradient.gdshader" id="21_1i5gk"]
+[ext_resource type="Texture2D" uid="uid://b6xq8t3y4ssbp" path="res://sprites/ui/gradient_progress.tres" id="22_dnpja"]
+[ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="23_0ppya"]
+[ext_resource type="Texture2D" uid="uid://copqb3qd6m32t" path="res://sprites/ui/cursor.png" id="24_r1h5c"]
+[ext_resource type="Texture2D" uid="uid://dlh8bljak1r51" path="res://sprites/icons/honey_drop.tres" id="25_uquiu"]
+[ext_resource type="Texture2D" uid="uid://dogbh66vh54p3" path="res://sprites/particles/water_sprite.tres" id="26_1gocf"]
+[ext_resource type="Texture2D" uid="uid://c0puuwb5wmu7b" path="res://sprites/particles/heart_sprite.tres" id="27_u2pe4"]
+[ext_resource type="Script" path="res://scripts/panels/ItemShop.cs" id="28_xm5ie"]
+[ext_resource type="PackedScene" uid="uid://cn7d8wjyx78a3" path="res://scenes/ui/item_container.tscn" id="29_mvok5"]
+[ext_resource type="AudioStream" uid="uid://deyj10uei0gk1" path="res://sfx/ui/kaching.wav" id="30_mc2ca"]
+[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/select.wav" id="31_0kj0x"]
+[ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="32_iw5ng"]
+[ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="33_gn48s"]
+[ext_resource type="Script" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
+[ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="35_dvpl5"]
+[ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="36_g3t8v"]
+[ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="37_eiku4"]
+[ext_resource type="Script" path="res://scripts/panels/BuildMenu.cs" id="38_k0d1x"]
+[ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/icon_arrow.png" id="39_ysf7p"]
+[ext_resource type="Texture2D" uid="uid://d0mn4yli60w2k" path="res://sprites/ui/icon_furniture.png" id="40_iuxyn"]
+[ext_resource type="Script" path="res://scripts/panels/FurnitureShop.cs" id="41_t8bbk"]
+[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="42_3hjo3"]
+[ext_resource type="Texture2D" uid="uid://00e3bwje1sas" path="res://sprites/icons/missing.tres" id="43_4ywxe"]
+
+[sub_resource type="Animation" id="Animation_he8jw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-148, -51)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("HBoxContainer:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(58, 8)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("..:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_xhs32"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-148, -51), Vector2(-148, 200)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("HBoxContainer:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(58, 8), Vector2(58, 8)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("..:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.4),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_v7sb2"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(-10.9283, 1),
+"update": 0,
+"values": [Vector2(-148, 200), Vector2(-148, -51)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("HBoxContainer:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5),
+"transitions": PackedFloat32Array(-1.07177, 0.25, -2),
+"update": 0,
+"values": [Vector2(58, 200), Vector2(58, 0), Vector2(58, 8)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("..:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ebyno"]
+_data = {
+"RESET": SubResource("Animation_he8jw"),
+"close": SubResource("Animation_xhs32"),
+"open": SubResource("Animation_v7sb2")
+}
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_dpk7c"]
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_iv61d"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("background:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.568627, 0.239216, 0.117647, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("description:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-440.571, 480.475)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ScrollContainer:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-520.746, -279.782)]
+}
+
+[sub_resource type="Animation" id="Animation_x8v33"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("background:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.568627, 0.239216, 0.117647, 0.780392), Color(0.568627, 0.239216, 0.117647, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("description:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(2, 0.5),
+"update": 0,
+"values": [Vector2(-462.189, 121.784), Vector2(-462.189, 480.475)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ScrollContainer:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(2, 0.5),
+"update": 0,
+"values": [Vector2(-520.746, -279.782), Vector2(-2000, -279.782)]
+}
+
+[sub_resource type="Animation" id="Animation_iuh1e"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("background:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.568627, 0.239216, 0.117647, 0), Color(0.568627, 0.239216, 0.117647, 0.780392)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("description:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(0.5, 2),
+"update": 0,
+"values": [Vector2(-462.189, 480.475), Vector2(-462.189, 121.784)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ScrollContainer:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(-2, 0.5),
+"update": 0,
+"values": [Vector2(-2000, -279.782), Vector2(-520.746, -279.782)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_egrm7"]
+_data = {
+"RESET": SubResource("Animation_iv61d"),
+"close": SubResource("Animation_x8v33"),
+"open": SubResource("Animation_iuh1e")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flcd2"]
+shader = ExtResource("10_i403g")
+shader_parameter/speed = -0.225
+shader_parameter/node_size = Vector2(16, 16)
+shader_parameter/color = Color(0.721569, 0.266667, 0.0705882, 1)
+
+[sub_resource type="Animation" id="Animation_lw7og"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(121, 327)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_ob28a"]
+resource_name = "swipe_left"
+step = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector2(575, 327), Vector2(100, 327)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_kickw"]
+resource_name = "swipe_right"
+step = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -0.5),
+"update": 0,
+"values": [Vector2(121, 327), Vector2(575, 327)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5ekd7"]
+_data = {
+"RESET": SubResource("Animation_lw7og"),
+"swipe_left": SubResource("Animation_ob28a"),
+"swipe_right": SubResource("Animation_kickw")
+}
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gcxx1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wvhvs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_slwmk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glshf"]
+shader = ExtResource("21_1i5gk")
+shader_parameter/mix_amount = 0.0
+shader_parameter/gradient = ExtResource("22_dnpja")
+
+[sub_resource type="Animation" id="Animation_ei7ps"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("item_info:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(700, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("item_box:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-1200, -299)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("background:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_5lpko"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("item_info:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(-2, 0.5),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(700, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("item_box:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(-2, 0.5),
+"update": 0,
+"values": [Vector2(-545, -299), Vector2(-1200, -299)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("background:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.352941), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_3dg7i"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("item_info:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, -2),
+"update": 0,
+"values": [Vector2(700, 0), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("item_box:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, -2),
+"update": 0,
+"values": [Vector2(-1200, -299), Vector2(-545, -299)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("background:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.352941)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0prst"]
+_data = {
+"RESET": SubResource("Animation_ei7ps"),
+"close": SubResource("Animation_5lpko"),
+"open": SubResource("Animation_3dg7i")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k7ke0"]
+shader = ExtResource("10_i403g")
+shader_parameter/speed = -0.1
+shader_parameter/node_size = Vector2(64, 64)
+shader_parameter/color = Color(0.431373, 1, 1, 1)
+
+[sub_resource type="Animation" id="Animation_qi47v"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("menu_bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.545098)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("upper_anchor:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("inventory:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-519, 223)]
+}
+
+[sub_resource type="Animation" id="Animation_w3b3j"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, -2),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("menu_bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 0.352941), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("upper_anchor:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector2(23, -71), Vector2(0, -1000)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("inventory:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(-500, 223), Vector2(-500, 2000)]
+}
+
+[sub_resource type="Animation" id="Animation_jp3uy"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("menu_bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.352941)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("upper_anchor:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector2(0, -1000), Vector2(23, -71)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("inventory:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 2),
+"update": 0,
+"values": [Vector2(-500, 2000), Vector2(-500, 223)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mo613"]
+_data = {
+"RESET": SubResource("Animation_qi47v"),
+"close": SubResource("Animation_w3b3j"),
+"open": SubResource("Animation_jp3uy")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rn78v"]
+shader = ExtResource("10_i403g")
+shader_parameter/speed = 0.2
+shader_parameter/node_size = Vector2(64, 64)
+shader_parameter/color = Color(0.827451, 0.52549, 0.14902, 1)
+
+[sub_resource type="Animation" id="Animation_c0vld"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sliding_panel:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1145, 10)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sliding_panel/sliding_popup:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_vwn3b"]
+resource_name = "close"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sliding_panel/sliding_popup:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 2),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1000, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_bygo5"]
+resource_name = "close_bar"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("sliding_panel:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(522, 8), Vector2(1022, 8)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sliding_panel/sliding_popup:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.4),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_xw37u"]
+resource_name = "open"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sliding_panel:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(1145, 10), Vector2(1022, 8)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sliding_panel/sliding_popup:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_c01e7"]
+resource_name = "open_bar"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("sliding_panel:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(1022, 8), Vector2(522, 8)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sliding_panel/sliding_popup:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cjoi7"]
+_data = {
+"RESET": SubResource("Animation_c0vld"),
+"close": SubResource("Animation_vwn3b"),
+"close_bar": SubResource("Animation_bygo5"),
+"open": SubResource("Animation_xw37u"),
+"open_bar": SubResource("Animation_c01e7")
+}
+
+[sub_resource type="Animation" id="Animation_6as3h"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_i7mp2"]
+resource_name = "close"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_5k0sq"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tubgn"]
+_data = {
+"RESET": SubResource("Animation_6as3h"),
+"close": SubResource("Animation_i7mp2"),
+"open": SubResource("Animation_5k0sq")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_qmsyr"]
+font_size = 30
+font_color = Color(0, 0, 0, 1)
+
+[node name="resort_canvas" type="CanvasLayer" node_paths=PackedStringArray("freeCameraHUD")]
+layer = 0
+script = ExtResource("1_i0o2h")
+freeCameraHUD = NodePath("freeCameraHUD/hud_animation")
+
+[node name="freeCameraHUD" type="Control" parent="."]
+visible = false
+material = ExtResource("2_hniuu")
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="hud_animation" type="AnimationPlayer" parent="freeCameraHUD"]
+root_node = NodePath("../bg")
+libraries = {
+"": SubResource("AnimationLibrary_ebyno")
+}
+
+[node name="bg" type="TextureRect" parent="freeCameraHUD"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = -148.0
+offset_top = -51.0
+offset_right = 195.0
+offset_bottom = 60.0005
+texture = ExtResource("3_yrmm3")
+expand_mode = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="freeCameraHUD/bg"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 58.0
+offset_top = 8.0
+offset_right = 299.0
+offset_bottom = 92.0
+
+[node name="buildButton" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
+use_parent_material = true
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+size_flags_vertical = 4
+texture_normal = ExtResource("4_iu7p2")
+stretch_mode = 0
+script = ExtResource("5_i34va")
+PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
+FocusColor = Color(0.345098, 0.603922, 0.917647, 1)
+HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
+
+[node name="TextureButton" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
+modulate = Color(0.462745, 0.462745, 0.462745, 1)
+use_parent_material = true
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+size_flags_vertical = 4
+disabled = true
+texture_disabled = ExtResource("6_iw7vy")
+stretch_mode = 0
+
+[node name="TextureButton2" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
+modulate = Color(0.462745, 0.462745, 0.462745, 1)
+use_parent_material = true
+custom_minimum_size = Vector2(75, 75)
+layout_mode = 2
+size_flags_vertical = 4
+disabled = true
+texture_disabled = ExtResource("6_iw7vy")
+stretch_mode = 0
+
+[node name="generations_panel" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "descriptionLabel", "aphidContainer")]
+visible = false
+material = SubResource("CanvasItemMaterial_dpk7c")
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_uocqb")
+script = ExtResource("8_pnptv")
+animPlayer = NodePath("AnimationPlayer")
+descriptionLabel = NodePath("description/RichTextLabel")
+aphidSlot = ExtResource("9_0hi6w")
+aphidContainer = NodePath("ScrollContainer/GridContainer")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="generations_panel"]
+libraries = {
+"": SubResource("AnimationLibrary_egrm7")
+}
+
+[node name="background" type="TextureRect" parent="generations_panel"]
+self_modulate = Color(0.568627, 0.239216, 0.117647, 0)
+material = SubResource("ShaderMaterial_flcd2")
+layout_mode = 0
+offset_left = -921.0
+offset_top = -461.0
+offset_right = -295.0
+offset_bottom = -138.0
+scale = Vector2(3, 3)
+texture = ExtResource("11_62duh")
+stretch_mode = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="generations_panel"]
+layout_mode = 0
+offset_left = -520.746
+offset_top = -279.782
+offset_right = 580.254
+offset_bottom = 127.218
+
+[node name="GridContainer" type="GridContainer" parent="generations_panel/ScrollContainer"]
+layout_mode = 2
+columns = 8
+
+[node name="aphid_slot" parent="generations_panel/ScrollContainer/GridContainer" instance=ExtResource("9_0hi6w")]
+layout_mode = 2
+
+[node name="aphid_slot2" parent="generations_panel/ScrollContainer/GridContainer" instance=ExtResource("9_0hi6w")]
+layout_mode = 2
+
+[node name="aphid_slot3" parent="generations_panel/ScrollContainer/GridContainer" instance=ExtResource("9_0hi6w")]
+layout_mode = 2
+
+[node name="description" type="TextureRect" parent="generations_panel"]
+material = ExtResource("2_hniuu")
+layout_mode = 0
+offset_left = -440.571
+offset_top = 480.475
+offset_right = 538.428
+offset_bottom = 720.472
+texture = ExtResource("3_yrmm3")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="generations_panel/description"]
+layout_mode = 0
+offset_left = 59.0001
+offset_top = 42.8882
+offset_right = 917.0
+offset_bottom = 187.888
+bbcode_enabled = true
+text = "[color=\"black\"]Hello Father
+This is a messasge from your son.
+Please recover, God bless your soul. -D[/color]"
+
+[node name="aphid_info" type="Control" parent="." node_paths=PackedStringArray("menu_player", "name_label", "bondship", "ageDisplay", "hungerK", "thirstK", "affectionK")]
+visible = false
+light_mask = 2
+material = ExtResource("2_hniuu")
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 121.0
+offset_top = 327.0
+offset_right = 121.0
+offset_bottom = 327.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_stretch_ratio = 14.62
+theme = ExtResource("7_uocqb")
+script = ExtResource("12_j87mf")
+menu_player = NodePath("aphid_info_player")
+name_label = NodePath("bio/name_edit")
+bondship = NodePath("bio/bondship")
+ageDisplay = NodePath("bio/age")
+age = [ExtResource("13_g2nlu"), ExtResource("14_d577d")]
+hungerK = NodePath("aphid_stats/hunger/hunger_k")
+thirstK = NodePath("aphid_stats/thirst/thirst_k")
+affectionK = NodePath("aphid_stats/affection/affection_k")
+
+[node name="aphid_info_player" type="AnimationPlayer" parent="aphid_info"]
+libraries = {
+"": SubResource("AnimationLibrary_5ekd7")
+}
+
+[node name="bio" type="TextureRect" parent="aphid_info"]
+self_modulate = Color(0.160784, 0.341176, 0.333333, 1)
+visibility_layer = 2
+use_parent_material = true
+layout_mode = 0
+offset_left = -563.0
+offset_top = -319.0
+offset_right = -149.0
+offset_bottom = -9.0
+texture = ExtResource("15_ghqbq")
+expand_mode = 1
+
+[node name="name_bg" type="TextureRect" parent="aphid_info/bio"]
+self_modulate = Color(0.0666667, 0.207843, 0.219608, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = 46.0
+offset_top = 33.0
+offset_right = 313.0
+offset_bottom = 85.0
+texture = ExtResource("16_1fh83")
+
+[node name="name_edit" type="TextEdit" parent="aphid_info/bio"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 63.0
+offset_top = 38.0
+offset_right = 295.0
+offset_bottom = 81.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_selected_color = Color(0.196078, 0.6, 0.756863, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gcxx1")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_wvhvs")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_slwmk")
+text = "Mr Von Aphid"
+placeholder_text = "bio_name_placeholder"
+context_menu_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+wrap_mode = 1
+
+[node name="hash" type="TextureButton" parent="aphid_info/bio"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 318.0
+offset_top = 43.0
+offset_right = 350.0
+offset_bottom = 75.0
+tooltip_text = "Copy the Aphid ID"
+texture_normal = ExtResource("17_imyhv")
+stretch_mode = 0
+
+[node name="bondship" type="TextureProgressBar" parent="aphid_info/bio"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 134.0
+offset_top = 113.0
+offset_right = 198.0
+offset_bottom = 177.0
+scale = Vector2(2, 2)
+value = 100.0
+fill_mode = 3
+texture_over = ExtResource("18_nefsf")
+texture_progress = ExtResource("19_oe4yt")
+
+[node name="age" type="TextureRect" parent="aphid_info/bio"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 231.0
+offset_top = 212.0
+offset_right = 279.0
+offset_bottom = 260.0
+texture = ExtResource("14_d577d")
+
+[node name="health" type="TextureRect" parent="aphid_info/bio"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 104.0
+offset_top = 213.0
+offset_right = 152.0
+offset_bottom = 261.0
+texture = ExtResource("20_liv8f")
+
+[node name="aphid_stats" type="TextureRect" parent="aphid_info"]
+self_modulate = Color(0.160784, 0.341176, 0.333333, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = -560.0
+offset_top = -14.0
+offset_right = -149.0
+offset_bottom = 326.0
+texture = ExtResource("15_ghqbq")
+
+[node name="hunger" type="Control" parent="aphid_info/aphid_stats"]
+use_parent_material = true
+anchors_preset = 0
+offset_left = 100.0
+offset_top = 43.0
+offset_right = 140.0
+offset_bottom = 83.0
+
+[node name="under" type="TextureRect" parent="aphid_info/aphid_stats/hunger"]
+material = SubResource("ShaderMaterial_glshf")
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 48.0
+texture = ExtResource("23_0ppya")
+
+[node name="hunger_k" type="TextureRect" parent="aphid_info/aphid_stats/hunger"]
+self_modulate = Color(0.811765, 0.262745, 0.364706, 1)
+layout_mode = 0
+offset_left = 120.0
+offset_top = -9.0
+offset_right = 136.0
+offset_bottom = 55.0
+texture = ExtResource("24_r1h5c")
+stretch_mode = 5
+
+[node name="item" type="TextureRect" parent="aphid_info/aphid_stats/hunger"]
+self_modulate = Color(1, 0.976471, 0.972549, 1)
+layout_mode = 0
+offset_left = -64.0
+offset_top = -8.0
+offset_right = 1.0
+offset_bottom = 56.0
+texture = ExtResource("25_uquiu")
+stretch_mode = 5
+
+[node name="thirst" type="Control" parent="aphid_info/aphid_stats"]
+use_parent_material = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 100.0
+offset_top = 113.0
+offset_right = 140.0
+offset_bottom = 153.0
+
+[node name="under" type="TextureRect" parent="aphid_info/aphid_stats/thirst"]
+material = SubResource("ShaderMaterial_glshf")
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 48.0
+texture = ExtResource("23_0ppya")
+
+[node name="thirst_k" type="TextureRect" parent="aphid_info/aphid_stats/thirst"]
+self_modulate = Color(0.811765, 0.262745, 0.364706, 1)
+layout_mode = 0
+offset_left = 120.0
+offset_top = -9.0
+offset_right = 136.0
+offset_bottom = 55.0
+texture = ExtResource("24_r1h5c")
+stretch_mode = 5
+
+[node name="item" type="TextureRect" parent="aphid_info/aphid_stats/thirst"]
+self_modulate = Color(1, 0.976471, 0.972549, 1)
+layout_mode = 0
+offset_left = -68.0
+offset_top = -8.0
+offset_right = -3.0
+offset_bottom = 56.0
+texture = ExtResource("26_1gocf")
+stretch_mode = 5
+
+[node name="affection" type="Control" parent="aphid_info/aphid_stats"]
+use_parent_material = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 100.0
+offset_top = 183.0
+offset_right = 140.0
+offset_bottom = 223.0
+
+[node name="under" type="TextureRect" parent="aphid_info/aphid_stats/affection"]
+material = SubResource("ShaderMaterial_glshf")
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 48.0
+texture = ExtResource("23_0ppya")
+
+[node name="affection_k" type="TextureRect" parent="aphid_info/aphid_stats/affection"]
+self_modulate = Color(0.811765, 0.262745, 0.364706, 1)
+layout_mode = 0
+offset_left = 120.0
+offset_top = -9.0
+offset_right = 136.0
+offset_bottom = 55.0
+texture = ExtResource("24_r1h5c")
+stretch_mode = 5
+
+[node name="item" type="TextureRect" parent="aphid_info/aphid_stats/affection"]
+self_modulate = Color(1, 0.976471, 0.972549, 1)
+layout_mode = 0
+offset_left = -66.0
+offset_top = -8.0
+offset_right = -1.0
+offset_bottom = 56.0
+texture = ExtResource("27_u2pe4")
+stretch_mode = 5
+
+[node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon")]
+visible = false
+material = SubResource("CanvasItemMaterial_dpk7c")
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -24.0
+offset_right = 10.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_uocqb")
+script = ExtResource("28_xm5ie")
+shopTag = "item"
+storePlayer = NodePath("store_animator")
+itemGrid = NodePath("item_box/ScrollContainer/item_container")
+itemName = NodePath("item_info/name/name_text")
+itemDescription = NodePath("item_info/desc/desc_text")
+itemCost = NodePath("item_info/cost/cost_text")
+itemIcon = NodePath("item_info/icon/icon_image")
+itemContainer = ExtResource("29_mvok5")
+buySound = ExtResource("30_mc2ca")
+selectSound = ExtResource("31_0kj0x")
+
+[node name="store_animator" type="AnimationPlayer" parent="item_shop_panel"]
+libraries = {
+"": SubResource("AnimationLibrary_0prst")
+}
+
+[node name="background" type="TextureRect" parent="item_shop_panel"]
+self_modulate = Color(1, 1, 1, 0)
+material = SubResource("ShaderMaterial_k7ke0")
+layout_mode = 0
+offset_left = -1322.0
+offset_top = -647.0
+offset_right = 1337.0
+offset_bottom = 810.0
+texture = ExtResource("11_62duh")
+stretch_mode = 1
+
+[node name="item_box" type="TextureRect" parent="item_shop_panel"]
+self_modulate = Color(0.117647, 0.258824, 0.435294, 1)
+material = ExtResource("2_hniuu")
+layout_mode = 0
+offset_left = -1200.0
+offset_top = -299.0
+offset_right = -714.0
+offset_bottom = 346.0
+texture = ExtResource("15_ghqbq")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="item_shop_panel/item_box"]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 52.0
+offset_right = 457.0
+offset_bottom = 592.0
+follow_focus = true
+
+[node name="item_container" type="GridContainer" parent="item_shop_panel/item_box/ScrollContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="item" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item2" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item3" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item4" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item5" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item6" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item7" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item8" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item9" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item10" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item11" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item12" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item13" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item14" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item15" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item16" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item17" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item18" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item19" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item20" parent="item_shop_panel/item_box/ScrollContainer/item_container" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item_info" type="Control" parent="item_shop_panel"]
+material = ExtResource("2_hniuu")
+anchors_preset = 0
+offset_left = 700.0
+offset_right = 740.0
+offset_bottom = 40.0
+
+[node name="name" type="TextureRect" parent="item_shop_panel/item_info"]
+self_modulate = Color(0.152941, 0.341176, 0.576471, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = 60.0
+offset_top = 34.0
+offset_right = 522.0
+offset_bottom = 108.0
+texture = ExtResource("32_iw5ng")
+expand_mode = 1
+
+[node name="name_text" type="RichTextLabel" parent="item_shop_panel/item_info/name"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 35.0
+offset_top = 11.0
+offset_right = 431.0
+offset_bottom = 64.0
+text = "store_item_shop_name"
+
+[node name="desc" type="TextureRect" parent="item_shop_panel/item_info"]
+self_modulate = Color(0.117647, 0.258824, 0.435294, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = -10.0
+offset_top = 92.0
+offset_right = 585.0
+offset_bottom = 371.0
+texture = ExtResource("3_yrmm3")
+expand_mode = 1
+
+[node name="desc_text" type="RichTextLabel" parent="item_shop_panel/item_info/desc"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 51.0
+offset_top = 38.0
+offset_right = 542.0
+offset_bottom = 240.0
+text = "store_item_shop_desc"
+
+[node name="icon" type="TextureRect" parent="item_shop_panel/item_info"]
+self_modulate = Color(0.117647, 0.258824, 0.435294, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = 132.0
+offset_top = -265.0
+offset_right = 416.0
+offset_bottom = 7.0
+texture = ExtResource("15_ghqbq")
+
+[node name="icon_image" type="TextureRect" parent="item_shop_panel/item_info/icon"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 45.0
+offset_top = 38.0
+offset_right = 238.0
+offset_bottom = 229.0
+expand_mode = 1
+
+[node name="cost" type="TextureRect" parent="item_shop_panel/item_info"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = 180.0
+offset_top = -36.0
+offset_right = 368.0
+offset_bottom = 25.0
+texture = ExtResource("3_yrmm3")
+expand_mode = 1
+
+[node name="cost_text" type="Label" parent="item_shop_panel/item_info/cost"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 67.0
+offset_top = 7.0
+offset_right = 166.0
+offset_bottom = 61.0
+text = "$213"
+autowrap_mode = 3
+
+[node name="icon" type="TextureRect" parent="item_shop_panel/item_info/cost"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 17.0
+offset_top = 9.0
+offset_right = 57.0
+offset_bottom = 49.0
+texture = ExtResource("33_gn48s")
+
+[node name="kitchen_menu" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "ingredient1Button", "ingredient2Button", "resultButton", "redoRecipe", "ingredient1Icon", "ingredient2Icon", "resultIcon", "resultName", "inventoryGrid")]
+visible = false
+material = SubResource("CanvasItemMaterial_dpk7c")
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -18.0
+offset_right = 20.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_uocqb")
+script = ExtResource("34_6qtn6")
+animPlayer = NodePath("AnimationPlayer")
+invItemContainer = ExtResource("35_dvpl5")
+ingredient1Button = NodePath("upper_anchor/ingredient_1")
+ingredient2Button = NodePath("upper_anchor/ingredient_2")
+resultButton = NodePath("upper_anchor/result")
+redoRecipe = NodePath("upper_anchor/redoButton")
+ingredient1Icon = NodePath("upper_anchor/ingredient_1/icon")
+ingredient2Icon = NodePath("upper_anchor/ingredient_2/icon")
+resultIcon = NodePath("upper_anchor/result/icon")
+resultName = NodePath("upper_anchor/result/itemName/Label")
+inventoryGrid = NodePath("inventory/inventory_container2")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="kitchen_menu"]
+libraries = {
+"": SubResource("AnimationLibrary_mo613")
+}
+
+[node name="menu_bg" type="TextureRect" parent="kitchen_menu"]
+self_modulate = Color(1, 1, 1, 0.545098)
+material = SubResource("ShaderMaterial_rn78v")
+layout_mode = 0
+offset_left = -1020.0
+offset_top = -453.0
+offset_right = 1119.0
+offset_bottom = 714.0
+texture = ExtResource("11_62duh")
+stretch_mode = 1
+
+[node name="upper_anchor" type="Control" parent="kitchen_menu"]
+use_parent_material = true
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="bar_0" type="TextureRect" parent="kitchen_menu/upper_anchor"]
+self_modulate = Color(0.4, 0.0705882, 0.196078, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = -272.0
+offset_top = -131.0
+offset_right = 322.0
+offset_bottom = -108.0
+texture = ExtResource("16_1fh83")
+expand_mode = 1
+
+[node name="bar_1" type="TextureRect" parent="kitchen_menu/upper_anchor"]
+self_modulate = Color(0.4, 0.0705882, 0.196078, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = 11.0
+offset_top = -123.0
+offset_right = 231.0
+offset_bottom = -100.0
+rotation = 1.5708
+texture = ExtResource("16_1fh83")
+expand_mode = 1
+
+[node name="ingredient_1" type="TextureButton" parent="kitchen_menu/upper_anchor"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = -353.0
+offset_top = -158.0
+offset_right = -203.0
+offset_bottom = -8.0
+focus_neighbor_left = NodePath("../ingredient_2")
+focus_neighbor_right = NodePath("../ingredient_2")
+focus_next = NodePath("../ingredient_2")
+focus_previous = NodePath(".")
+texture_normal = ExtResource("15_ghqbq")
+texture_pressed = ExtResource("36_g3t8v")
+texture_hover = ExtResource("36_g3t8v")
+texture_focused = ExtResource("37_eiku4")
+stretch_mode = 4
+
+[node name="icon" type="TextureRect" parent="kitchen_menu/upper_anchor/ingredient_1"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 124.0
+offset_bottom = 124.0
+stretch_mode = 4
+
+[node name="ingredient_2" type="TextureButton" parent="kitchen_menu/upper_anchor"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = 223.0
+offset_top = -158.0
+offset_right = 373.0
+offset_bottom = -8.0
+texture_normal = ExtResource("15_ghqbq")
+texture_pressed = ExtResource("36_g3t8v")
+texture_hover = ExtResource("36_g3t8v")
+texture_focused = ExtResource("37_eiku4")
+stretch_mode = 4
+
+[node name="icon" type="TextureRect" parent="kitchen_menu/upper_anchor/ingredient_2"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 124.0
+offset_bottom = 124.0
+stretch_mode = 4
+
+[node name="result" type="TextureButton" parent="kitchen_menu/upper_anchor"]
+self_modulate = Color(0.533333, 0.254902, 0.803922, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = -96.0
+offset_top = -38.0
+offset_right = 104.0
+offset_bottom = 162.0
+texture_normal = ExtResource("15_ghqbq")
+texture_pressed = ExtResource("36_g3t8v")
+texture_hover = ExtResource("36_g3t8v")
+texture_focused = ExtResource("37_eiku4")
+stretch_mode = 4
+
+[node name="icon" type="TextureRect" parent="kitchen_menu/upper_anchor/result"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 25.0
+offset_top = 25.0
+offset_right = 175.0
+offset_bottom = 175.0
+expand_mode = 1
+stretch_mode = 4
+
+[node name="itemName" type="TextureRect" parent="kitchen_menu/upper_anchor/result"]
+visible = false
+self_modulate = Color(0.870588, 0, 0.309804, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = -98.0
+offset_top = 209.0
+offset_right = 285.0
+offset_bottom = 277.0
+texture = ExtResource("3_yrmm3")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="kitchen_menu/upper_anchor/result/itemName"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 16.0
+offset_top = 9.0
+offset_right = 364.0
+offset_bottom = 59.0
+text = "Mushroom Gummies"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="redoButton" type="CheckButton" parent="kitchen_menu/upper_anchor"]
+use_parent_material = true
+layout_mode = 0
+offset_left = -63.0
+offset_top = -144.0
+offset_right = 65.0
+offset_bottom = -96.0
+text = "Lock
+"
+alignment = 1
+
+[node name="inventory" type="TextureRect" parent="kitchen_menu"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+use_parent_material = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -519.0
+offset_top = 223.0
+offset_right = 547.0
+offset_bottom = 373.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("3_yrmm3")
+
+[node name="inventory_container2" type="HBoxContainer" parent="kitchen_menu/inventory"]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 41.0
+offset_right = 2012.0
+offset_bottom = 169.0
+scale = Vector2(0.5, 0.5)
+
+[node name="inv_item_container" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container2" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container3" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container4" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container13" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container14" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container15" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container5" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container6" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container7" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container8" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container9" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container10" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container11" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="inv_item_container12" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
+layout_mode = 2
+
+[node name="build_menu" type="Control" parent="." node_paths=PackedStringArray("storage_container", "menu_player", "build_button", "show_storage_button")]
+visible = false
+material = ExtResource("2_hniuu")
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -1152.0
+offset_top = -324.0
+offset_right = -1112.0
+offset_bottom = -284.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("38_k0d1x")
+item_container = ExtResource("29_mvok5")
+storage_container = NodePath("sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer")
+menu_player = NodePath("build_player")
+build_button = NodePath("../freeCameraHUD/bg/HBoxContainer/buildButton")
+show_storage_button = NodePath("sliding_panel/sliding_popup/show_storage")
+
+[node name="build_player" type="AnimationPlayer" parent="build_menu"]
+process_mode = 1
+libraries = {
+"": SubResource("AnimationLibrary_cjoi7")
+}
+
+[node name="sliding_panel" type="Control" parent="build_menu"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+use_parent_material = true
+anchors_preset = 0
+offset_left = 1145.0
+offset_top = 10.0
+offset_right = 1272.0
+offset_bottom = 627.0
+
+[node name="sliding_popup" type="Control" parent="build_menu/sliding_panel"]
+editor_description = "This one is used in the animation player to create a "
+use_parent_material = true
+anchors_preset = 0
+offset_right = 40.0002
+offset_bottom = 40.0
+
+[node name="build_panel" type="TextureRect" parent="build_menu/sliding_panel/sliding_popup"]
+self_modulate = Color(0.745098, 0.0823529, 0.290196, 1)
+use_parent_material = true
+layout_mode = 0
+offset_left = 136.0
+offset_top = -6.0
+offset_right = 623.0
+offset_bottom = 627.0
+texture = ExtResource("15_ghqbq")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="build_menu/sliding_panel/sliding_popup/build_panel"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 53.0
+offset_right = 447.0
+offset_bottom = 578.0
+
+[node name="GridContainer" type="GridContainer" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="item" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item2" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item3" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item4" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item6" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item7" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item8" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item9" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item10" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item11" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item12" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item5" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="furnitureButton" type="TextureButton" parent="build_menu/sliding_panel/sliding_popup"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 23.0
+offset_top = 379.0
+offset_right = 134.0
+offset_bottom = 489.0
+focus_mode = 0
+texture_normal = ExtResource("40_iuxyn")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
+HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
+
+[node name="show_storage" type="TextureButton" parent="build_menu/sliding_panel/sliding_popup"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 26.0
+offset_top = 496.0
+offset_right = 132.0
+offset_bottom = 602.0
+focus_mode = 0
+texture_normal = ExtResource("39_ysf7p")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.482353, 0.482353, 0.482353, 1)
+HoverColor = Color(0.717647, 0.717647, 0.717647, 1)
+
+[node name="furniture_menu" type="Control" parent="." node_paths=PackedStringArray("open_button", "storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon")]
+visible = false
+material = SubResource("CanvasItemMaterial_dpk7c")
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_uocqb")
+script = ExtResource("41_t8bbk")
+open_button = NodePath("../build_menu/sliding_panel/sliding_popup/furnitureButton")
+shopTag = "furniture"
+storePlayer = NodePath("furniture_player")
+itemGrid = NodePath("window/ScrollContainer/GridContainer")
+itemName = NodePath("anchor_right/name/name_label")
+itemDescription = NodePath("anchor_right/description/desc_label")
+itemCost = NodePath("anchor_right/cost/Label")
+itemIcon = NodePath("anchor_right/icon/image")
+itemContainer = ExtResource("29_mvok5")
+buySound = ExtResource("30_mc2ca")
+selectSound = ExtResource("31_0kj0x")
+
+[node name="furniture_player" type="AnimationPlayer" parent="furniture_menu"]
+libraries = {
+"": SubResource("AnimationLibrary_tubgn")
+}
+
+[node name="background" type="TextureRect" parent="furniture_menu"]
+self_modulate = Color(1, 1, 1, 0.352941)
+material = SubResource("ShaderMaterial_k7ke0")
+layout_mode = 0
+offset_left = -1304.0
+offset_top = -672.0
+offset_right = 1355.0
+offset_bottom = 785.0
+texture = ExtResource("42_3hjo3")
+stretch_mode = 1
+
+[node name="window" type="TextureRect" parent="furniture_menu"]
+use_parent_material = true
+layout_mode = 0
+offset_left = -490.0
+offset_top = -321.0
+offset_right = 16.0
+offset_bottom = 325.0
+texture = ExtResource("15_ghqbq")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="furniture_menu/window"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 48.0
+offset_top = 55.0
+offset_right = 457.0
+offset_bottom = 598.0
+follow_focus = true
+
+[node name="GridContainer" type="GridContainer" parent="furniture_menu/window/ScrollContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="item" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item2" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item3" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item4" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item5" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item6" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item7" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item8" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item9" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item10" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item11" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="item12" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="anchor_right" type="Control" parent="furniture_menu"]
+use_parent_material = true
+anchors_preset = 0
+offset_left = 18.0
+offset_top = -25.0
+offset_right = 58.0
+offset_bottom = 15.0
+
+[node name="name" type="TextureRect" parent="furniture_menu/anchor_right"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 51.0
+offset_top = 33.0
+offset_right = 513.0
+offset_bottom = 107.0
+texture = ExtResource("32_iw5ng")
+
+[node name="name_label" type="RichTextLabel" parent="furniture_menu/anchor_right/name"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 14.0
+offset_right = 435.0
+offset_bottom = 60.0
+text = "Name of the furniture longer"
+scroll_active = false
+autowrap_mode = 1
+
+[node name="description" type="TextureRect" parent="furniture_menu/anchor_right"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 83.0
+offset_right = 553.0
+offset_bottom = 369.0
+texture = ExtResource("32_iw5ng")
+
+[node name="desc_label" type="RichTextLabel" parent="furniture_menu/anchor_right/description"]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 44.0
+offset_right = 505.0
+offset_bottom = 238.0
+text = "This is a text for furniture
+A lot of text
+Wow! I think Bug Fables sucks!g
+This text is not visible"
+scroll_active = false
+
+[node name="icon" type="TextureRect" parent="furniture_menu/anchor_right"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 140.0
+offset_top = -267.0
+offset_right = 423.0
+offset_bottom = 12.0
+texture = ExtResource("15_ghqbq")
+
+[node name="image" type="TextureRect" parent="furniture_menu/anchor_right/icon"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 36.0
+offset_top = 37.0
+offset_right = 246.0
+offset_bottom = 239.0
+texture = ExtResource("43_4ywxe")
+
+[node name="cost" type="TextureRect" parent="furniture_menu/anchor_right"]
+use_parent_material = true
+layout_mode = 0
+offset_left = 210.0
+offset_top = -21.0
+offset_right = 344.0
+offset_bottom = 28.0
+texture = ExtResource("3_yrmm3")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="furniture_menu/anchor_right/cost"]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 7.0
+offset_right = 122.0
+offset_bottom = 43.0
+text = "9999"
+label_settings = SubResource("LabelSettings_qmsyr")
+
+[node name="TextureRect" type="TextureRect" parent="furniture_menu/anchor_right/cost"]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 4.0
+offset_right = 49.0
+offset_bottom = 44.0
+texture = ExtResource("33_gn48s")
+
+[editable path="generations_panel/ScrollContainer/GridContainer/aphid_slot"]

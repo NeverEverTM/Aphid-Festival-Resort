@@ -10,6 +10,7 @@ public partial class SoundManager : Node
 
 	private static readonly List<AudioStreamPlayer> sound_entities = new();
 	private static readonly List<AudioStreamPlayer2D> sound2d_entities = new();
+	private static Tween transitionTween;
 
 	public override void _Ready()
 	{
@@ -55,13 +56,15 @@ public partial class SoundManager : Node
 		sound2d_entities.Clear();
 	}
 
-	public static Tween ResumeSong()
+	public static void ResumeSong()
 	{
+		if (IsInstanceValid(transitionTween))
+			transitionTween.Kill();
+
 		MusicPlayer.StreamPaused = false;
-		Tween tween = MusicPlayer.CreateTween();
-		tween.SetEase(Tween.EaseType.In);
-		tween.TweenProperty(MusicPlayer, "volume_db", -0, 1.0);
-		return tween;
+		transitionTween = MusicPlayer.CreateTween();
+		transitionTween.SetEase(Tween.EaseType.In);
+		transitionTween.TweenProperty(MusicPlayer, "volume_db", -0, 1.0);
 	}
 	public static Tween StopSong()
 	{
@@ -82,14 +85,15 @@ public partial class SoundManager : Node
 		MusicPlayer.Stream = _music;
 		MusicPlayer.Play();
 	}
-	public static Tween PauseSong()
+	public static void PauseSong()
 	{
-		Tween tween = MusicPlayer.CreateTween();
-		tween.SetEase(Tween.EaseType.Out);
-		tween.TweenProperty(MusicPlayer, "volume_db", -80, 1.0);
-		tween.Finished += () => MusicPlayer.StreamPaused = true;
+		if (IsInstanceValid(transitionTween))
+			transitionTween.Kill();
 
-		return tween;
+		transitionTween = MusicPlayer.CreateTween();
+		transitionTween.SetEase(Tween.EaseType.Out);
+		transitionTween.TweenProperty(MusicPlayer, "volume_db", -80, 1.0);
+		transitionTween.Finished += () => MusicPlayer.StreamPaused = true;
 	}
 
 	/// <summary>

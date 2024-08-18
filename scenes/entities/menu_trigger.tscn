@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cum5tqdw2hog8"]
 
-[ext_resource type="Script" path="res://scripts/entities/MenuTrigger.cs" id="1_eqw3p"]
+[ext_resource type="Script" path="res://scripts/props/MenuTrigger.cs" id="1_eqw3p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hqa00"]
 size = Vector2(95, 26)

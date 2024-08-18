@@ -35,14 +35,6 @@ public partial class OptionsMenu : Control
 		saveFolderButton.Pressed += () => OS.ShellOpen(ProjectSettings.GlobalizePath("user://"));
 	}
 
-	public override void _Process(double delta)
-	{
-		if (saveFolderButton.IsHovered())
-			saveFolderButton.SelfModulate = new Color("cyan");
-		else
-			saveFolderButton.SelfModulate = new Color("white");
-	}
-
 	private void OnMusicSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(1, Mathf.LinearToDb((float)value));
@@ -52,6 +44,7 @@ public partial class OptionsMenu : Control
 	{
 		AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb((float)value));
 		OptionsManager.Data.VolumeSound = (float)value;
+		SoundManager.CreateSound(Aphid.Audio_Step);
 	}
 	private void OnWindowMode(long _index)
 	{

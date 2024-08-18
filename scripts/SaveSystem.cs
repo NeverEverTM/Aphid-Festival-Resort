@@ -9,12 +9,13 @@ public static class SaveSystem
 {
 	public static readonly Dictionary<Guid, AphidInstance> Aphids = new();
 	public static string Profile { get; private set; }
-	public static string CurrentProfilePath { get; private set; }
+	public static string ProfilePath { get; private set; }
 
 	public const string
 	ProfilesDirectory = "user://profiles",
 	defaultProfile = "default",
 	backupFolder = "/backup",
+	screenshotsFolder = "/screenshots/",
 	aphidsFolder = "/aphids/",
 	resortsFolder = "/resorts/",
 	jsonExtension = ".json";
@@ -79,7 +80,7 @@ public static class SaveSystem
 			using var _profile = FileAccess.Open("user://" + $"{GlobalData[i].GetId()}.json", FileAccess.ModeFlags.Write);
 			_profile.StorePascalString(_json);
 		}
-		GD.Print("GlobalSave: Data has been saved.");
+		Logger.Print(Logger.LogPriority.Log, "GlobalSave: Data has been saved");
 	}
 	public static async Task LoadGlobalData()
 	{
@@ -91,41 +92,41 @@ public static class SaveSystem
 			using var _profile = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
 			await GlobalData[i].LoadData(_profile.GetPascalString());
 		}
-		GD.Print("GlobalLoad: Data has been loaded.");
+		Logger.Print(Logger.LogPriority.Log, "GlobalLoad: Data has been loaded");
 	}
 
 	// ==========| Resort Saving Methods |============
 	public static async Task SaveProfileData()
 	{
-		string _backupFolder = CurrentProfilePath + backupFolder;
+		string _backupFolder = ProfilePath + backupFolder;
 
 		// save game data
 		await SaveClassData(GameData.Instance);
 
 		// Save Aphid Data
 		await SaveAllAphids(_backupFolder, false);
-		await SaveAllAphids(CurrentProfilePath);
+		await SaveAllAphids(ProfilePath);
 
 		// Save serialized classes
 		for (int i = 0; i < ProfileData.Count; i++)
 			await SaveClassData(ProfileData[i]);
 
-		Logger.Print($"ProfileSave: Saved profile <{Profile}> to <{ProjectSettings.GlobalizePath(CurrentProfilePath)}>.", Logger.LogPriority.Log);
+		Logger.Print(Logger.LogPriority.Log, $"ProfileSave: Saved profile <{Profile}> to <{ProfilePath}>.");
 	}
 	private static Task SaveClassData(ISaveData _class)
 	{
 		try{
 			string _json = _class.SaveData();
 			// Save current backup version
-			using var _backup = FileAccess.Open(CurrentProfilePath + backupFolder + _class.GetDataPath() + _class.GetId() + jsonExtension, FileAccess.ModeFlags.Write);
+			using var _backup = FileAccess.Open(ProfilePath + backupFolder + _class.GetDataPath() + _class.GetId() + jsonExtension, FileAccess.ModeFlags.Write);
 			_backup.StorePascalString(_json);
 			// Save current profile version
-			using var _profile = FileAccess.Open(CurrentProfilePath + _class.GetDataPath() + _class.GetId() + jsonExtension, FileAccess.ModeFlags.Write);
+			using var _profile = FileAccess.Open(ProfilePath + _class.GetDataPath() + _class.GetId() + jsonExtension, FileAccess.ModeFlags.Write);
 			_profile.StorePascalString(_json);
 		}
 		catch (Exception _e)
 		{
-			Logger.Print($"ProfileSave: Error on saving class <{_class.GetId()}>" + _e, Logger.LogPriority.Error);
+			Logger.Print(Logger.LogPriority.Error, $"ProfileSave: Error on saving class <{_class.GetId()}>." + _e);
 		}
 		return Task.CompletedTask;
 	}
@@ -142,7 +143,7 @@ public static class SaveSystem
 				if (!SaveAphid(_stream, _pair.Value))
 					continue;
 				else if (_logSave)
-					Logger.Print($"Succesfully saved aphid. ID: {_guid}.", Logger.LogPriority.Log);
+					Logger.Print(Logger.LogPriority.Log, $"Succesfully saved aphid. ID: {_guid}.");
 			}
 
 			_stream.Close();
@@ -178,7 +179,7 @@ public static class SaveSystem
 	// ==========| Resort Loading Methods |===========
 	public static async Task LoadProfileData()
 	{
-		string _backupFolder = CurrentProfilePath + backupFolder;
+		string _backupFolder = ProfilePath + backupFolder;
 		ProfileData = ProfileData.OrderByDescending(_profile => _profile.LoadOrderPriority).ToList();
 		Aphids.Clear();
 
@@ -188,7 +189,7 @@ public static class SaveSystem
 			return;
 
 		// Load Aphid Data
-		try { await LoadAllAphids(CurrentProfilePath); }
+		try { await LoadAllAphids(ProfilePath); }
 		catch (Exception _e)
 		{
 			await LoadAllAphids(_backupFolder);
@@ -199,29 +200,30 @@ public static class SaveSystem
 		for (int i = 0; i < ProfileData.Count; i++)
 			await LoadClassData(ProfileData[i]);
 
-		Logger.Print($"ProfileLoad: Loaded profile <{Profile}> to memory.", Logger.LogPriority.Log);
+		Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: Loaded profile <{Profile}> to memory.");
 	}
 	private static async Task<bool> LoadClassData(ISaveData _class)
 	{
 		string _relativePath = _class.GetDataPath() + _class.GetId() + jsonExtension;
 		try
 		{
-			using var _stream = FileAccess.Open(CurrentProfilePath + _relativePath, FileAccess.ModeFlags.Read);
+			using var _stream = FileAccess.Open(ProfilePath + _relativePath, FileAccess.ModeFlags.Read);
 			await _class.LoadData(_stream.GetPascalString());
 			return true;
 		}
 		catch (Exception _e)
 		{
-			Logger.Print($"ProfileLoad: {_class.GetId()} was not able to be loaded." + _e, Logger.LogPriority.Warning);
+			Logger.Print(Logger.LogPriority.Warning, $"ProfileLoad: {_class.GetId()} was not able to be loaded." + _e);
 			try
 			{
-				using var _stream_backup = FileAccess.Open(CurrentProfilePath + backupFolder + _relativePath, FileAccess.ModeFlags.Read);
+				using var _stream_backup = FileAccess.Open(ProfilePath + backupFolder + _relativePath, FileAccess.ModeFlags.Read);
 				await _class.LoadData(_stream_backup.GetPascalString());
 				return true;
 			}
 			catch (Exception _e_backup)
 			{
-				Logger.Print($"[CRITICAL] ProfileLoad: Backup for {_class.GetId()} was not able to be loaded." + _e_backup, Logger.LogPriority.Error);
+				Logger.Print(Logger.LogPriority.Error,
+				$"[CRITICAL] ProfileLoad: Backup for {_class.GetId()} was not able to be loaded." + _e_backup);
 				await _class.SetData();
 			}
 			return false; // Something went REALLY bad
@@ -281,15 +283,15 @@ public static class SaveSystem
 	}
 	public static void SetProfile(string _profile = defaultProfile)
 	{
-		CurrentProfilePath = $"{ProfilesDirectory}/{_profile}";
+		ProfilePath = $"{ProfilesDirectory}/{_profile}";
 		Profile = _profile;
 	}
 
 	public static async Task CreateProfile()
 	{
 		// Create directories for current profile
-		string _backupPath = CurrentProfilePath + backupFolder;
-		await CreateNewProfile(CurrentProfilePath);
+		string _backupPath = ProfilePath + backupFolder;
+		await CreateNewProfile(ProfilePath);
 		await CreateNewProfile(_backupPath);
 
 		GD.Print($"ProfileCreate: Succesfully created profile of <{Profile}>.");
@@ -307,12 +309,13 @@ public static class SaveSystem
 
 		_dir.MakeDir("aphids");
 		_dir.MakeDir("resorts");
+		_dir.MakeDir("screenshots");
 		return Task.CompletedTask;
 	}
 
 	public static Task DeleteProfile(string _profile)
 	{
-		var _path = ProjectSettings.GlobalizePath(CurrentProfilePath);
+		var _path = ProjectSettings.GlobalizePath(ProfilePath);
 
 		if (string.IsNullOrEmpty(_profile))
 			return Task.CompletedTask;
@@ -375,12 +378,15 @@ public static class SaveSystem
 			switch (GameData.Data.Version)
 			{
 				case 120:
-					if (DirAccess.DirExistsAbsolute(CurrentProfilePath + dataFolder))
+						// Pre-1.2
+					if (DirAccess.DirExistsAbsolute(ProfilePath + dataFolder))
 					{
 						await May2024Fix();
 						return true;
 					}
-					break;
+					else // Pre 1.3
+						DirAccess.MakeDirAbsolute(ProfilePath + screenshotsFolder);
+				break;
 			}
 			return false;
 		}
@@ -391,7 +397,7 @@ public static class SaveSystem
 			GD.PrintRich("[color=green]Upgrading savefile to Version 120. Critical Error is completely intentional[/color]");
 			await LoadProfileData_Legacy();
 			string _legacy_path = ProjectSettings.GlobalizePath(ProfilesDirectory + $"/{Profile}_Legacy");
-			System.IO.Directory.Move(ProjectSettings.GlobalizePath(CurrentProfilePath), _legacy_path);
+			System.IO.Directory.Move(ProjectSettings.GlobalizePath(ProfilePath), _legacy_path);
 			// Recreate the profile from scrtach and save to it, then delete the legacy save
 			await CreateProfile();
 			await SaveProfileData();
@@ -401,10 +407,10 @@ public static class SaveSystem
 		private static async Task LoadProfileData_Legacy()
 		{
 			Aphids.Clear();
-			string _backupFolder = CurrentProfilePath + backupFolder;
+			string _backupFolder = ProfilePath + backupFolder;
 
 			// Load Aphid Data
-			try { await LoadAllAphids_Legacy(CurrentProfilePath); }
+			try { await LoadAllAphids_Legacy(ProfilePath); }
 			catch (Exception _e)
 			{
 				await LoadAllAphids_Legacy(_backupFolder);
@@ -416,7 +422,7 @@ public static class SaveSystem
 			{
 				try
 				{
-					using var _profile = FileAccess.Open(CurrentProfilePath + dataFolder + $"/{ProfileData[i].GetId()}.json", FileAccess.ModeFlags.Read);
+					using var _profile = FileAccess.Open(ProfilePath + dataFolder + $"/{ProfileData[i].GetId()}.json", FileAccess.ModeFlags.Read);
 					await ProfileData[i].LoadData(_profile.GetPascalString());
 				}
 				catch (Exception _e)

@@ -3,8 +3,10 @@ using System;
 
 public partial class PauseMenu : Control
 {
-	public static PauseMenu Instance;
-	[Export] private AnimationPlayer menu;
+	public static PauseMenu Instance { get; private set; }
+	private MenuUtil.MenuInstance menu;
+
+	[Export] private AnimationPlayer menu_player;
 	[Export] private Control panel, options_panel, controls_panel, help_panel;
 	[Export] private AudioStream select_sound, switch_sound;
 	[Export] private BaseButton[] buttons;
@@ -29,13 +31,15 @@ public partial class PauseMenu : Control
 		{
 			// dumb C# behaviour references the same index for all actions for some UNKNOWN REASON
 			var new_index = i; // <- just do this
-			buttons[i].Pressed += () => 
+			buttons[i].Pressed += () =>
 			{
 				lastButtonIndex = new_index;
 				OnButtonPress(actions[new_index]);
 			};
 			buttons[i].FocusEntered += () => SoundManager.CreateSound(switch_sound);
 		}
+
+		menu = new("pause", menu_player, null, null, false);
 	}
 	public override void _ExitTree()
 	{
@@ -46,19 +50,21 @@ public partial class PauseMenu : Control
 	{
 		if (_state)
 		{
-			if (DialogManager.IsActive)
+			if (ResortGUI.WasFreeCamera || CanvasManager.Menus.IsInMenu || DialogManager.IsActive)
 				return;
-			CanvasManager.OpenMenu(menu);
-			CanvasManager.RemoveFocus();
-			GetTree().Paused = true;
-			buttons[0].GrabFocus();
+				
 			SoundManager.PauseSong();
+			CanvasManager.Menus.OpenMenu(menu);
+			CanvasManager.RemoveFocus();
+			buttons[0].GrabFocus();
+			GetTree().Paused = true;
+			SoundManager.CreateSound(switch_sound);
 		}
 		else
 		{
-			GetTree().Paused = false;
-			CanvasManager.CloseMenu();
 			SoundManager.ResumeSong();
+			CanvasManager.Menus.GoBackInMenu();
+			GetTree().Paused = false;
 		}
 	}
 	public void SetSubMenu(Control _menu)
@@ -77,21 +83,30 @@ public partial class PauseMenu : Control
 
 	public override void _Process(double delta)
 	{
-		if ((Input.IsActionJustPressed("escape") || Input.IsActionJustPressed("cancel")) && Visible)
+		// closing pause menu or its submenus
+		if (Visible)
 		{
-			if (current_menu != null)
-				ExitSubMenu();
-			else
-				Instance.SetPauseMenu(false);
-		}
+			if (Input.IsActionJustPressed("escape") || Input.IsActionJustPressed("cancel"))
+			{
+				if (current_menu != null)
+					ExitSubMenu();
+				else
+					SetPauseMenu(false);
+			}
+		} // opening pause menu
+		else if (Input.IsActionJustPressed("escape"))
+			SetPauseMenu(true);
 	}
 
 	private void OnButtonPress(Action _action)
 	{
+		if (GameManager.IsBusy)
+			return;
+
 		_action();
 		SoundManager.CreateSound(select_sound);
 	}
-	private void ResumeButton() => 
+	private void ResumeButton() =>
 		SetPauseMenu(false);
 	private void OptionsButton() =>
 		SetSubMenu(options_panel);
@@ -102,7 +117,7 @@ public partial class PauseMenu : Control
 	private async void BackToMenuButton()
 	{
 		await SaveSystem.SaveProfileData();
-		await GameManager.LoadScene(GameManager.MenuScenePath);
+		await GameManager.LoadScene(GameManager.SceneName.Menu);
 	}
 	private async void ExitButton()
 	{

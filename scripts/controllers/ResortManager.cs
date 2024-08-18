@@ -7,15 +7,15 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 {
 	// Default Parameters
 	[Export] public string Resort;
-	[Export] public PackedScene aphidPrefab;
-	[Export] public Node2D EntityRoot;
+	[Export] public Node2D EntityRoot, StructureRoot;
+	[Export] private PackedScene aphidPrefab;
 
 	// Class Parameters
 	/// <summary>
 	/// Current loaded resort.
 	/// </summary>
-	public static ResortManager Instance;
-	public static bool IsNewGame;
+	public static ResortManager Instance { get; private set; }
+	public static bool IsNewGame { get; set; }
 	/// <summary>
 	/// Access local aphids within this resort. To access aphids across all resorts, use SaveSystem.Aphids instead.
 	/// </summary>
@@ -28,8 +28,9 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 
 	public class Savefile
 	{
-		public GroundItem[] Items { get; set; }
-		public struct GroundItem
+		public Item[] Items { get; set; }
+		public Item[] Structures { get; set; }
+		public struct Item
 		{
 			public int PositionX { get; set; }
 			public int PositionY { get; set; }
@@ -40,7 +41,7 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 	{
 		// Save items in the ground
 		int _count = Instance.EntityRoot.GetChildCount();
-		Data.Items = new Savefile.GroundItem[_count];
+		Data.Items = new Savefile.Item[_count];
 		for (int i = 0; i < _count; i++)
 		{
 			Node2D _item = Instance.EntityRoot.GetChild(i) as Node2D;
@@ -74,6 +75,17 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 		Instance = this;
 		AphidsOnResort.Clear();
 		SaveSystem.AddToProfileData(Instance);
+
+		// Set Resort music loop
+		SoundManager.MusicPlayer.Finished += CheckSongToPlay;
+		static void FinishedSignal()
+		{
+			SoundManager.MusicPlayer.Finished -= CheckSongToPlay;
+			GameManager.OnPreLoadScene -= FinishedSignal;
+		};
+
+		GameManager.OnPreLoadScene += FinishedSignal;
+		CheckSongToPlay();
 	}
 	public override async void _Ready()
 	{
@@ -87,25 +99,13 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 			while (GameManager.IsBusy)
 				await Task.Delay(1);
 			await Task.Delay(200);
-			await DialogManager.OpenDialog(new string[] { "welcome_0", "welcome_1" }, "dev");
-			Player.Instance.StoreItem("aphid_egg");
-			Player.Instance.StoreItem("aphid_egg");
+			await DialogManager.Instance.OpenDialog("intro_welcome");
+			PlayerInventory.StoreItem("aphid_egg");
+			PlayerInventory.StoreItem("aphid_egg");
 			await SaveSystem.SaveProfileData();
 		}
-
-		// Set Resort music loop
-		SoundManager.MusicPlayer.Finished += CheckSongToPlay;
-		static void FinishedSignal()
-		{
-			SoundManager.MusicPlayer.Finished -= CheckSongToPlay;
-			GameManager.OnPreLoadScene -= FinishedSignal;
-		};
-
-		GameManager.OnPreLoadScene += FinishedSignal;
-		CheckSongToPlay();
 	}
-
-    public static async void CheckSongToPlay()
+	public static async void CheckSongToPlay()
 	{
 		await Task.Delay(1000);
 		string[] _raw_files = DirAccess.GetFilesAt(GameManager.MusicPath);
@@ -160,7 +160,8 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 		else
 		{
 			// create a new item dynamically
-			_item = new RigidBody2D(){
+			_item = new RigidBody2D()
+			{
 				GravityScale = 0,
 				LockRotation = true,
 				Freeze = true,
@@ -187,5 +188,11 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 
 		Instance.EntityRoot.AddChild(_item);
 		return _item;
+	}
+	public static void CreateStructure(string _id, Vector2 _position)
+	{
+		Node2D _item = ResourceLoader.Load<PackedScene>(GameManager.GetStructurePath(_id)).Instantiate() as Node2D;
+		_item.GlobalPosition = _position;
+		Instance.StructureRoot.AddChild(_item);
 	}
 }

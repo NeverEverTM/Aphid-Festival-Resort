@@ -1,35 +1,43 @@
 ,en,es
-kut_shop_0,"The resort grounds is a perfect place to get inspiration.
-They let me practice here as long as I prepare meals for the little ones[...]
-...You can also enjoy my top cuisine, I suppose.","El resort es un lugar excelente para ganar inspiracion.
-Me permiten practicar aquí a cambio de preparar comida para los pequeñines[...]
-Tu... tambíen puedes disfrutar de mis platillos refinados, supongo."
-kut_shop_1,"You will have to pay for the ingredients regardless.[...]
-Resort rules say so.","Tendras que pagar por los ingredientes de todas formas.[...]
-Reglas del resort."
-joy_welcome_0,"Hello![...] You are [name], right? Come on in![...]
-We have prepared the resort for you already.","Hola![...] Tu tienes que ser [name], ¿no? Adelante![...]
+kut_flavor_0,">(char(kut))The resort grounds are a perfect place to get inspired.
+They let me practice here for as long as I prepare meals for the little ones(...(2.0))
+...(...)You can also enjoy my top cuisine, I suppose. 
+>Regardless,(...(0.25)) you still have to pay for the ingredients.(...)
+Resort rules say so.",">(char(kut))El resort es un lugar excelente para ganar inspiracion.
+Me permiten practicar aquí a cambio de preparar comida para los pequeñines(...(2.0))
+Tu...(...) tambíen puedes disfrutar de mis platillos refinados, supongo.
+>De todos modos,(...(0.25))Tendras que pagar por los ingredientes.(...)
+Reglas del resort lo dictan asi."
+joy_welcome_0,">(char(joy))Hello!(...) You are (name), right? Come on in!(...)
+I'll give you a quick tour around!","Hola![...] Tu tienes que ser [name], ¿no? Adelante![...]
 Tenemos el complejo preparado para ti."
-joy_welcome_1,Here it is. The aphid resort![...],"Y aqui esta, el complejo de áfidos!"
-joy_idle_0,"Quite a cozy place, isn’t it [name]?[...]
-It’s such a joy to work as a keeper for the lil buddies. [...]
-They even let me have my own one!","Un lugar agradable, verdad [name]?[...]
+joy_welcome_1,">Here it is. The aphid resort!(...)
+So,(...) what do you think?
+>Things are shaping up as we grow so please bear with me, [wave amp=25.0 freq=5.0 connected=1]we will get there[/wave].","Y aqui esta, el complejo de áfidos!"
+joy_flavor_0,">(char(joy))Quite a cozy place, isn’t it (name)?(...)
+It’s such a joy to work as a keeper for the lil buddies. (...)
+[wave amp=50.0 freq=5.0 connected=1]They even let me have my own one![/wave]
+>Her name is Crystal. Isn't she a cutie? 
+>Just wished more people came along to visit...(...)
+Apart from festival times, it gets pretty quiet around here.(...)
+>Speaking of, I think that is coming pretty soon!(...(1.0))
+[fade start=0 length=14]hopefully...[/fade]","Un lugar agradable, verdad [name]?[...]
 Es todo un placer trabajar de cuidadora de los pequeñitos.[...]
-Incluso me dejan tener el mió propio!"
-joy_idle_1,"Just wished more people came along to visit...[...]
-Apart from festival times, it gets pretty quiet around here.[...]
-Speaking of, I think that is coming pretty soon!","Solo desearia que más gente se pasara por aquí...[...]
+Incluso me dejan tener el mió propio! Solo desearia que más gente se pasara por aquí...[...]
 Aparte de tiempos de festival, este lugar se queda silencioso.[...]
 Hablando de... Creo que esta por llegar!"
-welcome_0,"Welcome to the alpha version of Aphid Festival Resort[...]
-Press Escape to access Help and Controls information panels!","Bienvenido a Aphid Festival Resort[...]
-Presiona Escape para acceder a paneles de informacion sobre Ayuda y Controles!"
-welcome_1,"You can check updates at the Itch.io page of the game!
-Any feedback is appreciated.","Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
-Cualquier feedback es agradecido."
-azzy_idle_0,"[name]! Hello, Hello!
-If you need anything, I have it right here!","[name]! Hey, Hey!
-Si necesitas algo, lo tengo aqui mismo!"
-azzy_idle_1,"Except, weapons, they do not allow me to sell you darts.
-Not like you need them anyways!","Excepto armas, no me permiten venderte dardos.
+welcome_0,">Welcome to the alpha version of Aphid Festival Resort[...]
+>Press Escape to access Help and Controls information panels! You can check updates at the Itch.io page of the game!
+>Any feedback is appreciated.",">Bienvenido a Aphid Festival Resort[...]
+>Presiona Escape para acceder a paneles de informacion sobre Ayuda y Controles! Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
+>Cualquier feedback es agradecido."
+welcome_1,,
+azzy_flavor_0,">(char(azzy))(name)! Hello, Hello!
+If you need anything, I have it right here!
+And if I don't, maybe later. 
+>Except, weapons, they do not allow me to sell you darts.
+Not like you need them anyways!",">(char(azzy))(name)! Hey, Hey!
+Si necesitas algo, lo tengo aqui mismo!
+Y si no... pues puede que luego.
+>Excepto armas, no me permiten venderte dardos.
 No es lo que necesites de todos modos!"

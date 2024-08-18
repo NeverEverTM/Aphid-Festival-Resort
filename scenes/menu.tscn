@@ -1,6 +1,6 @@
-[gd_scene load_steps=36 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=60 format=3 uid="uid://by6u0617yy7oe"]
 
-[ext_resource type="Script" path="res://scripts/gui/MainMenu.cs" id="1_5e31e"]
+[ext_resource type="Script" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="2_ihlud"]
 [ext_resource type="Texture2D" uid="uid://daup0e4jm5ln" path="res://sprites/ui/AphidFestivalResort.png" id="2_r26xg"]
@@ -8,16 +8,29 @@
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="3_7aeaj"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="3_7vjbo"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/select.wav" id="4_fk8eh"]
+[ext_resource type="Script" path="res://scripts/main_menu/StartMenu.cs" id="6_8loy6"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="6_vbc7o"]
-[ext_resource type="Script" path="res://scripts/LogoScript.cs" id="7_5ctxs"]
 [ext_resource type="Texture2D" uid="uid://duck48iqhler" path="res://sprites/ui/heart_bg.png" id="8_85fa1"]
 [ext_resource type="Texture2D" uid="uid://v4b2uxe72p3y" path="res://sprites/ui/github-mark-white.png" id="8_ao5k5"]
 [ext_resource type="Texture2D" uid="uid://cyp5ykw0lep0c" path="res://sprites/ui/itchio-logo-textless-white.png" id="9_8g0pq"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="9_76l0k"]
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="9_hair0"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="10_8uix6"]
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="11_1iujn"]
+[ext_resource type="Script" path="res://scripts/main_menu/LoadGameMenu.cs" id="11_6of5g"]
 [ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="11_wl7ma"]
 [ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/mosaic_menu_bg.png" id="12_gxjbm"]
+[ext_resource type="PackedScene" uid="uid://cifp27quamefu" path="res://scenes/ui/savefile_slot.tscn" id="12_tjjf3"]
+[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="14_vlxys"]
+[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="17_w4wev"]
+[ext_resource type="Shader" path="res://scripts/shaders/outline.gdshader" id="23_464pl"]
+[ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player/player_0.png" id="25_h75le"]
+[ext_resource type="Shader" path="res://scripts/shaders/shine_highlight.gdshader" id="26_ukngl"]
+[ext_resource type="Texture2D" uid="uid://co1btvdxhud6s" path="res://sprites/ui/logo_large_color_dark.png" id="27_a546m"]
+[ext_resource type="Texture2D" uid="uid://dwt5dtn13i3r2" path="res://sprites/ui/pc_project.png" id="28_i03ks"]
+[ext_resource type="Texture2D" uid="uid://pgscnb8dl5jr" path="res://sprites/title.png" id="30_1xe6g"]
+[ext_resource type="Texture2D" uid="uid://ddbg4ffu6ihj6" path="res://sprites/ui/pc_color.png" id="30_wl81d"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="31_ip2o7"]
 
 [sub_resource type="Animation" id="Animation_ahjwp"]
 length = 0.001
@@ -33,6 +46,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [Vector2(214, -476)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("hover_start:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-176, 531)]
+}
 
 [sub_resource type="Animation" id="Animation_2twnp"]
 resource_name = "slide_down"
@@ -43,10 +68,22 @@ tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(0.5, 2),
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(-2, 2),
 "update": 0,
 "values": [Vector2(237, -504), Vector2(237, 30)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("hover_start:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(-176, 2000), Vector2(-176, 527.495)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_77pfv"]
@@ -72,10 +109,100 @@ font_color = Color(0.760784, 0.772549, 0.764706, 1)
 outline_size = 10
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="Animation" id="Animation_0ys5g"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("load_bg:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("load_quote:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-475, -700)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ScrollContainer:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-475, 500)]
+}
+
+[sub_resource type="Animation" id="Animation_uq7ju"]
+resource_name = "open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("load_bg:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.47451)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("load_quote:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(-475, -600), Vector2(-475, -286)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ScrollContainer:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(-475, 500), Vector2(-475, -147)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wcxo3"]
+_data = {
+"RESET": SubResource("Animation_0ys5g"),
+"open": SubResource("Animation_uq7ju")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eqi5b"]
+shader = ExtResource("11_wl7ma")
+shader_parameter/speed = 0.1
+shader_parameter/node_size = Vector2(64, 64)
+shader_parameter/color = Color(0.85098, 0.568627, 1, 1)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_glayg"]
 shader = ExtResource("11_wl7ma")
-shader_parameter/speed = 0.3
-shader_parameter/node_size = Vector2(16, 16)
+shader_parameter/speed = 0.2
+shader_parameter/node_size = Vector2(48, 48)
 shader_parameter/color = Color(0.513726, 0.188235, 0.231373, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_sspec"]
@@ -86,6 +213,8 @@ outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_6iqyf"]
 font_size = 25
+font_color = Color(0, 0, 0, 1)
+outline_size = 5
 
 [sub_resource type="Animation" id="Animation_i25o6"]
 length = 0.001
@@ -103,7 +232,7 @@ tracks/0/keys = {
 }
 tracks/1/type = "value"
 tracks/1/imported = false
-tracks/1/enabled = false
+tracks/1/enabled = true
 tracks/1/path = NodePath(".:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
@@ -112,60 +241,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
-}
-
-[sub_resource type="Animation" id="Animation_ik200"]
-resource_name = "loading"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_gmin0"]
-resource_name = "slide_down"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(-2, -0.5),
-"update": 0,
-"values": [Vector2(0, -1000), Vector2(0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_iebcr"]
@@ -177,8 +252,8 @@ tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(-2, -0.5),
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(1.91901, -0.5),
 "update": 0,
 "values": [Vector2(0, 0), Vector2(0, -1000)]
 }
@@ -198,34 +273,380 @@ tracks/1/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7l8ub"]
 _data = {
 "RESET": SubResource("Animation_i25o6"),
-"loading": SubResource("Animation_ik200"),
-"slide_down": SubResource("Animation_gmin0"),
 "slide_up": SubResource("Animation_iebcr")
 }
 
-[node name="menu" type="Node2D" node_paths=PackedStringArray("canvas", "BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "hover_start", "sweep_animator", "logo_animator", "entityRoot", "githubButton", "itchioButton", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_input_name", "player_input_name", "savefile_name")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jpjqr"]
+shader = ExtResource("23_464pl")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/ignore_modulate = false
+shader_parameter/width = 10.0
+shader_parameter/pattern = 1
+shader_parameter/inside = true
+shader_parameter/add_margins = false
+shader_parameter/number_of_images = Vector2(1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hil4k"]
+atlas = ExtResource("25_h75le")
+region = Rect2(96, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ijwpk"]
+atlas = ExtResource("25_h75le")
+region = Rect2(64, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e0pgy"]
+atlas = ExtResource("25_h75le")
+region = Rect2(128, 0, 32, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x0hdr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hil4k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ijwpk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e0pgy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ijwpk")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_immw2"]
+shader = ExtResource("26_ukngl")
+shader_parameter/shine_color = Color(0.976471, 1, 1, 0.592157)
+shader_parameter/shine_progress = 0.0
+shader_parameter/shine_size = 0.1
+shader_parameter/shine_angle = 47.5
+
+[sub_resource type="Animation" id="Animation_r0sfp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("godot_logo:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("logo_project:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-1500, -140)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("logo_color:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(873, -80)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:material:shader_parameter/shine_progress")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:material:shader_parameter/shine_size")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.1]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("logo_project:self_modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("logo_color:self_modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("cover:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("cover:self_modulate")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("logo_full:self_modulate")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("logo_full:use_parent_material")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_hobux"]
+resource_name = "start"
+length = 3.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("godot_logo:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.7, 1),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("logo_project:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1.4, 2),
+"transitions": PackedFloat32Array(0.107177, 1),
+"update": 0,
+"values": [Vector2(-1480.56, -140), Vector2(-256, -140)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("logo_color:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(1.4, 2),
+"transitions": PackedFloat32Array(0.130583, 1),
+"update": 0,
+"values": [Vector2(873, -70), Vector2(-108, -70)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:material:shader_parameter/shine_progress")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(2.3, 3.2),
+"transitions": PackedFloat32Array(-5, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:material:shader_parameter/shine_size")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(2.3, 2.8, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.1, 0.2, 0.1]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 3.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("logo_project:self_modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(1.2, 1.7),
+"transitions": PackedFloat32Array(0, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("logo_color:self_modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(1.2, 1.7),
+"transitions": PackedFloat32Array(0, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("cover:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("cover:self_modulate")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(1.5, 1.6, 2, 2.9),
+"transitions": PackedFloat32Array(0.203063, 0.466519, 0.466519, 0.5),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("logo_full:self_modulate")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 1.6, 3.2, 3.5),
+"transitions": PackedFloat32Array(0, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("logo_full:use_parent_material")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 0.0001, 1.6, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, false, true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bahfq"]
+_data = {
+"RESET": SubResource("Animation_r0sfp"),
+"start": SubResource("Animation_hobux")
+}
+
+[node name="menu" type="Node2D" node_paths=PackedStringArray("canvas", "BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "hover_start", "sweep_animator", "logo_animator", "title_animator", "entityRoot", "start_panel", "loadPanel", "new_game_panel", "credits_panel", "options_panel", "new_game_button", "resort_input_name", "player_input_name")]
 y_sort_enabled = true
 script = ExtResource("1_5e31e")
 canvas = NodePath("CanvasLayer")
-BOOT_LOADING_LABEL = NodePath("CanvasLayer/sweep_background/Label")
+BOOT_LOADING_LABEL = NodePath("CanvasLayer/BOOT_CONTROL/BOOT_LABEL")
 cameraMenu = NodePath("Camera2D")
-button_wheel = NodePath("CanvasLayer/start_panel/logo/button_wheel")
-hover_start = NodePath("CanvasLayer/start_panel/logo/hover_start")
-sweep_animator = NodePath("CanvasLayer/sweep_background/AnimationPlayer")
-logo_animator = NodePath("CanvasLayer/start_panel/logo/AnimationPlayer")
+button_wheel = NodePath("CanvasLayer/start_panel/title/button_wheel")
+hover_start = NodePath("CanvasLayer/start_panel/title/hover_start")
+sweep_animator = NodePath("CanvasLayer/sweep_background/sweep_animator")
+logo_animator = NodePath("CanvasLayer/CUTSCENE_START/logo_animator")
+title_animator = NodePath("CanvasLayer/start_panel/title/title_animator")
 aphidPrefab = ExtResource("2_ihlud")
 entityRoot = NodePath("entityRoot")
-githubButton = NodePath("CanvasLayer/bottom_bar/github")
-itchioButton = NodePath("CanvasLayer/bottom_bar/itch_io")
 start_panel = NodePath("CanvasLayer/start_panel")
+loadPanel = NodePath("CanvasLayer/loadgame_panel")
 new_game_panel = NodePath("CanvasLayer/newgame_panel")
-load_game_panel = NodePath("CanvasLayer/loadgame_panel")
 credits_panel = NodePath("CanvasLayer/credits_panel")
 options_panel = NodePath("CanvasLayer/options_panel")
 new_game_button = NodePath("CanvasLayer/newgame_panel/ready/button")
 resort_input_name = NodePath("CanvasLayer/newgame_panel/resort_name")
 player_input_name = NodePath("CanvasLayer/newgame_panel/player_name")
-savefile_name = NodePath("CanvasLayer/loadgame_panel/savefile/Label")
 switchSound = ExtResource("3_7vjbo")
 selectSound = ExtResource("4_fk8eh")
 
@@ -248,7 +669,7 @@ current = true
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 0
 
-[node name="start_panel" type="Control" parent="CanvasLayer"]
+[node name="start_panel" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("aphidButton", "secretButton", "githubButton", "itchioButton", "startText")]
 light_mask = 0
 layout_mode = 3
 anchors_preset = 8
@@ -262,8 +683,14 @@ offset_right = -575.0
 offset_bottom = -323.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("6_8loy6")
+aphidButton = NodePath("title/aphid_button")
+secretButton = NodePath("title/secret_button")
+githubButton = NodePath("../bottom_bar/github")
+itchioButton = NodePath("../bottom_bar/itch_io")
+startText = NodePath("title/hover_start")
 
-[node name="logo" type="TextureRect" parent="CanvasLayer/start_panel" node_paths=PackedStringArray("aphidButton", "secretButton")]
+[node name="title" type="TextureRect" parent="CanvasLayer/start_panel"]
 light_mask = 0
 layout_mode = 1
 anchors_preset = 8
@@ -271,23 +698,20 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 214.0
-offset_top = -476.0
-offset_right = 914.0
-offset_bottom = 24.0
+offset_left = 213.5
+offset_top = -476.5
+offset_right = 913.5
+offset_bottom = 23.5
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_r26xg")
-script = ExtResource("7_5ctxs")
-aphidButton = NodePath("aphid_button")
-secretButton = NodePath("secret_button")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/start_panel/logo"]
+[node name="title_animator" type="AnimationPlayer" parent="CanvasLayer/start_panel/title"]
 libraries = {
 "": SubResource("AnimationLibrary_77pfv")
 }
 
-[node name="button_wheel" type="RichTextLabel" parent="CanvasLayer/start_panel/logo"]
+[node name="button_wheel" type="RichTextLabel" parent="CanvasLayer/start_panel/title"]
 visible = false
 layout_mode = 0
 offset_left = 126.0
@@ -295,6 +719,7 @@ offset_top = 525.0
 offset_right = 553.0
 offset_bottom = 604.0
 theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
 theme_override_fonts/normal_font = ExtResource("2_w3mwt")
 theme_override_font_sizes/normal_font_size = 50
 theme_override_font_sizes/mono_font_size = 100
@@ -303,25 +728,26 @@ text = "[center]< Start >[/center]"
 scroll_active = false
 language = "eng"
 
-[node name="hover_start" type="RichTextLabel" parent="CanvasLayer/start_panel/logo"]
+[node name="hover_start" type="RichTextLabel" parent="CanvasLayer/start_panel/title"]
 layout_mode = 0
-offset_left = 56.4062
-offset_top = 527.495
-offset_right = 627.406
-offset_bottom = 582.495
+offset_left = -176.0
+offset_top = 531.0
+offset_right = 843.0
+offset_bottom = 586.0
 theme = ExtResource("9_76l0k")
 theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
 bbcode_enabled = true
-text = "Press A or B to start"
+text = "[center]Press A or B to start[/center]"
 
-[node name="aphid_button" type="TextureButton" parent="CanvasLayer/start_panel/logo"]
+[node name="aphid_button" type="TextureButton" parent="CanvasLayer/start_panel/title"]
 layout_mode = 0
 offset_left = 379.535
 offset_top = 25.5378
 offset_right = 419.535
 offset_bottom = 65.5378
 
-[node name="secret_button" type="TextureButton" parent="CanvasLayer/start_panel/logo"]
+[node name="secret_button" type="TextureButton" parent="CanvasLayer/start_panel/title"]
 layout_mode = 0
 offset_left = 381.0
 offset_top = 215.0
@@ -443,7 +869,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="loadgame_panel" type="Control" parent="CanvasLayer"]
+[node name="loadgame_panel" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("menuPlayer", "container")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -458,21 +884,42 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("9_76l0k")
+script = ExtResource("11_6of5g")
+menuPlayer = NodePath("load_player")
+container = NodePath("ScrollContainer/savefile_container")
+savefile_slot = ExtResource("12_tjjf3")
 
-[node name="quote" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
+[node name="load_player" type="AnimationPlayer" parent="CanvasLayer/loadgame_panel"]
+libraries = {
+"": SubResource("AnimationLibrary_wcxo3")
+}
+
+[node name="load_bg" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
+self_modulate = Color(1, 1, 1, 0)
+material = SubResource("ShaderMaterial_eqi5b")
+layout_mode = 0
+offset_left = -1037.0
+offset_top = -720.0
+offset_right = 1069.0
+offset_bottom = 660.0
+texture = ExtResource("14_vlxys")
+stretch_mode = 1
+
+[node name="load_quote" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
 self_modulate = Color(0.352941, 0.27451, 0.192157, 1)
 layout_mode = 0
-offset_left = -363.0
-offset_top = -234.0
-offset_right = 444.0
-offset_bottom = -98.0
-texture = ExtResource("6_vbc7o")
+offset_left = -475.0
+offset_top = -700.0
+offset_right = 497.0
+offset_bottom = -564.0
+texture = ExtResource("11_1iujn")
 
-[node name="Label" type="Label" parent="CanvasLayer/loadgame_panel/quote"]
+[node name="load_label" type="Label" parent="CanvasLayer/loadgame_panel/load_quote"]
 layout_mode = 0
 offset_left = 58.0
 offset_top = 13.0
-offset_right = 746.0
+offset_right = 939.0
 offset_bottom = 121.0
 text = "load_quote"
 label_settings = SubResource("LabelSettings_kpdmm")
@@ -480,45 +927,21 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="savefile" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
-self_modulate = Color(0.490196, 0.168627, 0.227451, 1)
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/loadgame_panel"]
 layout_mode = 0
-offset_left = -338.0
-offset_top = -75.0
-offset_right = 407.0
-offset_bottom = 27.0
-texture = ExtResource("6_vbc7o")
+offset_left = -475.0
+offset_top = 500.0
+offset_right = 470.0
+offset_bottom = 1041.0
+follow_focus = true
+horizontal_scroll_mode = 0
+scroll_deadzone = 200
 
-[node name="Label" type="RichTextLabel" parent="CanvasLayer/loadgame_panel/savefile"]
-layout_mode = 0
-offset_left = 48.0
-offset_top = 27.0
-offset_right = 696.0
-offset_bottom = 75.0
-theme_override_fonts/normal_font = ExtResource("2_w3mwt")
-theme_override_font_sizes/normal_font_size = 40
-text = "Deluxe Aphid Manor: Triple Threat"
-
-[node name="info" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
-self_modulate = Color(0.435294, 0.231373, 0.0392157, 1)
-layout_mode = 0
-offset_left = -363.0
-offset_top = 42.0
-offset_right = 444.0
-offset_bottom = 274.0
-texture = ExtResource("6_vbc7o")
-
-[node name="Label" type="Label" parent="CanvasLayer/loadgame_panel/info"]
-layout_mode = 0
-offset_left = 58.0
-offset_top = 40.0
-offset_right = 746.0
-offset_bottom = 148.0
-text = "load_note"
-label_settings = SubResource("LabelSettings_kpdmm")
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
+[node name="savefile_container" type="VBoxContainer" parent="CanvasLayer/loadgame_panel/ScrollContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 0
 
 [node name="options_panel" parent="CanvasLayer" instance=ExtResource("10_8uix6")]
 visible = false
@@ -540,7 +963,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="background" type="TextureRect" parent="CanvasLayer/credits_panel"]
-self_modulate = Color(0.282353, 0.113725, 0.180392, 0.811765)
+self_modulate = Color(0.282353, 0.113725, 0.180392, 0.301961)
 material = SubResource("ShaderMaterial_glayg")
 layout_mode = 0
 offset_left = -695.0
@@ -562,31 +985,32 @@ horizontal_alignment = 1
 autowrap_mode = 3
 metadata/_edit_group_ = true
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/credits_panel"]
+[node name="heart" type="TextureRect" parent="CanvasLayer/credits_panel"]
 layout_mode = 0
-offset_left = -98.0
-offset_top = 187.0
-offset_right = -34.0
-offset_bottom = 251.0
+offset_left = -87.0
+offset_top = -294.0
+offset_right = -23.0
+offset_bottom = -230.0
 texture = ExtResource("8_85fa1")
 
-[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/credits_panel"]
+[node name="heart1" type="TextureRect" parent="CanvasLayer/credits_panel"]
 layout_mode = 0
-offset_left = 79.0
-offset_top = 185.0
-offset_right = 143.0
-offset_bottom = 249.0
+offset_left = 90.0
+offset_top = -296.0
+offset_right = 154.0
+offset_bottom = -232.0
 texture = ExtResource("8_85fa1")
 
-[node name="TextureRect3" type="TextureRect" parent="CanvasLayer/credits_panel"]
+[node name="phid" type="TextureRect" parent="CanvasLayer/credits_panel"]
 layout_mode = 0
-offset_left = -9.0
-offset_top = 189.0
-offset_right = 55.0
-offset_bottom = 253.0
+offset_left = 2.0
+offset_top = -292.0
+offset_right = 66.0
+offset_bottom = -228.0
 texture = ExtResource("9_hair0")
 
 [node name="bottom_bar" type="Control" parent="CanvasLayer"]
+visible = false
 light_mask = 0
 layout_mode = 3
 anchors_preset = 2
@@ -606,6 +1030,10 @@ offset_right = 245.261
 offset_bottom = 801.113
 scale = Vector2(0.25, 0.25)
 texture_normal = ExtResource("8_ao5k5")
+script = ExtResource("17_w4wev")
+PressedColor = Color(0.596078, 0.572549, 0.560784, 1)
+FocusColor = Color(0.560784, 0.705882, 1, 1)
+HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
 
 [node name="itch_io" type="TextureButton" parent="CanvasLayer/bottom_bar"]
 layout_mode = 0
@@ -615,6 +1043,10 @@ offset_right = 1283.87
 offset_bottom = 1657.6
 scale = Vector2(0.05, 0.05)
 texture_normal = ExtResource("9_8g0pq")
+script = ExtResource("17_w4wev")
+PressedColor = Color(0.615686, 0.615686, 0.615686, 1)
+FocusColor = Color(0.560784, 0.705882, 1, 1)
+HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
 
 [node name="versioning" type="Label" parent="CanvasLayer/bottom_bar"]
 layout_mode = 0
@@ -622,7 +1054,7 @@ offset_left = 893.638
 offset_top = 601.685
 offset_right = 1345.64
 offset_bottom = 649.685
-text = "alpha 0.1.2.0v"
+text = "alpha 0.1.3.0v"
 label_settings = SubResource("LabelSettings_6iqyf")
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -630,33 +1062,138 @@ vertical_alignment = 1
 [node name="sweep_background" type="TextureRect" parent="CanvasLayer"]
 visible = false
 light_mask = 0
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
 offset_right = 1422.0
-offset_bottom = 903.0
-grow_horizontal = 2
-grow_vertical = 0
+offset_bottom = 903.001
 texture = ExtResource("2_fmpp6")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/sweep_background"]
+[node name="sweep_animator" type="AnimationPlayer" parent="CanvasLayer/sweep_background"]
 libraries = {
 "": SubResource("AnimationLibrary_7l8ub")
 }
 
-[node name="Label" type="Label" parent="CanvasLayer/sweep_background"]
+[node name="BOOT_CONTROL" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -536.0
+offset_bottom = -284.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BOOT_LABEL" type="Label" parent="CanvasLayer/BOOT_CONTROL"]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -369.0
-offset_top = -48.0
-grow_horizontal = 0
-grow_vertical = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 378.0
+offset_top = 343.0
+offset_right = 747.0
+offset_bottom = 391.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("9_76l0k")
 text = "Loading..."
+horizontal_alignment = 1
+vertical_alignment = 1
 text_direction = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CanvasLayer/BOOT_CONTROL"]
+self_modulate = Color(0.984314, 0.513726, 0.027451, 1)
+material = SubResource("ShaderMaterial_jpjqr")
+position = Vector2(587, 247)
+scale = Vector2(3, 3)
+sprite_frames = SubResource("SpriteFrames_x0hdr")
+frame_progress = 0.37393
+
+[node name="CUTSCENE_START" type="Control" parent="CanvasLayer"]
+visible = false
+material = SubResource("ShaderMaterial_immw2")
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="logo_animator" type="AnimationPlayer" parent="CanvasLayer/CUTSCENE_START"]
+libraries = {
+"": SubResource("AnimationLibrary_bahfq")
+}
+
+[node name="godot_logo" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+layout_mode = 0
+offset_left = -186.0
+offset_top = -83.0
+offset_right = 273.0
+offset_bottom = 102.0
+texture = ExtResource("27_a546m")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="bg" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+visible = false
+layout_mode = 0
+offset_left = -620.0
+offset_top = -351.0
+offset_right = 653.0
+offset_bottom = 405.0
+texture = ExtResource("12_gxjbm")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="logo_project" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+layout_mode = 0
+offset_left = -1500.0
+offset_top = -140.0
+offset_right = -908.0
+offset_bottom = 119.0
+texture = ExtResource("28_i03ks")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="logo_color" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+layout_mode = 0
+offset_left = 873.0
+offset_top = -80.0
+offset_right = 1250.0
+offset_bottom = 59.0
+texture = ExtResource("30_wl81d")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="logo_full" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+self_modulate = Color(1, 1, 1, 0)
+use_parent_material = true
+layout_mode = 0
+offset_left = -267.0
+offset_top = -147.0
+offset_right = 308.0
+offset_bottom = 128.0
+texture = ExtResource("30_1xe6g")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="cover" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = -810.0
+offset_top = -367.0
+offset_right = 918.0
+offset_bottom = 387.0
+texture = ExtResource("31_ip2o7")
+expand_mode = 1

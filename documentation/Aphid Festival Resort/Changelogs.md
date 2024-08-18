@@ -12,7 +12,7 @@
 - You can now pinpoint an Aphid location by double-clicking on their frame in the generations menu.
 - Changed several pricing and food values for balancing
 - Removed recipes from shop, as they are now redundant
-- 1.1 and 1.0
+- Implemented a backwards compability system for future updates
 Bug Fixes
 - Aphids who died will persist even after reloading, as far as I know it doesnt affect nothing apart from having "ghost" Aphids who shortly vanished after reloading a save.
   This new update should delete all instances and properly see them as dead.

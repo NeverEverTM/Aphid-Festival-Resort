@@ -18,8 +18,8 @@ public class GameData : SaveSystem.ISaveData
 
     public string SaveData()
     {
-        if (Data == null)
-            SetData();
+        Data.Version = GameManager.GAME_VERSION;
+        Data.AphidCount = SaveSystem.Aphids.Count;
         return JsonSerializer.Serialize(Data);
     }
 
@@ -31,12 +31,17 @@ public class GameData : SaveSystem.ISaveData
 
 	public class Savefile
 	{
+        /// <summary>
+        /// Only used for display purposes.
+        /// </summary>
+        public int AphidCount { get; set; }
 		public float Playtime { get; set; }
 		public int Version { get; set; }
 
         public Savefile()
         {
             Version = GameManager.GAME_VERSION;
+            AphidCount = SaveSystem.Aphids.Count;
         }
 	}
 }

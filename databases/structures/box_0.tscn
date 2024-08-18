@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://qqnlry2c602o"]
+
+[ext_resource type="Texture2D" uid="uid://c73nvoh0co3y1" path="res://sprites/props/resort_box.png" id="1_82agt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aekg4"]
+size = Vector2(32, 10)
+
+[node name="box_0" type="Sprite2D"]
+texture = ExtResource("1_82agt")
+offset = Vector2(0, -17)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_aekg4")

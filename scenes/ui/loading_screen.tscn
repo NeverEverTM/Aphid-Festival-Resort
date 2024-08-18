@@ -6,6 +6,7 @@
 
 [node name="loading_screen" type="CanvasLayer"]
 process_mode = 3
+layer = 10
 script = ExtResource("1_5cwbq")
 leaf = ExtResource("2_k54b8")
 leaves_sound = ExtResource("3_baum4")

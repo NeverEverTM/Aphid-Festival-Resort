@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Godot;
 
 public partial class GameManager : Node2D
 {
-	public const int GAME_VERSION = 120;
+	public const int GAME_VERSION = 130;
 
-	public static GameManager Instance;
-	public static Camera2D GlobalCamera;
+	public static GameManager Instance { get; private set; }
+	public static Camera2D GlobalCamera { get; set; }
 	public readonly static RandomNumberGenerator RNG = new();
 
 	public delegate void LoadSceneHandler();
 	public static event LoadSceneHandler OnPreLoadScene, OnPostLoadScene;
 
-	public enum Scene { Resort, Menu }
-	public Scene scene = Scene.Menu;
+	public enum SceneName { Resort, Menu }
+	public static SceneName Scene { get; private set; }
 
 	public static bool IsBusy = true;
 
@@ -24,13 +25,15 @@ public partial class GameManager : Node2D
 		MenuScenePath = "res://scenes/menu.tscn",
 		LoadingScreenPath = "res://scenes/ui/loading_screen.tscn",
 		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
-		PopupWindowPath = "res://scenes/ui/popup.tscn";
+		PopupWindowPath = "res://scenes/ui/popup.tscn",
+		OutlineShader = "res://scripts/shaders/outline.gdshader";
 	public const string
 		MusicPath = "res://sfx/music",
 		SFXPath = "res://sfx",
-		ItemPath = "res://items",
 		IconPath = "res://sprites/icons",
-		SkinsPath = "res://skins",
+		ItemPath = "res://databases/items",
+		SkinsPath = "res://databases/skins",
+		StructuresPath = "res://databases/structures",
 		DatabasesPath = "res://databases";
 
 	// =========| LOADED VALUES |===========
@@ -38,6 +41,7 @@ public partial class GameManager : Node2D
 	public static readonly Dictionary<string, Item> G_ITEMS = new();
 	public static readonly Dictionary<string, Food> G_FOOD = new();
 	public static readonly List<Recipe> G_RECIPES = new();
+	public static readonly Dictionary<string, string> G_STRUCTURES = new();
 	public readonly struct Item
 	{
 		public readonly int cost;
@@ -77,8 +81,24 @@ public partial class GameManager : Node2D
 		}
 	}
 
+	public static Texture2D GetIcon(string _key)
+	{
+		if (G_ICONS.ContainsKey(_key))
+			return G_ICONS[_key];
+		else
+			return G_ICONS["missing"];
+	}
+	public static string GetStructurePath(string _key)
+	{
+		if (G_ICONS.ContainsKey(_key))
+			return G_STRUCTURES[_key];
+		else
+			return G_STRUCTURES["missing"];
+	}
+
 	// Variables
-	public static Vector2 ScreenCenter, ScreenSize;
+	public static Vector2 ScreenCenter { get; private set; }
+	public static Vector2 ScreenSize { get; private set; }
 	private PhysicsDirectSpaceState2D spaceState;
 	private readonly List<GpuParticles2D> particles = new();
 
@@ -87,9 +107,13 @@ public partial class GameManager : Node2D
 	public override void _EnterTree()
 	{
 		Instance = this;
+		Scene = SceneName.Menu;
 
 		GetViewport().SizeChanged += OnSizeChange;
 		OnSizeChange();
+#if DEBUG
+		Logger.LogMode = Logger.LogLevel.Verbose;
+#endif
 	}
 	////// GAMEMANAGER READY GETS CALLED WHEN LOADING NEW ROOT SCENE
 	public override void _Ready()
@@ -99,6 +123,8 @@ public partial class GameManager : Node2D
 	}
 	public override void _Process(double delta)
 	{
+		if (Scene == SceneName.Resort)
+			GameData.Data.Playtime += (float)delta;
 		// Cleans particles periodically once finished
 		for (int i = 0; i < particles.Count; i++)
 		{
@@ -113,32 +139,53 @@ public partial class GameManager : Node2D
 		ScreenSize = GetViewport().GetVisibleRect().Size;
 		ScreenCenter = ScreenSize * 0.5f;
 	}
+	// MARK: Game Initialization
+	
+	/// <summary>
+	/// Pre-initalization checks and setup
+	/// </summary>
+	public async static Task PREPARE_GAME_PROCESS()
+	{
+		SaveSystem.CreateBaseDirectories();
+		await SaveSystem.LoadGlobalData();
+	}
+
 	/// <summary>
 	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
 	/// In order to be called again, BOOT_LOADING_LABEL must be set to a valid text display node.
 	/// </summary>
 	public async static Task INTIALIZE_GAME_PROCESS()
 	{
+		// show loading screen animation
+		Control _node = BOOT_LOADING_LABEL.GetParent() as Control;
+		_node.Visible = true;
+		(_node.GetChild(1) as AnimatedSprite2D).Play("default");
+
 		try
 		{
-			await Task.Delay(1);
 			await LOAD_ICONS();
 			await LOAD_SKINS();
 			await LOAD_SFX();
-			await LOAD_DATABASES();
-			BOOT_LOADING_LABEL.Visible = false;
+			await LOAD_DATA();
 			IsBusy = false;
+			_node.Visible = false;
 		}
 		catch (Exception _err)
 		{
-			GD.PushError(_err);
-			Instance.GetTree().Quit(1);
+			AcceptDialog _dialog = new()
+			{
+				DialogText = "Critical Error: " + _err.Message,
+				PopupWindow = true,
+				Title = "The game has given up on you"
+			};
+			_dialog.Canceled += () => Instance.GetTree().Quit(1);
+			_dialog.Confirmed += () => Instance.GetTree().Quit(1);
+			Instance.AddChild(_dialog);
+			_dialog.PopupCentered();
+			Logger.Print(Logger.LogPriority.Error, _err);
+
+			await Task.Delay(int.MaxValue);
 		}
-	}
-	public async static Task PREPARE_GAME_PROCESS()
-	{
-		SaveSystem.CreateBaseDirectories();
-		await SaveSystem.LoadGlobalData();
 	}
 
 	private static async Task LOAD_ICONS()
@@ -152,10 +199,8 @@ public partial class GameManager : Node2D
 			ResourceLoader.LoadThreadedRequest(_path, "", true);
 			_status = ResourceLoader.LoadThreadedGetStatus(_path);
 
-#if DEBUG
 			await Task.Delay(1);
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} ({i + 1}/{_icons.Length})";
-#endif
 
 			// Wait until it yields
 			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
@@ -185,10 +230,8 @@ public partial class GameManager : Node2D
 			if (_skins[i].EndsWith(".import"))
 				continue;
 
-#if DEBUG
 			await Task.Delay(1);
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_skins.Length})";
-#endif
 
 			// start thread and await for its response
 			string _path = $"{SkinsPath}/{_skins[i]}";
@@ -234,10 +277,8 @@ public partial class GameManager : Node2D
 			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
 				_status = ResourceLoader.LoadThreadedGetStatus(_resources[i]);
 
-#if DEBUG
 			await Task.Delay(1);
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({i + 1}/{_resources.Length})";
-#endif
 
 			// action states
 			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
@@ -274,82 +315,47 @@ public partial class GameManager : Node2D
 			_sfx.Add($"{_path}/{_files[a]}");
 		}
 	}
-	private async static Task LOAD_DATABASES()
+	private static async Task LOAD_DATA()
 	{
-		await LOAD_ITEM_VALUES();
-		await LOAD_FOOD_VALUES();
-		await LOAD_RECIPES_VALUES();
-	}
-	private static async Task LOAD_ITEM_VALUES()
-	{
-		FileAccess _file = FileAccess.Open(DatabasesPath + "/items.csv", FileAccess.ModeFlags.Read);
-		string _header = _file.GetCsvLine()[0];
-		while (_file.GetPosition() < _file.GetLength())
+		await LOAD_DATABASE("items", (string[] _info) =>
 		{
-			string[] _info = _file.GetCsvLine();
-			Item _item = new(
+			G_ITEMS.Add(_info[0], new(
 				cost: int.Parse(_info[1]),
 				unlockableLevel: int.Parse(_info[2]),
 				tag: _info[3].ToString(),
 				shopTag: _info[4].ToString()
-			);
-			G_ITEMS.Add(_info[0], _item);
-
-#if DEBUG
-			await Task.Delay(1);
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr($"BOOT_{_header}")} ({_file.GetPosition()}/{_file.GetLength()})";
-#endif
-		}
-	}
-	private static async Task LOAD_FOOD_VALUES()
-	{
-		FileAccess _file = FileAccess.Open(DatabasesPath + "/foods.csv", FileAccess.ModeFlags.Read);
-		string _header = _file.GetCsvLine()[0];
-		while (_file.GetPosition() < _file.GetLength())
+			));
+		});
+		await LOAD_DATABASE("foods", (string[] _info) =>
 		{
-			string[] _info = _file.GetCsvLine();
-			Food _item = new(
+			G_FOOD.Add(_info[0], new(
 				type: (AphidData.FoodType)int.Parse(_info[1]),
 				food_value: float.Parse(_info[2]),
 				drink_value: float.Parse(_info[3])
-			);
-			G_FOOD.Add(_info[0], _item);
-
-#if DEBUG
-			await Task.Delay(1);
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr($"BOOT_{_header}")} ({_file.GetPosition()}/{_file.GetLength()})";
-#endif
-		}
-	}
-	private static async Task LOAD_RECIPES_VALUES()
-	{
-		FileAccess _file = FileAccess.Open(DatabasesPath + "/recipes.csv", FileAccess.ModeFlags.Read);
-		string _header = _file.GetCsvLine()[0];
-		while (_file.GetPosition() < _file.GetLength())
+			));
+		});
+		await LOAD_DATABASE("recipes", (string[] _info) =>
 		{
-			string[] _info = _file.GetCsvLine();
-
 			G_RECIPES.Add(new Recipe(
 				_info[0],
 				_info[1],
 				_info[2]
 			));
-
-#if DEBUG
+		});
+	}
+	private static async Task LOAD_DATABASE(string _fileName, Action<string[]> _onItem)
+	{
+		FileAccess _file = FileAccess.Open(DatabasesPath + $"/{_fileName}.csv", FileAccess.ModeFlags.Read);
+		string _header = _file.GetCsvLine()[0], _boot = Instance.Tr($"BOOT_{_header}");
+		while (_file.GetPosition() < _file.GetLength())
+		{
+			_onItem(_file.GetCsvLine());
 			await Task.Delay(1);
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr($"BOOT_{_header}")} ({_file.GetPosition()}/{_file.GetLength()})";
-#endif
+			BOOT_LOADING_LABEL.Text = $"{_boot} ({(int)((float)_file.GetPosition() / (float)_file.GetLength() * 100)}%)";
 		}
 	}
 
-	// =====| Functions |=====
-	public static Texture2D GetIcon(string _key)
-	{
-		if (G_ICONS.ContainsKey(_key))
-			return G_ICONS[_key];
-		else
-			return G_ICONS["missing"];
-	}
+	// MARK: Dedicated Functions
 	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position)
 	{
 		var _item = _particles.Instantiate() as GpuParticles2D;
@@ -375,8 +381,19 @@ public partial class GameManager : Node2D
 		SaveSystem.Aphids.Clear();
 		SaveSystem.ProfileData.Clear();
 	}
-	public async static Task LoadScene(string _path)
+	public async static Task LoadScene(SceneName _scene)
 	{
+		Scene = _scene;
+		string _path = _scene switch
+		{
+			SceneName.Menu => MenuScenePath,
+			SceneName.Resort => ResortScenePath,
+			_ => "N/A"
+		};
+
+		if (_path == "N/A")
+			return;
+
 		IsBusy = true;
 		OnPreLoadScene?.Invoke();
 		Instance.CleanAllParticles();
@@ -435,7 +452,7 @@ public partial class GameManager : Node2D
 			Tween tween = _popup.CreateTween();
 			tween.SetEase(Tween.EaseType.InOut);
 			tween.SetTrans(Tween.TransitionType.Linear);
-			tween.TweenProperty(_popup, "modulate", new Color(1,1,1,0), 0.5f);
+			tween.TweenProperty(_popup, "modulate", new Color(1, 1, 1, 0), 0.5f);
 		};
 		_timer.AddChild(_vanish);
 
@@ -467,7 +484,6 @@ public partial class GameManager : Node2D
 	}
 	public static int GetRandomByWeight(float[] weights) =>
 		GetRandomByWeight(RNG, weights);
-
 	public static class Utils
 	{
 		public static Godot.Collections.Dictionary Raycast(Vector2 _position, Vector2 _direction, Godot.Collections.Array<Rid> _excludeList)
@@ -482,11 +498,9 @@ public partial class GameManager : Node2D
 			_query.To = _position + _direction;
 			return Instance.spaceState.IntersectRay(_query);
 		}
-		/// <summary>
-		/// Gets a vector using mouse coordinates to then translate to world position.
-		/// </summary>
-		/// <returns>A 2D vector of the Global Position of the mouse</returns>
+		/// <returns>The mouse position translated to global position/returns>
 		public static Vector2 GetMouseToWorldPosition() => GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() - ScreenCenter) * 0.5f;
+		public static Vector2 GetMouseToCanvasCenter() => Instance.GetViewport().GetMousePosition() - ScreenCenter;
 		/// <summary>
 		/// Translates world position to canvas coordinates.
 		/// </summary>
@@ -505,5 +519,28 @@ public partial class GameManager : Node2D
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
 		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));
+	}
+}
+
+public class StateMachine
+{
+	public IState currentState;
+
+	public void ChangeState(IState _newState, EventArgs args)
+	{
+		currentState?.ExitState(args);
+		_newState.EnterState(currentState, args);
+		currentState = _newState;
+	}
+
+	public bool IsState(string _state) =>
+		currentState.Name.Equals(_state);
+
+	public interface IState
+	{
+		public string Name { get; }
+		public void EnterState(IState _previous, EventArgs e);
+		public void UpdateState(EventArgs e);
+		public void ExitState(EventArgs e);
 	}
 }

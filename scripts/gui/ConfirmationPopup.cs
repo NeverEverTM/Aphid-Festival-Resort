@@ -6,6 +6,7 @@ public partial class ConfirmationPopup : CanvasLayer
 	private static ConfirmationPopup currentPopup;
 	private static Action givenAction;
 
+	[Export] private AnimationPlayer popupPlayer;
 	[Export] private TextureButton cancel_button;
 	[Export] private TextEdit confirmation_edit;
 
@@ -16,6 +17,7 @@ public partial class ConfirmationPopup : CanvasLayer
 		confirmation_edit.GrabFocus();
 		// This is to prevent typing a key bind char if that was used to open the window
 		GetViewport().SetInputAsHandled(); 
+		popupPlayer.Play("open");
     }
 
     public override void _Input(InputEvent _event)
@@ -24,7 +26,7 @@ public partial class ConfirmationPopup : CanvasLayer
 		{
 			InputEventKey _input = _event as InputEventKey;
 
-			if (Input.IsActionJustPressed("cancel"))
+			if (Input.IsActionJustPressed("cancel") || Input.IsActionJustPressed("escape"))
 			{
 				GetViewport().SetInputAsHandled();
 				CancelConfirmation();

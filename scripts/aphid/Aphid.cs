@@ -181,13 +181,15 @@ public partial class Aphid : CharacterBody2D
 		Instance.Status.PositionX = GlobalPosition.X;
 		Instance.Status.PositionY = GlobalPosition.Y;
 
+		// Should change all of these to timers to control each ticks use of memory
 		TickInteractionCooldown(_delta);
-		TickLifetime(_delta);
 		TickAffectionDecay(_delta);
 		TickHungerDecay(_delta);
 		TickThirstDecay(_delta);
 		TickSleepDecay(_delta);
+
 		TickBreeding(_delta);
+		TickLifetime(_delta);
 		TickProduction(_delta);
 	}
 	public override void _PhysicsProcess(double delta)
@@ -637,16 +639,6 @@ public partial class Aphid : CharacterBody2D
 		if (behaviourRNG.RandiRange(0, Mathf.FloorToInt(500 * 100 - Instance.Status.Sleepiness)) == 0)
 			Sleep();
 	}
-	public virtual void Harvest()
-	{
-		IsReadyForHarvest = false;
-		// visuals
-		skin.DoSquishAnim();
-		skin.Material = null;
-		// result
-		Instance.Status.MilkBuildup = 0;
-		Player.Data.Currency += Instance.Status.IsAdult ? AphidData.moneyPerHarvest_adult : AphidData.moneyPerHarvest_baby;
-	}
 	protected virtual void TickProduction(float _delta)
 	{
 		if (Instance.Status.MilkBuildup < AphidData.productionCooldown)
@@ -656,11 +648,21 @@ public partial class Aphid : CharacterBody2D
 			IsReadyForHarvest = true;
 			ShaderMaterial _outline = new()
 			{
-				Shader = ResourceLoader.Load<Shader>("res://scripts/shaders/outline.gdshader")
+				Shader = ResourceLoader.Load<Shader>(GameManager.OutlineShader)
 			};
 			_outline.SetShaderParameter("color", Color.FromHtml("e33d00"));
 			skin.Material = _outline;
 		}
+	}
+	public virtual void Harvest()
+	{
+		IsReadyForHarvest = false;
+		// visuals
+		skin.DoSquishAnim();
+		skin.Material = null;
+		// result
+		Instance.Status.MilkBuildup = 0;
+		Player.Data.SetCurrency(Instance.Status.IsAdult ? AphidData.moneyPerHarvest_adult : AphidData.moneyPerHarvest_baby);
 	}
 
 	// ========| Breeding Control|==========
@@ -908,4 +910,13 @@ public partial class Aphid : CharacterBody2D
 			_aphid.CallTowards(GlobalPosition + (skin.IsFlipped ? Vector2.Left : Vector2.Right) * 5);
 		}
 	}
+
+	public class AphidEventArgs : EventArgs
+	{
+		public Aphid aphid;
+		public AphidEventArgs(Aphid aphid)
+		{
+			this.aphid = aphid;
+		}
+	} 
 }

@@ -1,13 +1,12 @@
-using System.Collections.Generic;
 using Godot;
 
 public partial class FieldManager : Node2D
 {
-	[Export] public Node2D lightsNode;
 	[Export] private CanvasModulate globalFilter;
-	public static DayHours TimeOfDay;
+	[Export] private Node2D TopLeft, BottomRight;
 
 	public enum DayHours { Morning, Noon, Sunset, Night }
+	public static DayHours TimeOfDay { get; set; }
 	public static readonly Color[] DayFilters = new Color[]
 	{
 		new(0.706f, 0.933f, 0.992f),
@@ -26,6 +25,13 @@ public partial class FieldManager : Node2D
 	public override void _EnterTree()
 	{
 		SetTimeAtmosphere();
+		if (IsInstanceValid(GameManager.GlobalCamera))
+		{
+			GameManager.GlobalCamera.LimitTop = (int)TopLeft.GlobalPosition.Y;
+			GameManager.GlobalCamera.LimitBottom = (int)BottomRight.GlobalPosition.Y;
+			GameManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
+			GameManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
+		}
 	}
 
 	public override void _Ready()
@@ -62,24 +68,6 @@ public partial class FieldManager : Node2D
 		_timeloop.Start();
 	}
 
-    // sets the light state of all ilumination in the scene
-    public void SetLightState()
-	{
-		RandomNumberGenerator _RNG = new();
-		bool _isLit = TimeOfDay == DayHours.Sunset || TimeOfDay == DayHours.Night;
-		for (int i = 0; i < lightsNode.GetChildCount(); i++)
-		{
-			AnimatedSprite2D _lightnode = lightsNode.GetChild(i) as AnimatedSprite2D;
-			if (_isLit)
-			{
-				_lightnode.Frame = _RNG.RandiRange(0, 2);
-				(_lightnode.GetChild(0) as Light2D).Enabled = true;
-				_lightnode.Play("lit");
-			}
-			else
-				_lightnode.Play("idle");
-		}
-	}
 	// sets the atmosphere according to time and weather
 	public void SetTimeAtmosphere()
 	{
@@ -98,6 +86,5 @@ public partial class FieldManager : Node2D
 		}
 		globalFilter.Color = DayFilters[(int)timeDay];
 		TimeOfDay = timeDay;
-		SetLightState();
 	}
 }

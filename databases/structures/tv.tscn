@@ -1,0 +1,96 @@
+[gd_scene load_steps=14 format=3 uid="uid://cwhom1s0n5b5c"]
+
+[ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
+[ext_resource type="PackedScene" uid="uid://mo3upoh5jh1" path="res://scenes/props/aphid_model.glb" id="2_bvgcb"]
+[ext_resource type="Script" path="res://scripts/misc/SpinAphid.cs" id="3_gmdqp"]
+[ext_resource type="Script" path="res://scripts/misc/ZoomCamera.cs" id="4_axes8"]
+[ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="5_2b0vm"]
+[ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/aphidtastic.wav" id="6_uxujw"]
+[ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="8_uml7d"]
+
+[sub_resource type="Environment" id="Environment_87q0j"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 16.0
+
+[sub_resource type="World3D" id="World3D_r6dqu"]
+environment = SubResource("Environment_87q0j")
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ra2af"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2nngj"]
+light_mode = 1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_4hgie"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
+size = Vector2(96, 8.42106)
+
+[node name="tv" type="Sprite2D"]
+texture = ExtResource("1_dcqxn")
+offset = Vector2(0, -32.08)
+
+[node name="SubViewport" type="SubViewport" parent="."]
+own_world_3d = true
+world_3d = SubResource("World3D_r6dqu")
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1080, 720)
+
+[node name="BF Aphid-Test" parent="SubViewport" instance=ExtResource("2_bvgcb")]
+transform = Transform3D(0.0233329, 0, -0.999727, 0, 1, 0, 0.999728, 0, 0.0233329, 0, 5.94321, -13.5655)
+script = ExtResource("3_gmdqp")
+
+[node name="BF Aphid-Test2" parent="SubViewport" instance=ExtResource("2_bvgcb")]
+transform = Transform3D(0.424228, 0.00336004, -0.905549, -0.00160067, 0.999994, 0.0029606, 0.905554, 0.000193513, 0.424231, 4.65316, -2.73777, -6.0729)
+script = ExtResource("3_gmdqp")
+
+[node name="BF Aphid-Test3" parent="SubViewport" instance=ExtResource("2_bvgcb")]
+transform = Transform3D(-0.48235, 0, -0.875978, 0, 1, 0, 0.875979, 0, -0.48235, -4.39497, 0.311275, -16.6297)
+script = ExtResource("3_gmdqp")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+transform = Transform3D(-0.998244, -0.0303777, 0.0508451, -0.0194048, 0.978816, 0.203822, -0.0559596, 0.202478, -0.977687, 0.294518, 4.00787, -23.4159)
+cull_mask = 1047553
+fov = 47.7838
+script = ExtResource("4_axes8")
+
+[node name="background" type="Sprite2D" parent="."]
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_ra2af")
+position = Vector2(0.120862, -32.0892)
+scale = Vector2(1.01078, 1.0067)
+texture = ExtResource("5_2b0vm")
+
+[node name="viewport_display" type="Sprite2D" parent="."]
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_2nngj")
+use_parent_material = true
+position = Vector2(-0.128552, -32.5946)
+scale = Vector2(0.0821664, 0.0786517)
+texture = SubResource("ViewportTexture_4hgie")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-0.390244, -4.21052)
+shape = SubResource("RectangleShape2D_1namf")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_uxujw")
+volume_db = 10.0
+autoplay = true
+max_distance = 400.0
+attenuation = 2.82843
+panning_strength = 3.0
+bus = &"Sounds"
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(-2.42946, -27.6626)
+color = Color(0.117647, 0.686275, 0.196078, 1)
+energy = 2.0
+shadow_color = Color(1, 1, 1, 0)
+texture = ExtResource("8_uml7d")

@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b7rc26w1nd18d"
+
+[deps]
+
+files=["res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation"]
+
+source_file="res://databases/translations/structures.csv"
+dest_files=["res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation"]
+
+[params]
+
+compress=true
+delimiter=0

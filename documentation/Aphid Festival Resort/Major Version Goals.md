@@ -19,3 +19,11 @@ September 2024 is the estimated deadline for Version 0.2
 ## Version 0.4
 - Golden Settlement map (may or may not include most functionality)
 - Major minigames, similar to Chao minigames, that use Aphids skills
+# Version 0.5
+- Would most likely be the first major polish phase and thus devoid of new mechanics
+- Major focus on QoL
+
+## Misc Ideas
++ Maybe Aphids skin parts change color slightly depending on what you feed them?
+  Could be skill related too
++ Rework in aphid states needs to account for traits, thinking of a "trait apply" structure, where each trait loads themselves in states, and then states check if they have any to apply

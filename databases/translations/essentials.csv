@@ -1,14 +1,16 @@
 ,en,es
-BOOT_0,Loading Icons...,Cargando Iconos...
+BOOT_0,Visualizing Icons...,Visualizando Iconos...
 BOOT_1,Loading Skins...,Cargando Skins...
-BOOT_2,Loading SFX...,Cargando SFX...
+BOOT_2,Mixing SFX...,Mezclando SFX...
 BOOT_ITEMS,Creating Items...,Creando Objectos...
-BOOT_FOODS,Tagging Food...,Etiquetando Comida...
+BOOT_FOOD,Tagging Food...,Etiquetando Comida...
 BOOT_RECIPES,Building Recipes,Escribiendo Recetas...
 warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. Puede que no exista?
 warning_invalid_name,"This resort name is not valid, be sure to exclude invalid filename characters.","Este nombre de complejo no es valido, asegurate de excluir caracteres de nombre de archivo invalidos."
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
-press_start,Press J or C to start!,Presiona J o C para empezar!
+leftmousebutton,Left Click,Click Izquierdo
+rightmousebutton,Right Click,Click Derecho
+press_start,Press {0} to start!,Presiona {0} para empezar!
 new_game,New Game,Nueva Partida
 load_game,Load Game,Cargar Partida
 continue,Continue,Continuar
@@ -19,9 +21,7 @@ new_note,Save data from the alpha may not carry over to later versions.,Partidas
 new_resort_placeholder,Type a name for your resort,Escribe un nombre para tu complejo
 new_player_placeholder,Type a name for yourself!,Escribe un nombre para ti!
 new_begin,Begin,Comenzar
-load_quote,Select your profile!,Selecciona tu partida!
-load_note,Use <A> <D> or the arrow keys to select a profile\nPress <L> or <Z> to delete a profile.,"Usa <A> <D> o las flechas del teclado para seleccionar una partida
-Presiona <L> o <Z> para eliminar una partida."
+load_quote,Choose a resort to play!,¡Escoge una partida para jugar!
 confirmation_warning,"Are you sure you want to do that?
 (This action cannot be reverted)
 
@@ -34,11 +34,12 @@ options_music,Music,Musica
 options_sounds,Sounds,Sonidos
 options_fullscreen,Fullscreen,Panoramica
 options_windowed,Windowed,Ventana
-controls_movement,"(WASD) or (ARROW KEYS) to move, hold (SHIFT) to run.","(WASD) o (FLECHAS) para moverte, manten (SHIFT) para correr."
-controls_interaction,"(J) or (C) to interact, hold down to whistle.","(J) o (C) para interactuar, manten para silbar."
-controls_cancel,"(K) or (X) to cancel, or to pull/store an item.","(K) o (X) para cancelar, o sacar/guardar un objecto."
-controls_pickup,(SPACE) to pickup and drop.,(ESPACIO) para recoger y dejar.
-controls_menus,(L) or (Z) to open the inventory. (V) or (N) to see generations.,(L) o (Z) para abrir inventario. (V) o (N) para ver generaciones.
+controls_movement,Movement,Movimiento
+controls_interaction,Interact,Interactuar
+controls_cancel,Cancel / Pull Item,Cancelar / Sacar Item
+controls_pickup,Pickup,Agarrar
+controls_inventory,Inventory,Inventario
+controls_generations,Generations Album,Album de Generaciones
 help_desc_0,"Aphids need to be taken care of.
 Give them [color=cyan]food and water[/color]!","Áfidos requieren de cuidado.
 Dales de [color=cyan]comer y beber[/color]!"
@@ -52,16 +53,26 @@ pause_controls,Controls,Controles
 pause_help,Help,Ayuda
 pause_backtomenu,Back to Menu,Volver al Menu
 pause_exit,Exit to Desktop,Salir al Escritorio
-credits_note,"Made in Godot 4.2. Music made with LMMS
-“Rustling leaves” sound from Pixabay. All sound effects were created with jsfxr.
+credits_note,"Made in the Godot Engine 4
 
 Registered trademarks and copyrights belong to Moonsprout Games
 
+“Rustling leaves” by Pixabay
+“Camera Flash” by irinairinafomicheva at Pixabay
+Various SFX created with jsfxr
+
+3D Aphid Model by Leo (leo6804)
+
 Inspired by the fan game Chao Resort Island by Nefault1st. 
-You should check them out!","Hecho en Godot 4.2. Musica hecha con LMMS 
-“Rustling leaves” audio de Pixabay. Efectos de sonido creados en jsfxr
+You should check them out!","Hecho en el motor Godot 4
 
 Marcas registradas y derechos de autor le pertenecen a Moonsprout Games.
+
+“Rustling leaves” por Pixabay
+“Camera Flash” por irinairinafomicheva en Pixabay
+Varios otros SFX creados en jsfxr
+
+Áfido Modelo 3D por Leo (leo6804)
 
 Inspirado por el juego Chao Resort Island hecho por Nefault1st. 
 Echale un vistazo!"
@@ -70,10 +81,12 @@ Double click on an aphid to mark its location in the map.","Aquí podras ver a t
 Haz doble click para marcar la ubicacion de una mascota en el mapa."
 generations_owner,Owned By,Dueño De
 generations_parent,Children of,Crío de
-store_item_shop_name,Azzy’s Food Cabinet,Puesto de Alimentos de Azzy
-store_item_shop_desc,Purchase basic items for Aphid caretaking.,Adquiere objectos basicos para el cuidado de Ãfidos.
-resort_golden_name,Golden Plains,Golden Plains
-resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.",
+store_item_name,Azzy’s Food Cabinet,Puesto de Alimentos de Azzy
+store_item_desc,Purchase basic items for Aphid caretaking.,Adquiere objectos basicos para el cuidado de Ãfidos.
+store_furniture_name,Furniture Cabinet,Cabina de muebles
+store_furniture_desc,A sorting of all trinkets and props that the resort sells.,Una coleccion de todos los aparatos y decoraciones que el complejo vende.
+resort_golden_name,Golden Plains,NOT_IMPLEMENTED
+resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.",NOT_IMPLEMENTED
 bio_name_placeholder,Aphid Name,Nombre del Ãfido
 flavor_0,Sweet,Dulce
 flavor_1,Sour,Agrio

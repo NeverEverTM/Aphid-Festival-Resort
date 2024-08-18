@@ -1,0 +1,112 @@
+[gd_scene load_steps=14 format=3 uid="uid://bb52au54cdw8j"]
+
+[ext_resource type="Texture2D" uid="uid://dbeu087woc2bk" path="res://sprites/props/stick_torch.png" id="1_anu0x"]
+[ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="2_o66eh"]
+[ext_resource type="Script" path="res://scripts/props/TorchBehaviour.cs" id="2_pkvx2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_syt6f"]
+atlas = ExtResource("1_anu0x")
+region = Rect2(0, 0, 40, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwtln"]
+atlas = ExtResource("1_anu0x")
+region = Rect2(40, 0, 40, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2gioc"]
+atlas = ExtResource("1_anu0x")
+region = Rect2(80, 0, 40, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4bf7d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_syt6f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwtln")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_syt6f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2gioc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 2.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j38gq"]
+atlas = ExtResource("1_anu0x")
+region = Rect2(0, 65, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qvljd"]
+atlas = ExtResource("1_anu0x")
+region = Rect2(16, 65, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k00x3"]
+atlas = ExtResource("1_anu0x")
+region = Rect2(32, 65, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_urh76"]
+atlas = ExtResource("1_anu0x")
+region = Rect2(48, 65, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wn218"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j38gq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qvljd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k00x3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_urh76")
+}],
+"loop": true,
+"name": &"lit",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yissn"]
+radius = 7.0
+
+[node name="torch" type="AnimatedSprite2D" node_paths=PackedStringArray("flame", "light")]
+process_priority = 100
+sprite_frames = SubResource("SpriteFrames_4bf7d")
+frame_progress = 0.921817
+offset = Vector2(0, -29)
+script = ExtResource("2_pkvx2")
+flame = NodePath("flame")
+light = NodePath("light")
+
+[node name="flame" type="AnimatedSprite2D" parent="."]
+visible = false
+show_behind_parent = true
+position = Vector2(-7, -43)
+sprite_frames = SubResource("SpriteFrames_wn218")
+animation = &"lit"
+frame_progress = 0.395285
+
+[node name="light" type="PointLight2D" parent="."]
+process_priority = 100
+position = Vector2(-3, -36)
+enabled = false
+color = Color(0.862745, 0.666667, 0.172549, 1)
+range_z_min = -1
+range_z_max = 1
+texture = ExtResource("2_o66eh")
+texture_scale = 2.0
+height = 10.0
+metadata/_edit_lock_ = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(-5, -3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(6, -3)
+shape = SubResource("CircleShape2D_yissn")

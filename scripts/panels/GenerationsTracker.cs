@@ -54,16 +54,14 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
     private Guid currentKey;
     private Aphid currentAphid;
     private TextureRect currentTracker;
+    public MenuUtil.MenuInstance Menu { get; set; }
 
     public override void _EnterTree()
     {
         Instance = this;
         SaveSystem.AddToProfileData(this);
         descriptionLabel.Text = $"[color='black']{Tr("generations_description")}[/color]";
-    }
-    public static void OpenMenu()
-    {
-        CanvasManager.OpenMenu(Instance.animPlayer, () =>
+        Menu = new("generations", Instance.animPlayer, () =>
         {
             Instance.descriptionLabel.Text = $"[color='black']{Instance.Tr("generations_description")}[/color]";
             Instance.SetAphidGenerations();
@@ -72,8 +70,9 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
             Instance.currentKey = Guid.Empty;
             Instance.currentTracker = null;
             Instance.currentAphid = null;
-        });
+        }, null, false);
     }
+
     public override void _Process(double delta)
     {
         if (IsInstanceValid(currentTracker))
@@ -87,6 +86,9 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
             else // if is far away, point at its direction
                 currentTracker.GlobalPosition = GameManager.ScreenCenter + GameManager.ScreenCenter.DirectionTo(_aphidPos) * 100;
         }
+    
+        if (Visible && Input.IsActionJustPressed("open_generations"))
+            CanvasManager.Menus.GoBackInMenu();
     }
 
     private void SetAphidGenerations()

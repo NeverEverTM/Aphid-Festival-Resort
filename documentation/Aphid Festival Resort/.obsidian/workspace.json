@@ -4,23 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "02150af8571d5ca3",
+        "id": "8512ef56bd254701",
         "type": "tabs",
         "children": [
           {
-            "id": "0d6018243b375601",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Major Version Goals.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "64fe77d3366bc06b",
+            "id": "8ca50810e28fcc13",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -30,9 +18,20 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "d40d4a9bb3331039",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Food & Recipes.md",
+                "mode": "source",
+                "source": false
+              }
+            }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -82,8 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "c5488778a4bb2eb3",
@@ -160,13 +158,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "64fe77d3366bc06b",
+  "active": "8ca50810e28fcc13",
   "lastOpenFiles": [
     "Major Version Goals.md",
     "Development Log.md",
     "Changelogs.md",
+    "Food & Recipes.md",
+    "databases/structures_translation.ods",
+    "databases/items_translation - copia.ods",
+    "databases/recipes_values - copia.ods",
     "Aphid Behaviour.md",
-    "Food Types & Cooking.md",
     "databases/dialogue_translation.ods",
     "databases/essentials_translation.ods",
     "databases/essentials.ods",
@@ -174,9 +175,6 @@
     "databases/items_values.ods",
     "databases/foods_values.ods",
     "databases",
-    "create a link.md",
-    "foods_values.csv",
-    "items 1.csv",
-    "items.csv"
+    "create a link.md"
   ]
 }

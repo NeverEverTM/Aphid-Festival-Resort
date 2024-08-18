@@ -34,8 +34,8 @@ noise = SubResource("FastNoiseLite_w170w")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l2s0r"]
 shader = ExtResource("1_itoty")
-shader_parameter/speed = 0.005
-shader_parameter/node_size = Vector2(800, 800)
+shader_parameter/speed = 0.1
+shader_parameter/node_size = Vector2(16, 16)
 shader_parameter/noise = SubResource("NoiseTexture2D_voy8x")
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3k1p1"]
