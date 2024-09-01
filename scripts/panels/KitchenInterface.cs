@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class KitchenInterface : Control
+public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 {
 	[Export] private AnimationPlayer animPlayer;
 	[Export] private PackedScene invItemContainer;
@@ -15,19 +15,24 @@ public partial class KitchenInterface : Control
 	private const string mistake = "mistake", bigMistake = "big_mistake";
 
 	public MenuUtil.MenuInstance Menu { get; set; }
+	public void SetMenu()
+	{
+		if (CanvasManager.Menus.CurrentMenu != Menu)
+			CanvasManager.Menus.OpenMenu(Menu);
+	}
 
 	public override void _Ready()
 	{
-		ingredient1Button.Pressed += () => SetIngredient1Slot();
-		ingredient2Button.Pressed += () => SetIngredient2Slot();
+		ingredient1Button.Pressed += () => SetIngredientSlot(null, 0);
+		ingredient2Button.Pressed += () => SetIngredientSlot(null, 1);
 		resultButton.Pressed += OnResultPressed;
 		redoRecipe.Toggled += OnRedoPressed;
 		Menu = new("kitchen", animPlayer, () =>
 		{
 			CreateInventory();
 
-			SetIngredient1Slot();
-			SetIngredient2Slot();
+			SetIngredientSlot(null, 0);
+			SetIngredientSlot(null, 1);
 			SetResultSlot(false);
 			ingredient1Button.GrabFocus();
 		}, null, false);
@@ -52,31 +57,40 @@ public partial class KitchenInterface : Control
 		}
 	}
 
-	private void SetIngredient1Slot(string _item_name = null)
+	private void SetIngredientSlot(string _item_name, int _index)
 	{
-		if (_item_name != null)
+		if (_item_name != null && GameManager.G_ITEMS[_item_name].tag != "food")
+			return; // if is not a food item, dont bother
+
+		if (_index == 0)
 		{
-			ingredient1Icon.Texture = GameManager.GetIcon(_item_name);
-			ingredient1 = _item_name;
+			if (_item_name != null) // if it DOES NOT have an ingredient, add it
+			{
+				ingredient1Icon.Texture = GameManager.GetIcon(_item_name);
+				ingredient1 = _item_name;
+			}
+			else // if it DOES have an ingredient, remove it
+			{
+				ingredient1Icon.Texture = null;
+				ingredient1 = null;
+			}
+			return;
 		}
-		else
+		else if (_index == 1)
 		{
-			ingredient1Icon.Texture = null;
-			ingredient1 = null;
+			if (_item_name != null) // if it DOES NOT have an ingredient, add it
+			{
+				ingredient2Icon.Texture = GameManager.GetIcon(_item_name);
+				ingredient2 = _item_name;
+			}
+			else // if it DOES have an ingredient, remove it
+			{
+				ingredient2Icon.Texture = null;
+				ingredient2 = null;
+			}
+			return;
 		}
-	}
-	private void SetIngredient2Slot(string _item_name = null)
-	{
-		if (_item_name != null)
-		{
-			ingredient2Icon.Texture = GameManager.GetIcon(_item_name);
-			ingredient2 = _item_name;
-		}
-		else
-		{
-			ingredient2Icon.Texture = null;
-			ingredient2 = null;
-		}
+		Logger.Print(Logger.LogPriority.Warning, $"KitchenInterface: Ingredient slot {_index} does not exist.");
 	}
 	private void SetResultSlot(bool _state)
 	{
@@ -98,9 +112,9 @@ public partial class KitchenInterface : Control
 	private void OnInvSlotPressed(string _item_name)
 	{
 		if (ingredient1 == null)
-			SetIngredient1Slot(_item_name);
+			SetIngredientSlot(_item_name, 0);
 		else if (ingredient2 == null)
-			SetIngredient2Slot(_item_name);
+			SetIngredientSlot(_item_name, 1);
 	}
 	private void OnRedoPressed(bool _toggle)
 	{
@@ -115,11 +129,11 @@ public partial class KitchenInterface : Control
 					ResortManager.CreateItem(result, Player.Instance.GlobalPosition);
 
 				// set ingredients slot
-				SetIngredient1Slot(resultRecipe.Ingredient1);
+				SetIngredientSlot(resultRecipe.Ingredient1, 0);
 				if (resultRecipe.Ingredient2 != string.Empty)
-					SetIngredient2Slot(resultRecipe.Ingredient2);
+					SetIngredientSlot(resultRecipe.Ingredient2, 1);
 				else
-					SetIngredient2Slot();
+					SetIngredientSlot(null, 1);
 			}
 		}
 		else
@@ -151,8 +165,8 @@ public partial class KitchenInterface : Control
 				Player.Data.Inventory.Remove(ingredient1);
 				Player.Data.Inventory.Remove(ingredient2);
 				CreateInventory();
-				SetIngredient1Slot();
-				SetIngredient2Slot();
+				SetIngredientSlot(null, 0);
+				SetIngredientSlot(null, 1);
 			}
 		}
 		else

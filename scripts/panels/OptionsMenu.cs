@@ -24,7 +24,7 @@ public partial class OptionsMenu : Control
 				musicSlider.GrabFocus();
 				musicSlider.Value = OptionsManager.Data.VolumeMusic;
 				soundSlider.Value = OptionsManager.Data.VolumeSound;
-				if (OptionsManager.Data.WindowMode == (int)DisplayServer.WindowMode.Fullscreen)
+				if (OptionsManager.Data.WindowMode == (int)DisplayServer.WindowMode.ExclusiveFullscreen)
 					windowMode.Select(1);
 				else
 					windowMode.Select(0);
@@ -51,7 +51,7 @@ public partial class OptionsMenu : Control
 		if (_index == 0)
 			DisplayServer.WindowSetMode(DisplayServer.WindowMode.Maximized);
 		else
-			DisplayServer.WindowSetMode(DisplayServer.WindowMode.Fullscreen);
+			DisplayServer.WindowSetMode(DisplayServer.WindowMode.ExclusiveFullscreen);
 		OptionsManager.Data.WindowMode = (int)DisplayServer.WindowGetMode();
 	}
 	private void OnLanguageSelected(long _index)

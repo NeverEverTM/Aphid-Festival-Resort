@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
-using System.Text.Json;
 
-public partial class ResortManager : Node2D, SaveSystem.ISaveData
+public partial class ResortManager : Node2D
 {
 	// Default Parameters
 	[Export] public string Resort;
@@ -20,55 +19,6 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 	/// Access local aphids within this resort. To access aphids across all resorts, use SaveSystem.Aphids instead.
 	/// </summary>
 	public readonly List<Aphid> AphidsOnResort = new();
-
-	// SaveData Parameters
-	public string GetId() => Resort + "-resort_data";
-	public string GetDataPath() => SaveSystem.resortsFolder;
-	public static Savefile Data = new();
-
-	public class Savefile
-	{
-		public Item[] Items { get; set; }
-		public Item[] Structures { get; set; }
-		public struct Item
-		{
-			public int PositionX { get; set; }
-			public int PositionY { get; set; }
-			public string Id { get; set; }
-		}
-	}
-	public string SaveData()
-	{
-		// Save items in the ground
-		int _count = Instance.EntityRoot.GetChildCount();
-		Data.Items = new Savefile.Item[_count];
-		for (int i = 0; i < _count; i++)
-		{
-			Node2D _item = Instance.EntityRoot.GetChild(i) as Node2D;
-			Data.Items[i] = new()
-			{
-				Id = _item.GetMeta("id").ToString(),
-				PositionX = (int)_item.GlobalPosition.X,
-				PositionY = (int)_item.GlobalPosition.Y
-			};
-		}
-		return JsonSerializer.Serialize(Data);
-	}
-	public Task LoadData(string _json)
-	{
-		Data = JsonSerializer.Deserialize<Savefile>(_json);
-
-		// load items in the ground
-		for (int i = 0; i < Data.Items.Length; i++)
-			CreateItem(Data.Items[i].Id, new(Data.Items[i].PositionX, Data.Items[i].PositionY));
-
-		return Task.CompletedTask;
-	}
-	public Task SetData()
-	{
-		Data = new();
-		return Task.CompletedTask;
-	}
 
 	public override void _EnterTree()
 	{
@@ -108,13 +58,13 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 	public static async void CheckSongToPlay()
 	{
 		await Task.Delay(1000);
-		string[] _raw_files = DirAccess.GetFilesAt(GameManager.MusicPath);
+		string[] _raw_files = DirAccess.GetFilesAt(GameManager.SFXPath + "/music");
 		// for some reason, the exported project cannot get access to "music.mp3" files
 		// using DirAccess.GetFilesAt(), it will only find "music.mp3.imported" ones and return those
 		// however for some WEIRD reason, if you just reference it anyways by trimming the ".import"
 		// it will find the supposedly non-existent .mp3 file
 		string _file = _raw_files[GameManager.RNG.RandiRange(0, _raw_files.Length - 1)].TrimSuffix(".import");
-		SoundManager.PlaySong(_file);
+		SoundManager.PlaySong($"music/{_file}");
 	}
 
 	// =========| Object Creation |===============
@@ -191,7 +141,7 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 	}
 	public static void CreateStructure(string _id, Vector2 _position)
 	{
-		Node2D _item = ResourceLoader.Load<PackedScene>(GameManager.GetStructurePath(_id)).Instantiate() as Node2D;
+		Node2D _item = ResourceLoader.Load<PackedScene>(GameManager.StructuresPath + $"/{_id}.tscn").Instantiate() as Node2D;
 		_item.GlobalPosition = _position;
 		Instance.StructureRoot.AddChild(_item);
 	}

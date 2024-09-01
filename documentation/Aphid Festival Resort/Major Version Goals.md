@@ -2,7 +2,10 @@
 Here is described the roadmap for most feature implementations, this does not include extra content that may be introduced or general accessibility/quality of life updates.
 
 April 25th was the deadline for Version 0.1
-September 2024 is the estimated deadline for Version 0.2
+September 2024 is the estimated deadline for Version 0.2 <- aint making this one chief
+Hoping to make it before the end of this year and start work on 0.3 on early 2025
++ I may split 0.4 into two parts so 0.5 will be the tournaments and minigames update
++ Same thing with 0.3 complex aphid behaviors, and it'll be diluated among posterior versions
 ## Version 0.1 ([100%])
 - Base aphids, able to breed and mix-match, complex behaviour.
 - Multiple savefiles capacity
@@ -18,10 +21,12 @@ September 2024 is the estimated deadline for Version 0.2
 - Proper story and character interactions, introduction scene and tutorial.
 ## Version 0.4
 - Golden Settlement map (may or may not include most functionality)
-- Major minigames, similar to Chao minigames, that use Aphids skills
-# Version 0.5
-- Would most likely be the first major polish phase and thus devoid of new mechanics
-- Major focus on QoL
+- Special Aphid genetics manipulation functionality
+## Version 0.5
+- Major minigames, similar to Chao tournaments, that use Aphids skills
+- Main game loop complete
+## Version 0.X+ and forward
+- General polish, mechanic completion and QoL updates
 
 ## Misc Ideas
 + Maybe Aphids skin parts change color slightly depending on what you feed them?

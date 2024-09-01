@@ -5,7 +5,7 @@ using Godot;
 public partial class OptionsManager : Node, SaveSystem.ISaveData
 {
     public string GetId() => "options_config";
-    public static Savefile Data;
+    public static Savefile Data { get; set; }
 
     public override void _EnterTree()
     {

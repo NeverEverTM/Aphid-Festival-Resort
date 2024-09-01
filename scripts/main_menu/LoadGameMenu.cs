@@ -10,7 +10,7 @@ public partial class LoadGameMenu : Control
 	private string[] fileNames;
 	private int lastFileNameIndex;
 
-	private const string loadGameCategory = "load_game", continueCategory = "continue";
+	private const string loadGameCategory = "load_game";
 
     public override void _Ready()
     {
@@ -55,10 +55,7 @@ public partial class LoadGameMenu : Control
 			MainMenu.Instance.CreateMenuAction(loadGameCategory, OpenLoadMenu);
 			// create continue button
 			if (!string.IsNullOrEmpty(OptionsManager.Data.LastPlayedResort))
-			{
-				MainMenu.Instance.CreateMenuAction(continueCategory, ContinueGame);
-				MainMenu.Instance.SetCategory(continueCategory);
-			}
+				MainMenu.Instance.CreateMenuAction("continue", ContinueGame);
 		}
 	}
 
@@ -71,7 +68,7 @@ public partial class LoadGameMenu : Control
 	{
 		if (string.IsNullOrWhiteSpace(OptionsManager.Data.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
-			MainMenu.Instance.RemoveMenuAction(continueCategory);
+			MainMenu.Instance.RemoveMenuAction("continue");
 			GameManager.CreatePopup("Could not find valid profile to continue", this);
 			return;
 		}

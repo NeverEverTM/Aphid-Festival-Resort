@@ -8,6 +8,7 @@ size = Vector2(32, 4)
 [node name="sign_wanted" type="Sprite2D"]
 texture = ExtResource("1_jmi5n")
 offset = Vector2(0, -24)
+metadata/id = "sign_wanted"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

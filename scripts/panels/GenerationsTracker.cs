@@ -75,6 +75,9 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
 
     public override void _Process(double delta)
     {
+        if (Visible && Input.IsActionJustPressed("open_generations"))
+            CanvasManager.Menus.GoBackInMenu();
+
         if (IsInstanceValid(currentTracker))
         {
             Vector2 _aphidPos = GameManager.Utils.GetWorldToCanvasPosition(currentAphid.GlobalPosition);
@@ -86,9 +89,6 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
             else // if is far away, point at its direction
                 currentTracker.GlobalPosition = GameManager.ScreenCenter + GameManager.ScreenCenter.DirectionTo(_aphidPos) * 100;
         }
-    
-        if (Visible && Input.IsActionJustPressed("open_generations"))
-            CanvasManager.Menus.GoBackInMenu();
     }
 
     private void SetAphidGenerations()

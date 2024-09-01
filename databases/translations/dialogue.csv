@@ -1,13 +1,11 @@
 ,en,es
-kut_flavor_0,">(char(kut))The resort grounds are a perfect place to get inspired.
-They let me practice here for as long as I prepare meals for the little ones(...(2.0))
-...(...)You can also enjoy my top cuisine, I suppose. 
->Regardless,(...(0.25)) you still have to pay for the ingredients.(...)
-Resort rules say so.",">(char(kut))El resort es un lugar excelente para ganar inspiracion.
-Me permiten practicar aquí a cambio de preparar comida para los pequeñines(...(2.0))
-Tu...(...) tambíen puedes disfrutar de mis platillos refinados, supongo.
->De todos modos,(...(0.25))Tendras que pagar por los ingredientes.(...)
-Reglas del resort lo dictan asi."
+intro_welcome,">Welcome to the alpha version of Aphid Festival Resort
+>Press Escape to access Help and Controls information panels!
+You can check updates at the Itch.io page of the game!
+>Any feedback is appreciated.",">Bienvenido a la alfa de Aphid Festival Resort
+>Presiona Escape para acceder a paneles de informacion sobre Ayuda y Controles! Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
+>Cualquier feedback es agradecido."
+welcome_1,,
 joy_welcome_0,">(char(joy))Hello!(...) You are (name), right? Come on in!(...)
 I'll give you a quick tour around!","Hola![...] Tu tienes que ser [name], ¿no? Adelante![...]
 Tenemos el complejo preparado para ti."
@@ -26,18 +24,30 @@ Es todo un placer trabajar de cuidadora de los pequeñitos.[...]
 Incluso me dejan tener el mió propio! Solo desearia que más gente se pasara por aquí...[...]
 Aparte de tiempos de festival, este lugar se queda silencioso.[...]
 Hablando de... Creo que esta por llegar!"
-welcome_0,">Welcome to the alpha version of Aphid Festival Resort[...]
->Press Escape to access Help and Controls information panels! You can check updates at the Itch.io page of the game!
->Any feedback is appreciated.",">Bienvenido a Aphid Festival Resort[...]
->Presiona Escape para acceder a paneles de informacion sobre Ayuda y Controles! Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
->Cualquier feedback es agradecido."
-welcome_1,,
+joy_flavor_1,">(char(joy))They are still filling the resort with all sorts of wonders
+So sorry for all the mess of boxes! They won't let me touch them.
+>I don't know why either, that moth at the gate told me not to.
+>When I got nearby one, they just gave me a death stare(...)
+So I stay away from them ever since...",">(char(joy))Todavia estan llenando el complejo con todo tipo de fantasias
+Asi que lo siento por el monton de cajas! No me dejan tocarlas.
+>Yo tampoco se, aquella polilla en la entrada me dijo que no podia.
+>Cuando me acerce a una, me dio una mirada asesina(...)
+Desde entonces no me acerco..."
 azzy_flavor_0,">(char(azzy))(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
->Except, weapons, they do not allow me to sell you darts.
+>Except, weapons, they do not allow me to sell you darts
 Not like you need them anyways!",">(char(azzy))(name)! Hey, Hey!
 Si necesitas algo, lo tengo aqui mismo!
 Y si no... pues puede que luego.
 >Excepto armas, no me permiten venderte dardos.
 No es lo que necesites de todos modos!"
+azzy_flavor_1,">(char(azzy))I always think how weird the owner is
+>The ambient around him gets so cold...(...)
+But on the opposite(...), he has such a warm personality.
+>I probably shouldn't be gossiping about that though
+Don't tell him anything, a'rite?",">(char(azzy))Siempre pense que el dueño era muy extraño...
+>Quiero decir, el ambiente siempre se siente mas helado alreador suyo(...)
+Por el otro lado, tiene una personalidad tan calida.
+>Aunque no deberia estar de chismosa
+No le digas nada, va?"

@@ -150,18 +150,27 @@ public partial class DialogManager : Control
 			// Avoid doing this if dialog has been skipped
 			if (!IsDialogFinished)
 			{
-				if (i % LettersPerBleep == 0) // Dialog bleep
+				// Dialog bleep
+				if (i % LettersPerBleep == 0)
 				{
 					Instance.dialogAudio.PitchScale = _rng.RandfRange(0.9f, 1.15f);
 					Instance.dialogAudio.Play();
 				}
-				if (PaddingDelay > 0)
+
+				// Queued Delay for the next sentence
+				while (PaddingDelay > 0)
 				{
-					await Task.Delay(PaddingDelay);
-					PaddingDelay = 0;
+					if (IsDialogFinished) // this means we skipped mid-delay
+					{
+						PaddingDelay = 0;
+						break;
+					}
+					PaddingDelay--;
+					await Task.Delay(1);
 				}
 
-				await Task.Delay(Speed * 10);
+				if (!IsDialogFinished)
+					await Task.Delay(Speed * 10);
 			}
 		}
 		IsDialogFinished = true;
@@ -239,7 +248,7 @@ public partial class DialogManager : Control
 			if (_args.Length == 0 || !float.TryParse(_args[0], out _padding))
 				_padding = 0.5f;
 
-			Instance.PaddingDelay = (int)(_padding * 1000);
+			Instance.PaddingDelay = (int)(_padding * 100);
 		}
 	}
 	public class PlayerNameCommand : IDialogCommand

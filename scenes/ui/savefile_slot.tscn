@@ -29,8 +29,8 @@ texture_normal = ExtResource("1_7dg2u")
 ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("2_m7b1n")
-PressedColor = Color(0.584314, 0.215686, 0.65098, 1)
-FocusColor = Color(0.321569, 0.819608, 0.854902, 1)
+PressedColor = Color(0.764706, 0.160784, 0.392157, 1)
+FocusColor = Color(0.690196, 0.0627451, 0.584314, 1)
 HoverColor = Color(0.764706, 0.160784, 0.392157, 1)
 
 [node name="name_label" type="RichTextLabel" parent="GlowButton"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=62 format=3 uid="uid://by6u0617yy7oe"]
 
 [ext_resource type="Script" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
@@ -24,7 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="14_vlxys"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="17_w4wev"]
 [ext_resource type="Shader" path="res://scripts/shaders/outline.gdshader" id="23_464pl"]
-[ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player/player_0.png" id="25_h75le"]
+[ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player_0.png" id="25_h75le"]
 [ext_resource type="Shader" path="res://scripts/shaders/shine_highlight.gdshader" id="26_ukngl"]
 [ext_resource type="Texture2D" uid="uid://co1btvdxhud6s" path="res://sprites/ui/logo_large_color_dark.png" id="27_a546m"]
 [ext_resource type="Texture2D" uid="uid://dwt5dtn13i3r2" path="res://sprites/ui/pc_project.png" id="28_i03ks"]
@@ -286,32 +286,43 @@ shader_parameter/inside = true
 shader_parameter/add_margins = false
 shader_parameter/number_of_images = Vector2(1, 1)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hil4k"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_xqn2h"]
 atlas = ExtResource("25_h75le")
-region = Rect2(96, 0, 32, 64)
+region = Rect2(0, 64, 32, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ijwpk"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_i6rqh"]
 atlas = ExtResource("25_h75le")
-region = Rect2(64, 0, 32, 64)
+region = Rect2(32, 64, 32, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_e0pgy"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_qdy8c"]
 atlas = ExtResource("25_h75le")
-region = Rect2(128, 0, 32, 64)
+region = Rect2(64, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hiq28"]
+atlas = ExtResource("25_h75le")
+region = Rect2(96, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dblf1"]
+atlas = ExtResource("25_h75le")
+region = Rect2(128, 64, 32, 64)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_x0hdr"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hil4k")
+"texture": SubResource("AtlasTexture_xqn2h")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ijwpk")
+"texture": SubResource("AtlasTexture_i6rqh")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_e0pgy")
+"texture": SubResource("AtlasTexture_qdy8c")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ijwpk")
+"texture": SubResource("AtlasTexture_hiq28")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dblf1")
 }],
 "loop": true,
 "name": &"default",
@@ -635,7 +646,7 @@ cameraMenu = NodePath("Camera2D")
 button_wheel = NodePath("CanvasLayer/start_panel/title/button_wheel")
 hover_start = NodePath("CanvasLayer/start_panel/title/hover_start")
 sweep_animator = NodePath("CanvasLayer/sweep_background/sweep_animator")
-logo_animator = NodePath("CanvasLayer/CUTSCENE_START/logo_animator")
+logo_animator = NodePath("CanvasLayer/CUTSCENE_START/node/logo_animator")
 title_animator = NodePath("CanvasLayer/start_panel/title/title_animator")
 aphidPrefab = ExtResource("2_ihlud")
 entityRoot = NodePath("entityRoot")
@@ -678,9 +689,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -576.0
-offset_top = -324.0
+offset_top = -336.445
 offset_right = -575.0
-offset_bottom = -323.0
+offset_bottom = -335.445
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_8loy6")
@@ -698,10 +709,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 213.5
-offset_top = -476.5
-offset_right = 913.5
-offset_bottom = 23.5
+offset_left = 214.0
+offset_top = -476.0
+offset_right = 914.0
+offset_bottom = 24.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_r26xg")
@@ -763,10 +774,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -536.0
+offset_bottom = -284.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("9_76l0k")
@@ -778,10 +789,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -384.0
-offset_top = -24.0
-offset_right = 400.0
-offset_bottom = 38.0
+offset_left = 178.0
+offset_top = 252.0
+offset_right = 962.0
+offset_bottom = 314.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_top = NodePath("../ready/button")
@@ -802,10 +813,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -206.0
-offset_top = 52.0
-offset_right = 212.0
-offset_bottom = 114.0
+offset_left = 356.0
+offset_top = 328.0
+offset_right = 774.0
+offset_bottom = 390.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_top = NodePath("../resort_name")
@@ -822,10 +833,10 @@ drag_and_drop_selection_enabled = false
 [node name="ready" type="TextureRect" parent="CanvasLayer/newgame_panel"]
 self_modulate = Color(0.47451, 0.203922, 0.0352941, 1)
 layout_mode = 0
-offset_left = -140.0
-offset_top = 168.0
-offset_right = 197.0
-offset_bottom = 254.0
+offset_left = 422.0
+offset_top = 444.0
+offset_right = 759.0
+offset_bottom = 530.0
 texture = ExtResource("6_vbc7o")
 
 [node name="button" type="Button" parent="CanvasLayer/newgame_panel/ready"]
@@ -851,10 +862,10 @@ expand_icon = true
 [node name="instructions" type="TextureRect" parent="CanvasLayer/newgame_panel"]
 self_modulate = Color(0.352941, 0.27451, 0.192157, 1)
 layout_mode = 0
-offset_left = -379.0
-offset_top = -184.0
-offset_right = 428.0
-offset_bottom = -26.0
+offset_left = 183.0
+offset_top = 92.0
+offset_right = 990.0
+offset_bottom = 250.0
 texture = ExtResource("6_vbc7o")
 
 [node name="Label" type="Label" parent="CanvasLayer/newgame_panel/instructions"]
@@ -878,10 +889,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -9.0
+offset_top = -5.0
+offset_right = 31.0
+offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("9_76l0k")
@@ -955,10 +966,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -12.0
+offset_top = 13.0
+offset_right = 28.0
+offset_bottom = 53.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -1009,25 +1020,45 @@ offset_right = 66.0
 offset_bottom = -228.0
 texture = ExtResource("9_hair0")
 
+[node name="versioning" type="Label" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -185.0
+offset_top = -51.0
+offset_right = -19.0
+offset_bottom = -3.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("9_76l0k")
+text = "alpha 0.1.3.0v"
+label_settings = SubResource("LabelSettings_6iqyf")
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="bottom_bar" type="Control" parent="CanvasLayer"]
-visible = false
 light_mask = 0
 layout_mode = 3
-anchors_preset = 2
+anchors_preset = 12
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -648.0
-offset_right = 40.0
-offset_bottom = -608.0
+offset_left = -28.0
+offset_top = -60.0
+offset_right = -28.0
+offset_bottom = -60.0
+grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("9_76l0k")
 
 [node name="github" type="TextureButton" parent="CanvasLayer/bottom_bar"]
 layout_mode = 0
-offset_left = 15.261
-offset_top = 576.113
-offset_right = 245.261
-offset_bottom = 801.113
+offset_left = 40.0
+offset_top = -12.0
+offset_right = 270.0
+offset_bottom = 213.0
 scale = Vector2(0.25, 0.25)
 texture_normal = ExtResource("8_ao5k5")
 script = ExtResource("17_w4wev")
@@ -1037,27 +1068,16 @@ HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
 
 [node name="itch_io" type="TextureButton" parent="CanvasLayer/bottom_bar"]
 layout_mode = 0
-offset_left = 83.87
-offset_top = 577.598
-offset_right = 1283.87
-offset_bottom = 1657.6
+offset_left = 109.0
+offset_top = -8.0
+offset_right = 1309.0
+offset_bottom = 1072.0
 scale = Vector2(0.05, 0.05)
 texture_normal = ExtResource("9_8g0pq")
 script = ExtResource("17_w4wev")
 PressedColor = Color(0.615686, 0.615686, 0.615686, 1)
 FocusColor = Color(0.560784, 0.705882, 1, 1)
 HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
-
-[node name="versioning" type="Label" parent="CanvasLayer/bottom_bar"]
-layout_mode = 0
-offset_left = 893.638
-offset_top = 601.685
-offset_right = 1345.64
-offset_bottom = 649.685
-text = "alpha 0.1.3.0v"
-label_settings = SubResource("LabelSettings_6iqyf")
-horizontal_alignment = 2
-vertical_alignment = 1
 
 [node name="sweep_background" type="TextureRect" parent="CanvasLayer"]
 visible = false
@@ -1081,8 +1101,8 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -576.0
 offset_top = -324.0
-offset_right = -536.0
-offset_bottom = -284.0
+offset_right = -576.0
+offset_bottom = -324.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -1093,10 +1113,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 378.0
-offset_top = 343.0
-offset_right = 747.0
-offset_bottom = 391.0
+offset_left = 406.0
+offset_top = 359.0
+offset_right = 775.0
+offset_bottom = 407.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("9_76l0k")
@@ -1108,33 +1128,40 @@ text_direction = 2
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CanvasLayer/BOOT_CONTROL"]
 self_modulate = Color(0.984314, 0.513726, 0.027451, 1)
 material = SubResource("ShaderMaterial_jpjqr")
-position = Vector2(587, 247)
+position = Vector2(603, 229)
 scale = Vector2(3, 3)
 sprite_frames = SubResource("SpriteFrames_x0hdr")
-frame_progress = 0.37393
+frame_progress = 0.498188
 
 [node name="CUTSCENE_START" type="Control" parent="CanvasLayer"]
-visible = false
-material = SubResource("ShaderMaterial_immw2")
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -576.0
+offset_bottom = -324.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="logo_animator" type="AnimationPlayer" parent="CanvasLayer/CUTSCENE_START"]
+[node name="node" type="Control" parent="CanvasLayer/CUTSCENE_START"]
+visible = false
+material = SubResource("ShaderMaterial_immw2")
+anchors_preset = 0
+offset_left = 557.0
+offset_top = 316.0
+offset_right = 557.0
+offset_bottom = 316.0
+
+[node name="logo_animator" type="AnimationPlayer" parent="CanvasLayer/CUTSCENE_START/node"]
 libraries = {
 "": SubResource("AnimationLibrary_bahfq")
 }
 
-[node name="godot_logo" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+[node name="godot_logo" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 layout_mode = 0
 offset_left = -186.0
 offset_top = -83.0
@@ -1144,7 +1171,7 @@ texture = ExtResource("27_a546m")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="bg" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+[node name="bg" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 visible = false
 layout_mode = 0
 offset_left = -620.0
@@ -1155,7 +1182,7 @@ texture = ExtResource("12_gxjbm")
 expand_mode = 1
 stretch_mode = 1
 
-[node name="logo_project" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+[node name="logo_project" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 layout_mode = 0
 offset_left = -1500.0
 offset_top = -140.0
@@ -1165,7 +1192,7 @@ texture = ExtResource("28_i03ks")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="logo_color" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+[node name="logo_color" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 layout_mode = 0
 offset_left = 873.0
 offset_top = -80.0
@@ -1175,7 +1202,7 @@ texture = ExtResource("30_wl81d")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="logo_full" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+[node name="logo_full" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 self_modulate = Color(1, 1, 1, 0)
 use_parent_material = true
 layout_mode = 0
@@ -1187,13 +1214,13 @@ texture = ExtResource("30_1xe6g")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="cover" type="TextureRect" parent="CanvasLayer/CUTSCENE_START"]
+[node name="cover" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 visible = false
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 offset_left = -810.0
 offset_top = -367.0
 offset_right = 918.0
-offset_bottom = 387.0
+offset_bottom = 501.0
 texture = ExtResource("31_ip2o7")
 expand_mode = 1

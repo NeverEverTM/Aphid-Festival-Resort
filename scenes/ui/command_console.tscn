@@ -1,0 +1,119 @@
+[gd_scene load_steps=4 format=3 uid="uid://xhg54cgj8fbp"]
+
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="1_3k45m"]
+[ext_resource type="Script" path="res://scripts/misc/DebugConsole.cs" id="1_qd4sp"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_5yuy2"]
+font_color = Color(0.160784, 0, 0.403922, 1)
+
+[node name="command console" type="CanvasLayer" node_paths=PackedStringArray("command_line_input", "log_print_text")]
+visible = false
+script = ExtResource("1_qd4sp")
+command_line_input = NodePath("command_window/console/TextEdit")
+log_print_text = NodePath("command_window/console/Label2")
+
+[node name="command_window" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="stats" type="TextureRect" parent="command_window"]
+self_modulate = Color(0.34902, 0.607843, 0.898039, 1)
+layout_mode = 0
+offset_left = -509.0
+offset_top = -247.0
+offset_right = -14.0
+offset_bottom = 74.0
+texture = ExtResource("1_3k45m")
+
+[node name="Label2" type="Label" parent="command_window/stats"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 20.0
+offset_right = 475.0
+offset_bottom = 108.0
+text = "F2 - Open/Close Window
+F3 - Repeat Last Command
+F4 - Test Command (FOR DEVELOPMENT PURPOSES ONLY)
+"
+autowrap_mode = 3
+justification_flags = 161
+
+[node name="Label3" type="Label" parent="command_window/stats"]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 125.0
+offset_right = 474.0
+offset_bottom = 302.0
+text = "DEBUG STATS
+DEBUG STATS
+DEBUG STATS
+DEBUG STATS
+"
+autowrap_mode = 3
+justification_flags = 161
+
+[node name="console" type="TextureRect" parent="command_window"]
+self_modulate = Color(0.34902, 0.607843, 0.898039, 1)
+layout_mode = 0
+offset_left = 18.0
+offset_top = -245.0
+offset_right = 513.0
+offset_bottom = 317.0
+texture = ExtResource("1_3k45m")
+
+[node name="Label" type="Label" parent="command_window/console"]
+layout_mode = 0
+offset_left = 98.0
+offset_top = 13.0
+offset_right = 393.0
+offset_bottom = 36.0
+text = "Debug Command Console (DCC) v1.0.1"
+
+[node name="Label2" type="RichTextLabel" parent="command_window/console"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 55.0
+offset_right = 469.0
+offset_bottom = 505.0
+scroll_following = true
+
+[node name="TextEdit" type="TextEdit" parent="command_window/console"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 520.0
+offset_right = 485.0
+offset_bottom = 555.0
+placeholder_text = "Write \"help all\" or \"help <command>\" to know more"
+
+[node name="flavor" type="TextureRect" parent="command_window"]
+self_modulate = Color(0.34902, 0.607843, 0.898039, 1)
+layout_mode = 0
+offset_left = -508.0
+offset_top = 88.0
+offset_right = -13.0
+offset_bottom = 313.0
+texture = ExtResource("1_3k45m")
+
+[node name="Label3" type="Label" parent="command_window/flavor"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 22.0
+offset_right = 472.0
+offset_bottom = 202.0
+text = "To live a life of power, you must have faith that what you believe is right, even if others tell you you're wrong.
+The first thing you must do to live a life of power is to find courage. You must be ready to reach beyond the boundaries of Time itself.
+And to do that, all you need is the will to take that first step..."
+label_settings = SubResource("LabelSettings_5yuy2")
+horizontal_alignment = 1
+autowrap_mode = 3
+justification_flags = 161

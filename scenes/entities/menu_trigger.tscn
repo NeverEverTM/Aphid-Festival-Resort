@@ -5,16 +5,23 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hqa00"]
 size = Vector2(95, 26)
 
-[node name="menu_trigger" type="Node2D" node_paths=PackedStringArray("triggerArea")]
+[node name="menu_trigger" type="Node2D"]
 z_index = -449
 y_sort_enabled = true
 position = Vector2(469, -449)
 script = ExtResource("1_eqw3p")
-triggerArea = NodePath("trigger_store")
 
-[node name="trigger_store" type="Area2D" parent="."]
+[node name="trigger_store" type="RigidBody2D" parent="."]
 position = Vector2(-21, 22)
-monitorable = false
+collision_layer = 2
+collision_mask = 0
+mass = 999.0
+gravity_scale = 0.0
+sleeping = true
+lock_rotation = true
+freeze = true
+freeze_mode = 1
+metadata/tag = "menu"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="trigger_store"]
 z_index = 4096

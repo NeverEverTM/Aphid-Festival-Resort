@@ -8,23 +8,22 @@ public partial class BuildMenu : Control
 	[Export] private GridContainer storage_container;
 	[Export] private AnimationPlayer menu_player;
 	[Export] private TextureButton build_button, show_storage_button;
-	private MenuUtil.MenuInstance build_menu;
+	private MenuUtil.MenuInstance buildMenu;
 
 	// Variables
-	private readonly List<Building> ActiveFurniture = new();
+	private readonly List<Building> activeBuildingsList = new();
+	public enum RemoveMode { None, Sell, Store }
 
-	private Building active_building;
+	private Building selectedBuilding;
 	private CollisionShape2D currentShape;
 	private Vector2 mouseOffset;
-	private bool IsHoveringBuilding, IsMovingBuilding;
-
-	private bool isStorageOpen;
+	private bool isHoveringBuilding, isMovingBuilding, isStorageOpen;
 
 	public record class Building
 	{
 		public Rect2 Collider { get; set; }
 		public Node2D Self { get; set; }
-		public Vector2 Offset { get; set; }	
+		public Vector2 Offset { get; set; }
 
 		public Building(Rect2 Collider, Node2D Self, Vector2 Offset)
 		{
@@ -36,9 +35,9 @@ public partial class BuildMenu : Control
 
 	public override void _Ready()
 	{
-		build_menu = new MenuUtil.MenuInstance("build",
+		buildMenu = new MenuUtil.MenuInstance("build",
 			menu_player, OnOpenMenu, OnCloseMenu, false);
-		build_button.Pressed += () => CanvasManager.Menus.OpenMenu(build_menu);
+		build_button.Pressed += () => CanvasManager.Menus.OpenMenu(buildMenu);
 		show_storage_button.Pressed += () =>
 		{
 			if (!isStorageOpen)
@@ -55,7 +54,7 @@ public partial class BuildMenu : Control
 		CanvasManager.SetCurrencyElement(false);
 
 		// Sets all building rects
-		if (ActiveFurniture.Count == 0)
+		if (activeBuildingsList.Count == 0)
 		{
 			for (int i = 0; i < ResortManager.Instance.StructureRoot.GetChildCount(); i++)
 				CreateBuilding(ResortManager.Instance.StructureRoot.GetChild(i) as Node2D);
@@ -88,7 +87,7 @@ public partial class BuildMenu : Control
 		}
 		else // we exit build mode, back to free camera hud
 		{
-			ActiveFurniture.Clear();
+			activeBuildingsList.Clear();
 			ResortGUI.SetFreeCameraHud(true);
 			CanvasManager.SetCurrencyElement(true);
 		}
@@ -107,7 +106,7 @@ public partial class BuildMenu : Control
 	{
 		if (!Visible)
 		{
-			if (active_building != null)
+			if (selectedBuilding != null)
 				UnassignStructure();
 			return;
 		}
@@ -115,21 +114,20 @@ public partial class BuildMenu : Control
 		if (Input.IsActionJustPressed("interact"))
 			OnSelect();
 
-		if (active_building != null)
+		if (selectedBuilding != null)
 			ProcessStructureInteraction();
 	}
 	private void ProcessStructureInteraction()
 	{
-		IsHoveringBuilding = active_building.Collider.HasPoint(GameManager.Utils.GetMouseToWorldPosition());
-		bool _isSelectPressed = Input.IsActionPressed("interact");
-
-		if (!IsMovingBuilding)
+		isHoveringBuilding = selectedBuilding.Collider.HasPoint(GameManager.Utils.GetMouseToWorldPosition());
+		bool _isSelectPressed = Input.IsActionPressed("select");
+		if (!isMovingBuilding)
 		{
 			// if selecting while hovering the structure, start Move function
 			// otherwise, selecting out of the bounds of it tries selecting a new one
-			if (Input.IsActionJustPressed("interact"))
+			if (Input.IsActionJustPressed("select"))
 			{
-				if (IsHoveringBuilding)
+				if (isHoveringBuilding)
 					StartMoveStructure();
 				else if (!OnSelect())
 					UnassignStructure();
@@ -140,8 +138,23 @@ public partial class BuildMenu : Control
 		else
 			StopMoveStructure();
 
-		if (Input.IsActionJustPressed("cancel"))
+		if (Input.IsActionJustPressed("deselect"))
+		{
 			UnassignStructure();
+			return;
+		}
+
+		if (Input.IsActionJustPressed("sell"))
+		{
+			RemoveBuilding(RemoveMode.Sell);
+			return;
+		}
+			
+		if (Input.IsActionJustPressed("store"))
+		{
+			RemoveBuilding(RemoveMode.Store);
+			return;
+		}
 	}
 	/// <summary>
 	/// Tries selecting a structure under the mouse, if it fails then returns false, otherwise true.
@@ -158,20 +171,22 @@ public partial class BuildMenu : Control
 	}
 	private void StartMoveStructure()
 	{
-		IsMovingBuilding = true;
-		mouseOffset = active_building.Self.GlobalPosition - GameManager.Utils.GetMouseToWorldPosition();
-		for (int i = 0; i < active_building.Self.GetChildCount(); i++)
+		ResortGUI.Instance.EnableMouseCameraControl = true;
+		isMovingBuilding = true;
+		mouseOffset = selectedBuilding.Self.GlobalPosition - GameManager.Utils.GetMouseToWorldPosition();
+		for (int i = 0; i < selectedBuilding.Self.GetChildCount(); i++)
 		{
-			if (active_building.Self.GetChild(i) is PhysicsBody2D && active_building.Self.GetChild(i).GetChildCount() > 0)
+			if (selectedBuilding.Self.GetChild(i) is PhysicsBody2D && selectedBuilding.Self.GetChild(i).GetChildCount() > 0)
 			{
-				currentShape = active_building.Self.GetChild(i).GetChild(0) as CollisionShape2D;
+				currentShape = selectedBuilding.Self.GetChild(i).GetChild(0) as CollisionShape2D;
 				currentShape.Disabled = true;
 			}
 		}
 	}
 	private void StopMoveStructure()
 	{
-		IsMovingBuilding = false;
+		ResortGUI.Instance.EnableMouseCameraControl = false;
+		isMovingBuilding = false;
 
 		if (IsInstanceValid(currentShape))
 		{
@@ -184,7 +199,7 @@ public partial class BuildMenu : Control
 	{
 		// set new closest strucuture
 		UnassignStructure();
-		active_building = _structure;
+		selectedBuilding = _structure;
 
 		// Set highlights for selected item
 		ShaderMaterial _outline = new()
@@ -198,23 +213,25 @@ public partial class BuildMenu : Control
 	}
 	public void UnassignStructure()
 	{
-		if (active_building != null)
+		ResortGUI.Instance.EnableMouseCameraControl = false;
+
+		if (selectedBuilding != null)
 		{
-			active_building.Self.Material = null;
-			IsHoveringBuilding = false;
+			selectedBuilding.Self.Material = null;
+			isHoveringBuilding = false;
 		}
 
 		StopMoveStructure();
-		active_building = null;
+		selectedBuilding = null;
 	}
 	public Building GetStructureUnderMouse()
 	{
 		Vector2 _mousePosition = GameManager.Utils.GetMouseToWorldPosition();
 
-		for (int i = 0; i < ActiveFurniture.Count; i++)
+		for (int i = 0; i < activeBuildingsList.Count; i++)
 		{
-			if (ActiveFurniture[i].Collider.HasPoint(_mousePosition))
-				return ActiveFurniture[i];
+			if (activeBuildingsList[i].Collider.HasPoint(_mousePosition))
+				return activeBuildingsList[i];
 		}
 		return null;
 	}
@@ -241,7 +258,7 @@ public partial class BuildMenu : Control
 		Vector2 _offset, _size;
 
 		// check for which type of node it is and gather data to create the Rect
-		if (_self is Sprite2D) 
+		if (_self is Sprite2D)
 		{
 			_offset = (_self as Sprite2D).Offset;
 			_size = (_self as Sprite2D).Texture.GetSize();
@@ -264,18 +281,32 @@ public partial class BuildMenu : Control
 
 		Vector2 _origin = _self.GlobalPosition + _offset - _size / 2;
 		Building _building = new(new Rect2(_origin, _size), _self, _offset);
-		ActiveFurniture.Add(_building);
+		activeBuildingsList.Add(_building);
 		return _building;
 	}
-	public void RemoveBuilding()
+	public void RemoveBuilding(RemoveMode _mode = RemoveMode.None)
 	{
+		Building _building = selectedBuilding;
+		UnassignStructure();
+		activeBuildingsList.Remove(selectedBuilding);
 
+		if (_mode == RemoveMode.Sell)
+		{
+			Player.Data.SetCurrency(GameManager.G_ITEMS[_building.Self.GetMeta("id").ToString()].cost / 2);
+			SoundManager.CreateSound(CanvasManager.Audio_SellSound);
+		}
+		if (_mode == RemoveMode.Store)
+		{
+			Player.Data.Storage.Add(_building.Self.GetMeta("id").ToString());
+			SoundManager.CreateSound(CanvasManager.Audio_StoreSound);
+		}
+		_building.Self.QueueFree();
 	}
 	public void MoveBuilding()
 	{
-		active_building.Self.GlobalPosition = GameManager.Utils.GetMouseToWorldPosition() + mouseOffset;
-		Vector2 _size = active_building.Collider.Size,
-		_origin = active_building.Self.GlobalPosition + active_building.Offset - _size / 2;
-		active_building.Collider = new(_origin, _size);
+		selectedBuilding.Self.GlobalPosition = GameManager.Utils.GetMouseToWorldPosition() + mouseOffset;
+		Vector2 _size = selectedBuilding.Collider.Size,
+		_origin = selectedBuilding.Self.GlobalPosition + selectedBuilding.Offset - _size / 2;
+		selectedBuilding.Collider = new(_origin, _size);
 	}
 }

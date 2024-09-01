@@ -1,74 +1,71 @@
+using System;
 using Godot;
 
 public partial class ResortGUI : CanvasLayer
 {
 	public static ResortGUI Instance { get; private set; }
-	public static bool IsFreeCamera { get; private set; }
 	/// <summary>
 	/// Used as a buffer for IsFreeCamera
 	/// </summary>
-	public static bool WasFreeCamera { get; private set; }
+	public bool IsFreeCamera, WasFreeCamera, EnableMouseCameraControl;
 
 	[Export] private AnimationPlayer freeCameraHUD;
+	[Export] private Node2D TopLeft, BottomRight;
 	private Tween quitTween;
-    public override void _Ready()
-    {
-        Instance = this;
-		IsFreeCamera = false;
+	public override void _Ready()
+	{
+		Instance = this;
 		quitTween = CreateTween();
 		quitTween.Kill();
-    }
-    public override void _ExitTree()
-    {
+
+		if (IsInstanceValid(GameManager.GlobalCamera))
+		{
+			GameManager.GlobalCamera.LimitTop = (int)TopLeft.GlobalPosition.Y;
+			GameManager.GlobalCamera.LimitBottom = (int)BottomRight.GlobalPosition.Y;
+			GameManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
+			GameManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
+		}
+	}
+	public override void _ExitTree()
+	{
 		Instance = null;
-        IsFreeCamera = WasFreeCamera = false;
-    }
-    public override void _PhysicsProcess(double delta)
+	}
+	public override void _PhysicsProcess(double delta)
 	{
 		WasFreeCamera = IsFreeCamera;
 
-		if (IsFreeCamera)
-		{
-			Vector2 _position = GameManager.GlobalCamera.GlobalPosition;
-			_position += ReadCameraInput();
-		}
-
-		// Exit camera mode without triggering the pause menu
-    	if (IsFreeCamera && (Input.IsActionJustPressed("escape") || Input.IsActionJustPressed("cancel")))
-		{
-			SetFreeCameraMode(false);
-			CanvasManager.Instance.GetViewport().SetInputAsHandled();
-			return;
-		}
-
-		// switch camera mode
 		if (Input.IsActionJustPressed("change_camera"))
 			SetFreeCameraMode(!IsFreeCamera);
+
+		if (IsFreeCamera)
+		{
+			if (EnableMouseCameraControl)
+			{
+				Vector2 _movement = GameManager.Utils.GetMouseToWorldPosition() - GameManager.GlobalCamera.GlobalPosition;
+				if (Math.Abs(_movement.X) > GameManager.QuarterScreen.X * 0.8f || Math.Abs(_movement.Y) > GameManager.QuarterScreen.Y * 0.8f)
+					GameManager.GlobalCamera.GlobalPosition += _movement.Normalized() * 8;
+			}
+
+			GameManager.GlobalCamera.GlobalPosition += Input.GetVector("left", "right", "up", "down") * 8;
+			GameManager.GlobalCamera.GlobalPosition = GameManager.GlobalCamera.GlobalPosition.Clamp(TopLeft.GlobalPosition + GameManager.QuarterScreen, BottomRight.GlobalPosition - GameManager.QuarterScreen);
+			if (Input.IsActionJustPressed("escape") || Input.IsActionJustPressed("cancel"))
+				SetFreeCameraMode(false);
+		}
 	}
 
-	private static Vector2 ReadCameraInput()
-	{
-		var _up = Input.IsActionPressed("up");
-		var _down = Input.IsActionPressed("down");
-		var _left = Input.IsActionPressed("left");
-		var _right = Input.IsActionPressed("right");
-
-		return new Vector2((_left ? -1 : 0) + (_right ? 1 : 0),
-			(_up ? -1 : 0) + (_down ? 1 : 0)) * 10;
-	}
-    public static void SetFreeCameraMode(bool _state)
+	public static void SetFreeCameraMode(bool _state)
 	{
 		if (Instance.quitTween.IsValid() || CanvasManager.Instance.IsInFocus || CanvasManager.Menus.IsInMenu || DialogManager.IsActive)
 			return;
 
-		IsFreeCamera = _state;
-		Player.Instance.SetDisabled(IsFreeCamera);
+		Instance.IsFreeCamera = _state;
+		Player.Instance.SetDisabled(Instance.IsFreeCamera);
 
-		if (IsFreeCamera)
+		if (Instance.IsFreeCamera)
 		{
 			// Set camera free from player anchor
 			Player.Instance.RemoveChild(GameManager.GlobalCamera);
-			Instance.AddChild(GameManager.GlobalCamera);
+			Instance.GetTree().Root.AddChild(GameManager.GlobalCamera);
 			GameManager.GlobalCamera.GlobalPosition = Player.Instance.GlobalPosition;
 
 			// Show free camera hud
@@ -80,7 +77,7 @@ public partial class ResortGUI : CanvasLayer
 			Vector2 _prev_g_position = GameManager.GlobalCamera.GlobalPosition;
 
 			// Move Camera back to player
-			Instance.RemoveChild(GameManager.GlobalCamera);
+			Instance.GetTree().Root.RemoveChild(GameManager.GlobalCamera);
 			Player.Instance.AddChild(GameManager.GlobalCamera);
 
 			// sweep back to player
@@ -95,8 +92,6 @@ public partial class ResortGUI : CanvasLayer
 			CanvasManager.SetCurrencyElement(true);
 		}
 	}
-	public static void SetFreeCameraHud(bool _state)
-	{
+	public static void SetFreeCameraHud(bool _state) =>
 		Instance.freeCameraHUD.Play(_state ? "open" : "close");
-	}
 }

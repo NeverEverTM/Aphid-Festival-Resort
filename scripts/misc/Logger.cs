@@ -11,21 +11,18 @@ public static class Logger
 
 	public static void Print(LogPriority priority, params object[] args)
 	{
-		switch (priority)
-		{
-			case LogPriority.Log:
-				if (LogMode == LogLevel.Verbose)
-					GD.Print(new string[] {"[LOG] " }.Concat(args).ToArray());
-			break;
-			case LogPriority.Warning:
-				if (LogMode == LogLevel.Verbose || LogMode == LogLevel.WarnAndError)
-					GD.PushWarning(new string[] {"[WARN] " }.Concat(args).ToArray());
-			break;
-			case LogPriority.Error:
-				if (LogMode != LogLevel.None)
-					GD.PushError(new string[] {"[ERROR] " }.Concat(args).ToArray());
-			break;
-		}
+		if ((int)LogMode > (int)priority)
+			return;
+
+		string _time = DateTime.Now.ToString("hh:mm:ss");
+		string _message = Array.ConvertAll(args, x => x.ToString()).Join(" ");
+		if (priority == LogPriority.Log)
+			GD.Print(_message.Insert(0, $"[{_time}] [Log]: "));
+		else if (priority == LogPriority.Warning)
+			GD.Print(_message.Insert(0, $"[{_time}] |-[WARN]-|: "));
+		else
+			GD.Print(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
+		DebugConsole.Print(_message);
 	}
 	public static void Print(LogPriority priority, GameTermination mode, params object[] args)
 	{
@@ -36,6 +33,7 @@ public static class Logger
             case GameTermination.Minor:
                 break;
             case GameTermination.Major:
+			_ = GameManager.LoadScene(GameManager.SceneName.Menu);
                 break;
             case GameTermination.Complete:
 				GameManager.Instance.GetTree().Quit(1);

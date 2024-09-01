@@ -11,7 +11,7 @@ public partial class StartMenu : Control
 		aphidButton.Pressed += () => SoundManager.CreateSound(Aphid.Audio_Idle_Baby);
 		secretButton.Pressed += () =>
 		{
-			Cheats.LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair = true;
+			DebugConsole.LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair = true;
 			SoundManager.CreateSound(Aphid.Audio_Boing);
 		};
 

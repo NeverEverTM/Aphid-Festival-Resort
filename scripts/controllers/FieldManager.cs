@@ -3,7 +3,6 @@ using Godot;
 public partial class FieldManager : Node2D
 {
 	[Export] private CanvasModulate globalFilter;
-	[Export] private Node2D TopLeft, BottomRight;
 
 	public enum DayHours { Morning, Noon, Sunset, Night }
 	public static DayHours TimeOfDay { get; set; }
@@ -25,13 +24,6 @@ public partial class FieldManager : Node2D
 	public override void _EnterTree()
 	{
 		SetTimeAtmosphere();
-		if (IsInstanceValid(GameManager.GlobalCamera))
-		{
-			GameManager.GlobalCamera.LimitTop = (int)TopLeft.GlobalPosition.Y;
-			GameManager.GlobalCamera.LimitBottom = (int)BottomRight.GlobalPosition.Y;
-			GameManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
-			GameManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
-		}
 	}
 
 	public override void _Ready()

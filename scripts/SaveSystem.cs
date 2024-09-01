@@ -33,7 +33,7 @@ public static class SaveSystem
 	public static void AddToProfileData(ISaveData _data)
 	{
 		ProfileData.Add(_data);
-		GD.Print($"ProfileData: <{_data.GetId()}> has been set as serializeable profile data.");
+		Logger.Print(Logger.LogPriority.Log,$"ProfileData: <{_data.GetId()}> has been set as serializeable profile data.");
 	}
 	/// <summary>
 	/// Allows a class to store and load serializeable data for use in the application.
@@ -41,7 +41,7 @@ public static class SaveSystem
 	public static void AddToGlobalData(ISaveData _data)
 	{
 		GlobalData.Add(_data);
-		GD.Print($"GlobalData: <{_data.GetId()}> has been set as serializeable global data.");
+		Logger.Print(Logger.LogPriority.Log, $"GlobalData: <{_data.GetId()}> has been set as serializeable global data.");
 	}
 
 	// Aphid related methods
@@ -193,7 +193,7 @@ public static class SaveSystem
 		catch (Exception _e)
 		{
 			await LoadAllAphids(_backupFolder);
-			GD.PrintErr(_e);
+			Logger.Print(Logger.LogPriority.Error, Logger.GameTermination.Major, _e);
 		}
 
 		// Load all save data classes
@@ -242,7 +242,7 @@ public static class SaveSystem
 
 			Aphids.Add(new Guid(_instance.ID), _instance);
 			ResortManager.CreateAphid(_instance);
-			GD.Print($"Succesfully loaded aphid. ID: {_instance.ID}.");
+			Logger.Print(Logger.LogPriority.Log, $"Succesfully loaded aphid. ({_instance.ID})");
 		}
 
 		return Task.CompletedTask;
@@ -257,8 +257,7 @@ public static class SaveSystem
 		}
 		catch (Exception _err)
 		{
-			GD.PrintErr(_err.Message);
-			GD.PrintErr(_err.StackTrace);
+			Logger.Print(Logger.LogPriority.Error, Logger.GameTermination.Major ,$"Failed to load aphid {_instance?.ID}", _err);
 			return false;
 		}
 		return true;

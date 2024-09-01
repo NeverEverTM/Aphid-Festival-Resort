@@ -12,6 +12,7 @@ public partial class ButtonBehaviour : TextureButton
 
 	public override void _EnterTree()
 	{
+		DefaultColor = SelfModulate;
 		ButtonDown += SetPressedColor;
 		ButtonUp += SetPressedColor;
 		FocusEntered += SetFocusColor;

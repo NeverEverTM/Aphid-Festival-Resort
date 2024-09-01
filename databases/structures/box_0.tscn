@@ -8,6 +8,7 @@ size = Vector2(32, 10)
 [node name="box_0" type="Sprite2D"]
 texture = ExtResource("1_82agt")
 offset = Vector2(0, -17)
+metadata/id = "box_0"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

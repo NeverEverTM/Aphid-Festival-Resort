@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using Godot;
 
@@ -28,7 +27,6 @@ public partial class GameManager : Node2D
 		PopupWindowPath = "res://scenes/ui/popup.tscn",
 		OutlineShader = "res://scripts/shaders/outline.gdshader";
 	public const string
-		MusicPath = "res://sfx/music",
 		SFXPath = "res://sfx",
 		IconPath = "res://sprites/icons",
 		ItemPath = "res://databases/items",
@@ -41,7 +39,6 @@ public partial class GameManager : Node2D
 	public static readonly Dictionary<string, Item> G_ITEMS = new();
 	public static readonly Dictionary<string, Food> G_FOOD = new();
 	public static readonly List<Recipe> G_RECIPES = new();
-	public static readonly Dictionary<string, string> G_STRUCTURES = new();
 	public readonly struct Item
 	{
 		public readonly int cost;
@@ -88,17 +85,11 @@ public partial class GameManager : Node2D
 		else
 			return G_ICONS["missing"];
 	}
-	public static string GetStructurePath(string _key)
-	{
-		if (G_ICONS.ContainsKey(_key))
-			return G_STRUCTURES[_key];
-		else
-			return G_STRUCTURES["missing"];
-	}
 
 	// Variables
 	public static Vector2 ScreenCenter { get; private set; }
 	public static Vector2 ScreenSize { get; private set; }
+	public static Vector2 QuarterScreen { get; private set; }
 	private PhysicsDirectSpaceState2D spaceState;
 	private readonly List<GpuParticles2D> particles = new();
 
@@ -137,10 +128,11 @@ public partial class GameManager : Node2D
 	private void OnSizeChange()
 	{
 		ScreenSize = GetViewport().GetVisibleRect().Size;
-		ScreenCenter = ScreenSize * 0.5f;
+		ScreenCenter = ScreenSize  / 2;
+		QuarterScreen = ScreenCenter / 2;
 	}
 	// MARK: Game Initialization
-	
+
 	/// <summary>
 	/// Pre-initalization checks and setup
 	/// </summary>
@@ -293,17 +285,18 @@ public partial class GameManager : Node2D
 		}
 
 		// Load aphid SFX
-		string _path = $"{SFXPath}/aphid/";
-		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(_path + "nom.wav");
-		Aphid.Audio_Idle = ResourceLoader.Load<AudioStream>(_path + "idle.wav");
-		Aphid.Audio_Idle_Baby = ResourceLoader.Load<AudioStream>(_path + "baby_idle.wav");
-		Aphid.Audio_Step = ResourceLoader.Load<AudioStream>(_path + "step.wav");
-		Aphid.Audio_Jump = ResourceLoader.Load<AudioStream>(_path + "jump.wav");
-		Aphid.Audio_Hurt = ResourceLoader.Load<AudioStream>(_path + "hurt.wav");
-		Aphid.Audio_Boing = ResourceLoader.Load<AudioStream>(_path + "boing.wav");
+		string aphidPath = $"{SFXPath}/aphid/";
+		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(aphidPath + "nom.wav");
+		Aphid.Audio_Idle = ResourceLoader.Load<AudioStream>(aphidPath + "idle.wav");
+		Aphid.Audio_Idle_Baby = ResourceLoader.Load<AudioStream>(aphidPath + "baby_idle.wav");
+		Aphid.Audio_Step = ResourceLoader.Load<AudioStream>(aphidPath + "step.wav");
+		Aphid.Audio_Jump = ResourceLoader.Load<AudioStream>(aphidPath + "jump.wav");
+		Aphid.Audio_Hurt = ResourceLoader.Load<AudioStream>(aphidPath + "hurt.wav");
+		Aphid.Audio_Boing = ResourceLoader.Load<AudioStream>(aphidPath + "boing.wav");
 
-		// Player SFX
-		Player.Audio_Whistle = ResourceLoader.Load<AudioStream>(SFXPath + "/whistle.wav");
+		string uiPath = $"{SFXPath}/ui/";
+		CanvasManager.Audio_SellSound = ResourceLoader.Load<AudioStream>(uiPath + "kaching.wav");
+		CanvasManager.Audio_StoreSound = ResourceLoader.Load<AudioStream>(uiPath + "select.wav");
 	}
 	private static void SEARCH_SFX_FOLDER(string _path, ref List<string> _sfx)
 	{
@@ -390,19 +383,15 @@ public partial class GameManager : Node2D
 			SceneName.Resort => ResortScenePath,
 			_ => "N/A"
 		};
-
 		if (_path == "N/A")
 			return;
-
 		IsBusy = true;
-		OnPreLoadScene?.Invoke();
-		Instance.CleanAllParticles();
-		SoundManager.CleanAllSounds();
+		SoundManager.StopSong();
 
 		// load the load screen
 		LoadScreen _loading = ResourceLoader.Load<PackedScene>(LoadingScreenPath).Instantiate() as LoadScreen;
 		Instance.GetTree().Root.AddChild(_loading);
-		await _loading.CreateLeaves();
+		_ = _loading.CreateLeaves();
 
 		// await for scene creation
 		ResourceLoader.LoadThreadedRequest(_path);
@@ -422,11 +411,18 @@ public partial class GameManager : Node2D
 			Instance.GetTree().Quit(2);
 		}
 
+		// wait until full transition, then do all your shit
+		while (!_loading.IsDone)
+			await Task.Delay(1);
+		OnPreLoadScene?.Invoke();
+		Instance.CleanAllParticles();
+		SoundManager.CleanAllSounds();
+		await Task.Delay(1);
+
 		// set scene and request ready/events
 		Instance.GetTree().ChangeSceneToPacked(ResourceLoader.LoadThreadedGet(_path) as PackedScene);
 		Instance.RequestReady();
 		OnPostLoadScene?.Invoke();
-		await Task.Delay(1);
 		IsBusy = false;
 		await _loading.SweepLeaves();
 	}
@@ -519,28 +515,5 @@ public partial class GameManager : Node2D
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
 		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));
-	}
-}
-
-public class StateMachine
-{
-	public IState currentState;
-
-	public void ChangeState(IState _newState, EventArgs args)
-	{
-		currentState?.ExitState(args);
-		_newState.EnterState(currentState, args);
-		currentState = _newState;
-	}
-
-	public bool IsState(string _state) =>
-		currentState.Name.Equals(_state);
-
-	public interface IState
-	{
-		public string Name { get; }
-		public void EnterState(IState _previous, EventArgs e);
-		public void UpdateState(EventArgs e);
-		public void ExitState(EventArgs e);
 	}
 }

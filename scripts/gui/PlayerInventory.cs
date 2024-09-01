@@ -31,11 +31,11 @@ public partial class PlayerInventory : Control
 	}
 	private void CreateInvItem(int _index)
 	{
-		TextureButton _item = invItemContainer.Instantiate() as TextureButton;
 		var _item_name = Data.Inventory[_index];
-		_item.SetMeta("id", _item_name);
 
-		// check for available icon
+		TextureButton _item = invItemContainer.Instantiate() as TextureButton;
+		_item.SetMeta("id", _item_name);
+		_item.TooltipText = _item_name + "_desc";
 		(_item.GetChild(0) as TextureRect).Texture = GameManager.GetIcon(_item_name);
 
 		// press function

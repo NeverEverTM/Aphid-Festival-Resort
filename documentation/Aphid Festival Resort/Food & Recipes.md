@@ -10,11 +10,13 @@ To implement a food recipe, it needs three things:
 - assigned gameplay values, can be put in the [foods_values] table
 - foodname_name and foodname_desc translation keys in [items_translation]
 - icon to display itself, this is done in the editor through the [res://sprites/icons]
+- [Optional] It can be a packed scene instead in the res://databases/items folder for custom behaviour
 # Recipe Implementation
 To implement a recipe it needs three things:
 - assigned gameplay values, can be put in the [recipes_values] table
 - recipename_name and recipename_desc translation keys in [items_translation]
 - icon to display itself, this is done in the editor through the [res://sprites/icons]
+- [Optional] It can be a packed scene instead in the res://databases/items folder for custom behaviour
 
 | ***Implemented food *** |                  |                 |
 | ----------------------- | ---------------- | --------------- |

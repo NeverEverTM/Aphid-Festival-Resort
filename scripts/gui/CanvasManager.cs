@@ -13,6 +13,9 @@ public partial class CanvasManager : CanvasLayer
 	public static CanvasManager Instance { get; private set; }
 	public static MenuUtil Menus { get; private set; }
 
+	public static AudioStream Audio_SellSound { get; set; }
+	public static AudioStream Audio_StoreSound { get; set; }
+
 	// Focus
 	public Control CurrentFocus { get; private set; }
 	public bool IsInFocus { get; private set; }
@@ -23,6 +26,7 @@ public partial class CanvasManager : CanvasLayer
 		Menus = new();
 		screenshot_button.Pressed += TakeScreenshot;
 		menu_button.Pressed += () => PauseMenu.Instance.SetPauseMenu(true);
+		UpdateCurrency();
 	}
 	public override void _Process(double delta)
 	{
@@ -47,9 +51,11 @@ public partial class CanvasManager : CanvasLayer
 			var _time = Time.GetDatetimeStringFromSystem().Replace(":", "-");
 			var filename = SaveSystem.ProfilePath + SaveSystem.screenshotsFolder + $"/Screenshot-{_time}.png";
 
+			if (FileAccess.FileExists(filename))
+				filename += "(Extra)";	
+
 			capture.SavePng(filename);
-			// Set screen to white
-			SoundManager.CreateSound(ResourceLoader.Load<AudioStream>(GameManager.SFXPath + "/camera-flash.wav"));
+			SoundManager.CreateSound(ResourceLoader.Load<AudioStream>(GameManager.SFXPath + "/misc/camera-flash.wav"));
 		}
 		catch (Exception _err)
 		{

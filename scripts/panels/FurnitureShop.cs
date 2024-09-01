@@ -5,7 +5,7 @@ public partial class FurnitureShop : ShopInterface
 	[ExportCategory("Furniture Menu")]
 	[Export] private TextureButton open_button;
 
-    protected override void PurchaseItem()
+	protected override void PurchaseItem()
 	{
 		if (string.IsNullOrEmpty(currentItem))
 			return;
@@ -17,8 +17,8 @@ public partial class FurnitureShop : ShopInterface
 		SoundManager.CreateSound(buySound, true);
 	}
 
-    public override void _Ready()
-    {
-		open_button.Pressed += () => CanvasManager.Menus.OpenMenu(menu);
-    }
+	public override void _Ready()
+	{
+		open_button.Pressed += SetMenu;
+	}
 }

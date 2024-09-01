@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Godot;
 
 // Used for the UI interface you interact with
-public partial class ShopInterface : Control
+public partial class ShopInterface : Control, MenuTrigger.ITrigger
 {
 	[Export] protected string shopTag;
 	[Export] protected AnimationPlayer storePlayer;
@@ -17,18 +17,18 @@ public partial class ShopInterface : Control
 	protected string currentItem;
 	protected int currentCost;
 
-    // ===============| Shelf products |=============
-    public override void _EnterTree()
-    {
-        CleanShelf();
-        menu = new MenuUtil.MenuInstance(shopTag,
+	// ===============| Shelf products |=============
+	public override void _EnterTree()
+	{
+		CleanShelf();
+		menu = new MenuUtil.MenuInstance(shopTag,
 			storePlayer,
 			ResetShop,
 			(MenuUtil.MenuInstance _) => CleanShelf(),
 			true
 		);
-    }
-    protected virtual void ResetShop()
+	}
+	protected virtual void ResetShop()
 	{
 		currentItem = string.Empty;
 		itemName.Text = Tr($"store_{shopTag}_name");
@@ -85,5 +85,11 @@ public partial class ShopInterface : Control
 	protected virtual void PurchaseItem()
 	{
 
+	}
+
+	public void SetMenu()
+	{
+		if (CanvasManager.Menus.CurrentMenu != menu)
+			CanvasManager.Menus.OpenMenu(menu);
 	}
 }

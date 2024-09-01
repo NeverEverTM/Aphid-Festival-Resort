@@ -13,28 +13,34 @@ To see roadmap go here: [[Major Version Goals]]
 ## Bug Tracker:
 
 - Music can stop and not come back when leaving to main menu and going back to resort, comes back after you pause and unpause
-  Music in general just seems to be funky in the resort
+- Furniture clips below cliff floor, not a big deal but it annoys me big time
 # [Pending Issues]
 
 - game intro Project Color lacks polish, it requires a bright white flash transition into full logo and motted bg, with small jingle
 
 - Update UI elements to use higher resolution art
-- Pause menu button does not play a sound
+- Pause menu button does not play a sound [DONE]
 - change bg color and font color of pause buttons to a different color
-- options should have focus highlight color for bg and font
-- options combomenu icons are small
+- options should have focus highlight color for bg and font [FONT DONE]
+- options combomenu icons are small [COULDNT FIX]
+- furniture menu could be a book? storage some sort of checklist
+- furniture icons missing
 
-- increase player sprite framerate
-- add pickup anim
+- increase player sprite framerate [DONE]
+- add pickup anim [DONE]
 - add step sounds
 
+- create item shop shelf
+- populate item shop area
+- populate kitchen area
+- add decoration back
+- add menu triggers back to the player [DONE]
+
 ## ISSUES
-- furniture selection boxes are lost after leaving the menu and do *not* regenerate
 - way to quickly close storage without closing menu
-- mouse hover over borders should move camera (there is a property in Camera2D that allows this)
-- torch is not recognized as a structure BECAUSE it tries to get a Sprite2D, when this object is an AnimatedSprite2D, for this we need to detect for manually tagged data to create boundaries by ourselves instead
-- furniture icons missing
-- furniture menu could be a book? storage some sort of checklist
+- mouse hover while building is selected, does NOT work
+- 
+
 
 ## Technical
 - Fix outline shader to render as a single sprite
@@ -59,26 +65,34 @@ To see roadmap go here: [[Major Version Goals]]
 
 # [Full Version Changelog]
 ### Fixed
+- Hopefully fixed resolutions problems once and for all
 - Logger now works properly (oops)
 - Light no longer interacts with most UI elements
 - Item shop text not showing up correctly
 - You can no longer multi-interact with various entities at the same time
+- The sea no longer GLOWS during the night (shader shenanigans)
+- You can no longer use non-food items to create recipes (you could use your two first eggs and softlock yourself)
+- You can no longer interact with things while busy (inside a menu, etc)
 ### Gameplay
 - Resort map has been again redesigned to be smaller and more structured
-- Added a free camera mode which can be toggled with T
+- Added a free camera mode which can be toggled with Q
 - You can now take screenshots, any photos taken are stored inside the current savefile in a folder called "screenshots"
 - A few UI elements have been added for ease of interaction
 - Added a whole buncha of furniture to decorte with, along with the already existing props
-- Redesigned the load game screen to be prettier and more functional
-- Petting is faster
+- Redesigned the load game screen to be prettier and more functional, you can now see aphids in it, and the time spent in total
+- Petting is faster, hooray
 - More dialogue tidbits for NPCs, and just general spice up
+- Added more and more fluid animations for characters
+- Updated visuals to match better
+- Title theme, not final but just enough to break the silence
 ### Technical
 - Created plugin specific for color changing buttons
 - Moved skins and items folders to databases folder
 - MenuManager is now its own instance component use for menu managment
-- More changes to internal tag systems for shops
+- Changes to internal tag systems for shops
 - Separated canvas into Resort Canvas and Regular Canvas, one is for exclusivally resort envionments, while the other will be used for general gameplay such as another maps
 - Interaction sytem has been changed to hammer some bugs and issues with player interaction
 - Tilemap has been optimized and organized
 - Dialog Manager has been refactor to account for many proper features
 - Added startup logo and loading screen (for mere ego and vanity)
+- Debug console now available (with secret code and all), not much commands for now

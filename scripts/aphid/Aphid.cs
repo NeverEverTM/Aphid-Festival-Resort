@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
 
-public partial class Aphid : CharacterBody2D
+public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 {
 	public AphidInstance Instance;
 	/// <summary>
@@ -809,9 +809,11 @@ public partial class Aphid : CharacterBody2D
 	protected virtual void OnFoodTrigger(Node2D _node)
 	{
 		// if is 1-currently consuming, 2- in the wrong state, 
-		// 3-already pursuing said item, or 4-its marked for ignore, dont bother
+		// 3- its marked to not be picked up
+		// 4-already pursuing said item, or 5-its marked for ignore, dont bother
 		if (IsEating || (OurState == AphidState.Idle == (OurState == AphidState.Eat)) ||
 		(food_item != null && food_item.Equals(_node)) ||
+		!(bool)_node.GetMeta("pickup") ||
 		(food_ignore_list.Count > 0 && food_ignore_list.Exists((Node2D _n) => CheckIfEqual(_n, _node))))
 			return;
 
@@ -837,7 +839,7 @@ public partial class Aphid : CharacterBody2D
 
 		// if you are pursuing a food already
 		// and the current one is valid
-		if (food_item != null && IsInstanceValid(food_item))
+		if (IsInstanceValid(food_item))
 		{
 			// if either are a favorite or neither, check which one is closer
 			// else if this one isnt a favorite, ignore it, this means if it IS, just grab it
@@ -895,6 +897,42 @@ public partial class Aphid : CharacterBody2D
 			interaction_cd_timer -= _delta;
 	}
 
+    public void Interact()
+    {
+        if (IsDisabled)
+			return;
+
+		if (IsReadyForHarvest) // Harvest behaviour
+		{
+			if (OurState == AphidState.Breed || OurState == AphidState.Train)
+				return;
+
+			if (OurState == AphidState.Sleep)
+				WakeUp(true);
+
+			Harvest();
+		}
+		else // Pet behaviour
+		{
+			// Dont pet if item is in hand
+			if (Player.Instance.PickupItem != null)
+				return;
+
+			// if succesful pet, make it look at you and stay yourself in place
+			if (Pet())
+			{
+				// timer
+				Player.Instance.SetDisabled(true);
+				Player.Instance.LockPositionCooldown.Start(AphidData.PET_DURATION);
+
+				// visuals
+				Player.Instance.SetPlayerAnim("pet");
+				skin.SetFlipDirection(GlobalPosition - GlobalPosition);
+				Player.Instance.MovementDirection = Vector2.Zero;
+			}
+		}
+    }
+
 	// constantly calls aphids around to complete the breeding process
 	private void OnBreedTrigger(Node2D _node)
 	{
@@ -911,7 +949,7 @@ public partial class Aphid : CharacterBody2D
 		}
 	}
 
-	public class AphidEventArgs : EventArgs
+    public class AphidEventArgs : EventArgs
 	{
 		public Aphid aphid;
 		public AphidEventArgs(Aphid aphid)

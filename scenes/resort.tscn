@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=31 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" path="res://scripts/controllers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://bufmc14xek8uk" path="res://scenes/ui/canvas.tscn" id="5_t3t74"]
 [ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="5_wdlmu"]
 [ext_resource type="PackedScene" uid="uid://vecd7svjiq57" path="res://scenes/props/structure_pit.tscn" id="7_ov6ju"]
+[ext_resource type="PackedScene" uid="uid://b30qrkcyopep6" path="res://scenes/props/resort_table.tscn" id="9_vaq2v"]
+[ext_resource type="Texture2D" uid="uid://dxsln8cwjpovm" path="res://sprites/characters/azzy_sprite.png" id="11_0kb4s"]
+[ext_resource type="Texture2D" uid="uid://ci8b7hx82gd02" path="res://sprites/props/resort_rug.png" id="13_kcatt"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="19_l0dmi"]
 [ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/entities/character.tscn" id="28_py445"]
 [ext_resource type="PackedScene" uid="uid://cum5tqdw2hog8" path="res://scenes/entities/menu_trigger.tscn" id="51_xwwsq"]
@@ -13,6 +16,91 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a4pua"]
 size = Vector2(94, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_djjg3"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(0, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w48fe"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(32, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wixt6"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(64, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1fsth"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(96, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pe2fu"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(128, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ntta"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(0, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5te46"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(32, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w6eo7"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(64, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8urr3"]
+atlas = ExtResource("11_0kb4s")
+region = Rect2(96, 64, 32, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eps0x"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_djjg3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w48fe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wixt6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1fsth")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pe2fu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7ntta")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5te46")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wixt6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1fsth")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pe2fu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w6eo7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8urr3")
+}],
+"loop": true,
+"name": &"talk",
+"speed": 5.0
+}]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jqaie"]
 atlas = ExtResource("67_yel3x")
@@ -48,7 +136,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 2.0
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -70,6 +158,12 @@ EntityRoot = NodePath("entityPit")
 StructureRoot = NodePath("structurePit")
 aphidPrefab = ExtResource("3_d14m5")
 
+[node name="topleft" type="Node2D" parent="."]
+position = Vector2(-2334, -839)
+
+[node name="bottomright" type="Node2D" parent="."]
+position = Vector2(2287, 1454)
+
 [node name="entityPit" type="Node2D" parent="."]
 y_sort_enabled = true
 
@@ -77,7 +171,21 @@ y_sort_enabled = true
 position = Vector2(-2, 0)
 inventory = NodePath("../canvas/inventory")
 
-[node name="resort_canvas" parent="." instance=ExtResource("4_2px7i")]
+[node name="resort_canvas" parent="." node_paths=PackedStringArray("TopLeft", "BottomRight") instance=ExtResource("4_2px7i")]
+TopLeft = NodePath("../topleft")
+BottomRight = NodePath("../bottomright")
+
+[node name="aphid_info" parent="resort_canvas" index="2"]
+offset_left = 121.0
+offset_top = 327.0
+offset_right = 121.0
+offset_bottom = 327.0
+
+[node name="inventory" parent="resort_canvas/kitchen_menu" index="3"]
+offset_left = -519.0
+offset_top = 223.0
+offset_right = 547.0
+offset_bottom = 382.999
 
 [node name="canvas" parent="." instance=ExtResource("5_t3t74")]
 
@@ -91,20 +199,50 @@ metadata/_edit_lock_ = true
 
 [node name="structurePit" parent="." instance=ExtResource("7_ov6ju")]
 
-[node name="kitchen" parent="." instance=ExtResource("51_xwwsq")]
+[node name="kitchen" parent="." node_paths=PackedStringArray("triggerObject") instance=ExtResource("51_xwwsq")]
+position = Vector2(551, -482)
+triggerObject = NodePath("../resort_canvas/kitchen_menu")
 
 [node name="CollisionShape2D" parent="kitchen/trigger_store" index="0"]
 position = Vector2(15, 1)
 shape = SubResource("RectangleShape2D_a4pua")
 
-[node name="shop" parent="." instance=ExtResource("51_xwwsq")]
+[node name="resort_table" parent="." instance=ExtResource("9_vaq2v")]
+position = Vector2(544, -473)
+
+[node name="resort_table2" parent="." instance=ExtResource("9_vaq2v")]
+position = Vector2(795, -212)
+
+[node name="shop" parent="." node_paths=PackedStringArray("triggerObject") instance=ExtResource("51_xwwsq")]
 position = Vector2(798, -233)
+triggerObject = NodePath("../resort_canvas/item_shop_panel")
+
+[node name="azzy" parent="." instance=ExtResource("28_py445")]
+position = Vector2(716, -228)
+sprite_frames = SubResource("SpriteFrames_eps0x")
+animation = &"talk"
+frame_progress = 0.600183
+dialogue_keys = PackedStringArray("azzy_flavor_0")
 
 [node name="joy" parent="." instance=ExtResource("28_py445")]
 position = Vector2(-355, -108)
 sprite_frames = SubResource("SpriteFrames_ue4ko")
+animation = &"talk"
+frame_progress = 0.462124
 dialogue_keys = PackedStringArray("joy_flavor_0")
 
+[node name="ResortRug" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(544, -439)
+texture = ExtResource("13_kcatt")
+
+[node name="ResortRug2" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(793, -174)
+texture = ExtResource("13_kcatt")
+
+[editable path="resort_canvas"]
+[editable path="resort_canvas/generations_panel/ScrollContainer/GridContainer/aphid_slot"]
 [editable path="canvas"]
+[editable path="structurePit"]
 [editable path="kitchen"]
-[editable path="shop"]

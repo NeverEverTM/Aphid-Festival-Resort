@@ -50,7 +50,7 @@ public partial class PauseMenu : Control
 	{
 		if (_state)
 		{
-			if (ResortGUI.WasFreeCamera || CanvasManager.Menus.IsInMenu || DialogManager.IsActive)
+			if (ResortGUI.Instance.WasFreeCamera || CanvasManager.Menus.IsInMenu || DialogManager.IsActive)
 				return;
 				
 			SoundManager.PauseSong();

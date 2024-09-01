@@ -4,28 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "8512ef56bd254701",
+        "id": "4456e73527495fe6",
         "type": "tabs",
         "children": [
           {
-            "id": "8ca50810e28fcc13",
+            "id": "651bc30618e7d0c7",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
                 "file": "Development Log.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "d40d4a9bb3331039",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Food & Recipes.md",
                 "mode": "source",
                 "source": false
               }
@@ -158,16 +146,17 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "8ca50810e28fcc13",
+  "active": "651bc30618e7d0c7",
   "lastOpenFiles": [
-    "Major Version Goals.md",
-    "Development Log.md",
     "Changelogs.md",
+    "Development Log.md",
     "Food & Recipes.md",
+    "Major Version Goals.md",
+    "Structure Implementation.md",
+    "Aphid Behaviour.md",
     "databases/structures_translation.ods",
     "databases/items_translation - copia.ods",
     "databases/recipes_values - copia.ods",
-    "Aphid Behaviour.md",
     "databases/dialogue_translation.ods",
     "databases/essentials_translation.ods",
     "databases/essentials.ods",

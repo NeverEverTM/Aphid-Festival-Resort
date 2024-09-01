@@ -58,16 +58,17 @@ public partial class MainMenu : Node2D
 		currentMenu = start_panel;
 		new_game_button.Pressed += CreateResort;
 
-		SetCategory(newGameCategory);
 		// create menu button wheel
 		CreateMenuAction(newGameCategory, OnNewGameButton);
 		loadPanel.AddMenuActions();
 		CreateMenuAction(optionsCategory, OnOptionsButton);
 		CreateMenuAction(creditsCategory, OnCreditsButton);
 		CreateMenuAction(exitCategory, OnExitButton);
+		SetCategory(newGameCategory);
 
 		// Start game processes
 		GameManager.CleanSaveData();
+		
 		if (!HasBeenIntialized)
 		{
 			GameManager.BOOT_LOADING_LABEL = BOOT_LOADING_LABEL;
@@ -86,8 +87,10 @@ public partial class MainMenu : Node2D
 			(sweep_animator.GetParent() as Control).Visible = false;
 			start_panel.ReadyUp();
 		}
+		SoundManager.PlaySong("misc/title.wav");
 		title_animator.Play("slide_down");
-
+		if (!string.IsNullOrEmpty(OptionsManager.Data.LastPlayedResort))
+			SetCategory("continue");
 		SpawnBunchaOfAphidsForTheFunnies();
 		start_panel.SetPanel();
 		HasBeenIntialized = true;
@@ -168,7 +171,6 @@ public partial class MainMenu : Node2D
 	public override void _Process(double delta)
 	{
 		DoBounceAnim();
-
 		if (GameManager.IsBusy)
 			return;
 
@@ -200,7 +202,7 @@ public partial class MainMenu : Node2D
 	public void GoLeftInWheel()
 	{
 		MenuWheelIndex--;
-		if (MenuWheelIndex == -1)
+		if (MenuWheelIndex < 0)
 			MenuWheelIndex = MenuActions.Count - 1;
 		OnMenuSwitch();
 		SoundManager.CreateSound(switchSound);
@@ -209,7 +211,7 @@ public partial class MainMenu : Node2D
 	public void GoRightInWheel()
 	{
 		MenuWheelIndex++;
-		if (MenuWheelIndex == MenuActions.Count)
+		if (MenuWheelIndex >= MenuActions.Count)
 			MenuWheelIndex = 0;
 		OnMenuSwitch();
 		SoundManager.CreateSound(switchSound);
@@ -234,8 +236,8 @@ public partial class MainMenu : Node2D
 		// Its a secreeeeeet
 		if (_resortName == "iblamemar")
 		{
-			Cheats.IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt = true;
-			SoundManager.CreateSound(Player.Audio_Whistle);
+			DebugConsole.IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt = true;
+			SoundManager.CreateSound(Aphid.Audio_Hurt);
 			return;
 		}
 
@@ -349,17 +351,17 @@ public partial class MainMenu : Node2D
 
 	// MARK: Cosmetics
 	private bool DirectionForX, DirectionForY;
-	private float MaxWanderDistance = 800;
+	private float MaxWanderDistanceX = 1200, MaxWanderDistanceY = 600;
 	private void DoBounceAnim()
 	{
-		if (cameraMenu.Position.X > MaxWanderDistance)
+		if (cameraMenu.Position.X > MaxWanderDistanceX)
 			DirectionForX = true;
-		else if (cameraMenu.Position.X < -MaxWanderDistance)
+		else if (cameraMenu.Position.X < -MaxWanderDistanceX)
 			DirectionForX = false;
 
-		if (cameraMenu.Position.Y > MaxWanderDistance)
+		if (cameraMenu.Position.Y > MaxWanderDistanceY)
 			DirectionForY = true;
-		else if (cameraMenu.Position.Y < -MaxWanderDistance)
+		else if (cameraMenu.Position.Y < -MaxWanderDistanceY)
 			DirectionForY = false;
 
 		cameraMenu.Position += new Vector2(DirectionForX ? -1 : 1, DirectionForY ? -1 : 1);

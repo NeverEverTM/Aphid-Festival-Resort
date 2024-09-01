@@ -3,10 +3,11 @@ using Godot;
 
 public partial class SoundManager : Node
 {
-	private static SoundManager Instance;
-	public static AudioStreamPlayer MusicPlayer, SFXPlayer;
-	public static AudioStreamPlayer2D SFXPlayer2D;
-	public static AudioBusLayout AudioBus;
+	public static SoundManager Instance { get; private set; }
+	public static AudioStreamPlayer MusicPlayer { get; private set; }
+	public static AudioStreamPlayer SFXPlayer { get; private set; }
+	public static AudioStreamPlayer2D SFXPlayer2D { get; private set; }
+	public static AudioBusLayout AudioBus { get; private set; }
 
 	private static readonly List<AudioStreamPlayer> sound_entities = new();
 	private static readonly List<AudioStreamPlayer2D> sound2d_entities = new();
@@ -79,9 +80,10 @@ public partial class SoundManager : Node
 		};
 		return tween;
 	}
-	public static void PlaySong(string _name)
+	/// <param name="_full_name">Must be relative file name path to SFX (ex. "misc/title.wav")</param>
+	public static void PlaySong(string _full_name)
 	{
-		AudioStream _music = ResourceLoader.Load<AudioStream>($"{GameManager.MusicPath}/{_name}");
+		AudioStream _music = ResourceLoader.Load<AudioStream>($"{GameManager.SFXPath}/{_full_name}");
 		MusicPlayer.Stream = _music;
 		MusicPlayer.Play();
 	}

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Godot;
 
-public partial class NPCDialog : AnimatedSprite2D
+public partial class NPCDialog : AnimatedSprite2D, Player.IObjectInteractable
 {
 	[ExportCategory("Dialog Params")]
 	[Export] private string[] dialogue_keys;
@@ -32,7 +32,7 @@ public partial class NPCDialog : AnimatedSprite2D
 		}
 	}
 
-	private async void Interact()
+	public async void Interact()
 	{
 		if (!IsInteractable)
 			return;

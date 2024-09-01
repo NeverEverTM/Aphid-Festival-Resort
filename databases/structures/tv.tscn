@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://scripts/misc/SpinAphid.cs" id="3_gmdqp"]
 [ext_resource type="Script" path="res://scripts/misc/ZoomCamera.cs" id="4_axes8"]
 [ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="5_2b0vm"]
-[ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/aphidtastic.wav" id="6_uxujw"]
+[ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/misc/aphidtastic.wav" id="6_uxujw"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="8_uml7d"]
 
 [sub_resource type="Environment" id="Environment_87q0j"]
@@ -32,6 +32,7 @@ size = Vector2(96, 8.42106)
 [node name="tv" type="Sprite2D"]
 texture = ExtResource("1_dcqxn")
 offset = Vector2(0, -32.08)
+metadata/id = "tv"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 own_world_3d = true
