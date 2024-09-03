@@ -88,14 +88,13 @@ public partial class Player : CharacterBody2D
 	}
 	public override void _Process(double delta)
 	{
-		if (!IsDisabled)
-			ReadKeyInput();
-
 		if (PickupItem != null)
 			ProcessPickupBehaviour();
+
 	}
 	public override void _PhysicsProcess(double delta)
 	{
+
 		if (MovementDirection != Vector2.Zero)
 		{
 			SetFlipDirection(MovementDirection);
@@ -108,6 +107,7 @@ public partial class Player : CharacterBody2D
 
 		if (!IsDisabled && !CanvasManager.Instance.IsInFocus)
 		{
+			IsRunning = Input.IsActionPressed("run");
 			ReadMovementInput();
 			ReadHeldInput();
 		}
@@ -116,6 +116,47 @@ public partial class Player : CharacterBody2D
 		DoWalkAnim();
 		MoveAndSlide();
 	}
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (IsDisabled || !@event.IsPressed())
+			return;
+		// TODO: Input reader with names and functions
+		if (@event.IsAction("open_generations"))
+		{
+			CanvasManager.Menus.OpenMenu(GenerationsTracker.Instance.Menu);
+			return;
+		}
+
+		if (@event.IsAction("open_inventory"))
+		{
+			inventory?.SetInventoryHUD(!inventory.Visible);
+			return;
+		}
+
+		if (@event.IsAction("interact"))
+		{
+			TryInteract();
+			return;
+		}
+
+		if (@event.IsAction("pickup"))
+		{
+			if (PickupItem == null)
+				TryPickup();
+			else
+				Drop();
+			return;
+		}
+
+		if (@event.IsAction("pull"))
+		{
+			// either pull the first item or store it in inventory
+			if (PickupItem != null)
+				inventory.StoreCurrentItem();
+			else
+				inventory.PullItem(0);
+		}
+    }
 	/// <summary>
 	/// Disables player interaction by queuing disable requests. 
 	/// One must be careful to track and handle their requests.
@@ -164,46 +205,6 @@ public partial class Player : CharacterBody2D
 		else if (!IsDisabled)
 			SetPlayerAnim("idle");
 	}
-	private void ReadKeyInput()
-	{
-		IsRunning = Input.IsActionPressed("run");
-		// TODO: Input reader with names and functions
-		if (Input.IsActionJustPressed("open_generations"))
-		{
-			CanvasManager.Menus.OpenMenu(GenerationsTracker.Instance.Menu);
-			return;
-		}
-
-		if (Input.IsActionJustPressed("open_inventory"))
-		{
-			inventory?.SetInventoryHUD(!inventory.Visible);
-			return;
-		}
-
-		if (Input.IsActionJustPressed("interact"))
-		{
-			TryInteract();
-			return;
-		}
-
-		if (Input.IsActionJustPressed("pickup"))
-		{
-			if (PickupItem == null)
-				TryPickup();
-			else
-				Drop();
-			return;
-		}
-
-		if (Input.IsActionJustPressed("pull"))
-		{
-			// either pull the first item or store it in inventory
-			if (PickupItem != null)
-				inventory.StoreCurrentItem();
-			else
-				inventory.PullItem(0);
-		}
-	}
 	private void ReadHeldInput()
 	{
 		interact_is_being_held = Input.IsActionPressed("interact");
@@ -221,6 +222,9 @@ public partial class Player : CharacterBody2D
 	// ======| Interactions |=======
 	private void TryInteract()
 	{
+		if (IsDisabled)
+			return;
+
 		Array<Node2D> _collisionList = interactionArea.GetOverlappingBodies();
 
 		if (_collisionList.Count == 0)
@@ -261,6 +265,9 @@ public partial class Player : CharacterBody2D
 	// ======| Pickup |========
 	private void TryPickup()
 	{
+		if (IsDisabled)
+			return;
+
 		// Find a node
 		Node _node = GetOverlappingNodeWithMeta("pickup");
 		if (_node == null)

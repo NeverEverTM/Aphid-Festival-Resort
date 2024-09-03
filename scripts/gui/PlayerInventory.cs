@@ -7,8 +7,17 @@ public partial class PlayerInventory : Control
 	[Export] private HBoxContainer inventoryGrid;
 	[Export] private PackedScene invItemContainer;
 
-	// =======| GUI |========
-	public void SetInventoryHUD(bool _state)
+    public override void _GuiInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton && (@event as InputEventMouseButton).Pressed)
+		{
+			GetViewport().SetInputAsHandled();
+			GD.Print("STOPPED");
+		}
+    }
+
+    // =======| GUI |========
+    public void SetInventoryHUD(bool _state)
 	{
 		if (_state)
 		{

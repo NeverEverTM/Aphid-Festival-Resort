@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://bb52au54cdw8j"]
+[gd_scene load_steps=15 format=3 uid="uid://bb52au54cdw8j"]
 
 [ext_resource type="Texture2D" uid="uid://dbeu087woc2bk" path="res://sprites/props/stick_torch.png" id="1_anu0x"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="2_o66eh"]
 [ext_resource type="Script" path="res://scripts/props/TorchBehaviour.cs" id="2_pkvx2"]
+[ext_resource type="Material" uid="uid://cwaid2g5ctnpy" path="res://scripts/shaders/unshaded.tres" id="3_srj3x"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_syt6f"]
 atlas = ExtResource("1_anu0x")
@@ -93,7 +94,8 @@ frame_progress = 0.395285
 
 [node name="light" type="PointLight2D" parent="."]
 process_priority = 100
-position = Vector2(-7, -8)
+material = ExtResource("3_srj3x")
+position = Vector2(0, -6)
 enabled = false
 color = Color(0.862745, 0.666667, 0.172549, 1)
 range_z_min = -10
@@ -101,7 +103,6 @@ range_z_max = 10
 texture = ExtResource("2_o66eh")
 texture_scale = 0.4
 height = 10.0
-metadata/_edit_lock_ = true
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(-5, -3)
