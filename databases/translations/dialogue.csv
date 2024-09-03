@@ -7,8 +7,8 @@ You can check updates at the Itch.io page of the game!
 >Cualquier feedback es agradecido."
 welcome_1,,
 joy_welcome_0,">(char(joy))Hello!(...) You are (name), right? Come on in!(...)
-I'll give you a quick tour around!","Hola![...] Tu tienes que ser [name], ¿no? Adelante![...]
-Tenemos el complejo preparado para ti."
+I'll give you a quick tour around!",">(char(joy))Hola!(...) Tu tienes que ser (name), ¿no? Adelante!(...)
+Tenemos el complejo preparado para ti. Te dare un paseo!"
 joy_welcome_1,">Here it is. The aphid resort!(...)
 So,(...) what do you think?
 >Things are shaping up as we grow so please bear with me, [wave amp=25.0 freq=5.0 connected=1]we will get there[/wave].","Y aqui esta, el complejo de áfidos!"
@@ -18,12 +18,15 @@ It’s such a joy to work as a keeper for the lil buddies. (...)
 >Her name is Crystal. Isn't she a cutie? 
 >Just wished more people came along to visit...(...)
 Apart from festival times, it gets pretty quiet around here.(...)
->Speaking of, I think that is coming pretty soon!(...(1.0))
-[fade start=0 length=14]hopefully...[/fade]","Un lugar agradable, verdad [name]?[...]
-Es todo un placer trabajar de cuidadora de los pequeñitos.[...]
-Incluso me dejan tener el mió propio! Solo desearia que más gente se pasara por aquí...[...]
-Aparte de tiempos de festival, este lugar se queda silencioso.[...]
-Hablando de... Creo que esta por llegar!"
+>Speaking of, I think that is coming pretty soon!(...(0.5))
+hopefully...",">(char(joy))Un lugar agradable, verdad (name)?(...)
+Es todo un placer trabajar de cuidadora de los pequeñitos.(...)
+[wave amp=50.0 freq=5.0 connected=1]Incluso me dejan tener el mió propio! [/wave]
+>Su nombre es Cristal. No es una ternura?
+>Solo desearia que más gente se pasara por aquí...(...)
+Aparte de tiempos de festival, este lugar se queda silencioso.
+>Hablando de, creo que esta por llegar!(...(0.5))
+espero..."
 joy_flavor_1,">(char(joy))They are still filling the resort with all sorts of wonders
 So sorry for all the mess of boxes! They won't let me touch them.
 >I don't know why either, that moth at the gate told me not to.

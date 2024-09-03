@@ -2017,12 +2017,11 @@ vertical_alignment = 1
 [node name="redoButton" type="CheckButton" parent="kitchen_menu/upper_anchor"]
 use_parent_material = true
 layout_mode = 0
-offset_left = -63.0
+offset_left = -136.0
 offset_top = -144.0
-offset_right = 65.0
+offset_right = 149.0
 offset_bottom = -96.0
-text = "Lock
-"
+text = "kitchen_lockrecipe"
 alignment = 1
 
 [node name="inventory" type="TextureRect" parent="kitchen_menu"]

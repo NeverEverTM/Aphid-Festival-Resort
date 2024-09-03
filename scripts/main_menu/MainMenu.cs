@@ -193,10 +193,10 @@ public partial class MainMenu : Node2D
 			return;
 		}
 
-		if (Input.IsActionJustPressed("left"))
+		if (Input.IsActionJustPressed("left") || Input.IsActionJustPressed("ui_left"))
 			GoLeftInWheel();
 
-		if (Input.IsActionJustPressed("right"))
+		if (Input.IsActionJustPressed("right") || Input.IsActionJustPressed("ui_right"))
 			GoRightInWheel();
 	}
 	public void GoLeftInWheel()
@@ -323,7 +323,7 @@ public partial class MainMenu : Node2D
 	public void SetCategory(string _text)
 	{
 		currentCategory = _text;
-		button_wheel.Text = $"[center][tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado][/center]";
+		button_wheel.Text = $"[center]<| [tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado] |>[/center]";
 		MenuWheelIndex = MenuCategories.IndexOf(currentCategory);
 	}
 	public void SwitchCategories()

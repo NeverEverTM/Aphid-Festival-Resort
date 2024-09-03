@@ -27,6 +27,10 @@ public partial class StartMenu : Control
 	public void ReadyUp()
 	{
 		startText.Hide();
+
+		if (MainMenu.Instance.currentCategory == "continue" && !MainMenu.Instance.MenuActions.ContainsKey("continue"))
+			MainMenu.Instance.currentCategory = "new_game"; // Hotfix
+
 		MainMenu.Instance.SetButtonWheel(() => MainMenu.Instance.MenuActions[MainMenu.Instance.currentCategory](), MainMenu.Instance.SwitchCategories);
 		SoundManager.CreateSound(Aphid.Audio_Idle);
 		IsReady = true;

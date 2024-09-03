@@ -88,6 +88,7 @@ store_furniture_desc,A sorting of all trinkets and props that the resort sells.,
 resort_golden_name,Golden Plains,NOT_IMPLEMENTED
 resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.",NOT_IMPLEMENTED
 bio_name_placeholder,Aphid Name,Nombre del Ãfido
+kitchen_lockrecipe,Repeat Recipe,Repetir Receta
 flavor_0,Sweet,Dulce
 flavor_1,Sour,Agrio
 flavor_2,Salty,Salado

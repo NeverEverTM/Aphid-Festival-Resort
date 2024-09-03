@@ -17,6 +17,7 @@ To see roadmap go here: [[Major Version Goals]]
 # [Pending Issues]
 
 - game intro Project Color lacks polish, it requires a bright white flash transition into full logo and motted bg, with small jingle
+- commands to change money, spawn aphids, change time and print a dialogue line
 
 - Update UI elements to use higher resolution art
 - Pause menu button does not play a sound [DONE]
@@ -29,6 +30,9 @@ To see roadmap go here: [[Major Version Goals]]
 - increase player sprite framerate [DONE]
 - add pickup anim [DONE]
 - add step sounds
+- different color for harvest outline + particles
+- interaction area should be a 360 circle
+- pet should also flip player towards aphid
 
 - create item shop shelf
 - populate item shop area

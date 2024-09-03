@@ -203,7 +203,7 @@ pull={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation", "res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation")
+locale/translations=PackedStringArray("res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation", "res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation")
 locale/test="en"
 
 [rendering]
