@@ -5,15 +5,15 @@ BOOT_2,Mixing SFX...,Mezclando SFX...
 BOOT_ITEMS,Creating Items...,Creando Objectos...
 BOOT_FOOD,Tagging Food...,Etiquetando Comida...
 BOOT_RECIPES,Building Recipes,Escribiendo Recetas...
-warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. Puede que no exista?
-warning_invalid_name,"This resort name is not valid, be sure to exclude invalid filename characters.","Este nombre de complejo no es valido, asegurate de excluir caracteres de nombre de archivo invalidos."
+warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. ¿Puede que no exista?
+warning_invalid_name,"This resort name is not valid, be sure to exclude special characters.","Este nombre de complejo no es valido, asegurate de remover caracteres especiales."
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
-leftmousebutton,Left Click,Click Izquierdo
-rightmousebutton,Right Click,Click Derecho
+warning_key_duplicated,This key is already binded to another action!,¡Esta tecla ya esta conectada a otra accion!
 press_start,Press {0} to start!,Presiona {0} para empezar!
 new_game,New Game,Nueva Partida
 load_game,Load Game,Cargar Partida
 continue,Continue,Continuar
+controls,Controls,Controles
 options,Options,Opciones
 credits,Credits,Creditos
 exit,Exit,Salir
@@ -22,72 +22,128 @@ new_resort_placeholder,Type a name for your resort,Escribe un nombre para tu com
 new_player_placeholder,Type a name for yourself!,Escribe un nombre para ti!
 new_begin,Begin,Comenzar
 load_quote,Choose a resort to play!,¡Escoge una partida para jugar!
-confirmation_warning,"Are you sure you want to do that?
+confirmation_0,"Are you sure you want to do that?
 (This action cannot be reverted)
 
 Type ""Yes"" and hit Enter to confirm","¿Estas seguro que quieres hacer eso?
 (Esta accion no se puede revertir)
 
 Escribe “Si” y presiona Enter para confirmar"
+confirmation_1,"Are you sure?
+
+Press and hold “Yes” to confirm","¿Estas seguro?
+
+Manten presionado “Si” para confirmar"
+confirmation_2,Are you sure?,¿Estas seguro?
 confirmation_yes,Yes,Si
+confirmation_no,No,No
 options_music,Music,Musica
 options_sounds,Sounds,Sonidos
 options_fullscreen,Fullscreen,Panoramica
 options_windowed,Windowed,Ventana
-controls_movement,Movement,Movimiento
-controls_interaction,Interact,Interactuar
-controls_cancel,Cancel / Pull Item,Cancelar / Sacar Item
-controls_pickup,Pickup,Agarrar
-controls_inventory,Inventory,Inventario
-controls_generations,Generations Album,Album de Generaciones
-help_desc_0,"Aphids need to be taken care of.
-Give them [color=cyan]food and water[/color]!","Áfidos requieren de cuidado.
-Dales de [color=cyan]comer y beber[/color]!"
-help_desc_1,"You can buy supplies at the [pulse freq=1.0 color=crimson ease=-2.0]store[/pulse], 
-simply stand in front of it and interact with it.","Compra provisiones en la [pulse freq=1.0 color=crimson ease=-2.0]tienda[/pulse],
-simplemente situate enfrente de ella e interactua."
-help_desc_2,Interact with [color=#e33d00]outlined[/color] aphids to harvest them for money.,Interactua con aphids [color=#e33d00]delineados[/color] para cultivarlos por dinero.
+controls_up,Move Up,Caminar para Abajo
+controls_down,Move Down,Caminar para Arriba
+controls_left,Move Left,Caminar a la Izquiera
+controls_right,Move Right,Caminar a la Derecha
+controls_run,Run,Correr
+controls_change_camera,Camera Mode,Modo de Camara
+controls_store,Store (Build Mode),Almacenar (Construir)
+controls_sell,Sell (Build Mode),Vender (Construir)
+controls_open_inventory,Open Inventory,Abrir Inventario
+controls_open_generations,Open Album,Abrir Album
+controls_interact,Interact,Interactuar
+controls_cancel,Cancel/Go Back,Cancelar/Regresar
+controls_pickup,Pickup Items/Aphids,Recoger/Tomar
+controls_movement_name,Movement,Movimiento
+controls_interactions_name,Interactions,Interacciones
+controls_mode_name,Camera & Build Mode,Camara y Construcción
+controls_menus_name,Menu Access,Acceso de Menus
+controls_reset,Hold F1 to reset binds,Sosten F1 para resetar los controles
+help_desc_0,"Welcome to the Resort! Start by hatching your first Aphid.
+Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
+Use the same button to pickup stuff as well!","¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+help_desc_1,"Aphids need to be taken care of! Interact with them using {0} to pet them.
+Be sure to also give them [color=cyan]food and water[/color]!","Áfidos requieren de cuidado. Interactua presionando {0} para acariciarlos.
+Asegurate de darles de [color=cyan]comer y beber[/color]!"
+help_desc_2,"You can buy supplies at the [color=cyan]store[/color], simply stand in front of it and interact with it.
+This applies to anything that looks, and is, interactable!","Compra provisiones en la [color=cyan ]tienda[/color], simplemente situate enfrente de ella e interactua.
+¡Esto aplica para todo lo que se vea Y sea interactuable!"
+help_desc_3,"Money grows from Aphids, literally!
+Interact with [color=#e33d00]outlined[/color] aphids to harvest them for berries.","El dinero crece de los Áfidos, ¡literalmente!
+Interactua con áfidos [color=#e33d00]delineados[/color] para cultivarlos por bayas."
+help_desc_4,"You can make better snacks at the kitchen, mix and match ingredients to find a worthy meal.
+Remember that your aphids have a unique preference for certain food types!","Puedes hacer mejores snacks en la cocina, mezcla y combina para encontrar una cena apropaiada.
+¡Recuerda que tus áfidos tendran una preferencia unica por ciertos tipos de comida!"
+help_desc_5,"Want to see your progress? Open the generational album with {0} and admire all of
+your current and past aphids under your care.","¿Quieres ver tu progreso? Abre el album generacional con {0} y admira todos
+los áfidos presentes y pasados bajo tu cuidado."
+help_desc_6,"You can rename an Aphid by picking it up and pressing its name on the top left.
+It also shows its current stats, skills and status.","Puedes renombrar un Áfido recogiendolo y presionando su nombre en la parte izquierda arriba.
+Aquí tambien muestra sus estadisticas, habilidades y estatus."
+help_desc_7,"Get a better view of your resort by pressing {0} from where you can access the furniture mode!
+You can also take screenshots with F1 and see them from the album.","¡Consigue una mejor vision del complejo presionando {0} donde puedes acceder al modo construcción!
+Tambien puedes tomar capturas de pantalla usando F1 y verlas en el album."
 pause_resume,Resume,Reanudar
 pause_options,Options,Opciones
 pause_controls,Controls,Controles
 pause_help,Help,Ayuda
 pause_backtomenu,Back to Menu,Volver al Menu
 pause_exit,Exit to Desktop,Salir al Escritorio
-credits_note,"Made in the Godot Engine 4
+credits_note,"Created in the Godot 4 Engine
 
-Registered trademarks and copyrights belong to Moonsprout Games
+SOUND ASSETS
 
-“Rustling leaves” by Pixabay
-“Camera Flash” by irinairinafomicheva at Pixabay
-Various SFX created with jsfxr
+“Rustling leaves” by Pixabay (Pixabay)
+“Camera Flash” by irinairinafomicheva (Pixabay)
 
-3D Aphid Model by Leo (leo6804)
+MISC ASSETS
 
-Inspired by the fan game Chao Resort Island by Nefault1st. 
-You should check them out!","Hecho en el motor Godot 4
+Outline Shader by Julian-Vos
+Shine Shader (for the logo) by ACB_Gamez (and others)
+3D Aphid Model by Leo from the official BF discord (hello)
 
-Marcas registradas y derechos de autor le pertenecen a Moonsprout Games.
+SPECIAL THANKS
 
-“Rustling leaves” por Pixabay
-“Camera Flash” por irinairinafomicheva en Pixabay
-Varios otros SFX creados en jsfxr
+To the fan game Chao Resort Island by Nefault1st for being an inspiration for this!
 
-Áfido Modelo 3D por Leo (leo6804)
+---------------------------------
+Unless stated otherwise, all other components had been created, programmed and designed by me, Summer
+Characters and places are from Bug Fables: The Everlasting Sapling by Moonsprout Games
+------------------------","Hecho con el motor Godot 4
 
-Inspirado por el juego Chao Resort Island hecho por Nefault1st. 
-Echale un vistazo!"
+ARCHIVOS DE SONIDO
+
+“Rustling leaves” por Pixabay (Pixabay)
+“Camera Flash” por irinairinafomicheva (Pixabay)
+
+ARCHIVOS MISCELANEOS
+
+Outline Shader por Julian-Vos
+Shine Shader (para el logo) por ACB_Gamez (y otros)
+3D Aphid Model por Leo del discord official de Bug Fables
+
+GRACIAS ESPECIALES
+
+Al juego fan Chao Resort Island por Nefault1st por ser una inspiracion para esto!
+
+---------------------------------
+A menos dicho lo contrario, todo los demas componentes han sido creados, programados y deiseñados por mi Summer
+Caracteres y lugares vienen de Bug Fables: The Everlasting Sapling por Moonsprout Games
+------------------------"
 generations_description,"Here you can see all the aphids you have raised through your time in the resort.
 Double click on an aphid to mark its location in the map.","Aquí podras ver a todas las mascotas que has criado a traves del tiempo en el complejo.
 Haz doble click para marcar la ubicacion de una mascota en el mapa."
 generations_owner,Owned By,Dueño De
 generations_parent,Children of,Crío de
 store_item_name,Azzy’s Food Cabinet,Puesto de Alimentos de Azzy
-store_item_desc,Purchase basic items for Aphid caretaking.,Adquiere objectos basicos para el cuidado de Ãfidos.
+store_item_desc,Purchase basic items for Aphid caretaking.,Adquiere objectos basicos para el cuidado de Áfidos.
 store_furniture_name,Furniture Cabinet,Cabina de muebles
 store_furniture_desc,A sorting of all trinkets and props that the resort sells.,Una coleccion de todos los aparatos y decoraciones que el complejo vende.
 resort_golden_name,Golden Plains,NOT_IMPLEMENTED
 resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.",NOT_IMPLEMENTED
-bio_name_placeholder,Aphid Name,Nombre del Ãfido
+bio_name_placeholder,Aphid Name,Nombre del Áfido
 kitchen_lockrecipe,Repeat Recipe,Repetir Receta
 flavor_0,Sweet,Dulce
 flavor_1,Sour,Agrio

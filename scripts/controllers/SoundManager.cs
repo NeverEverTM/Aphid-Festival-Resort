@@ -134,6 +134,7 @@ public partial class SoundManager : Node
 			_player.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
 		_player.Stream = _stream;
 		_player.GlobalPosition = _position;
+		_player.Bus = "Sounds";
 		_player.Play();
 		sound2d_entities.Add(_player);
 		return _player;

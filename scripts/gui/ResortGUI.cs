@@ -10,8 +10,12 @@ public partial class ResortGUI : CanvasLayer
 	public bool IsFreeCamera, WasFreeCamera, EnableMouseCameraControl;
 
 	[Export] private AnimationPlayer freeCameraHUD;
+	[Export] private TextureButton build_button, show_storage_button;
+	[Export] private BuildMenu build_menu;
 	[Export] private Node2D TopLeft, BottomRight;
+
 	private Tween quitTween;
+
 	public override void _Ready()
 	{
 		Instance = this;
@@ -25,6 +29,17 @@ public partial class ResortGUI : CanvasLayer
 			GameManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
 			GameManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
 		}
+
+		build_button.Pressed += () => CanvasManager.Menus.OpenMenu(new MenuUtil.MenuInstance("build",
+			build_menu.menu_player, build_menu.OnOpenMenu, build_menu.OnCloseMenu, false));
+		show_storage_button.Pressed += () =>
+		{
+			if (!build_menu.isStorageOpen)
+				build_menu.menu_player.Play("open_bar");
+			else
+				build_menu.menu_player.Play("close_bar");
+			build_menu.isStorageOpen = !build_menu.isStorageOpen;
+		};
 	}
 	public override void _ExitTree()
 	{

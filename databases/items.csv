@@ -26,8 +26,12 @@ aphid_egg_red,100,2,item,item
 aphid_egg_green,100,2,item,item
 aphid_egg_blue,100,2,item,item
 aphid_egg_yellow,100,2,item,item
-tv,50,0,deco,furniture
+tv,25,0,deco,furniture
 sign_wanted,15,0,deco,furniture
 torch,8,0,deco,furniture
 largebox_0,5,0,deco,furniture
 box_0,5,0,deco,furniture
+grass_0,1,0,deco,furniture
+grass_1,1,0,deco,furniture
+bee_rug,10,0,deco,furniture
+sign_no_aphid,15,0,deco,furniture

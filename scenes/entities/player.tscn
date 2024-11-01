@@ -241,7 +241,7 @@ size = Vector2(19, 10)
 [sub_resource type="CircleShape2D" id="CircleShape2D_5p45l"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4xmv"]
-size = Vector2(30, 30)
+size = Vector2(68, 37)
 
 [node name="player" type="CharacterBody2D" node_paths=PackedStringArray("camera", "interactionArea", "spriteBody", "animator", "audioPlayer")]
 motion_mode = 1
@@ -283,11 +283,11 @@ shape = SubResource("CircleShape2D_5p45l")
 
 [node name="interaction_area" type="Area2D" parent="."]
 y_sort_enabled = true
-position = Vector2(33, 0)
 collision_mask = 3
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interaction_area"]
+position = Vector2(0, -4.5)
 shape = SubResource("RectangleShape2D_c4xmv")
 
 [node name="Camera2D" type="Camera2D" parent="."]

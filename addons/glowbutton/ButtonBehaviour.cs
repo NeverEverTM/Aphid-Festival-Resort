@@ -12,7 +12,7 @@ public partial class ButtonBehaviour : TextureButton
 
 	public override void _EnterTree()
 	{
-		DefaultColor = SelfModulate;
+		DefaultColor = Modulate;
 		ButtonDown += SetPressedColor;
 		ButtonUp += SetPressedColor;
 		FocusEntered += SetFocusColor;
@@ -35,9 +35,9 @@ public partial class ButtonBehaviour : TextureButton
 		if (!ButtonPressed && !HasFocus())
 		{
 			if (!IsHovered())
-				SelfModulate = HoverColor;
+				Modulate = HoverColor;
 			else
-				SelfModulate = DefaultColor;
+				Modulate = DefaultColor;
 		}
 	}
 	public void SetFocusColor()
@@ -45,23 +45,23 @@ public partial class ButtonBehaviour : TextureButton
 		if (!ButtonPressed)
 		{
 			if (HasFocus())
-				SelfModulate = FocusColor;
+				Modulate = FocusColor;
 			else
-				SelfModulate = DefaultColor;
+				Modulate = DefaultColor;
 		}
 	}
 	public void SetPressedColor()
 	{
 		if (ButtonPressed)
-			SelfModulate = PressedColor;
+			Modulate = PressedColor;
 		else
 		{
 			if (HasFocus())
-				SelfModulate = FocusColor;
+				Modulate = FocusColor;
 			else if (IsHovered())
-				SelfModulate = HoverColor;
+				Modulate = HoverColor;
 			else
-				SelfModulate = DefaultColor;
+				Modulate = DefaultColor;
 		}
 	}
 }

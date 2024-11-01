@@ -6,9 +6,7 @@ public partial class BuildMenu : Control
 {
 	[Export] private PackedScene item_container;
 	[Export] private GridContainer storage_container;
-	[Export] private AnimationPlayer menu_player;
-	[Export] private TextureButton build_button, show_storage_button;
-	private MenuUtil.MenuInstance buildMenu;
+	[Export] public AnimationPlayer menu_player;
 
 	// Variables
 	private readonly List<Building> activeBuildingsList = new();
@@ -17,7 +15,8 @@ public partial class BuildMenu : Control
 	private Building selectedBuilding;
 	private CollisionShape2D currentShape;
 	private Vector2 mouseOffset;
-	private bool isHoveringBuilding, isMovingBuilding, isStorageOpen;
+	private bool isHoveringBuilding, isMovingBuilding;
+	public bool isStorageOpen;
 
 	public record class Building
 	{
@@ -33,21 +32,7 @@ public partial class BuildMenu : Control
 		}
 	}
 
-	public override void _Ready()
-	{
-		buildMenu = new MenuUtil.MenuInstance("build",
-			menu_player, OnOpenMenu, OnCloseMenu, false);
-		build_button.Pressed += () => CanvasManager.Menus.OpenMenu(buildMenu);
-		show_storage_button.Pressed += () =>
-		{
-			if (!isStorageOpen)
-				menu_player.Play("open_bar");
-			else
-				menu_player.Play("close_bar");
-			isStorageOpen = !isStorageOpen;
-		};
-	}
-	private void OnOpenMenu()
+	public void OnOpenMenu()
 	{
 		isStorageOpen = false;
 		ResortGUI.SetFreeCameraHud(false);
@@ -60,37 +45,13 @@ public partial class BuildMenu : Control
 				CreateBuilding(ResortManager.Instance.StructureRoot.GetChild(i) as Node2D);
 		}
 
-		// cleans the window
-		for (int i = 0; i < storage_container.GetChildCount(); i++)
-			storage_container.GetChild(i).QueueFree();
-
-		// Sets the storage inventory
-		for (int i = 0; i < Player.Data.Storage.Count; i++)
-		{
-			TextureButton _item = item_container.Instantiate<TextureButton>();
-			string _structure = Player.Data.Storage[i];
-			(_item.GetChild(0) as TextureRect).Texture = GameManager.GetIcon(_structure);
-			_item.Pressed += () =>
-			{
-				GrabFromStorage(_structure);
-				Player.Data.Storage.Remove(_structure);
-				_item.QueueFree();
-			};
-			storage_container.AddChild(_item);
-		}
+		UpdateStorage();
 	}
-	private async void OnCloseMenu(MenuUtil.MenuInstance _nextMenu)
+	public async void OnCloseMenu(MenuUtil.MenuInstance _)
 	{
-		if (_nextMenu != null && _nextMenu.ID == "furniture")
-		{
-			CanvasManager.SetCurrencyElement(true);
-		}
-		else // we exit build mode, back to free camera hud
-		{
-			activeBuildingsList.Clear();
-			ResortGUI.SetFreeCameraHud(true);
-			CanvasManager.SetCurrencyElement(true);
-		}
+		activeBuildingsList.Clear();
+		ResortGUI.SetFreeCameraHud(true);
+		CanvasManager.SetCurrencyElement(true);
 
 		while (menu_player.CurrentAnimation == "close")
 			await Task.Delay(1);
@@ -99,6 +60,29 @@ public partial class BuildMenu : Control
 		{
 			for (int i = 0; i < storage_container.GetChildCount(); i++)
 				storage_container.GetChild(i).QueueFree();
+		}
+	}
+
+	private void UpdateStorage(int _startIndex = 0)
+	{
+		// cleans the window
+		for (int i = _startIndex; i < storage_container.GetChildCount(); i++)
+			storage_container.GetChild(i).QueueFree();
+
+		// Sets the storage inventory
+		for (int i = _startIndex; i < Player.Data.Storage.Count; i++)
+		{
+			TextureButton _item = item_container.Instantiate<TextureButton>();
+			string _structure = Player.Data.Storage[i];
+			_item.TooltipText = Tr($"{_structure}_name") + "\n" + Tr($"{_structure}_desc");
+			(_item.GetChild(0) as TextureRect).Texture = GameManager.GetIcon(_structure);
+			_item.Pressed += () =>
+			{
+				GrabFromStorage(_structure);
+				Player.Data.Storage.Remove(_structure);
+				_item.QueueFree();
+			};
+			storage_container.AddChild(_item);
 		}
 	}
 
@@ -149,16 +133,13 @@ public partial class BuildMenu : Control
 			RemoveBuilding(RemoveMode.Sell);
 			return;
 		}
-			
+
 		if (Input.IsActionJustPressed("store"))
 		{
 			RemoveBuilding(RemoveMode.Store);
 			return;
 		}
 	}
-	/// <summary>
-	/// Tries selecting a structure under the mouse, if it fails then returns false, otherwise true.
-	/// </summary>
 	private bool OnSelect()
 	{
 		Building _structure = GetStructureUnderMouse();
@@ -214,14 +195,15 @@ public partial class BuildMenu : Control
 	public void UnassignStructure()
 	{
 		ResortGUI.Instance.EnableMouseCameraControl = false;
+		StopMoveStructure();
 
 		if (selectedBuilding != null)
 		{
-			selectedBuilding.Self.Material = null;
+			if (selectedBuilding.Self != null)
+				selectedBuilding.Self.Material = null;
 			isHoveringBuilding = false;
 		}
 
-		StopMoveStructure();
 		selectedBuilding = null;
 	}
 	public Building GetStructureUnderMouse()
@@ -286,21 +268,21 @@ public partial class BuildMenu : Control
 	}
 	public void RemoveBuilding(RemoveMode _mode = RemoveMode.None)
 	{
-		Building _building = selectedBuilding;
-		UnassignStructure();
 		activeBuildingsList.Remove(selectedBuilding);
 
 		if (_mode == RemoveMode.Sell)
 		{
-			Player.Data.SetCurrency(GameManager.G_ITEMS[_building.Self.GetMeta("id").ToString()].cost / 2);
+			Player.Data.SetCurrency(GameManager.G_ITEMS[selectedBuilding.Self.GetMeta("id").ToString()].cost / 2);
 			SoundManager.CreateSound(CanvasManager.Audio_SellSound);
 		}
 		if (_mode == RemoveMode.Store)
 		{
-			Player.Data.Storage.Add(_building.Self.GetMeta("id").ToString());
+			Player.Data.Storage.Add(selectedBuilding.Self.GetMeta("id").ToString());
 			SoundManager.CreateSound(CanvasManager.Audio_StoreSound);
+			UpdateStorage(Player.Data.Storage.Count - 1);
 		}
-		_building.Self.QueueFree();
+		selectedBuilding.Self.QueueFree();
+		UnassignStructure();
 	}
 	public void MoveBuilding()
 	{

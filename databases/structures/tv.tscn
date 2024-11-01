@@ -1,9 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://cwhom1s0n5b5c"]
+[gd_scene load_steps=17 format=3 uid="uid://cwhom1s0n5b5c"]
 
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
+[ext_resource type="Script" path="res://scripts/props/TVPropBehaviour.cs" id="2_3qsjy"]
 [ext_resource type="PackedScene" uid="uid://mo3upoh5jh1" path="res://scenes/props/aphid_model.glb" id="2_bvgcb"]
 [ext_resource type="Script" path="res://scripts/misc/SpinAphid.cs" id="3_gmdqp"]
 [ext_resource type="Script" path="res://scripts/misc/ZoomCamera.cs" id="4_axes8"]
+[ext_resource type="Texture2D" uid="uid://c3i6cmitj5cow" path="res://sprites/props/tv_bg_1.png" id="4_dl1sk"]
 [ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="5_2b0vm"]
 [ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/misc/aphidtastic.wav" id="6_uxujw"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="8_uml7d"]
@@ -29,9 +31,18 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
 size = Vector2(96, 8.42106)
 
-[node name="tv" type="Sprite2D"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ktp47"]
+blend_mode = 1
+
+[node name="tv" type="Sprite2D" node_paths=PackedStringArray("viewport_display", "background_display", "light", "stereo")]
 texture = ExtResource("1_dcqxn")
 offset = Vector2(0, -32.08)
+script = ExtResource("2_3qsjy")
+backgrounds = Array[Texture2D]([ExtResource("5_2b0vm"), ExtResource("4_dl1sk")])
+viewport_display = NodePath("viewport_display")
+background_display = NodePath("background")
+light = NodePath("light")
+stereo = NodePath("stereo")
 metadata/id = "tv"
 
 [node name="SubViewport" type="SubViewport" parent="."]
@@ -67,6 +78,7 @@ scale = Vector2(1.01078, 1.0067)
 texture = ExtResource("5_2b0vm")
 
 [node name="viewport_display" type="Sprite2D" parent="."]
+visible = false
 show_behind_parent = true
 material = SubResource("CanvasItemMaterial_2nngj")
 use_parent_material = true
@@ -74,24 +86,31 @@ position = Vector2(-0.128552, -32.5946)
 scale = Vector2(0.0821664, 0.0786517)
 texture = SubResource("ViewportTexture_4hgie")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="RigidBody2D" parent="."]
+mass = 999.0
+gravity_scale = 0.0
+sleeping = true
+lock_rotation = true
+freeze = true
+freeze_mode = 1
+metadata/tag = "interactable"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(-0.390244, -4.21052)
 shape = SubResource("RectangleShape2D_1namf")
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="stereo" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_uxujw")
 volume_db = 10.0
-autoplay = true
 max_distance = 400.0
 attenuation = 2.82843
 panning_strength = 3.0
 bus = &"Sounds"
 
-[node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(-2.42946, -27.6626)
-color = Color(0.117647, 0.686275, 0.196078, 1)
-energy = 2.0
-shadow_color = Color(1, 1, 1, 0)
+[node name="light" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(0.4, 0.501961, 0.239216, 1)
+top_level = true
+material = SubResource("CanvasItemMaterial_ktp47")
+position = Vector2(2.8353, -5.94643)
 texture = ExtResource("8_uml7d")

@@ -7,5 +7,15 @@ largebox_0_name,Large Supply Box,Caja Larga de Suministros
 largebox_0_desc,"It has been already emptied by the resort, so it just looks “nice”.","Ya ha sido vaciado por el hotel, asi que simplemente esta por las “apariencias”."
 box_0_name,Supply Box,Caja de Suministros
 box_0_desc,An empty box. It looks like it came from the Bee's factory.,Una caja vacia. Parece haber venido de la fabrica de las Abejas.
-torch_name,Basic Torch,Antorcha Basica
+torch_name,Leaf Torch,Antorcha Hoja
 torch_desc,"A light to iluminate the darkness, the way they work is beyond your comprehension.","Una luz para iluminar el camino, el como funcionan es un misterio."
+bee_rug_name,Handmade Golden Rug,Carpeta Dorada Artesanal
+bee_rug_desc,A rug meticulously crafted by hand. It has the symbol of the Bee Kingdom stiched into it.,Una carpeta hecha meticulosamente a mano. Tiene el simbolo del Reino de las Abejas estampado en el.
+grass_0_name,Patch of Grass,Parche de Hierba
+grass_0_desc,"It's a piece of grass, can't get any simpler than that.","Es un pedazo de hierba, no puede ser mas simple que eso."
+grass_1_name,Flame Tuft,Mata Flama
+grass_1_desc,"It looks like a fire, hopefully it won't start a real one of its own.","No mata las flamas, de hecho, parece haber creado una en si misma."
+grass_2_name,Flame Vine,Vid Flama
+grass_2_desc,A common type of tuft that grows everywhere in the Golden Path.,Una mata común en los alreadores del Camino Dorado
+sign_no_aphid_name,“No Aphids Allowed” Sign,Señal “No se permiten Áfidos”
+sign_no_aphid_desc,"That sign can't stop me, because I can't read!",¡Este letrero no puede detenerme porque no sé leer!

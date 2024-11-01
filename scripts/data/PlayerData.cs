@@ -20,7 +20,8 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 
 		public List<string> Inventory { get; set; }
 		public List<string> Storage { get; set; }
-		public int Currency { get; private set; } 
+		public int Currency { get; set; } 
+		public int InventoryMaxCapacity { get; set; }
 
 		public SaveFile()
 		{
@@ -28,6 +29,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 			Inventory = new();
 			Storage = new();
 			Currency = 30;
+			InventoryMaxCapacity = 15;
 		}
 		public void SetCurrency(int _amount, bool _setToValue = false)
 		{
@@ -66,6 +68,7 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 			Data.Name = NewName;
 			NewName = null;
 		}
+		CanvasManager.UpdateCurrency();
 		return Task.CompletedTask;
 	}
 }

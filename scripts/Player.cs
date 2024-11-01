@@ -30,12 +30,12 @@ public partial class Player : CharacterBody2D
 	// Collision Params
 	private string[] ValidInteractionTags = new string[]
 	{
-		"aphid", "npc", "menu"
+		"aphid", "npc", "menu", "interactable"
 	};
 
 	// Pickup Params
 	public Node2D PickupItem { set; get; }
-	private Vector2 interactionAreaPosition = new(25, -10), pickup_ground_position = new(0, 4);
+	private Vector2 pickup_ground_position = new(35, 0); // facing right by default
 	private bool pickup_isAphid;
 	public Timer LockPositionCooldown;
 
@@ -51,12 +51,17 @@ public partial class Player : CharacterBody2D
 	public override void _EnterTree()
 	{
 		Instance = this;
+		void _leaveItemInGround()
+		{
+			if (PickupItem != null)
+				PickupItem.GlobalPosition = GlobalPosition;
+			GameManager.OnPreLoadScene -= _leaveItemInGround;
+		}
+		GameManager.OnPreLoadScene += _leaveItemInGround;
 
 		// facing
 		FacingDirection = Vector2.Left;
 		SetFlipDirection(MovementDirection);
-		interactionArea.Position = new(flipSwitch ? interactionAreaPosition.X : -interactionAreaPosition.X,
-		interactionAreaPosition.Y);
 		// timers
 		LockPositionCooldown = new()
 		{
@@ -88,37 +93,31 @@ public partial class Player : CharacterBody2D
 	}
 	public override void _Process(double delta)
 	{
-		if (PickupItem != null)
+		if (PickupItem != null && !GameManager.IsBusy)
 			ProcessPickupBehaviour();
-
 	}
 	public override void _PhysicsProcess(double delta)
 	{
-
-		if (MovementDirection != Vector2.Zero)
-		{
-			SetFlipDirection(MovementDirection);
-			interactionArea.Position = new(flipSwitch ? interactionAreaPosition.X : -interactionAreaPosition.X,
-				interactionAreaPosition.Y);
-		}
-		TickFlip((float)delta);
-
+		// Calculate player movement
 		MovementDirection = Vector2.Zero;
-
 		if (!IsDisabled && !CanvasManager.Instance.IsInFocus)
 		{
 			IsRunning = Input.IsActionPressed("run");
 			ReadMovementInput();
 			ReadHeldInput();
 		}
-
 		Velocity = MovementDirection * MovementSpeed;
+
+		// apply movement phyiscs and animations
+		if (MovementDirection != Vector2.Zero)
+			SetFlipDirection(MovementDirection);
+		TickFlip((float)delta);
 		DoWalkAnim();
 		MoveAndSlide();
 	}
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (IsDisabled || !@event.IsPressed())
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (IsDisabled || !@event.IsPressed())
 			return;
 		// TODO: Input reader with names and functions
 		if (@event.IsAction("open_generations"))
@@ -129,7 +128,7 @@ public partial class Player : CharacterBody2D
 
 		if (@event.IsAction("open_inventory"))
 		{
-			inventory?.SetInventoryHUD(!inventory.Visible);
+			inventory?.Enable(!inventory.Visible);
 			return;
 		}
 
@@ -144,7 +143,7 @@ public partial class Player : CharacterBody2D
 			if (PickupItem == null)
 				TryPickup();
 			else
-				Drop();
+				_ = Drop();
 			return;
 		}
 
@@ -152,11 +151,11 @@ public partial class Player : CharacterBody2D
 		{
 			// either pull the first item or store it in inventory
 			if (PickupItem != null)
-				inventory.StoreCurrentItem();
+				PlayerInventory.StoreCurrentItem();
 			else
 				inventory.PullItem(0);
 		}
-    }
+	}
 	/// <summary>
 	/// Disables player interaction by queuing disable requests. 
 	/// One must be careful to track and handle their requests.
@@ -177,10 +176,20 @@ public partial class Player : CharacterBody2D
 		if (IsDisabled && _cancelActions) // Disallow some behaviours from persisting after disabled
 		{
 			if (PickupItem != null)
-				Drop();
-			inventory?.SetInventoryHUD(false);
+				_ = Drop();
+			inventory?.Enable(false);
 			SetPlayerAnim("idle");
 		}
+	}
+	public void SetDisabledTimer(float _secondsDuration)
+	{
+		if (LockPositionCooldown.TimeLeft > 0) // end early
+		{
+			SetDisabled(false, false);
+			SetPlayerAnim("idle");
+		}
+
+		LockPositionCooldown.Start(_secondsDuration);
 	}
 
 	// =========| Input Related |========
@@ -281,18 +290,25 @@ public partial class Player : CharacterBody2D
 		if (_tag.Equals("aphid") && !OnAphidPickup(_node as Aphid))
 			return;
 
-		Pickup(_node as Node2D, _tag);
+		_ = Pickup(_node as Node2D, _tag);
 	}
-	public async void Pickup(Node2D _node, string _tag)
+	public async Task Pickup(Node2D _node, string _tag, bool _playAnim = true)
 	{
-		SetDisabled(true, false);
-		SetPlayerAnim("pickup");
-		float _duration = animator.SpriteFrames.GetFrameCount("pickup") / 11f;
-		LockPositionCooldown.Start(_duration);
-		await Task.Delay((int)(_duration * 1000) - 100);
-
+		if (LockPositionCooldown.TimeLeft > 0)
+			return;
 		_node.SetMeta("pickup", false);
 		_node.ProcessMode = ProcessModeEnum.Disabled;
+
+		if (_playAnim)
+		{
+			SetDisabled(true, false);
+			SetPlayerAnim("pickup");
+			SetFlipDirection(_node.GlobalPosition - GlobalPosition);
+			float _duration = animator.SpriteFrames.GetFrameCount("pickup") / 11f;
+			SetDisabledTimer(_duration);
+			await Task.Delay((int)(_duration * 1000) - 100);
+		}
+
 		_node.ZIndex = 1;
 		PickupItem = _node;
 		OnPickup?.Invoke(_tag);
@@ -312,20 +328,21 @@ public partial class Player : CharacterBody2D
 		SoundManager.CreateSound2D(_aphid.AudioDynamic_Idle, _aphid.GlobalPosition, true);
 		return true;
 	}
-	public async void Drop(bool _setPosition = true)
+	public async Task Drop(bool _setPosition = true)
 	{
-		if (LockPositionCooldown.TimeLeft > 0)
+		if (LockPositionCooldown.TimeLeft > 0 ||
+		 GameManager.Utils.Raycast(GlobalPosition, flipSwitch ? pickup_ground_position : -pickup_ground_position, null).Count > 0)
 			return;
 		SetDisabled(true, false);
 		SetPlayerAnim("pickup", true);
 		float _duration = animator.SpriteFrames.GetFrameCount("pickup") / 13f;
-		LockPositionCooldown.Start(_duration);
+		SetDisabledTimer(_duration);
 		await Task.Delay((int)(_duration * 1000) - 200);
 
 		OnDrop?.Invoke();
 		pickup_isAphid = false;
 		if (_setPosition)
-			PickupItem.GlobalPosition = interactionArea.GlobalPosition + pickup_ground_position;
+			PickupItem.GlobalPosition = GlobalPosition + (flipSwitch ? pickup_ground_position : -pickup_ground_position);
 		PickupItem.ProcessMode = ProcessModeEnum.Inherit;
 		PickupItem.ZIndex = 0;
 		PickupItem.SetMeta("pickup", true);

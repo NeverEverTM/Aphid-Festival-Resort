@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c534r2yilm1ln"]
+
+[ext_resource type="Texture2D" uid="uid://cs2foh4c6do3o" path="res://sprites/props/sign_no_aphid.png" id="1_g0uxn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yvpct"]
+size = Vector2(32, 4)
+
+[node name="sign_no_aphid" type="Sprite2D"]
+texture = ExtResource("1_g0uxn")
+offset = Vector2(0, -24)
+metadata/id = "sign_no_aphid"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_yvpct")

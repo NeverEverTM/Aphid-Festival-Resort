@@ -28,6 +28,7 @@ volume_db = -20.0
 max_distance = 200.0
 attenuation = 0.5
 max_polyphony = 20
+bus = &"Sounds"
 
 [node name="anchor" type="Node2D" parent="."]
 editor_description = "This anchor is used to offset the sprite body, since animations can affect the position of the latter."

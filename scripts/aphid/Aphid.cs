@@ -47,7 +47,8 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 	// Eating Params
 	public bool IsEating;
 	private Node2D food_item;
-	private Vector2 food_item_position, food_item_direction;
+	private Vector2 food_item_position = new(25, -10);
+	private Vector2 food_item_direction; // Used in gobble food to know its direction
 	private int foodgobble_shutter_speed;
 	private bool is_food_favorite, food_item_switch;
 	private float gobble_timer, hunger_decay_timer;
@@ -93,18 +94,22 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 	{
 		// ===| Set Default Params |===
 		idle_position = GlobalPosition;
-		food_item_position = new(25, -10);
-		SetTimers();
 
 		// Set Aphid Data
 		skin.SetInstance(Instance, this);
 		skin.SetSkin("idle");
 		MovementSpeed = 20; // + (0.15f * Instance.Genes.Level);
 
+		if (IS_FAKE)
+			return;
+
 		// Triggers
 		triggerArea.BodyEntered += OnTriggerEnter;
 		TriggerActions.Add("food", (Node2D n) => OnFoodTrigger(n));
 		TriggerActions.Add("player", OnPlayerTrigger);
+
+		SetTimers();
+		StartupState();
 	}
 	private void SetTimers()
 	{
@@ -153,12 +158,11 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 		food_gc_timer.Timeout += () => food_ignore_list.Clear();
 		food_gc_timer.Start(30);
 	}
-	private void OnStartupState()
+	private void StartupState()
 	{
 		switch (Instance.Status.LastActiveState)
 		{
 			case AphidState.Sleep:
-				GD.Print("was sleepy");
 				Sleep();
 				break;
 			case AphidState.Breed:
@@ -190,7 +194,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 
 		TickBreeding(_delta);
 		TickLifetime(_delta);
-		TickProduction(_delta);
+		TickHarvest(_delta);
 	}
 	public override void _PhysicsProcess(double delta)
 	{
@@ -344,7 +348,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 	protected void WaddleToFood()
 	{
 		// if is not valid, too far away, or claimed by someone, let go
-		if (!IsInstanceValid(food_item) || GlobalPosition.DistanceTo(food_item.GlobalPosition) > 200 || !food_item.HasMeta("tag"))
+		if (!IsInstanceValid(food_item) || GlobalPosition.DistanceTo(food_item.GlobalPosition) > 200 || !(bool)food_item.GetMeta("pickup") || !food_item.HasMeta("tag"))
 		{
 			SetAphidState(AphidState.Idle);
 			return;
@@ -639,7 +643,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 		if (behaviourRNG.RandiRange(0, Mathf.FloorToInt(500 * 100 - Instance.Status.Sleepiness)) == 0)
 			Sleep();
 	}
-	protected virtual void TickProduction(float _delta)
+	protected virtual void TickHarvest(float _delta)
 	{
 		if (Instance.Status.MilkBuildup < AphidData.productionCooldown)
 			Instance.Status.MilkBuildup += _delta;
@@ -650,8 +654,9 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			{
 				Shader = ResourceLoader.Load<Shader>(GameManager.OutlineShader)
 			};
-			_outline.SetShaderParameter("color", Color.FromHtml("e33d00"));
+			_outline.SetShaderParameter("color", Color.FromHtml("f25400"));
 			skin.Material = _outline;
+			// put harvest particles later
 		}
 	}
 	public virtual void Harvest()
@@ -793,6 +798,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			_father.Status.BreedBuildup = 0;
 			_father.Entity.SetAphidState(AphidState.Idle);
 		}
+		GameManager.EmitParticles("heart", GlobalPosition - new Vector2(0, 10));
 	}
 
 	// =======| Collision Behaviours |========
@@ -856,6 +862,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 		food_item = _node;
 		food_pursue_timer.Start(food_pursue_duration);
 		is_food_favorite = _isfavorite;
+		skin.SetFlipDirection(_node.GlobalPosition - GlobalPosition);
 
 		if (OurState == AphidState.Idle)
 			SetAphidState(AphidState.Eat);
@@ -897,7 +904,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			interaction_cd_timer -= _delta;
 	}
 
-    public void Interact()
+    public void Interact() // player interaction
     {
         if (IsDisabled)
 			return;
@@ -924,11 +931,12 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 				// timer
 				Player.Instance.SetDisabled(true);
 				Player.Instance.LockPositionCooldown.Start(AphidData.PET_DURATION);
+				Player.Instance.MovementDirection = Vector2.Zero;
 
 				// visuals
 				Player.Instance.SetPlayerAnim("pet");
-				skin.SetFlipDirection(GlobalPosition - GlobalPosition);
-				Player.Instance.MovementDirection = Vector2.Zero;
+				Player.Instance.SetFlipDirection(GlobalPosition - Player.Instance.GlobalPosition);
+				skin.SetFlipDirection(Player.Instance.GlobalPosition - GlobalPosition);
 			}
 		}
     }

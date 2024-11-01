@@ -16,7 +16,7 @@ public partial class StartMenu : Control
 		};
 
 		string _translation = string.Format(Tr("press_start"), 
-			Tr(InputMap.ActionGetEvents("interact")[0].AsText().ToLower().Replace(" ", "")));
+			ControlsManager.GetUserReadableText(OptionsManager.Data.InputBinds["interact"]));
 		startText.Text = $"[wave amp=50.0 freq=5.0 connected=1][center]{_translation}[/center][/wave]";
 
 		githubButton.Pressed += () =>

@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://fcq0g0f37t00"]
-
-[ext_resource type="Texture2D" uid="uid://cb3wpt5sr1iv8" path="res://sprites/props/grass_1.png" id="1_enask"]
-
-[node name="grass" type="Sprite2D"]
-texture = ExtResource("1_enask")
-offset = Vector2(0, -8)

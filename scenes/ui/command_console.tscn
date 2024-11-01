@@ -7,6 +7,7 @@
 font_color = Color(0.160784, 0, 0.403922, 1)
 
 [node name="command console" type="CanvasLayer" node_paths=PackedStringArray("command_line_input", "log_print_text")]
+process_mode = 3
 visible = false
 script = ExtResource("1_qd4sp")
 command_line_input = NodePath("command_window/console/TextEdit")

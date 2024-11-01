@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmqcud1ngc0g5"]
+
+[ext_resource type="Texture2D" uid="uid://ci8b7hx82gd02" path="res://sprites/props/resort_rug.png" id="1_gd0a1"]
+
+[node name="bee_rug" type="Sprite2D"]
+texture = ExtResource("1_gd0a1")
+offset = Vector2(0, 31.06)
+metadata/id = "bee_rug"

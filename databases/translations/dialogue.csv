@@ -33,9 +33,16 @@ So sorry for all the mess of boxes! They won't let me touch them.
 >When I got nearby one, they just gave me a death stare(...)
 So I stay away from them ever since...",">(char(joy))Todavia estan llenando el complejo con todo tipo de fantasias
 Asi que lo siento por el monton de cajas! No me dejan tocarlas.
->Yo tampoco se, aquella polilla en la entrada me dijo que no podia.
->Cuando me acerce a una, me dio una mirada asesina(...)
+>Yo tampoco lo se, aquella polilla en la entrada me dijo que no podia.
+>Cuando me acerque a una, me dio una mirada asesina(...)
 Desde entonces no me acerco..."
+joy_flavor_2,">(char(joy))Aphid breeding has been on the rise more and more recently.
+Looks like bugs outside the Golden Settlement ask us for some of our own.
+>Makes me wonder why.
+>You should be able to help sooner or later, I heard they pay well!",">(char(joy))La crianza de afidos ha estado en la alza utlimamente.
+Parece que bichos fuera del Asentamiento nos piden unos pocos de los nuestros.
+>Me hace preguntar el porque.
+>Podras ayudar con eso en algun punto, ¡He escuchado que pagan bien!"
 azzy_flavor_0,">(char(azzy))(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
@@ -54,3 +61,18 @@ Don't tell him anything, a'rite?",">(char(azzy))Siempre pense que el dueño era 
 Por el otro lado, tiene una personalidad tan calida.
 >Aunque no deberia estar de chismosa
 No le digas nada, va?"
+azzy_flavor_2,">(char(azzy))I wonder how  things are up with the Wasps?...
+I left that place [wave amp=25.0 freq=5.0 connected=1]loooong[/wave] ago but I 'ear some stuff recently.
+>Maybe it was for the best. I enjoy life 'ere anyways.
+Even met my partner thanks to it.
+>Oh sorry, there goes me rambling again...(...)
+What'cha need, (name)?",">(char(azzy))Me pregunto que estaran haciendo las Avispas?...
+Deje ese lugar hace [wave amp=25.0 freq=5.0 connected=1]baaastante[/wave] rato, pero he oido cotilleos recientemente.
+>Creo que mejor por mi. Disfruto de la vida aqui.
+Incluso conoci a mi pareja aqui.
+>Oops, perdon, se me ha ido el hilo otra vez...(...)
+¿Que necesitas, (name)?"
+kut_flavor_0,">(char(kut))I cook cuisine for the little ones.
+If you got an ingredient on yourself then hand it over.",
+kut_flavor_1,">(char(kut))Mmpfh...
+",

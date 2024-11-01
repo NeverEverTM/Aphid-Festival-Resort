@@ -30,16 +30,16 @@ public partial class LoadGameMenu : Control
 			}
 
 			_data ??= new();
-			BaseButton _slot = savefile_slot.Instantiate().GetChild(0) as BaseButton;
+			Control _slot = savefile_slot.Instantiate() as Control;
 
-			(_slot.GetChild(0) as RichTextLabel).Text = _profile;
-			(_slot.GetChild(1) as Label).Text = TimeSpan.FromSeconds(_data.Playtime).ToString(@"hh\:mm\:ss");
-			(_slot.GetChild(2) as Label).Text = _data.AphidCount.ToString("000");
+			(_slot.FindChild("name_label") as RichTextLabel).Text = _profile;
+			(_slot.FindChild("time_label") as Label).Text = TimeSpan.FromSeconds(_data.Playtime).ToString(@"hh\:mm\:ss");
+			(_slot.FindChild("aphid_label") as Label).Text = _data.AphidCount.ToString("000");
 
-			_slot.Pressed += () => PlayFile(_profile);
-			(_slot.GetChild(3) as BaseButton).Pressed += () => DeleteFile(_profile, _slot.GetParent());
+			(_slot.FindChild("load_button") as BaseButton).Pressed += () => PlayFile(_profile);
+			(_slot.FindChild("delete_button") as BaseButton).Pressed += () => DeleteFile(_profile, _slot);
 
-			container.AddChild(_slot.GetParent());
+			container.AddChild(_slot);
 		}
     }
     public override void _Process(double delta)
@@ -47,7 +47,7 @@ public partial class LoadGameMenu : Control
         if (!Visible)
 			menuPlayer.Play("RESET");
     }
-    public void AddMenuActions()
+    public void AddMenuAction()
 	{
 		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDirectory).Length > 0)
 		{
@@ -84,10 +84,10 @@ public partial class LoadGameMenu : Control
 	}
 	private static void DeleteFile(string _profile, Node _slot)
 	{
-		ConfirmationPopup.CreateConfirmation(() => 
+		ConfirmationPopup.Create(() => 
 		{
 			MainMenu.DeleteResort(_profile);
 			_slot.QueueFree();
-		});
+		}, null, ConfirmationPopup.ConfirmationEnum.Safe);
 	}
 }

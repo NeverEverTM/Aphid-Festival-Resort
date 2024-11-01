@@ -7,7 +7,7 @@ public partial class DebugConsole : CanvasLayer
 	public static bool IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt,
 	LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair,
 	DidntSayIDidntWarnYouBeforeHand;
-	private static bool IsEnabled;
+	private static bool IsEnabled, lastPauseState;
 	private static string[] lastCommand;
 
 	[Export] public TextEdit command_line_input;
@@ -59,9 +59,16 @@ public partial class DebugConsole : CanvasLayer
 			if (Input.IsActionJustPressed("debug_0"))
 			{
 				if (Visible)
+				{
 					Hide();
+					GetTree().Paused = lastPauseState;
+				}
 				else
+				{
 					Show();
+					lastPauseState = GetTree().Paused;
+					GetTree().Paused = true;
+				}
 			}
 
 			if (Input.IsActionJustPressed("debug_1"))
@@ -79,7 +86,9 @@ public partial class DebugConsole : CanvasLayer
 	}
 	public readonly static Dictionary<string, IConsoleCommand> commands = new()
 	{
-		{ "spawn", new Spawner() }
+		{ "spawn", new Spawner() },
+		{ "motherload", new Motherload() },
+		{ "time", new DeLorean() }
 	};
 	public static bool TriggerCommand(string[] _commandLines)
 	{
@@ -127,7 +136,7 @@ public partial class DebugConsole : CanvasLayer
 
 	private class Spawner : IConsoleCommand
 	{
-		public string HelpText => "Spawns aphid :aphid:";
+		public string HelpText => "Spawns randomized aphids. <spawn>";
 
 		public void Execute(string[] args)
 		{
@@ -137,4 +146,33 @@ public partial class DebugConsole : CanvasLayer
 			ResortManager.CreateNewAphid(GameManager.Utils.GetMouseToWorldPosition(), _genes);
 		}
 	}
+    private class Motherload : IConsoleCommand
+    {
+        public string HelpText => "Gives you loads of money. <motherload> (specific amount)";
+
+        public void Execute(string[] args)
+        {
+			int _amount = 500;
+            if (args.Length > 1)
+				CheckValidType(args[1], out _amount);
+
+			Player.Data.Currency += _amount;
+			CanvasManager.UpdateCurrency();
+			Logger.Print(Logger.LogPriority.Log, $"You have been transfered ${_amount} from the Bank of Bugaria, free of charge!");
+        }
+    }
+    private class DeLorean : IConsoleCommand
+    {
+        public string HelpText => "Change the hour of the day. <time> [hh] [mm]";
+
+        public void Execute(string[] args)
+        {
+			var _date = Time.GetDatetimeDictFromSystem();
+			_date["hour"] = args[1];
+			_date["minute"] = args[2];
+            FieldManager.Instance.SetTimeAtmosphere(_date);
+
+			Logger.Print(Logger.LogPriority.Log, $"Time set to October 21 2015 {args[1]}:{args[2]}");
+        }
+    }
 }

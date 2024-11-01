@@ -1,11 +1,11 @@
-[gd_scene load_steps=48 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=57 format=3 uid="uid://bufmc14xek8uk"]
 
 [ext_resource type="Script" path="res://scripts/gui/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
 [ext_resource type="Texture2D" uid="uid://sgkiuo2x4mba" path="res://sprites/ui/weather_night.png" id="3_7sasc"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="4_bri73"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="5_ea4nc"]
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="6_pcakw"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="6_pcakw"]
 [ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/icon_camera.png" id="7_pfkc3"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_y632t"]
 [ext_resource type="Texture2D" uid="uid://3wk8a5raqbq4" path="res://sprites/ui/icon_menu.png" id="9_b5qdd"]
@@ -16,17 +16,27 @@
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="12_fyjyg"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="13_7k46k"]
 [ext_resource type="Script" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
-[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/select.wav" id="15_4n2d7"]
+[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="15_4n2d7"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="16_crekn"]
 [ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="19_h41ts"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="20_qrmy7"]
 [ext_resource type="Shader" path="res://scripts/shaders/outline.gdshader" id="21_6i3dt"]
-[ext_resource type="Texture2D" uid="uid://cu26vowepfgr4" path="res://sprites/ui/image1.PNG" id="22_w638k"]
-[ext_resource type="Texture2D" uid="uid://bfv23e4fa8qa7" path="res://sprites/ui/image2.PNG" id="23_anuoa"]
-[ext_resource type="Texture2D" uid="uid://cygbj5vvsndv0" path="res://sprites/ui/image3.PNG" id="24_h6uml"]
+[ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/ui/controls_panel.tscn" id="23_au4eg"]
+[ext_resource type="Script" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="25_8tdi4"]
+[ext_resource type="Texture2D" uid="uid://dknqeho1jsf5o" path="res://sprites/help_examples/aphid_egg.PNG" id="26_6gm3y"]
+[ext_resource type="Texture2D" uid="uid://eym7ebbf50iv" path="res://sprites/help_examples/aphid_leave.PNG" id="27_hp0ii"]
+[ext_resource type="Texture2D" uid="uid://b8fsibtdj5m8p" path="res://sprites/help_examples/food.PNG" id="28_cw4t2"]
+[ext_resource type="Texture2D" uid="uid://bjqhamn66qnsn" path="res://sprites/help_examples/shop.PNG" id="29_uxl73"]
+[ext_resource type="Texture2D" uid="uid://c2lrlam0erhiq" path="res://sprites/help_examples/money.PNG" id="30_7xxid"]
+[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="31_2tm07"]
+[ext_resource type="Texture2D" uid="uid://c6kkr4rw1ce15" path="res://sprites/help_examples/kut.PNG" id="31_uwabr"]
+[ext_resource type="Texture2D" uid="uid://b76u5f8hbpncc" path="res://sprites/help_examples/stats.PNG" id="31_x27oh"]
+[ext_resource type="Texture2D" uid="uid://drtx08aejoe38" path="res://sprites/help_examples/album.PNG" id="32_o4x4n"]
+[ext_resource type="Texture2D" uid="uid://6mmehkh5ph1d" path="res://sprites/help_examples/storage.PNG" id="33_mlkyv"]
+[ext_resource type="Texture2D" uid="uid://betmn30i4o88u" path="res://sprites/help_examples/furniture.PNG" id="34_v6us5"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_kugfj"]
 font_size = 75
@@ -500,9 +510,6 @@ shader_parameter/speed = 0.1
 shader_parameter/node_size = Vector2(32, 32)
 shader_parameter/color = Color(1, 1, 1, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_weebc"]
-font_size = 35
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_11acl"]
 shader = ExtResource("21_6i3dt")
 shader_parameter/color = Color(0.721569, 0.0313726, 0.164706, 1)
@@ -517,7 +524,6 @@ shader_parameter/number_of_images = Vector2(1, 1)
 font_size = 30
 
 [node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("currency_text", "weather_text", "weather_bg", "weather_player", "screenshot_button", "menu_button")]
-process_mode = 3
 script = ExtResource("1_vek4n")
 currency_text = NodePath("berries_bar/amount")
 weather_text = NodePath("datetime/weater_bg/weather_text")
@@ -527,7 +533,7 @@ weather_player = NodePath("datetime/AnimationPlayer")
 screenshot_button = NodePath("screenshotButton")
 menu_button = NodePath("menuButton")
 
-[node name="berries_bar" type="TextureRect" parent="."]
+[node name="berries_bar" type="NinePatchRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 anchors_preset = 1
 anchor_left = 1.0
@@ -536,7 +542,11 @@ offset_left = -139.0
 offset_bottom = 60.0
 grow_horizontal = 0
 texture = ExtResource("4_bri73")
-expand_mode = 2
+region_rect = Rect2(0, 0, 128, 128)
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
 
 [node name="icon" type="TextureRect" parent="berries_bar"]
 layout_mode = 0
@@ -624,7 +634,7 @@ libraries = {
 "": SubResource("AnimationLibrary_4mtcm")
 }
 
-[node name="inventory" type="Control" parent="." node_paths=PackedStringArray("inventory_player", "inventoryGrid")]
+[node name="inventory" type="Control" parent="." node_paths=PackedStringArray("inventory_player", "inventoryGrid", "inventoryCount")]
 visible = false
 layout_mode = 3
 anchors_preset = 7
@@ -637,10 +647,12 @@ offset_top = -40.0
 offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
+theme = ExtResource("6_pcakw")
 script = ExtResource("10_wibaw")
 inventory_player = NodePath("animator")
 inventoryGrid = NodePath("anchor/inventory_container")
 invItemContainer = ExtResource("11_u4uj5")
+inventoryCount = NodePath("anchor/count_bg/inventory_count")
 
 [node name="animator" type="AnimationPlayer" parent="inventory"]
 libraries = {
@@ -658,8 +670,27 @@ layout_mode = 0
 offset_left = -545.0
 offset_top = 250.0
 offset_right = 587.0
-offset_bottom = 534.0
-texture = ExtResource("10_svke5")
+offset_bottom = 429.0
+texture = ExtResource("20_qrmy7")
+
+[node name="count_bg" type="TextureRect" parent="inventory/anchor"]
+self_modulate = Color(0.32549, 0.0117647, 0.117647, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_left = -482.0
+offset_top = 213.0
+offset_right = -354.0
+offset_bottom = 341.0
+texture = ExtResource("4_bri73")
+
+[node name="inventory_count" type="Label" parent="inventory/anchor/count_bg"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 7.0
+offset_right = 104.0
+offset_bottom = 55.0
+text = "0/15"
+vertical_alignment = 1
 
 [node name="inventory_container" type="HBoxContainer" parent="inventory/anchor"]
 layout_mode = 0
@@ -769,10 +800,10 @@ texture_filter = 1
 texture_repeat = 2
 material = SubResource("ShaderMaterial_6fndo")
 layout_mode = 0
-offset_left = -619.0
-offset_top = -226.0
-offset_right = -7.0
-offset_bottom = 69.0
+offset_left = -119.0
+offset_top = -53.0
+offset_right = 220.0
+offset_bottom = 144.0
 scale = Vector2(4, 4)
 texture = ExtResource("18_i8b57")
 stretch_mode = 1
@@ -785,7 +816,15 @@ offset_top = -20.0
 offset_right = 20.0
 offset_bottom = 20.0
 
-[node name="controls_panel" type="Control" parent="pause_menu"]
+[node name="controls_panel" parent="pause_menu" instance=ExtResource("23_au4eg")]
+visible = false
+layout_mode = 1
+offset_left = 515.0
+offset_top = 301.0
+offset_right = 555.0
+offset_bottom = 341.0
+
+[node name="help_panel" type="Control" parent="pause_menu" node_paths=PackedStringArray("helpDescriptions")]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -799,219 +838,319 @@ offset_right = 547.0
 offset_bottom = 334.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("24_xmavb")
+helpDescriptions = [NodePath("ScrollContainer/Control/desc_0/welcome"), NodePath("ScrollContainer/Control/desc_1/care"), NodePath("ScrollContainer/Control/desc_2/shop"), NodePath("ScrollContainer/Control/desc_3/money"), NodePath("ScrollContainer/Control/desc_4/kitchen"), NodePath("ScrollContainer/Control/desc_6/album"), NodePath("ScrollContainer/Control/desc_5/stats"), NodePath("ScrollContainer/Control/desc_7/resort")]
 
-[node name="movement" type="TextureRect" parent="pause_menu/controls_panel"]
-visible = false
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+[node name="ScrollContainer" type="ScrollContainer" parent="pause_menu/help_panel"]
 layout_mode = 0
-offset_left = -532.0
-offset_top = -292.0
-offset_right = 590.0
-offset_bottom = -145.0
-texture = ExtResource("20_qrmy7")
+offset_left = -612.0
+offset_top = -338.0
+offset_right = 654.0
+offset_bottom = 381.0
+horizontal_scroll_mode = 0
 
-[node name="label" type="Label" parent="pause_menu/controls_panel/movement"]
+[node name="Control" type="Control" parent="pause_menu/help_panel/ScrollContainer"]
+custom_minimum_size = Vector2(1142.29, 3800)
+layout_mode = 2
+
+[node name="img" type="Control" parent="pause_menu/help_panel/ScrollContainer/Control"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="open_inv_image" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
 layout_mode = 0
-offset_left = 47.0
-offset_top = 23.0
+offset_left = 151.0
+offset_top = 279.0
+offset_right = 572.0
+offset_bottom = 527.0
+texture = ExtResource("26_6gm3y")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="drop_item_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 656.0
+offset_top = 274.0
+offset_right = 999.0
+offset_bottom = 526.0
+texture = ExtResource("27_hp0ii")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="food_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 662.0
+offset_top = 604.0
+offset_right = 1122.0
+offset_bottom = 952.0
+texture = ExtResource("28_cw4t2")
+stretch_mode = 4
+
+[node name="shop_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 354.0
+offset_top = 1208.0
+offset_right = 838.0
+offset_bottom = 1509.0
+texture = ExtResource("29_uxl73")
+stretch_mode = 4
+
+[node name="money_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 653.0
+offset_top = 1549.0
+offset_right = 1063.0
+offset_bottom = 1871.0
+texture = ExtResource("30_7xxid")
+stretch_mode = 4
+
+[node name="kitchen_npc_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 147.0
+offset_top = 2145.0
+offset_right = 540.0
+offset_bottom = 2372.0
+texture = ExtResource("31_uwabr")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="kitchen_interface_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 598.0
+offset_top = 2148.0
+offset_right = 986.0
+offset_bottom = 2375.0
+texture = ExtResource("31_2tm07")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="stats_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 623.0
+offset_top = 2409.0
 offset_right = 1049.0
-offset_bottom = 121.0
-text = "controls_movement"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="interaction" type="TextureRect" parent="pause_menu/controls_panel"]
-visible = false
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = -331.592
-offset_top = -152.865
-offset_right = 397.408
-offset_bottom = -30.8648
-texture = ExtResource("20_qrmy7")
-
-[node name="label" type="Label" parent="pause_menu/controls_panel/interaction"]
-layout_mode = 0
-offset_left = 47.0
-offset_top = 23.0
-offset_right = 686.0
-offset_bottom = 94.0
-text = "controls_interaction"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="cancel" type="TextureRect" parent="pause_menu/controls_panel"]
-visible = false
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = -438.0
-offset_top = -39.0
-offset_right = 514.0
-offset_bottom = 83.0
-texture = ExtResource("20_qrmy7")
-
-[node name="label" type="Label" parent="pause_menu/controls_panel/cancel"]
-layout_mode = 0
-offset_left = 47.0
-offset_top = 23.0
-offset_right = 902.0
-offset_bottom = 94.0
-text = "controls_cancel"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="pickup" type="TextureRect" parent="pause_menu/controls_panel"]
-visible = false
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = -331.246
-offset_top = 88.9999
-offset_right = 397.754
-offset_bottom = 211.0
-texture = ExtResource("20_qrmy7")
-
-[node name="label" type="Label" parent="pause_menu/controls_panel/pickup"]
-layout_mode = 0
-offset_left = 47.0
-offset_top = 23.0
-offset_right = 686.0
-offset_bottom = 94.0
-text = "controls_pickup"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="menus" type="TextureRect" parent="pause_menu/controls_panel"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = -552.0
-offset_top = -349.0
-offset_right = 564.0
-offset_bottom = 371.0
-texture = ExtResource("20_qrmy7")
-
-[node name="label" type="Label" parent="pause_menu/controls_panel/menus"]
-layout_mode = 0
-offset_left = 43.0
-offset_top = 77.0
-offset_right = 1046.0
-offset_bottom = 646.0
-text = "Controles/Controls
-SPACE BAR = Pickup/Agarrar
-SHIFT = Run/Correr
-MOUSE RIGHT = Interact/Interactuar
-MOUSE LEFT = Cancel/Cancelar
-
-Q = Free Camera/Camera Libre
-R = Sell Selected Furnutire/Vender objecto seleccionado
-E = Store Selected Furniture/Guardar objecto seleccionado
-
-E = Open Generations/Abrir Generaciones
-TAB = Open Inventory/Abrir Inventario"
-label_settings = SubResource("LabelSettings_weebc")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="help_panel" type="Control" parent="pause_menu"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 507.0
-offset_top = 294.0
-offset_right = 547.0
-offset_bottom = 334.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="image1" type="TextureRect" parent="pause_menu/help_panel"]
-material = SubResource("ShaderMaterial_11acl")
-layout_mode = 0
-offset_left = -531.556
-offset_top = -234.66
-offset_right = -143.556
-offset_bottom = 24.3397
-texture = ExtResource("22_w638k")
+offset_bottom = 2752.0
+texture = ExtResource("31_x27oh")
+expand_mode = 1
 stretch_mode = 4
 
-[node name="image2" type="TextureRect" parent="pause_menu/help_panel"]
+[node name="album_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
 material = SubResource("ShaderMaterial_11acl")
 layout_mode = 0
-offset_left = -181.447
-offset_top = 38.5457
-offset_right = 312.553
-offset_bottom = 310.546
-texture = ExtResource("23_anuoa")
+offset_left = 283.0
+offset_top = 2977.0
+offset_right = 795.0
+offset_bottom = 3281.0
+texture = ExtResource("32_o4x4n")
+expand_mode = 1
 stretch_mode = 4
 
-[node name="image3" type="TextureRect" parent="pause_menu/help_panel"]
+[node name="build_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
 material = SubResource("ShaderMaterial_11acl")
 layout_mode = 0
-offset_left = 276.318
-offset_top = -236.342
-offset_right = 581.318
-offset_bottom = -7.34235
-texture = ExtResource("24_h6uml")
+offset_left = 202.0
+offset_top = 3531.0
+offset_right = 456.0
+offset_bottom = 3771.0
+texture = ExtResource("33_mlkyv")
+expand_mode = 1
 stretch_mode = 4
 
-[node name="desc_1" type="TextureRect" parent="pause_menu/help_panel"]
+[node name="furniture_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
+material = SubResource("ShaderMaterial_11acl")
+layout_mode = 0
+offset_left = 542.0
+offset_top = 3536.0
+offset_right = 895.0
+offset_bottom = 3767.0
+texture = ExtResource("34_v6us5")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="desc_0" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
-offset_left = -514.646
-offset_top = 40.1847
-offset_right = -225.646
-offset_bottom = 299.185
-texture = ExtResource("4_bri73")
+offset_left = 47.0
+offset_top = 29.0
+offset_right = 1106.0
+offset_bottom = 271.0
+texture = ExtResource("20_qrmy7")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="pause_menu/help_panel/desc_1"]
+[node name="welcome" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_0"]
 layout_mode = 0
-offset_left = 31.0
-offset_top = 28.0
-offset_right = 262.0
-offset_bottom = 235.0
+offset_left = 66.0
+offset_top = 38.0
+offset_right = 986.0
+offset_bottom = 209.0
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
-text = "help_desc_0"
+text = "Welcome to the Resort! Start by hatching your first Aphid.
+Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
+Use the same button to pickup stuff as well!"
+scroll_active = false
 
-[node name="desc_2" type="TextureRect" parent="pause_menu/help_panel"]
+[node name="desc_1" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
-offset_left = -120.682
-offset_top = -263.454
-offset_right = 222.318
-offset_bottom = 19.5457
+offset_left = 47.0
+offset_top = 548.0
+offset_right = 636.0
+offset_bottom = 1002.0
 texture = ExtResource("4_bri73")
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="pause_menu/help_panel/desc_2"]
+[node name="care" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_1"]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 23.0
-offset_right = 300.0
-offset_bottom = 254.0
+offset_left = 66.0
+offset_top = 43.0
+offset_right = 528.0
+offset_bottom = 409.0
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
-text = "help_desc_1"
+text = "Welcome to the Resort! Start by hatching your first Aphid.
+Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
+Use the same button to pickup stuff as well!"
+scroll_active = false
 
-[node name="desc_3" type="TextureRect" parent="pause_menu/help_panel"]
+[node name="desc_2" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
-offset_left = 334.506
-offset_top = 40.1842
-offset_right = 623.506
-offset_bottom = 299.184
-texture = ExtResource("4_bri73")
+offset_left = 47.0
+offset_top = 997.0
+offset_right = 1106.0
+offset_bottom = 1199.0
+texture = ExtResource("20_qrmy7")
 
-[node name="RichTextLabel3" type="RichTextLabel" parent="pause_menu/help_panel/desc_3"]
+[node name="shop" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_2"]
 layout_mode = 0
-offset_left = 29.4042
-offset_top = 25.8813
-offset_right = 260.404
-offset_bottom = 232.881
+offset_left = 66.0
+offset_top = 38.0
+offset_right = 986.0
+offset_bottom = 209.0
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
-text = "help_desc_2"
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="desc_3" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = 66.0
+offset_top = 1525.0
+offset_right = 623.0
+offset_bottom = 1881.0
+texture = ExtResource("4_bri73")
+
+[node name="money" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_3"]
+layout_mode = 0
+offset_left = 55.0
+offset_top = 38.0
+offset_right = 522.0
+offset_bottom = 382.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="desc_4" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = 37.0
+offset_top = 1891.0
+offset_right = 1096.0
+offset_bottom = 2133.0
+texture = ExtResource("20_qrmy7")
+
+[node name="kitchen" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_4"]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 38.0
+offset_right = 988.0
+offset_bottom = 209.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="desc_5" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = 38.0
+offset_top = 2391.0
+offset_right = 600.0
+offset_bottom = 2769.0
+texture = ExtResource("4_bri73")
+
+[node name="stats" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_5"]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 38.0
+offset_right = 505.0
+offset_bottom = 340.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="desc_6" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = 26.0
+offset_top = 2790.0
+offset_right = 1117.0
+offset_bottom = 2971.0
+texture = ExtResource("20_qrmy7")
+
+[node name="album" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_6"]
+layout_mode = 0
+offset_left = 63.0
+offset_top = 27.0
+offset_right = 1028.0
+offset_bottom = 151.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="desc_7" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+layout_mode = 0
+offset_left = 58.0
+offset_top = 3276.0
+offset_right = 1117.0
+offset_bottom = 3518.0
+texture = ExtResource("20_qrmy7")
+
+[node name="resort" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_7"]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 38.0
+offset_right = 988.0
+offset_bottom = 209.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
 
 [node name="panel_bg" type="TextureRect" parent="pause_menu"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
@@ -1030,12 +1169,15 @@ offset_right = 309.0
 offset_bottom = 302.0
 
 [node name="resume" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.835294, 0.196078, 0.301961, 1)
+self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
 texture_focused = ExtResource("25_8tdi4")
+script = ExtResource("8_y632t")
+PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
+HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
 [node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/resume"]
 layout_mode = 0
@@ -1048,12 +1190,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="options" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.835294, 0.196078, 0.301961, 1)
+self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
 texture_focused = ExtResource("25_8tdi4")
+script = ExtResource("8_y632t")
+PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
+HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
 [node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/options"]
 layout_mode = 0
@@ -1066,12 +1211,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="controls" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.835294, 0.196078, 0.301961, 1)
+self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
 texture_focused = ExtResource("25_8tdi4")
+script = ExtResource("8_y632t")
+PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
+HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
 [node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/controls"]
 layout_mode = 0
@@ -1084,12 +1232,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="help" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.835294, 0.196078, 0.301961, 1)
+self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
 texture_focused = ExtResource("25_8tdi4")
+script = ExtResource("8_y632t")
+PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
+HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
 [node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/help"]
 layout_mode = 0
@@ -1102,12 +1253,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="backToMenu" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.835294, 0.196078, 0.301961, 1)
+self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
 texture_focused = ExtResource("25_8tdi4")
+script = ExtResource("8_y632t")
+PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
+HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
 [node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/backToMenu"]
 layout_mode = 0
@@ -1120,12 +1274,15 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="exit" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.835294, 0.196078, 0.301961, 1)
+self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
 texture_focused = ExtResource("25_8tdi4")
+script = ExtResource("8_y632t")
+PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
+HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
 [node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/exit"]
 layout_mode = 0

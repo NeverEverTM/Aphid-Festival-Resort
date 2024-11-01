@@ -1,6 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://bjklv67ruacof"]
+[gd_scene load_steps=10 format=3 uid="uid://bjklv67ruacof"]
 
-[ext_resource type="Texture2D" uid="uid://c7d1wscrjqwfu" path="res://sprites/icons/water.tres" id="1_oxycd"]
+[ext_resource type="Texture2D" uid="uid://efip8uewmr6g" path="res://sprites/particles/rain_drop.tres" id="1_w8vya"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1mep3"]
 light_mode = 1
@@ -19,6 +19,14 @@ point_count = 2
 [sub_resource type="CurveTexture" id="CurveTexture_lm3wu"]
 curve = SubResource("Curve_iqxmv")
 
+[sub_resource type="Curve" id="Curve_emthf"]
+max_value = 3.0
+_data = [Vector2(0.00362319, 0.283019), 0.0, 0.0, 0, 0, Vector2(0.974638, 3), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_k5735"]
+curve = SubResource("Curve_emthf")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_41uej"]
 lifetime_randomness = 0.44
 particle_flag_disable_z = true
@@ -33,6 +41,9 @@ initial_velocity_max = 196.97
 gravity = Vector3(-500, 980, 0)
 scale_min = 0.25
 scale_curve = SubResource("CurveTexture_lm3wu")
+scale_over_velocity_min = 1.55
+scale_over_velocity_max = 1.85
+scale_over_velocity_curve = SubResource("CurveTexture_k5735")
 color = Color(0.756863, 0.909804, 1, 1)
 alpha_curve = SubResource("CurveTexture_apq25")
 turbulence_noise_strength = 0.0
@@ -47,6 +58,6 @@ material = SubResource("CanvasItemMaterial_1mep3")
 position = Vector2(564, 312)
 amount = 3000
 process_material = SubResource("ParticleProcessMaterial_41uej")
-texture = ExtResource("1_oxycd")
-lifetime = 5.0
+texture = ExtResource("1_w8vya")
+lifetime = 2.0
 randomness = 0.95

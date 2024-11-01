@@ -13,6 +13,7 @@ public static class SaveSystem
 
 	public const string
 	ProfilesDirectory = "user://profiles",
+	ControlsDirectory = "user://controls/",
 	defaultProfile = "default",
 	backupFolder = "/backup",
 	screenshotsFolder = "/screenshots/",
@@ -88,7 +89,10 @@ public static class SaveSystem
 		{
 			string _path = "user://" + $"{GlobalData[i].GetId()}.json";
 			if (!FileAccess.FileExists(_path))
+			{
+				await GlobalData[i].SetData();
 				continue;
+			}
 			using var _profile = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
 			await GlobalData[i].LoadData(_profile.GetPascalString());
 		}
@@ -361,6 +365,10 @@ public static class SaveSystem
 		/// Attempts to use the loaded data to set itself up.
 		/// </summary>
 		public Task LoadData(string _json);
+		/// <summary>
+		/// Creates a new instance of the data present, this is used to restart back to a default state.
+		/// </summary>
+		/// <returns></returns>
 		public Task SetData();
 	}
 

@@ -2,6 +2,7 @@ using Godot;
 
 public partial class FieldManager : Node2D
 {
+	public static FieldManager Instance { get; set; }
 	[Export] private CanvasModulate globalFilter;
 
 	public enum DayHours { Morning, Noon, Sunset, Night }
@@ -21,8 +22,12 @@ public partial class FieldManager : Node2D
 		new(0.435f, 0.33f, 0.823f) // Night
 	};
 
+	public delegate void HourlyCall();
+	public static HourlyCall OnTimeChange { get; set; }
+
 	public override void _EnterTree()
 	{
+		Instance = this;
 		SetTimeAtmosphere();
 	}
 
@@ -55,15 +60,17 @@ public partial class FieldManager : Node2D
 			var _date = Time.GetDatetimeDictFromSystem();
 			_timeloop.ProcessMode = ProcessModeEnum.Always;
 			_timeloop.Start(((60 - (int)_date["minute"]) * 60) - (int)_date["second"]);
+			OnTimeChange?.Invoke();
 		};
 		AddChild(_timeloop);
 		_timeloop.Start();
 	}
 
 	// sets the atmosphere according to time and weather
-	public void SetTimeAtmosphere()
+	public void SetTimeAtmosphere(Godot.Collections.Dictionary _date = null)
 	{
-		var _date = Time.GetDatetimeDictFromSystem();
+		_date ??= Time.GetDatetimeDictFromSystem();
+			
 		DayHours timeDay = DayHours.Night;
 		byte _hour = (byte)_date["hour"];
 		// 8PM to 6AM is Night 
@@ -76,7 +83,9 @@ public partial class FieldManager : Node2D
 			else // 4PM to 8PM is Sunset
 				timeDay = DayHours.Sunset;
 		}
-		globalFilter.Color = DayFilters[(int)timeDay];
+		Tween _tween = GetTree().CreateTween();
+		_tween.BindNode(globalFilter);
+		_tween.TweenProperty(globalFilter, "color", DayFilters[(int)timeDay], 3);
 		TimeOfDay = timeDay;
 	}
 }

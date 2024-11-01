@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://cifp27quamefu"]
 
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_7dg2u"]
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="1_aiyqr"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_aiyqr"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="2_m7b1n"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="2_wdaeh"]
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="3_jpjxh"]
@@ -12,57 +12,81 @@ font_size = 30
 
 [node name="savefile_slot" type="Control"]
 self_modulate = Color(0.545098, 0.0745098, 0.172549, 1)
-custom_minimum_size = Vector2(1000, 175)
+custom_minimum_size = Vector2(700, 175)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 1003.0
+offset_right = 829.0
 offset_bottom = 190.0
 theme = ExtResource("1_aiyqr")
 
-[node name="GlowButton" type="TextureButton" parent="."]
+[node name="delete_button" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 700.0
+offset_top = 47.0
+offset_right = 821.0
+offset_bottom = 160.0
+texture_normal = ExtResource("6_x3euj")
+stretch_mode = 4
+script = ExtResource("2_m7b1n")
+PressedColor = Color(0.25098, 0.262745, 0.262745, 1)
+FocusColor = Color(0.603922, 0.588235, 0.596078, 1)
+HoverColor = Color(0.603922, 0.588235, 0.596078, 1)
+
+[node name="load_button" type="TextureButton" parent="."]
 self_modulate = Color(0.545098, 0.0745098, 0.172549, 1)
 layout_mode = 0
 offset_top = 35.0
-offset_right = 993.0
+offset_right = 702.0
 offset_bottom = 168.0
 texture_normal = ExtResource("1_7dg2u")
 ignore_texture_size = true
-stretch_mode = 0
+stretch_mode = 4
 script = ExtResource("2_m7b1n")
 PressedColor = Color(0.764706, 0.160784, 0.392157, 1)
 FocusColor = Color(0.690196, 0.0627451, 0.584314, 1)
 HoverColor = Color(0.764706, 0.160784, 0.392157, 1)
 
-[node name="name_label" type="RichTextLabel" parent="GlowButton"]
+[node name="name_label" type="RichTextLabel" parent="."]
 layout_mode = 0
 offset_left = 40.0
-offset_top = 40.0
-offset_right = 807.0
-offset_bottom = 88.0
+offset_top = 75.0
+offset_right = 668.0
+offset_bottom = 123.0
 mouse_filter = 2
 theme_override_fonts/normal_font = ExtResource("2_wdaeh")
 theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
-text = "[rainbow freq=0.5 sat=0.5 val=0.9]Deluxe Aphid Manor: Triple Threat[/rainbow]"
+text = "[rainbow freq=0.5 sat=0.5 val=0.9]Deluxe Aphid Manor: Triple Threat[/rainbow]dadaadadadadad"
+autowrap_mode = 0
 
-[node name="time_label" type="Label" parent="GlowButton"]
+[node name="time_label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 775.0
-offset_top = -24.0
-offset_right = 890.0
-offset_bottom = 12.0
+offset_left = 119.0
+offset_top = 26.0
+offset_right = 234.0
+offset_bottom = 62.0
 text = "99:99:99"
 label_settings = SubResource("LabelSettings_i2bs8")
 
-[node name="aphid_label" type="Label" parent="GlowButton"]
+[node name="time_bg" type="TextureRect" parent="time_label"]
+self_modulate = Color(0.756863, 0.129412, 0.254902, 1)
+show_behind_parent = true
 layout_mode = 0
-offset_left = 884.0
-offset_top = 42.0
-offset_right = 952.0
-offset_bottom = 90.0
+offset_left = -68.0
+offset_top = -12.0
+offset_right = 188.0
+offset_bottom = 48.0
+texture = ExtResource("1_7dg2u")
+
+[node name="aphid_label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 499.0
+offset_top = 21.0
+offset_right = 567.0
+offset_bottom = 69.0
 text = "100"
 
-[node name="aphid_icon" type="TextureRect" parent="GlowButton/aphid_label"]
+[node name="aphid_icon" type="TextureRect" parent="aphid_label"]
 layout_mode = 0
 offset_left = -51.0
 offset_top = 5.0
@@ -70,24 +94,12 @@ offset_right = -11.0
 offset_bottom = 45.0
 texture = ExtResource("3_jpjxh")
 
-[node name="deleteButton" type="TextureButton" parent="GlowButton"]
-layout_mode = 0
-offset_left = 9.0
-offset_top = -9.0
-offset_right = 59.0
-offset_bottom = 41.0
-texture_normal = ExtResource("6_x3euj")
-script = ExtResource("2_m7b1n")
-PressedColor = Color(0.827451, 0.235294, 0.290196, 1)
-FocusColor = Color(0, 0.898039, 0.988235, 1)
-HoverColor = Color(0.780392, 0, 0.411765, 1)
-
-[node name="time_bg" type="TextureRect" parent="."]
+[node name="aphid_bg" type="TextureRect" parent="aphid_label"]
 self_modulate = Color(0.756863, 0.129412, 0.254902, 1)
 show_behind_parent = true
 layout_mode = 0
-offset_left = 706.0
-offset_top = 2.0
-offset_right = 962.0
-offset_bottom = 62.0
+offset_left = -114.0
+offset_top = -7.0
+offset_right = 142.0
+offset_bottom = 53.0
 texture = ExtResource("1_7dg2u")

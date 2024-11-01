@@ -1,0 +1,70 @@
+[gd_scene load_steps=12 format=3 uid="uid://cfc82bcat14oh"]
+
+[ext_resource type="Texture2D" uid="uid://cn8dkk8s0hi0u" path="res://sprites/particles/harvest_sprite.tres" id="1_jjsms"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_sih33"]
+light_mode = 1
+
+[sub_resource type="Curve" id="Curve_qasph"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_apq25"]
+curve = SubResource("Curve_qasph")
+
+[sub_resource type="Curve" id="Curve_ruyml"]
+min_value = -360.0
+max_value = 360.0
+_data = [Vector2(0.0181159, -9.50946), 0.0, 0.0, 0, 0, Vector2(0.98913, 66.566), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_gtfx1"]
+curve = SubResource("Curve_ruyml")
+
+[sub_resource type="Curve" id="Curve_e86sg"]
+_data = [Vector2(0.0543478, 0.018868), 0.0, 0.0, 0, 0, Vector2(0.974638, 0.89434), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_kxb76"]
+curve_y = SubResource("Curve_e86sg")
+
+[sub_resource type="Curve" id="Curve_obm67"]
+_data = [Vector2(0, 0.0490566), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xneat"]
+curve = SubResource("Curve_obm67")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_41uej"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(50, 20, 1)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+angle_min = -18.0
+angle_max = 18.0
+angular_velocity_min = -1.0
+angular_velocity_max = 1.0
+angular_velocity_curve = SubResource("CurveTexture_gtfx1")
+directional_velocity_min = -100.0
+directional_velocity_max = -50.0
+directional_velocity_curve = SubResource("CurveXYZTexture_kxb76")
+radial_velocity_min = -2.7
+radial_velocity_max = 1.65
+gravity = Vector3(0, 0, 0)
+attractor_interaction_enabled = false
+scale_min = 3.0
+scale_max = 4.0
+scale_curve = SubResource("CurveTexture_xneat")
+alpha_curve = SubResource("CurveTexture_apq25")
+turbulence_noise_strength = 20.0
+turbulence_noise_scale = 6.28
+turbulence_influence_min = 0.359
+turbulence_influence_max = 0.969
+
+[node name="GPU_HeartParticles" type="GPUParticles2D"]
+z_index = 1000
+material = SubResource("CanvasItemMaterial_sih33")
+amount = 2
+process_material = SubResource("ParticleProcessMaterial_41uej")
+texture = ExtResource("1_jjsms")
+explosiveness = 0.5

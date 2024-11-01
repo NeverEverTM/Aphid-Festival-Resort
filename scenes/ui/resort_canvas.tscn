@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cv3cq1quo8mf6" path="res://sprites/ui/icon_build.png" id="4_iu7p2"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="5_i34va"]
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/icon_x.png" id="6_iw7vy"]
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://sprites/ui/default_theme.tres" id="7_uocqb"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="7_uocqb"]
 [ext_resource type="Script" path="res://scripts/panels/GenerationsTracker.cs" id="8_pnptv"]
 [ext_resource type="PackedScene" uid="uid://d7m5e6tlxyve" path="res://scenes/ui/aphid_slot.tscn" id="9_0hi6w"]
 [ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="10_i403g"]
@@ -16,7 +16,6 @@
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="14_d577d"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="15_ghqbq"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="16_1fh83"]
-[ext_resource type="Texture2D" uid="uid://bn3tnbbaha27c" path="res://sprites/ui/hashtag.tres" id="17_imyhv"]
 [ext_resource type="Texture2D" uid="uid://citpisbl80p5f" path="res://sprites/ui/heart_frame.png" id="18_nefsf"]
 [ext_resource type="Texture2D" uid="uid://duck48iqhler" path="res://sprites/ui/heart_bg.png" id="19_oe4yt"]
 [ext_resource type="Texture2D" uid="uid://cokhm2yr7lq64" path="res://sprites/ui/heart_full.tres" id="20_liv8f"]
@@ -30,19 +29,20 @@
 [ext_resource type="Script" path="res://scripts/panels/ItemShop.cs" id="28_xm5ie"]
 [ext_resource type="PackedScene" uid="uid://cn7d8wjyx78a3" path="res://scenes/ui/item_container.tscn" id="29_mvok5"]
 [ext_resource type="AudioStream" uid="uid://deyj10uei0gk1" path="res://sfx/ui/kaching.wav" id="30_mc2ca"]
-[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/select.wav" id="31_0kj0x"]
+[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="31_0kj0x"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="32_iw5ng"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="33_gn48s"]
 [ext_resource type="Script" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="35_dvpl5"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="36_g3t8v"]
 [ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="37_eiku4"]
+[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="38_aw538"]
 [ext_resource type="Script" path="res://scripts/panels/BuildMenu.cs" id="38_k0d1x"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/icon_arrow.png" id="39_ysf7p"]
 [ext_resource type="Texture2D" uid="uid://d0mn4yli60w2k" path="res://sprites/ui/icon_furniture.png" id="40_iuxyn"]
 [ext_resource type="Script" path="res://scripts/panels/FurnitureShop.cs" id="41_t8bbk"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="42_3hjo3"]
-[ext_resource type="Texture2D" uid="uid://00e3bwje1sas" path="res://sprites/icons/missing.tres" id="43_4ywxe"]
+[ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="43_4ywxe"]
 
 [sub_resource type="Animation" id="Animation_he8jw"]
 length = 0.001
@@ -108,7 +108,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(58, 8), Vector2(58, 8)]
+"values": [Vector2(44, 8), Vector2(44, 8)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -117,10 +117,10 @@ tracks/2/path = NodePath("..:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.4),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [false]
+"values": [true, false]
 }
 
 [sub_resource type="Animation" id="Animation_v7sb2"]
@@ -148,7 +148,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.3, 0.5),
 "transitions": PackedFloat32Array(-1.07177, 0.25, -2),
 "update": 0,
-"values": [Vector2(58, 200), Vector2(58, 0), Vector2(58, 8)]
+"values": [Vector2(44, 200), Vector2(44, 0), Vector2(44, 4)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -1222,10 +1222,13 @@ _data = {
 font_size = 30
 font_color = Color(0, 0, 0, 1)
 
-[node name="resort_canvas" type="CanvasLayer" node_paths=PackedStringArray("freeCameraHUD")]
+[node name="resort_canvas" type="CanvasLayer" node_paths=PackedStringArray("freeCameraHUD", "build_button", "show_storage_button", "build_menu")]
 layer = 0
 script = ExtResource("1_i0o2h")
 freeCameraHUD = NodePath("freeCameraHUD/hud_animation")
+build_button = NodePath("freeCameraHUD/bg/HBoxContainer/buildButton")
+show_storage_button = NodePath("build_menu/sliding_panel/sliding_popup/show_storage")
+build_menu = NodePath("build_menu")
 
 [node name="freeCameraHUD" type="Control" parent="."]
 visible = false
@@ -1248,24 +1251,28 @@ libraries = {
 "": SubResource("AnimationLibrary_ebyno")
 }
 
-[node name="bg" type="TextureRect" parent="freeCameraHUD"]
+[node name="bg" type="NinePatchRect" parent="freeCameraHUD"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 use_parent_material = true
 layout_mode = 0
 offset_left = -148.0
 offset_top = -51.0
 offset_right = 195.0
-offset_bottom = 60.0007
+offset_bottom = 39.0
 texture = ExtResource("3_yrmm3")
-expand_mode = 1
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="freeCameraHUD/bg"]
 use_parent_material = true
 layout_mode = 0
 offset_left = 58.0
 offset_top = 8.0
-offset_right = 299.0
-offset_bottom = 92.0
+offset_right = 323.0
+offset_bottom = 92.0001
+theme_override_constants/separation = 20
 
 [node name="buildButton" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
 use_parent_material = true
@@ -1279,15 +1286,16 @@ PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
 FocusColor = Color(0.345098, 0.603922, 0.917647, 1)
 HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
-[node name="TextureButton" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
-modulate = Color(0.462745, 0.462745, 0.462745, 1)
+[node name="furnitureButton" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
 use_parent_material = true
 custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
 size_flags_vertical = 4
-disabled = true
-texture_disabled = ExtResource("6_iw7vy")
-stretch_mode = 0
+texture_normal = ExtResource("40_iuxyn")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
+HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
 [node name="TextureButton2" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
 modulate = Color(0.462745, 0.462745, 0.462745, 1)
@@ -1296,6 +1304,7 @@ custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
 size_flags_vertical = 4
 disabled = true
+texture_normal = ExtResource("40_iuxyn")
 texture_disabled = ExtResource("6_iw7vy")
 stretch_mode = 0
 
@@ -1453,17 +1462,6 @@ deselect_on_focus_loss_enabled = false
 drag_and_drop_selection_enabled = false
 wrap_mode = 1
 
-[node name="hash" type="TextureButton" parent="aphid_info/bio"]
-use_parent_material = true
-layout_mode = 0
-offset_left = 318.0
-offset_top = 43.0
-offset_right = 350.0
-offset_bottom = 75.0
-tooltip_text = "Copy the Aphid ID"
-texture_normal = ExtResource("17_imyhv")
-stretch_mode = 0
-
 [node name="bondship" type="TextureProgressBar" parent="aphid_info/bio"]
 use_parent_material = true
 layout_mode = 0
@@ -1487,6 +1485,7 @@ offset_bottom = 260.0
 texture = ExtResource("14_d577d")
 
 [node name="health" type="TextureRect" parent="aphid_info/bio"]
+visible = false
 use_parent_material = true
 layout_mode = 0
 offset_left = 104.0
@@ -2094,7 +2093,7 @@ layout_mode = 2
 [node name="inv_item_container12" parent="kitchen_menu/inventory/inventory_container2" instance=ExtResource("35_dvpl5")]
 layout_mode = 2
 
-[node name="build_menu" type="Control" parent="." node_paths=PackedStringArray("storage_container", "menu_player", "build_button", "show_storage_button")]
+[node name="build_menu" type="Control" parent="." node_paths=PackedStringArray("storage_container", "menu_player")]
 visible = false
 material = ExtResource("2_hniuu")
 layout_mode = 3
@@ -2113,8 +2112,6 @@ script = ExtResource("38_k0d1x")
 item_container = ExtResource("29_mvok5")
 storage_container = NodePath("sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer")
 menu_player = NodePath("build_player")
-build_button = NodePath("../freeCameraHUD/bg/HBoxContainer/buildButton")
-show_storage_button = NodePath("sliding_panel/sliding_popup/show_storage")
 
 [node name="build_player" type="AnimationPlayer" parent="build_menu"]
 process_mode = 1
@@ -2138,15 +2135,18 @@ anchors_preset = 0
 offset_right = 40.0002
 offset_bottom = 40.0
 
-[node name="build_panel" type="TextureRect" parent="build_menu/sliding_panel/sliding_popup"]
-self_modulate = Color(0.745098, 0.0823529, 0.290196, 1)
+[node name="build_panel" type="NinePatchRect" parent="build_menu/sliding_panel/sliding_popup"]
 use_parent_material = true
 layout_mode = 0
 offset_left = 136.0
 offset_top = -6.0
 offset_right = 623.0
 offset_bottom = 627.0
-texture = ExtResource("15_ghqbq")
+texture = ExtResource("38_aw538")
+patch_margin_left = 64
+patch_margin_top = 64
+patch_margin_right = 64
+patch_margin_bottom = 64
 
 [node name="ScrollContainer" type="ScrollContainer" parent="build_menu/sliding_panel/sliding_popup/build_panel"]
 layout_mode = 0
@@ -2160,54 +2160,52 @@ layout_mode = 2
 columns = 3
 
 [node name="item" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item2" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item3" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item4" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item6" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item7" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item8" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item9" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item10" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item11" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item12" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
 [node name="item5" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
-
-[node name="furnitureButton" type="TextureButton" parent="build_menu/sliding_panel/sliding_popup"]
-use_parent_material = true
-layout_mode = 0
-offset_left = 23.0
-offset_top = 379.0
-offset_right = 134.0
-offset_bottom = 489.0
-focus_mode = 0
-texture_normal = ExtResource("40_iuxyn")
-stretch_mode = 4
-script = ExtResource("5_i34va")
-PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
-HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
 [node name="show_storage" type="TextureButton" parent="build_menu/sliding_panel/sliding_popup"]
 use_parent_material = true
@@ -2236,7 +2234,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("7_uocqb")
 script = ExtResource("41_t8bbk")
-open_button = NodePath("../build_menu/sliding_panel/sliding_popup/furnitureButton")
+open_button = NodePath("../freeCameraHUD/bg/HBoxContainer/furnitureButton")
 shopTag = "furniture"
 storePlayer = NodePath("furniture_player")
 itemGrid = NodePath("window/ScrollContainer/GridContainer")
@@ -2331,6 +2329,7 @@ offset_right = 58.0
 offset_bottom = 15.0
 
 [node name="name" type="TextureRect" parent="furniture_menu/anchor_right"]
+self_modulate = Color(0.541176, 0.541176, 0.541176, 1)
 use_parent_material = true
 layout_mode = 0
 offset_left = 51.0
@@ -2350,6 +2349,7 @@ scroll_active = false
 autowrap_mode = 1
 
 [node name="description" type="TextureRect" parent="furniture_menu/anchor_right"]
+self_modulate = Color(0.541176, 0.541176, 0.541176, 1)
 use_parent_material = true
 layout_mode = 0
 offset_left = 4.0

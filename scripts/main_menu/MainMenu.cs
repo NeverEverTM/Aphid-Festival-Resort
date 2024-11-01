@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
 
+/// <summary>
+/// Central processing script for main menu operations, including boot up and user interface.
+/// </summary>
 public partial class MainMenu : Node2D
 {
 	public static MainMenu Instance { get; private set; }
@@ -17,7 +20,7 @@ public partial class MainMenu : Node2D
 	[ExportCategory("Menu Panels")]
 	[Export] private StartMenu start_panel;
 	[Export] private LoadGameMenu loadPanel;
-	[Export] private Control new_game_panel, credits_panel, options_panel;
+	[Export] private Control new_game_panel, credits_panel, options_panel, controls_panel;
 	[ExportCategory("New Game Behaviour")]
 	[Export] private BaseButton new_game_button;
 	[Export] private TextEdit resort_input_name, player_input_name;
@@ -36,11 +39,9 @@ public partial class MainMenu : Node2D
 	// Categories for button wheel
 	public string currentCategory = newGameCategory;
 	private Control currentMenu;
-	private const string newGameCategory = "new_game", optionsCategory = "options",
-	creditsCategory = "credits", exitCategory = "exit";
+	private const string newGameCategory = "new_game";
 	private readonly List<string> MenuCategories = new();
 	public readonly Dictionary<string, Action> MenuActions = new();
-
 
 	public override void _EnterTree()
 	{
@@ -50,9 +51,6 @@ public partial class MainMenu : Node2D
 	}
 	public async override void _Ready()
 	{
-		if (!HasBeenIntialized)
-			await GameManager.PREPARE_GAME_PROCESS();
-
 		// instance variables
 		player_input_name.Text = defaultName;
 		currentMenu = start_panel;
@@ -60,15 +58,16 @@ public partial class MainMenu : Node2D
 
 		// create menu button wheel
 		CreateMenuAction(newGameCategory, OnNewGameButton);
-		loadPanel.AddMenuActions();
-		CreateMenuAction(optionsCategory, OnOptionsButton);
-		CreateMenuAction(creditsCategory, OnCreditsButton);
-		CreateMenuAction(exitCategory, OnExitButton);
 		SetCategory(newGameCategory);
+		loadPanel.AddMenuAction();
+		CreateMenuAction("controls", () => SetMenu(controls_panel));
+		CreateMenuAction("options", () => SetMenu(options_panel));
+		CreateMenuAction("credits", () => SetMenu(credits_panel));
+		CreateMenuAction("exit", () => GetTree().Quit());
 
 		// Start game processes
 		GameManager.CleanSaveData();
-		
+
 		if (!HasBeenIntialized)
 		{
 			GameManager.BOOT_LOADING_LABEL = BOOT_LOADING_LABEL;
@@ -95,23 +94,25 @@ public partial class MainMenu : Node2D
 		start_panel.SetPanel();
 		HasBeenIntialized = true;
 	}
-	public override void _Input(InputEvent _event)
+	public override void _Input(InputEvent @event)
 	{
 		if (GameManager.IsBusy)
 			return;
 
-		if (UsingButtonWheel)
+		// Press To Start - Pressed
+		if (!start_panel.IsReady && @event.IsAction("interact"))
 		{
-			if (_event is InputEventMouseButton mouseEvent && mouseEvent.Pressed)
-			{
-				if (mouseEvent.ButtonIndex == MouseButton.WheelUp)
-					GoLeftInWheel();
-				else if (mouseEvent.ButtonIndex == MouseButton.WheelDown)
-					GoRightInWheel();
-			}
+			start_panel.ReadyUp();
+			return;
 		}
 
-		bool _resortIsFocused = resort_input_name.HasFocus(), _playerIsFocused = player_input_name.HasFocus();
+		if (UsingButtonWheel)
+			ProcessButtonWheel(@event);
+
+		bool _resortIsFocused = resort_input_name.HasFocus(), 
+			_playerIsFocused = player_input_name.HasFocus();
+
+		// i think this has to do with game creation naming
 		if (!start_panel.Visible && ((Input.IsActionJustPressed("cancel") && !_resortIsFocused && !_playerIsFocused)
 		|| Input.IsActionJustPressed("escape")))
 		{
@@ -119,9 +120,9 @@ public partial class MainMenu : Node2D
 			return;
 		}
 
-		if ((_resortIsFocused || _playerIsFocused) && _event is InputEventKey && _event.IsPressed())
+		if ((_resortIsFocused || _playerIsFocused) && @event is InputEventKey && @event.IsPressed())
 		{
-			InputEventKey _input = _event as InputEventKey;
+			InputEventKey _input = @event as InputEventKey;
 
 			// move through inputs
 			if (_input.KeyLabel == Key.Up)
@@ -173,31 +174,31 @@ public partial class MainMenu : Node2D
 		DoBounceAnim();
 		if (GameManager.IsBusy)
 			return;
-
-		if (!start_panel.IsReady && Input.IsActionJustPressed("interact"))
-		{
-			start_panel.ReadyUp();
-			return;
-		}
-
-		if (UsingButtonWheel)
-			ProcessButtonWheel();
 	}
-	
-	private void ProcessButtonWheel()
+
+	private void ProcessButtonWheel(InputEvent _event)
 	{
 		if (Input.IsActionJustPressed("interact"))
 		{
 			OnMenuInteract();
 			SoundManager.CreateSound(selectSound);
-			return;
+		}
+		else // choice scroll behaviour
+		{
+			if (_event is InputEventMouseButton mouseEvent && mouseEvent.Pressed)
+			{
+				if (mouseEvent.ButtonIndex == MouseButton.WheelUp)
+					GoLeftInWheel();
+				else if (mouseEvent.ButtonIndex == MouseButton.WheelDown)
+					GoRightInWheel();
+			}
+			if (_event.IsAction("left") || _event.IsAction("ui_left"))
+				GoLeftInWheel();
+
+			if (_event.IsAction("right") || _event.IsAction("ui_right"))
+				GoRightInWheel();
 		}
 
-		if (Input.IsActionJustPressed("left") || Input.IsActionJustPressed("ui_left"))
-			GoLeftInWheel();
-
-		if (Input.IsActionJustPressed("right") || Input.IsActionJustPressed("ui_right"))
-			GoRightInWheel();
 	}
 	public void GoLeftInWheel()
 	{
@@ -222,7 +223,7 @@ public partial class MainMenu : Node2D
 		OnMenuInteract = _interact;
 		button_wheel.Show();
 		UsingButtonWheel = true;
-	}	
+	}
 	public void CloseButtonWheel()
 	{
 		button_wheel.Hide();
@@ -310,7 +311,7 @@ public partial class MainMenu : Node2D
 		SoundManager.CreateSound(selectSound);
 
 		// Start Panel behaviour
-		button_wheel.Text = $"[center][tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado][/center]";
+		button_wheel.Text = $"[center]<| [tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado] |>[/center]";
 		SetButtonWheel(() => MenuActions[currentCategory](), SwitchCategories);
 		MenuWheelIndex = lastCategoryIndex;
 
@@ -339,15 +340,6 @@ public partial class MainMenu : Node2D
 		resort_input_name.GrabFocus();
 		SetMenu(new_game_panel);
 	}
-
-	private void OnOptionsButton()
-	{
-		SetMenu(options_panel);
-	}
-	private void OnCreditsButton() =>
-		SetMenu(credits_panel);
-	private void OnExitButton() =>
-		GetTree().Quit();
 
 	// MARK: Cosmetics
 	private bool DirectionForX, DirectionForY;

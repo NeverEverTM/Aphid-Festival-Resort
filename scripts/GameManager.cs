@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
 
+/// <summary>
+/// The main processing script, in charge of startup, global variables, scene change and resource loads.
+/// It also includes a Utils class for miscellaneous helper functions such as to get mouse position.
+/// </summary>
 public partial class GameManager : Node2D
 {
 	public const int GAME_VERSION = 130;
@@ -17,7 +21,7 @@ public partial class GameManager : Node2D
 	public enum SceneName { Resort, Menu }
 	public static SceneName Scene { get; private set; }
 
-	public static bool IsBusy = true;
+	public static bool IsBusy { get; set; }
 
 	public const string
 		ResortScenePath = "res://scenes/resort.tscn",
@@ -83,7 +87,7 @@ public partial class GameManager : Node2D
 		if (G_ICONS.ContainsKey(_key))
 			return G_ICONS[_key];
 		else
-			return G_ICONS["missing"];
+			return new PlaceholderTexture2D();
 	}
 
 	// Variables
@@ -98,19 +102,23 @@ public partial class GameManager : Node2D
 	public override void _EnterTree()
 	{
 		Instance = this;
-		Scene = SceneName.Menu;
-
-		GetViewport().SizeChanged += OnSizeChange;
-		OnSizeChange();
+		IsBusy = true;
 #if DEBUG
 		Logger.LogMode = Logger.LogLevel.Verbose;
 #endif
+		Scene = SceneName.Menu;
+
+		SaveSystem.CreateBaseDirectories();
+
+		GetViewport().SizeChanged += OnSizeChange;
+		OnSizeChange();
 	}
 	////// GAMEMANAGER READY GETS CALLED WHEN LOADING NEW ROOT SCENE
-	public override void _Ready()
+	public async override void _Ready()
 	{
 		// Runtime Params
 		spaceState = GetWorld2D().DirectSpaceState;
+		await SaveSystem.LoadGlobalData();
 	}
 	public override void _Process(double delta)
 	{
@@ -132,16 +140,6 @@ public partial class GameManager : Node2D
 		QuarterScreen = ScreenCenter / 2;
 	}
 	// MARK: Game Initialization
-
-	/// <summary>
-	/// Pre-initalization checks and setup
-	/// </summary>
-	public async static Task PREPARE_GAME_PROCESS()
-	{
-		SaveSystem.CreateBaseDirectories();
-		await SaveSystem.LoadGlobalData();
-	}
-
 	/// <summary>
 	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
 	/// In order to be called again, BOOT_LOADING_LABEL must be set to a valid text display node.
@@ -296,7 +294,7 @@ public partial class GameManager : Node2D
 
 		string uiPath = $"{SFXPath}/ui/";
 		CanvasManager.Audio_SellSound = ResourceLoader.Load<AudioStream>(uiPath + "kaching.wav");
-		CanvasManager.Audio_StoreSound = ResourceLoader.Load<AudioStream>(uiPath + "select.wav");
+		CanvasManager.Audio_StoreSound = ResourceLoader.Load<AudioStream>(uiPath + "button_select.wav");
 	}
 	private static void SEARCH_SFX_FOLDER(string _path, ref List<string> _sfx)
 	{
