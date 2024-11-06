@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
@@ -42,7 +43,7 @@ public partial class ResortManager : Node2D
 		// On New game, put intro cutscene, otherwise just load normally
 		await SaveSystem.SetProfileData();
 		if (!IsNewGame)
-			await SaveSystem.LoadProfileData();
+			await SaveSystem.LoadProfile();
 		else
 		{
 			IsNewGame = false;
@@ -52,13 +53,19 @@ public partial class ResortManager : Node2D
 			await DialogManager.Instance.OpenDialog("intro_welcome");
 			PlayerInventory.StoreItem("aphid_egg");
 			PlayerInventory.StoreItem("aphid_egg");
-			await SaveSystem.SaveProfileData();
+			await SaveSystem.SaveProfile();
 		}
 	}
 	public static async void CheckSongToPlay()
 	{
 		await Task.Delay(1000);
 		string[] _raw_files = DirAccess.GetFilesAt(GameManager.SFXPath + "/music");
+
+		if (FieldManager.TimeOfDay == FieldManager.DayHours.Night)
+			_raw_files = _raw_files.Where(e => e.StartsWith("night")).ToArray();
+		else
+			_raw_files = _raw_files.Where(e => e.StartsWith("day")).ToArray();
+
 		// for some reason, the exported project cannot get access to "music.mp3" files
 		// using DirAccess.GetFilesAt(), it will only find "music.mp3.imported" ones and return those
 		// however for some WEIRD reason, if you just reference it anyways by trimming the ".import"

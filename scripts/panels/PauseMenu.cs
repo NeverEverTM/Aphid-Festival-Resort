@@ -81,12 +81,12 @@ public partial class PauseMenu : Control
 		buttons[lastButtonIndex].GrabFocus();
 	}
 
-	public override void _Process(double delta)
+	public override void _Input(InputEvent @event)
 	{
 		// closing pause menu or its submenus
 		if (Visible)
 		{
-			if (Input.IsActionJustPressed("escape") || Input.IsActionJustPressed("cancel"))
+			if (@event.IsActionPressed("escape") || @event.IsActionPressed("cancel"))
 			{
 				if (current_menu != null)
 					ExitSubMenu();
@@ -94,7 +94,7 @@ public partial class PauseMenu : Control
 					SetPauseMenu(false);
 			}
 		} // opening pause menu
-		else if (Input.IsActionJustPressed("escape"))
+		else if (@event.IsActionPressed("escape") && !CanvasManager.Menus.IsInMenu)
 			SetPauseMenu(true);
 	}
 
@@ -116,12 +116,12 @@ public partial class PauseMenu : Control
 		SetSubMenu(help_panel);
 	private async void BackToMenuButton()
 	{
-		await SaveSystem.SaveProfileData();
+		await SaveSystem.SaveProfile();
 		await GameManager.LoadScene(GameManager.SceneName.Menu);
 	}
 	private async void ExitButton()
 	{
-		await SaveSystem.SaveProfileData();
+		await SaveSystem.SaveProfile();
 		GetTree().Quit();
 	}
 }

@@ -43,6 +43,10 @@ Looks like bugs outside the Golden Settlement ask us for some of our own.
 Parece que bichos fuera del Asentamiento nos piden unos pocos de los nuestros.
 >Me hace preguntar el porque.
 >Podras ayudar con eso en algun punto, ¡He escuchado que pagan bien!"
+joy_flavor_3,">(char(joy))Remember to treat your Aphids with respect!
+They need love and care if you want them to grow big and strong.",">(char(joy))Recuerda tratar tus Áfidos con amor y cariño!
+Necesitaran de todo el cuidado del mundo si quieres verlos crecer
+grandes y fuertes."
 azzy_flavor_0,">(char(azzy))(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
@@ -71,8 +75,33 @@ Deje ese lugar hace [wave amp=25.0 freq=5.0 connected=1]baaastante[/wave] rato, 
 >Creo que mejor por mi. Disfruto de la vida aqui.
 Incluso conoci a mi pareja aqui.
 >Oops, perdon, se me ha ido el hilo otra vez...(...)
-¿Que necesitas, (name)?"
-kut_flavor_0,">(char(kut))I cook cuisine for the little ones.
-If you got an ingredient on yourself then hand it over.",
+¿Que ocupas, (name)?"
+kut_flavor_0,">(char(kut)) No one in this town has proved more expert taste than the aphids.
+The best customers I ever had.
+>They even gather around to see my craft.
+Truly an inspiring environment.",">(char(kut))Nadie en este pueblo ha provado tener un sentido del gusto
+tan exquisito como los áfidos.
+Los mejores clientes que uno puede pedir.
+>Incluso se reunen para ver mi arte.
+Un ambiente asi me inspira."
 kut_flavor_1,">(char(kut))Mmpfh...
-",
+Should I try spice it up(...(0.3)) or(...(0.3)) should I make it sickly sweet.
+>Oh, you're(...(0.3)), (name)?
+Did you came to see a culinary master in action?",">(char(kut))Mmpfh...
+¿Deberia intentar añadirle picor(...) o hacerlo amargamente dulce?.
+>Oh, tu eres(...(0.5)), (name)?
+¿Has venido a ver a un maestro culinario en acción?"
+kut_flavor_2,">(char(kut))What do I recommend?
+That is up to your little one.
+>They all have an unique afinity to a particular flavour.
+Some more...(...) different than others.
+>Sour(...(0.3)), Sweet(...(0.3)), Salty(...(0.3)) and Bitter.(...(0.3))
+[rainbow freq=0.5 sat=1.0 val=0.8]An infinite ocean of experiences to surf along.[/rainbow]",">(char(kut))¿Que es lo que recomiendo?
+Eso lo dira tu pequeñin.
+>Todos tiene una afinidad a un sabor particular.
+Algunos más...(...) diferentes que otros.
+>Agrio(...(0.3)), Dulce(...(0.3)), Salado(...(0.3)) y Amargo.(...(0.3))
+[rainbow freq=0.5 sat=1.0 val=0.8]Un oceano de experiencias infinitas el cual surfear[/rainbow]"
+crystal_flavor_0,>(char(crystal))Phi,>(char(crystal))Phi
+crystal_flavor_1,>(char(crystal))Fi Fi,>(char(crystal))Fi Fi
+crystal_flavor_2,>(char(crystal))Eep!,>(char(crystal))Eep!

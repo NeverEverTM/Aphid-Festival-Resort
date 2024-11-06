@@ -6,7 +6,7 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 {
 	// SaveData Parameters
 	public string GetId() => Resort + "-resort_data";
-	public string GetDataPath() => SaveSystem.resortsFolder;
+	public string GetDataPath() => SaveSystem.ProfileResortsDir;
 	public static Savefile Data = new();
 
 	public record class Savefile

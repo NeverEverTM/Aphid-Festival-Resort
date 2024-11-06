@@ -158,7 +158,7 @@ tracks/0/path = NodePath("load_bg:self_modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(-2, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.47451)]
@@ -170,7 +170,7 @@ tracks/1/path = NodePath("load_quote:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(-2, 1),
 "update": 0,
 "values": [Vector2(-475, -600), Vector2(-475, -286)]
@@ -182,10 +182,10 @@ tracks/2/path = NodePath("ScrollContainer:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(-2, 1),
 "update": 0,
-"values": [Vector2(-475, 500), Vector2(-475, -147)]
+"values": [Vector2(-411, 500), Vector2(-411, -147)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wcxo3"]
@@ -696,6 +696,7 @@ offset_right = -576.0
 offset_bottom = -335.445
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("6_8loy6")
 aphidButton = NodePath("title/aphid_button")
 secretButton = NodePath("title/secret_button")
@@ -731,6 +732,7 @@ offset_left = 126.0
 offset_top = 525.0
 offset_right = 553.0
 offset_bottom = 604.0
+mouse_filter = 1
 theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_fonts/normal_font = ExtResource("2_w3mwt")
@@ -824,6 +826,7 @@ offset_right = -536.0
 offset_bottom = -284.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 theme = ExtResource("9_76l0k")
 
 [node name="resort_name" type="TextEdit" parent="CanvasLayer/newgame_panel"]
@@ -939,6 +942,7 @@ offset_right = 31.0
 offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 theme = ExtResource("9_76l0k")
 script = ExtResource("11_6of5g")
 menuPlayer = NodePath("load_player")
@@ -1000,9 +1004,11 @@ autowrap_mode = 2
 
 [node name="controls_panel" parent="CanvasLayer" instance=ExtResource("16_rnb0o")]
 visible = false
+mouse_filter = 1
 
 [node name="options_panel" parent="CanvasLayer" instance=ExtResource("10_8uix6")]
 visible = false
+mouse_filter = 1
 
 [node name="credits_panel" type="Control" parent="CanvasLayer"]
 visible = false
@@ -1019,6 +1025,7 @@ offset_right = 28.0
 offset_bottom = 53.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="background" type="TextureRect" parent="CanvasLayer/credits_panel"]
 self_modulate = Color(0.282353, 0.113725, 0.180392, 0.301961)
@@ -1082,8 +1089,9 @@ offset_right = -19.0
 offset_bottom = -3.0
 grow_horizontal = 0
 grow_vertical = 0
+mouse_filter = 1
 theme = ExtResource("9_76l0k")
-text = "alpha 0.1.3.2v"
+text = "alpha 0.1.3.3v"
 label_settings = SubResource("LabelSettings_6iqyf")
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -1114,6 +1122,8 @@ offset_right = -576.0
 offset_bottom = -324.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 5
 
 [node name="BOOT_LABEL" type="Label" parent="CanvasLayer/BOOT_CONTROL"]
 layout_mode = 1
@@ -1155,6 +1165,8 @@ offset_right = -576.0
 offset_bottom = -324.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
+mouse_default_cursor_shape = 5
 
 [node name="node" type="Control" parent="CanvasLayer/CUTSCENE_START"]
 visible = false

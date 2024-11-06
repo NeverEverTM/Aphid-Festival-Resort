@@ -524,6 +524,7 @@ shader_parameter/number_of_images = Vector2(1, 1)
 font_size = 30
 
 [node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("currency_text", "weather_text", "weather_bg", "weather_player", "screenshot_button", "menu_button")]
+process_mode = 1
 script = ExtResource("1_vek4n")
 currency_text = NodePath("berries_bar/amount")
 weather_text = NodePath("datetime/weater_bg/weather_text")

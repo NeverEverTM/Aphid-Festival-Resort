@@ -17,6 +17,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 829.0
 offset_bottom = 190.0
+mouse_filter = 1
 theme = ExtResource("1_aiyqr")
 
 [node name="delete_button" type="TextureButton" parent="."]

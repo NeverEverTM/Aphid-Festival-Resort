@@ -19,6 +19,16 @@ public partial class FurnitureShop : ShopInterface
 
 	public override void _Ready()
 	{
+		menu.Open = () =>
+		{
+			ResortGUI.SetFreeCameraHud(false);
+			ResetShop();
+		};
+		menu.Close = (MenuUtil.MenuInstance _) =>
+		{
+			ResortGUI.SetFreeCameraHud(true);
+			CleanShelf();
+		};
 		open_button.Pressed += SetMenu;
 	}
 }

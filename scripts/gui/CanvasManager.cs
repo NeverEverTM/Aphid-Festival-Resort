@@ -28,17 +28,13 @@ public partial class CanvasManager : CanvasLayer
 		menu_button.Pressed += () => PauseMenu.Instance.SetPauseMenu(true);
 		UpdateCurrency();
 	}
-	public override void _Process(double delta)
+	public override void _Input(InputEvent @event)
 	{
-		if (Input.IsActionJustPressed("take_screenshot"))
+		if (@event.IsActionPressed("take_screenshot"))
 			TakeScreenshot();
 
-		if (Input.IsActionJustPressed("cancel") || Input.IsActionJustPressed("escape"))
-		{
-			// Go back in a menu if pause menu itself isnt open
-			if (!GetTree().Paused)
-				Menus.GoBackInMenu();
-		}
+		if (@event.IsActionPressed("cancel") || @event.IsActionPressed("escape"))
+			Menus.GoBackInMenu();
 	}
 
 	public static async void TakeScreenshot()
@@ -49,10 +45,10 @@ public partial class CanvasManager : CanvasLayer
 		{
 			var capture = Instance.GetViewport().GetTexture().GetImage();
 			var _time = Time.GetDatetimeStringFromSystem().Replace(":", "-");
-			var filename = SaveSystem.ProfilePath + SaveSystem.screenshotsFolder + $"/Screenshot-{_time}.png";
+			var filename = SaveSystem.ProfilePath + SaveSystem.ProfileAlbumDir + $"/Screenshot-{_time}.png";
 
 			if (FileAccess.FileExists(filename))
-				filename += "(Extra)";	
+				filename += "(Extra)";
 
 			capture.SavePng(filename);
 			SoundManager.CreateSound(ResourceLoader.Load<AudioStream>(GameManager.SFXPath + "/ui/camera-flash.wav"));
@@ -65,15 +61,26 @@ public partial class CanvasManager : CanvasLayer
 		Instance.Show();
 	}
 
-	public static void SetCurrencyElement(bool _state)
+	public static void SetHudElements(bool _state)
 	{
 		if (_state)
+		{
 			Instance.currency_text.GetParent<Control>().Show();
+			Instance.menu_button.Show();
+		}
 		else
+		{
 			Instance.currency_text.GetParent<Control>().Hide();
+			Instance.menu_button.Hide();
+		}
 	}
-	public static void UpdateCurrency() =>
-		Instance.currency_text.Text = Player.Data.Currency.ToString("000");
+	public static void UpdateCurrency()
+	{
+		if (Player.Data.Currency >= 10000)
+			Instance.currency_text.Text = (Player.Data.Currency / 1000).ToString("00K");
+		else
+			Instance.currency_text.Text = Player.Data.Currency.ToString("000");
+	}
 
 	public static void OpenWeather(Color _color)
 	{
@@ -118,6 +125,6 @@ public partial class CanvasManager : CanvasLayer
 		Instance.CurrentFocus = null;
 		Instance.IsInFocus = false;
 	}
-	public static bool IsFocus(Control _focus) => 
+	public static bool IsFocus(Control _focus) =>
 		_focus.Equals(Instance.CurrentFocus);
 }

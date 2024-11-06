@@ -114,11 +114,12 @@ public partial class GameManager : Node2D
 		OnSizeChange();
 	}
 	////// GAMEMANAGER READY GETS CALLED WHEN LOADING NEW ROOT SCENE
-	public async override void _Ready()
+	public override void _Ready()
 	{
 		// Runtime Params
 		spaceState = GetWorld2D().DirectSpaceState;
-		await SaveSystem.LoadGlobalData();
+		ControlsManager.InputBinds.Load();
+		OptionsManager.Settings.Load();
 	}
 	public override void _Process(double delta)
 	{

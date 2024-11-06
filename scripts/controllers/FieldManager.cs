@@ -28,7 +28,7 @@ public partial class FieldManager : Node2D
 	public override void _EnterTree()
 	{
 		Instance = this;
-		SetTimeAtmosphere();
+		SetTime(null, true);
 	}
 
 	public override void _Ready()
@@ -39,38 +39,41 @@ public partial class FieldManager : Node2D
 		};
 		_timeloop.Timeout += () =>
 		{
-			SetTimeAtmosphere();
-
-			// opens weather overlay and creates timer to hide it automatically
-			if (IsInstanceValid(CanvasManager.Instance))
-				CanvasManager.OpenWeather(WeatherColors[(int)TimeOfDay]);
-			Timer _timer = new()
-			{
-				OneShot = true
-			};
-			_timer.Timeout += () =>
-			{
-				if (IsInstanceValid(CanvasManager.Instance))
-					CanvasManager.CloseWeather();
-			};
-			AddChild(_timer);
-			_timer.Start(5);
+			SetTime();
+			StartWeatherPopup();
 
 			// start timeloop to popup after every change of hour
 			var _date = Time.GetDatetimeDictFromSystem();
 			_timeloop.ProcessMode = ProcessModeEnum.Always;
 			_timeloop.Start(((60 - (int)_date["minute"]) * 60) - (int)_date["second"]);
-			OnTimeChange?.Invoke();
 		};
 		AddChild(_timeloop);
 		_timeloop.Start();
 	}
 
-	// sets the atmosphere according to time and weather
-	public void SetTimeAtmosphere(Godot.Collections.Dictionary _date = null)
+	// opens weather overlay and creates timer to hide it automatically
+	public void StartWeatherPopup()
+	{
+		if (IsInstanceValid(CanvasManager.Instance))
+			CanvasManager.OpenWeather(WeatherColors[(int)TimeOfDay]);
+		Timer _timer = new()
+		{
+			OneShot = true
+		};
+		_timer.Timeout += () =>
+		{
+			if (IsInstanceValid(CanvasManager.Instance))
+				CanvasManager.CloseWeather();
+		};
+		AddChild(_timer);
+		_timer.Start(5);
+
+	}
+	// sets the atmosphere according to time and weather and triggers hour change events
+	public void SetTime(Godot.Collections.Dictionary _date = null, bool _instantTransition = false)
 	{
 		_date ??= Time.GetDatetimeDictFromSystem();
-			
+
 		DayHours timeDay = DayHours.Night;
 		byte _hour = (byte)_date["hour"];
 		// 8PM to 6AM is Night 
@@ -83,9 +86,15 @@ public partial class FieldManager : Node2D
 			else // 4PM to 8PM is Sunset
 				timeDay = DayHours.Sunset;
 		}
-		Tween _tween = GetTree().CreateTween();
-		_tween.BindNode(globalFilter);
-		_tween.TweenProperty(globalFilter, "color", DayFilters[(int)timeDay], 3);
+		if (!_instantTransition)
+		{
+			Tween _tween = GetTree().CreateTween();
+			_tween.BindNode(globalFilter);
+			_tween.TweenProperty(globalFilter, "color", DayFilters[(int)timeDay], 3);
+		}
+		else
+			globalFilter.Color = DayFilters[(int)timeDay];
 		TimeOfDay = timeDay;
+		OnTimeChange?.Invoke();
 	}
 }

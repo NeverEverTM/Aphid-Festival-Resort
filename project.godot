@@ -25,9 +25,7 @@ config/windows_native_icon="res://sprites/icon.ico"
 
 CommandConsole="*res://scenes/ui/command_console.tscn"
 GameManager="*res://scripts/GameManager.cs"
-OptionsManager="*res://scripts/controllers/OptionsManager.cs"
 SoundManager="*res://scripts/controllers/SoundManager.cs"
-ControlsManager="*res://scripts/controllers/ControlsManager.cs"
 
 [display]
 
@@ -37,7 +35,6 @@ window/size/mode=4
 window/energy_saving/keep_screen_on=false
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
-window/stretch/scale_mode="integer"
 
 [dotnet]
 

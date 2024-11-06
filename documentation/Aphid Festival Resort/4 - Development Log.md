@@ -8,16 +8,14 @@
 
 - Music can stop and not come back when leaving to main menu and going back to resort, comes back after you pause and unpause
 - Furniture clips below cliff floor, not a big deal but it annoys me big time
-- when leaving kitchen, recipe is lost if it was not taken
-- tween of world lighting should be instant on main menu and on game load rather than tween from the default day state
-- controls are not being binded on startup, tho they are saved and loaded correctly [BEING DONE]
+- [FULLY RESOLVED] when leaving kitchen, recipe is lost if it was not taken
+- [FULLY RESOLVED] tween of world lighting should be instant on main menu and on game load rather than tween from the default day state
+- [FULLY RESOLVED] controls are not being binded on startup, tho they are saved and loaded correctly 
 
 ## Technical
 - Fix outline shader to render as a single sprite
 - Organize sprite folders and allow load of subfolders in database startups (SFX already does this)
 - Refactor OptionsManager to work with easily adjustable config slot modules
-- Save System should allow the saving of individual global data instead of doing a full save
-- Experiment with binary saving
 ## Gameplay
 - Setting: Camera smoothing
 - Setting: Skip Intro Cinematic
@@ -36,6 +34,7 @@
 - different color for harvest outline + particles
 - New paint of coat for some menus, including new art
 - Portraits for shop owners
+- DIalog should use that thingy where it shows a character at a time rather than put one itself at a time
 # [Full Version Changelog]
 
 v0.1.3 is now available in [[2 - Changelogs]]]

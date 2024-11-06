@@ -18,7 +18,7 @@ public partial class ControlsMenu : Control
 	private readonly List<string> validActions = new();
 	private bool is_remapping, was_modified, was_restarted;
 	private Control current_action;
-	private string current_keybind;
+	private InputEvent current_keybind;
 
 	public override void _Ready()
 	{
@@ -30,7 +30,7 @@ public partial class ControlsMenu : Control
 
 			if (was_modified)
 			{
-				SaveSystem.SaveGlobalData();
+				ControlsManager.InputBinds.Save();
 				// GameManager.IsBusy = true;
 				// ConfirmationPopup.Create(
 				// 	_onConfirm: () => {
@@ -43,6 +43,16 @@ public partial class ControlsMenu : Control
 				// 	});
 			}
 
+			is_remapping = false;
+
+			if (IsInstanceValid(current_action))
+			{
+				(current_action.FindChild("action") as RichTextLabel).Text = 
+					ControlsManager.GetUserReadableText((ControlsManager.InputBinds.Binds[current_action.Name]).AsText());
+			}
+
+			current_action = null;
+			current_keybind = null;
 			was_modified = was_restarted = false;
 		};
 	}
@@ -52,10 +62,10 @@ public partial class ControlsMenu : Control
 		foreach (Control _inputButton in controls)
 		{
 			// get the corresponding action
-			if (!OptionsManager.Data.InputBinds.ContainsKey(_inputButton.Name))
+			if (!ControlsManager.InputBinds.Binds.ContainsKey(_inputButton.Name))
 				continue;
 			validActions.Add(_inputButton.Name);
-			string _displayAction = ControlsManager.GetUserReadableText(OptionsManager.Data.InputBinds[_inputButton.Name]);
+			string _displayAction = ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[_inputButton.Name].AsText());
 
 			// Set text and functinality of control binders
 			(_inputButton.FindChild("action") as RichTextLabel).Text = _displayAction;
@@ -67,7 +77,7 @@ public partial class ControlsMenu : Control
 	{
 		foreach (Control _inputButton in controls)
 		{
-			string _displayAction = ControlsManager.GetUserReadableText(OptionsManager.Data.InputBinds[_inputButton.Name]);
+			string _displayAction = ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[_inputButton.Name].AsText());
 
 			// Set text and functinality of control binders
 			(_inputButton.FindChild("action") as RichTextLabel).Text = _displayAction;
@@ -81,18 +91,22 @@ public partial class ControlsMenu : Control
 
 		is_remapping = true;
 		current_action = _control;
-		current_keybind = OptionsManager.Data.InputBinds[current_action.Name];
+		current_keybind = ControlsManager.InputBinds.Binds[current_action.Name];
 		(_control.FindChild("action") as RichTextLabel).Text = "...";
 	}
-	private bool IsKeyDuplicated(string _keybind)
+	private bool IsKeyDuplicated(InputEvent _keybind)
 	{
-		if (current_keybind == _keybind)
-			return false;
-
+		string _inputedKey = ControlsManager.GetUserReadableText(_keybind.AsText());
 		// it only checks for duplicate values for available binds in the menu
 		for (int i = 0; i < validActions.Count; i++)
 		{
-			if (OptionsManager.Data.InputBinds[validActions[i]] == _keybind)
+			// make sure to not disallow yourself from just canceling out by setting the same key
+			if (validActions[i] == current_action.Name)
+				continue;
+
+			string _storedKey = ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[validActions[i]].AsText());
+
+			if (_inputedKey == _storedKey)
 			{
 				SoundManager.CreateSound(fail_sound);
 				GameManager.CreatePopup("warning_key_duplicated", GetParent());
@@ -113,9 +127,9 @@ public partial class ControlsMenu : Control
 		// Non-valid keybinds
 		if (@event.IsAction("escape") || @event.IsAction("debug_0") || @event.IsAction("debug_1") ||
 			@event.IsAction("debug_2") || @event.IsAction("take_screenshot") ||
-			_mouseEvent?.ButtonIndex == MouseButton.WheelDown ||
-			_mouseEvent?.ButtonIndex == MouseButton.WheelUp)
+			_mouseEvent?.ButtonIndex == MouseButton.WheelDown || _mouseEvent?.ButtonIndex == MouseButton.WheelUp)
 		{
+			GetViewport().SetInputAsHandled();
 			AcceptEvent();
 			return;
 		}
@@ -131,7 +145,7 @@ public partial class ControlsMenu : Control
 		// assign key if possible
 		if (@event is InputEventKey || _mouseEvent != null && _mouseEvent.Pressed)
 		{
-			if (IsKeyDuplicated(@event.AsText()))
+			if (IsKeyDuplicated(@event))
 				return;
 
 			ControlsManager.BindAction(@event, current_action.Name);
@@ -140,14 +154,14 @@ public partial class ControlsMenu : Control
 			// reset state
 			is_remapping = false;
 			current_action = null;
-			current_keybind = string.Empty;
+			current_keybind = null;
 			SoundManager.CreateSound(select_sound);
 			AcceptEvent();
 		}
 	}
 	public override void _Process(double delta)
 	{	
-		if (is_remapping)
+		if (!Visible || is_remapping)
 			return;
 
 		if (Input.IsKeyPressed(Key.F1))
@@ -168,6 +182,7 @@ public partial class ControlsMenu : Control
 				reset_bar.Value = 0;
 
 				ControlsManager.ResetToDefault();
+				ControlsManager.InputBinds.Save();
 				RefreshBinds();
 				SoundManager.CreateSound(reset_sound);
 			}

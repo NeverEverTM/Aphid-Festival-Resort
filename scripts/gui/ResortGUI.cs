@@ -83,9 +83,9 @@ public partial class ResortGUI : CanvasLayer
 			Instance.GetTree().Root.AddChild(GameManager.GlobalCamera);
 			GameManager.GlobalCamera.GlobalPosition = Player.Instance.GlobalPosition;
 
-			// Show free camera hud
+			// Show free camera hud and hide other elements
 			SetFreeCameraHud(true);
-			CanvasManager.SetCurrencyElement(false);
+			CanvasManager.SetHudElements(false);
 		}
 		else
 		{
@@ -104,7 +104,7 @@ public partial class ResortGUI : CanvasLayer
 
 			// Hide free camera hud
 			SetFreeCameraHud(false);
-			CanvasManager.SetCurrencyElement(true);
+			CanvasManager.SetHudElements(true);
 		}
 	}
 	public static void SetFreeCameraHud(bool _state) =>

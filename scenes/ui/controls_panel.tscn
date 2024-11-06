@@ -51,6 +51,7 @@ vertical_scroll_mode = 2
 [node name="Container" type="Control" parent="ScrollContainer"]
 custom_minimum_size = Vector2(1100, 875)
 layout_mode = 2
+mouse_filter = 1
 
 [node name="title_movement" type="TextureRect" parent="ScrollContainer/Container"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
@@ -79,6 +80,7 @@ offset_left = 273.0
 offset_top = 296.0
 offset_right = 313.0
 offset_bottom = 336.0
+mouse_filter = 1
 
 [node name="up" parent="ScrollContainer/Container/movement" instance=ExtResource("3_oryf4")]
 layout_mode = 0
@@ -142,6 +144,7 @@ offset_left = 845.0
 offset_top = 244.0
 offset_right = 885.0
 offset_bottom = 284.0
+mouse_filter = 1
 
 [node name="interact" parent="ScrollContainer/Container/interactions" instance=ExtResource("3_oryf4")]
 layout_mode = 0
@@ -191,6 +194,7 @@ offset_left = 191.0
 offset_top = 701.0
 offset_right = 231.0
 offset_bottom = 741.0
+mouse_filter = 1
 
 [node name="change_camera" parent="ScrollContainer/Container/mode" instance=ExtResource("3_oryf4")]
 layout_mode = 0
@@ -240,6 +244,7 @@ offset_left = 852.0
 offset_top = 565.0
 offset_right = 892.0
 offset_bottom = 605.0
+mouse_filter = 1
 
 [node name="open_inventory" parent="ScrollContainer/Container/menus" instance=ExtResource("3_oryf4")]
 layout_mode = 0
@@ -261,6 +266,7 @@ offset_left = 697.0
 offset_top = 612.0
 offset_right = 1193.0
 offset_bottom = 809.0
+mouse_filter = 1
 theme = ExtResource("1_1a8ee")
 
 [node name="reset_progress" type="TextureProgressBar" parent="ScrollContainer/Container/Panel"]

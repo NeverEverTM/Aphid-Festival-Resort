@@ -1,4 +1,4 @@
-[gd_scene load_steps=83 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=85 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" path="res://scripts/gui/ResortGUI.cs" id="1_i0o2h"]
 [ext_resource type="Material" uid="uid://cwaid2g5ctnpy" path="res://scripts/shaders/unshaded.tres" id="2_hniuu"]
@@ -36,6 +36,7 @@
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="35_dvpl5"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="36_g3t8v"]
 [ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="37_eiku4"]
+[ext_resource type="Shader" path="res://scripts/shaders/shine_highlight.gdshader" id="38_5087f"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="38_aw538"]
 [ext_resource type="Script" path="res://scripts/panels/BuildMenu.cs" id="38_k0d1x"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/icon_arrow.png" id="39_ysf7p"]
@@ -249,7 +250,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Color(0.568627, 0.239216, 0.117647, 0.780392), Color(0.568627, 0.239216, 0.117647, 0)]
+"values": [Color(0.568627, 0.239216, 0.117647, 1), Color(0.568627, 0.239216, 0.117647, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -301,7 +302,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Color(0.568627, 0.239216, 0.117647, 0), Color(0.568627, 0.239216, 0.117647, 0.780392)]
+"values": [Color(0.568627, 0.239216, 0.117647, 0), Color(0.568627, 0.239216, 0.117647, 1)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -337,7 +338,7 @@ _data = {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flcd2"]
 shader = ExtResource("10_i403g")
-shader_parameter/speed = -0.225
+shader_parameter/speed = -0.125
 shader_parameter/node_size = Vector2(16, 16)
 shader_parameter/color = Color(0.721569, 0.266667, 0.0705882, 1)
 
@@ -933,6 +934,13 @@ shader = ExtResource("10_i403g")
 shader_parameter/speed = 0.2
 shader_parameter/node_size = Vector2(64, 64)
 shader_parameter/color = Color(0.882353, 0.376471, 0.796078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qj6jq"]
+shader = ExtResource("38_5087f")
+shader_parameter/shine_color = Color(1, 1, 1, 0.454902)
+shader_parameter/shine_progress = 0.0
+shader_parameter/shine_size = 0.02
+shader_parameter/shine_angle = 40.0
 
 [sub_resource type="Animation" id="Animation_c0vld"]
 length = 0.001
@@ -1870,11 +1878,16 @@ libraries = {
 [node name="menu_bg" type="TextureRect" parent="kitchen_menu"]
 self_modulate = Color(1, 1, 1, 0.545098)
 material = SubResource("ShaderMaterial_rn78v")
-layout_mode = 0
-offset_left = -1020.0
-offset_top = -453.0
-offset_right = 1119.0
-offset_bottom = 714.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -637.0
+offset_top = -390.0
+offset_right = 656.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("11_62duh")
 stretch_mode = 1
 
@@ -1884,7 +1897,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="bg" type="TextureRect" parent="kitchen_menu/upper_anchor"]
+[node name="bg" type="NinePatchRect" parent="kitchen_menu/upper_anchor"]
 self_modulate = Color(0.796078, 0, 0.764706, 1)
 layout_mode = 0
 offset_left = -431.0
@@ -1892,6 +1905,10 @@ offset_top = -204.0
 offset_right = 458.0
 offset_bottom = 264.0
 texture = ExtResource("36_g3t8v")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="bar_0" type="TextureRect" parent="kitchen_menu/upper_anchor"]
 self_modulate = Color(0.4, 0.0705882, 0.196078, 1)
@@ -1981,7 +1998,7 @@ texture_focused = ExtResource("37_eiku4")
 stretch_mode = 4
 
 [node name="icon" type="TextureRect" parent="kitchen_menu/upper_anchor/result"]
-use_parent_material = true
+material = SubResource("ShaderMaterial_qj6jq")
 layout_mode = 0
 offset_left = 25.0
 offset_top = 25.0
@@ -2023,7 +2040,7 @@ offset_bottom = -96.0
 text = "kitchen_lockrecipe"
 alignment = 1
 
-[node name="inventory" type="TextureRect" parent="kitchen_menu"]
+[node name="inventory" type="NinePatchRect" parent="kitchen_menu"]
 self_modulate = Color(0.454902, 0.0117647, 0.431373, 1)
 use_parent_material = true
 layout_mode = 1
@@ -2039,6 +2056,10 @@ offset_bottom = 382.999
 grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("3_yrmm3")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
 
 [node name="inventory_container2" type="HBoxContainer" parent="kitchen_menu/inventory"]
 layout_mode = 0

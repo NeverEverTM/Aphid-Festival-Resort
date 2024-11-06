@@ -35,7 +35,12 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 			SetIngredientSlot(null, 1);
 			SetResultSlot(false);
 			ingredient1Button.GrabFocus();
-		}, null, false);
+		}, (_) =>
+		{
+			if (result != null) // pickup if it hasnt been picked up
+				OnResultPressed();
+		}, 
+		false);
 	}
 	private void CreateInventory()
 	{
@@ -197,6 +202,8 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 					SetResultSlot(false);
 				CreateInventory();
 			}
+			else // cant fit it, drop it in the floor
+				ResortManager.CreateItem(result, Player.Instance.GlobalPosition);
 		}
 	}
 	private string GetRecipeResult()

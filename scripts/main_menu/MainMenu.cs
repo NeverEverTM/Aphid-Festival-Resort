@@ -88,37 +88,67 @@ public partial class MainMenu : Node2D
 		}
 		SoundManager.PlaySong("misc/title.wav");
 		title_animator.Play("slide_down");
-		if (!string.IsNullOrEmpty(OptionsManager.Data.LastPlayedResort))
+		if (!string.IsNullOrEmpty(OptionsManager.Settings.Data.LastPlayedResort))
 			SetCategory("continue");
 		SpawnBunchaOfAphidsForTheFunnies();
 		start_panel.SetPanel();
 		HasBeenIntialized = true;
 	}
-	public override void _Input(InputEvent @event)
+	public override void _UnhandledInput(InputEvent @event)
 	{
 		if (GameManager.IsBusy)
 			return;
 
 		// Press To Start - Pressed
-		if (!start_panel.IsReady && @event.IsAction("interact"))
+		if (!start_panel.IsReady)
 		{
-			start_panel.ReadyUp();
+			if (Input.IsActionJustPressed("interact"))
+				start_panel.ReadyUp();
 			return;
 		}
 
-		if (UsingButtonWheel)
-			ProcessButtonWheel(@event);
-
-		bool _resortIsFocused = resort_input_name.HasFocus(), 
-			_playerIsFocused = player_input_name.HasFocus();
-
-		// i think this has to do with game creation naming
-		if (!start_panel.Visible && ((Input.IsActionJustPressed("cancel") && !_resortIsFocused && !_playerIsFocused)
-		|| Input.IsActionJustPressed("escape")))
+		// Exit current menu
+		if (!start_panel.Visible)
 		{
-			SetMenu();
+			if (@event.IsActionPressed("escape") || @event.IsActionPressed("cancel"))
+			{
+				SetMenu();
+				return;
+			}
+		}
+		else // interact with wheel
+		{
+			if (@event.IsActionPressed("interact"))
+			{
+				OnMenuInteract?.Invoke();
+				SoundManager.CreateSound(selectSound);
+			}
+			else // choice scroll behaviour
+			{
+				if (@event is InputEventMouseButton && (@event as InputEventMouseButton).Pressed)
+				{
+					InputEventMouseButton _mouse = @event as InputEventMouseButton;
+					if (_mouse.ButtonIndex == MouseButton.WheelUp)
+						GoLeftInWheel();
+					else if (_mouse.ButtonIndex == MouseButton.WheelDown)
+						GoRightInWheel();
+				}
+				else
+				{
+					if (@event.IsActionPressed("left") || @event.IsActionPressed("ui_left"))
+						GoLeftInWheel();
+					else if (@event.IsActionPressed("right") || @event.IsActionPressed("ui_right"))
+						GoRightInWheel();
+				}
+			}
 			return;
 		}
+
+		if (!new_game_panel.Visible)
+			return;
+
+		bool _resortIsFocused = resort_input_name.HasFocus(),
+		_playerIsFocused = player_input_name.HasFocus();
 
 		if ((_resortIsFocused || _playerIsFocused) && @event is InputEventKey && @event.IsPressed())
 		{
@@ -172,34 +202,8 @@ public partial class MainMenu : Node2D
 	public override void _Process(double delta)
 	{
 		DoBounceAnim();
-		if (GameManager.IsBusy)
-			return;
 	}
 
-	private void ProcessButtonWheel(InputEvent _event)
-	{
-		if (Input.IsActionJustPressed("interact"))
-		{
-			OnMenuInteract();
-			SoundManager.CreateSound(selectSound);
-		}
-		else // choice scroll behaviour
-		{
-			if (_event is InputEventMouseButton mouseEvent && mouseEvent.Pressed)
-			{
-				if (mouseEvent.ButtonIndex == MouseButton.WheelUp)
-					GoLeftInWheel();
-				else if (mouseEvent.ButtonIndex == MouseButton.WheelDown)
-					GoRightInWheel();
-			}
-			if (_event.IsAction("left") || _event.IsAction("ui_left"))
-				GoLeftInWheel();
-
-			if (_event.IsAction("right") || _event.IsAction("ui_right"))
-				GoRightInWheel();
-		}
-
-	}
 	public void GoLeftInWheel()
 	{
 		MenuWheelIndex--;
@@ -214,7 +218,7 @@ public partial class MainMenu : Node2D
 		MenuWheelIndex++;
 		if (MenuWheelIndex >= MenuActions.Count)
 			MenuWheelIndex = 0;
-		OnMenuSwitch();
+		OnMenuSwitch?.Invoke();
 		SoundManager.CreateSound(switchSound);
 	}
 	public void SetButtonWheel(Action _interact, Action _switch)
@@ -250,7 +254,7 @@ public partial class MainMenu : Node2D
 		}
 
 		// Already Exists
-		SaveSystem.SetProfile(_resortName);
+		SaveSystem.SelectProfile(_resortName);
 		if (DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
 			GameManager.CreatePopup("warning_already_exists", canvas);
@@ -266,7 +270,7 @@ public partial class MainMenu : Node2D
 	}
 	public static void DeleteResort(string _profile)
 	{
-		SaveSystem.SetProfile(_profile);
+		SaveSystem.SelectProfile(_profile);
 		if (!DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
 			GameManager.CreatePopup("warning_invalid_resort", Instance.canvas);
@@ -278,8 +282,7 @@ public partial class MainMenu : Node2D
 	}
 	public static async void LoadResort()
 	{
-		OptionsManager.Data.LastPlayedResort = SaveSystem.Profile;
-		SaveSystem.SaveGlobalData();
+		OptionsManager.Settings.Data.LastPlayedResort = SaveSystem.Profile;
 		await GameManager.LoadScene(GameManager.SceneName.Resort);
 	}
 

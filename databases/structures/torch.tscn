@@ -98,6 +98,7 @@ material = ExtResource("3_srj3x")
 position = Vector2(0, -6)
 enabled = false
 color = Color(0.862745, 0.666667, 0.172549, 1)
+energy = 0.0
 range_z_min = -10
 range_z_max = 10
 texture = ExtResource("2_o66eh")

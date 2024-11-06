@@ -13,22 +13,22 @@ public partial class OptionsMenu : Control
 		windowMode.ItemSelected += OnWindowMode;
 		language.ItemSelected += OnLanguageSelected;
 
-		OptionsManager.Data ??= new();
+		OptionsManager.Settings.Data ??= new();
 
 		VisibilityChanged += () =>
 		{
 			if (!Visible)
-				SaveSystem.SaveGlobalData();
+				OptionsManager.Settings.Save();
 			else
 			{
 				musicSlider.GrabFocus();
-				musicSlider.Value = OptionsManager.Data.VolumeMusic;
-				soundSlider.Value = OptionsManager.Data.VolumeSound;
-				if (OptionsManager.Data.WindowMode == (int)DisplayServer.WindowMode.ExclusiveFullscreen)
+				musicSlider.Value = OptionsManager.Settings.Data.VolumeMusic;
+				soundSlider.Value = OptionsManager.Settings.Data.VolumeSound;
+				if (OptionsManager.Settings.Data.WindowMode == (int)DisplayServer.WindowMode.ExclusiveFullscreen)
 					windowMode.Select(1);
 				else
 					windowMode.Select(0);
-				language.Select(OptionsManager.Data.Language);
+				language.Select(OptionsManager.Settings.Data.Language);
 			}
 		};
 
@@ -38,12 +38,12 @@ public partial class OptionsMenu : Control
 	private void OnMusicSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(1, Mathf.LinearToDb((float)value));
-		OptionsManager.Data.VolumeMusic = (float)value;
+		OptionsManager.Settings.Data.VolumeMusic = (float)value;
 	}
 	private void OnSoundSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb((float)value));
-		OptionsManager.Data.VolumeSound = (float)value;
+		OptionsManager.Settings.Data.VolumeSound = (float)value;
 		SoundManager.CreateSound(Aphid.Audio_Step);
 	}
 	private void OnWindowMode(long _index)
@@ -52,7 +52,7 @@ public partial class OptionsMenu : Control
 			DisplayServer.WindowSetMode(DisplayServer.WindowMode.Maximized);
 		else
 			DisplayServer.WindowSetMode(DisplayServer.WindowMode.ExclusiveFullscreen);
-		OptionsManager.Data.WindowMode = (int)DisplayServer.WindowGetMode();
+		OptionsManager.Settings.Data.WindowMode = (int)DisplayServer.WindowGetMode();
 	}
 	private void OnLanguageSelected(long _index)
 	{
@@ -60,6 +60,6 @@ public partial class OptionsMenu : Control
 			TranslationServer.SetLocale("es_ES");
 		else
 			TranslationServer.SetLocale("en_US");
-		OptionsManager.Data.Language = (int)_index;
+		OptionsManager.Settings.Data.Language = (int)_index;
 	}
 }

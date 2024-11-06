@@ -14,11 +14,11 @@ public partial class LoadGameMenu : Control
 
     public override void _Ready()
     {
-        fileNames = DirAccess.Open(SaveSystem.ProfilesDirectory).GetDirectories();
+        fileNames = DirAccess.Open(SaveSystem.ProfilesDir).GetDirectories();
 
 		for (int i = 0; i < fileNames.Length; i++)
 		{
-			string _path = SaveSystem.ProfilesDirectory + $"/{fileNames[i]}/{GameData.Instance.GetId()}.json",
+			string _path = SaveSystem.ProfilesDir + $"/{fileNames[i]}/{GameData.Instance.GetId()}.json",
 			_profile = fileNames[i];
 			GameData.Savefile _data = null; 
 
@@ -49,12 +49,12 @@ public partial class LoadGameMenu : Control
     }
     public void AddMenuAction()
 	{
-		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDirectory).Length > 0)
+		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDir).Length > 0)
 		{
 			// create load game button
 			MainMenu.Instance.CreateMenuAction(loadGameCategory, OpenLoadMenu);
 			// create continue button
-			if (!string.IsNullOrEmpty(OptionsManager.Data.LastPlayedResort))
+			if (!string.IsNullOrEmpty(OptionsManager.Settings.Data.LastPlayedResort))
 				MainMenu.Instance.CreateMenuAction("continue", ContinueGame);
 		}
 	}
@@ -66,20 +66,20 @@ public partial class LoadGameMenu : Control
 	}
 	private void ContinueGame()
 	{
-		if (string.IsNullOrWhiteSpace(OptionsManager.Data.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
+		if (string.IsNullOrWhiteSpace(OptionsManager.Settings.Data.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
 			MainMenu.Instance.RemoveMenuAction("continue");
 			GameManager.CreatePopup("Could not find valid profile to continue", this);
 			return;
 		}
-		SaveSystem.SetProfile(OptionsManager.Data.LastPlayedResort);
+		SaveSystem.SelectProfile(OptionsManager.Settings.Data.LastPlayedResort);
 
 		MainMenu.LoadResort();
 	}
 
 	private static void PlayFile(string _profile)
 	{
-		SaveSystem.SetProfile(_profile);
+		SaveSystem.SelectProfile(_profile);
 		MainMenu.LoadResort();
 	}
 	private static void DeleteFile(string _profile, Node _slot)

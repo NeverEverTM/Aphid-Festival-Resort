@@ -4,6 +4,8 @@ public partial class TorchBehaviour : AnimatedSprite2D
 {
 	private AnimatedSprite2D flame;
 	private Light2D light;
+	bool spawnCheck;
+	RandomNumberGenerator _RNG = new();
 	public override void _Ready()
 	{
 		flame = GetChild(0) as AnimatedSprite2D;
@@ -11,34 +13,71 @@ public partial class TorchBehaviour : AnimatedSprite2D
 
 		Play("default");
 		Frame = new RandomNumberGenerator().RandiRange(0, 2);
+		FrameChanged += () =>
+		{
+			flame.Offset = new(Frame == 1 ? -1 : (Frame == 3 ? 1 : 0), 0);
+		};
 
-		if (FieldManager.TimeOfDay == FieldManager.DayHours.Noon || FieldManager.TimeOfDay == FieldManager.DayHours.Sunset
-			 || FieldManager.TimeOfDay == FieldManager.DayHours.Night)
+		FieldManager.OnTimeChange += SetLight;
+		SetLightInstant();
+	}
+	public void SetLight()
+	{
+		if (!spawnCheck)
+		{
+			spawnCheck = true;
+			return;
+		}
+
+		if (FieldManager.TimeOfDay == FieldManager.DayHours.Noon)
+			flame.Visible = false;
+		else if (!flame.Visible)
 		{
 			light.Enabled = true;
 			flame.Visible = true;
 			flame.Play("lit");
+			CreateFlameIn();
 		}
-
-		RandomNumberGenerator _RNG = new();
-		void CreateIn()
-		{
-			Tween _in = CreateTween();
-			_in.TweenProperty(light, "energy", 2, _RNG.RandfRange(0.5f,2)).FromCurrent();
-			_in.Finished += CreateOut;
-		}
-		void CreateOut()
-		{
-			Tween _out = CreateTween();
-			_out.TweenProperty(light, "energy", 2.5, _RNG.RandfRange(0.5f,2)).FromCurrent();
-			_out.Finished += CreateIn;
-		}
-		CreateIn();
 	}
-
-	public override void _Process(double delta)
+	public void SetLightInstant()
 	{
+		if (FieldManager.TimeOfDay == FieldManager.DayHours.Noon)
+		{
+			light.Enabled = false;
+			flame.Visible = false;
+		}
+		else if (!flame.Visible)
+		{
+			light.Energy = 2;
+			light.Enabled = true;
+			flame.Visible = true;
+			flame.Play("lit");
+			CreateFlameIn();
+		}
+	}
+	public void CreateFlameIn()
+	{
+		Tween _in = CreateTween();
+		_in.TweenProperty(light, "energy", 2, _RNG.RandfRange(0.5f, 2)).FromCurrent();
+		_in.Finished += CreateFlameOut;
+	}
+	public void CreateFlameOut()
+	{
+		Tween _out = CreateTween();
+
 		if (flame.Visible)
-			flame.Offset = new(Frame == 1 ? -1 : (Frame == 3 ? 1 : 0), 0);
+		{
+			_out.TweenProperty(light, "energy", 2.5, _RNG.RandfRange(0.5f, 2)).FromCurrent();
+			_out.Finished += CreateFlameIn;
+		}
+		else
+		{
+			_out.TweenProperty(light, "energy", 0, _RNG.RandfRange(0.5f, 2)).FromCurrent();
+			_out.Finished += () => light.Enabled = false;
+		}
+	}
+	public override void _ExitTree()
+	{
+		FieldManager.OnTimeChange -= SetLight;
 	}
 }

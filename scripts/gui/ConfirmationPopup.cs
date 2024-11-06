@@ -130,7 +130,7 @@ public partial class ConfirmationPopup : CanvasLayer
 	public static void Accept()
 	{
 		currentPopup.GetTree().Root.ProcessMode = ProcessModeEnum.Pausable;
-		currentPopup.QueueFree();
+		currentPopup.CallDeferred(Node.MethodName.QueueFree);
 		IsConfirming = false;
 	}
 	public static void Cancel()

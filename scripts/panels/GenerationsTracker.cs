@@ -10,7 +10,7 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
     public static GenerationsTracker Instance;
 
     public string GetId() => "generations_data";
-    public string GetDataPath() => SaveSystem.aphidsFolder;
+    public string GetDataPath() => SaveSystem.ProfileAphidDataDir;
     public Task LoadData(string _json)
     {
         Data = JsonSerializer.Deserialize<Savefile>(_json);

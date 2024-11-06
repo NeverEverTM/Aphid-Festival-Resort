@@ -36,7 +36,7 @@ public partial class BuildMenu : Control
 	{
 		isStorageOpen = false;
 		ResortGUI.SetFreeCameraHud(false);
-		CanvasManager.SetCurrencyElement(false);
+		CanvasManager.SetHudElements(false);
 
 		// Sets all building rects
 		if (activeBuildingsList.Count == 0)
@@ -51,7 +51,7 @@ public partial class BuildMenu : Control
 	{
 		activeBuildingsList.Clear();
 		ResortGUI.SetFreeCameraHud(true);
-		CanvasManager.SetCurrencyElement(true);
+		CanvasManager.SetHudElements(true);
 
 		while (menu_player.CurrentAnimation == "close")
 			await Task.Delay(1);

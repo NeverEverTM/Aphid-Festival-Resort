@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public partial class DebugConsole : CanvasLayer
 {
-	public static DebugConsole Instance { get; private set;}
+	public static DebugConsole Instance { get; private set; }
 	public static bool IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt,
 	LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair,
 	DidntSayIDidntWarnYouBeforeHand;
@@ -72,7 +72,32 @@ public partial class DebugConsole : CanvasLayer
 			}
 
 			if (Input.IsActionJustPressed("debug_1"))
-				TriggerCommand(lastCommand);
+			{
+				if (lastCommand != null)
+					TriggerCommand(lastCommand);
+			}
+
+			if (Input.IsActionJustPressed("debug_2"))
+			{
+				Logger.Print(Logger.LogPriority.Log, "Buggy");
+				// SaveSystem.SaveMetadata _config = new("test");
+				// GD.Print("INTIALIZED");
+				// if (!_check)
+				// {
+				// 	_config.SaveGD(OptionsManager.Settings.Data.testPacked, "user://");
+				// 	GD.Print("SAVED SUCCESFULLY");
+				// }
+				// else
+				// {
+				// 	GD.Print("INTIALIZED LOAD");
+				// 	Godot.Collections.Dictionary _loadedData = (Godot.Collections.Dictionary)_config.LoadGD("user://");
+				// 	for(int i = 0; i < _loadedData.Count; i++)
+				// 	{
+				// 		GD.Print(_loadedData[i]);
+				// 	}
+				// }
+				// _check = !_check;
+			}
 		}
 	}
 
@@ -146,33 +171,33 @@ public partial class DebugConsole : CanvasLayer
 			ResortManager.CreateNewAphid(GameManager.Utils.GetMouseToWorldPosition(), _genes);
 		}
 	}
-    private class Motherload : IConsoleCommand
-    {
-        public string HelpText => "Gives you loads of money. <motherload> (specific amount)";
+	private class Motherload : IConsoleCommand
+	{
+		public string HelpText => "Gives you loads of money. <motherload> (specific amount)";
 
-        public void Execute(string[] args)
-        {
+		public void Execute(string[] args)
+		{
 			int _amount = 500;
-            if (args.Length > 1)
+			if (args.Length > 1)
 				CheckValidType(args[1], out _amount);
 
 			Player.Data.Currency += _amount;
 			CanvasManager.UpdateCurrency();
 			Logger.Print(Logger.LogPriority.Log, $"You have been transfered ${_amount} from the Bank of Bugaria, free of charge!");
-        }
-    }
-    private class DeLorean : IConsoleCommand
-    {
-        public string HelpText => "Change the hour of the day. <time> [hh] [mm]";
+		}
+	}
+	private class DeLorean : IConsoleCommand
+	{
+		public string HelpText => "Change the hour of the day, 24 hours only. <time> [hh] [mm]";
 
-        public void Execute(string[] args)
-        {
+		public void Execute(string[] args)
+		{
 			var _date = Time.GetDatetimeDictFromSystem();
 			_date["hour"] = args[1];
 			_date["minute"] = args[2];
-            FieldManager.Instance.SetTimeAtmosphere(_date);
+			FieldManager.Instance.SetTime(_date);
 
-			Logger.Print(Logger.LogPriority.Log, $"Time set to October 21 2015 {args[1]}:{args[2]}");
-        }
-    }
+			Logger.Print(Logger.LogPriority.Log, $"In-Game Time is now {args[1]}:{args[2]}");
+		}
+	}
 }
