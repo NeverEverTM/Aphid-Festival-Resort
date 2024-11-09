@@ -9,16 +9,17 @@ Currently supports both English and Spanish translations.
 
 For feedback, annonuncements, and such, reach me at the itch.io page:
 https://neverevertm.itch.io/aphid-festival-resort
+or on Discord as Summer(neverevertm)
 
 ## Development
 Current goals in order of importance:
 	Proper cutscenes
 	The actual resort building and its functionality
-	Ability to customize resort grounds with decorations
-	Cooking mechanics
+	[DONE] Ability to customize resort grounds with decorations
+	[DONE] Cooking mechanics
 
 
 Milestones for the project:
-	Introduce richer generational inheritance (personality trais, affections, dislikes)
+	Introduce richer generational inheritance (personality traits, affections, dislikes)
 	Introduce skills and abilities for Aphids to develop
 	Add skill training and aphid minigames (tournaments, races, quests)
