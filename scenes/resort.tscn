@@ -347,18 +347,6 @@ inventory = NodePath("../canvas/inventory")
 TopLeft = NodePath("../topleft")
 BottomRight = NodePath("../bottomright")
 
-[node name="aphid_info" parent="resort_canvas" index="2"]
-offset_left = 121.0
-offset_top = 327.0
-offset_right = 121.0
-offset_bottom = 327.0
-
-[node name="inventory" parent="resort_canvas/kitchen_menu" index="3"]
-offset_left = -519.0
-offset_top = 223.0
-offset_right = 547.0
-offset_bottom = 382.999
-
 [node name="canvas" parent="." instance=ExtResource("5_t3t74")]
 
 [node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]

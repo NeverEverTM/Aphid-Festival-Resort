@@ -63,7 +63,7 @@ public partial class ConfirmationPopup : CanvasLayer
 
 	public override void _Input(InputEvent _event)
 	{
-		if (Input.IsActionJustPressed("cancel") || Input.IsActionJustPressed("escape"))
+		if (_event.IsActionPressed("cancel") || _event.IsActionPressed("escape"))
 		{
 			Cancel();
 			return;
@@ -109,7 +109,10 @@ public partial class ConfirmationPopup : CanvasLayer
 			Accept();
 		}
 		else
+		{
+			confirmation_edit.Text = "";
 			confirmation_edit.GrabFocus();
+		}
 	}
 
 	public static ConfirmationPopup Create(Action _onConfirm, Action _onCancel = null, ConfirmationEnum _type = ConfirmationEnum.Standard)
@@ -123,7 +126,7 @@ public partial class ConfirmationPopup : CanvasLayer
 		currentPopup.confirmationAction = _onConfirm;
 		currentPopup.cancelAction = _onCancel;
 		GameManager.Instance.GetViewport().SetInputAsHandled();
-		GameManager.Instance.GetTree().Root.AddChild(currentPopup);
+		GameManager.Instance.GetTree().Root.CallDeferred(Node.MethodName.AddChild, currentPopup);
 		GameManager.Instance.GetTree().Root.ProcessMode = ProcessModeEnum.Disabled;
 		return currentPopup;
 	}

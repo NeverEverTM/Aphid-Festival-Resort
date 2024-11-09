@@ -5,16 +5,9 @@ public partial class FurnitureShop : ShopInterface
 	[ExportCategory("Furniture Menu")]
 	[Export] private TextureButton open_button;
 
-	protected override void PurchaseItem()
+	protected override void Purchase()
 	{
-		if (string.IsNullOrEmpty(currentItem))
-			return;
-		if (Player.Data.Currency - currentCost < 0)
-			return;
-
 		Player.Data.Storage.Add(currentItem);
-		Player.Data.SetCurrency(-currentCost);
-		SoundManager.CreateSound(buySound, true);
 	}
 
 	public override void _Ready()

@@ -8,6 +8,7 @@ public partial class ResortGUI : CanvasLayer
 	/// Used as a buffer for IsFreeCamera
 	/// </summary>
 	public bool IsFreeCamera, WasFreeCamera, EnableMouseCameraControl;
+	private bool WasInMenu;
 
 	[Export] private AnimationPlayer freeCameraHUD;
 	[Export] private TextureButton build_button, show_storage_button;
@@ -49,9 +50,6 @@ public partial class ResortGUI : CanvasLayer
 	{
 		WasFreeCamera = IsFreeCamera;
 
-		if (Input.IsActionJustPressed("change_camera"))
-			SetFreeCameraMode(!IsFreeCamera);
-
 		if (IsFreeCamera)
 		{
 			if (EnableMouseCameraControl)
@@ -63,9 +61,22 @@ public partial class ResortGUI : CanvasLayer
 
 			GameManager.GlobalCamera.GlobalPosition += Input.GetVector("left", "right", "up", "down") * 8;
 			GameManager.GlobalCamera.GlobalPosition = GameManager.GlobalCamera.GlobalPosition.Clamp(TopLeft.GlobalPosition + GameManager.QuarterScreen, BottomRight.GlobalPosition - GameManager.QuarterScreen);
-			if (Input.IsActionJustPressed("escape") || Input.IsActionJustPressed("cancel"))
-				SetFreeCameraMode(false);
+
 		}
+	}
+	public override void _Input(InputEvent @event)
+	{
+		if (@event.IsActionPressed("change_camera"))
+			SetFreeCameraMode(!IsFreeCamera);
+
+		if (IsFreeCamera)
+		{
+			if (!WasInMenu && (@event.IsActionPressed("escape") || @event.IsActionPressed("cancel")))
+				SetFreeCameraMode(false);
+
+			WasInMenu = CanvasManager.Menus.IsInMenu;
+		}
+
 	}
 
 	public static void SetFreeCameraMode(bool _state)

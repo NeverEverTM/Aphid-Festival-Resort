@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bmqcud1ngc0g5" path="res://databases/structures/bee_rug.tscn" id="7_n4nb2"]
 [ext_resource type="PackedScene" uid="uid://fcq0g0f37t00" path="res://databases/structures/grass_1.tscn" id="8_d5da3"]
 [ext_resource type="PackedScene" uid="uid://c4tp2on2bbuuo" path="res://databases/structures/grass_0.tscn" id="9_g3vqv"]
-[ext_resource type="PackedScene" uid="uid://bl32rmw6rm32a" path="res://databases/structures/grass_2.tscn" id="10_esg66"]
+[ext_resource type="PackedScene" uid="uid://bl32rmw6rm32a" path="res://databases/structures/largegrass_0.tscn" id="10_esg66"]
 
 [node name="tilemap_resort" type="Node2D" node_paths=PackedStringArray("globalFilter")]
 y_sort_enabled = true

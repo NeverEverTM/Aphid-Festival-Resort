@@ -143,8 +143,11 @@ public partial class MainMenu : Node2D
 			}
 			return;
 		}
-
-		if (!new_game_panel.Visible)
+	}
+    public override void _Input(InputEvent @event)
+    {
+		// we separate it cause, UnhandledInput does not detect it if is hold
+        if (!new_game_panel.Visible)
 			return;
 
 		bool _resortIsFocused = resort_input_name.HasFocus(),
@@ -198,8 +201,8 @@ public partial class MainMenu : Node2D
 				GetViewport().SetInputAsHandled();
 			return;
 		}
-	}
-	public override void _Process(double delta)
+    }
+    public override void _Process(double delta)
 	{
 		DoBounceAnim();
 	}

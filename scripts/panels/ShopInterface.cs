@@ -12,7 +12,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	[Export] protected TextureRect itemIcon;
 	[Export] protected PackedScene itemContainer;
 
-	[Export] protected AudioStream buySound, selectSound;
+	[Export] protected AudioStream buySound, selectSound, errorSound;
 	protected MenuUtil.MenuInstance menu;
 	protected string currentItem;
 	protected int currentCost;
@@ -68,7 +68,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		if (currentItem != _itemName)
 			SetItem(_itemName);
 		else // but if is already displayed, then buy it
-			PurchaseItem();
+			ConfirmPurchase();
 	}
 	protected virtual void SetItem(string _itemName)
 	{
@@ -82,10 +82,21 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		itemIcon.Texture = GameManager.GetIcon(_itemName);
 		SoundManager.CreateSound(selectSound);
 	}
-	protected virtual void PurchaseItem()
+	protected virtual void ConfirmPurchase()
 	{
+		if (string.IsNullOrEmpty(currentItem))
+			return;
+		if (Player.Data.Currency - currentCost < 0)
+		{
+			SoundManager.CreateSound(errorSound);
+			return;
+		}
 
+		Player.Data.SetCurrency(-currentCost);
+		SoundManager.CreateSound(buySound, true);
+		Purchase();
 	}
+	protected virtual void Purchase() { }
 
 	public void SetMenu()
 	{

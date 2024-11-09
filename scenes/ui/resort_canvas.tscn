@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=86 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" path="res://scripts/gui/ResortGUI.cs" id="1_i0o2h"]
 [ext_resource type="Material" uid="uid://cwaid2g5ctnpy" path="res://scripts/shaders/unshaded.tres" id="2_hniuu"]
@@ -31,6 +31,7 @@
 [ext_resource type="AudioStream" uid="uid://deyj10uei0gk1" path="res://sfx/ui/kaching.wav" id="30_mc2ca"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="31_0kj0x"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="32_iw5ng"]
+[ext_resource type="AudioStream" uid="uid://c2i25l6w3yeqq" path="res://sfx/ui/button_fail.wav" id="32_p352r"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="33_gn48s"]
 [ext_resource type="Script" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="35_dvpl5"]
@@ -1334,7 +1335,7 @@ grow_vertical = 2
 theme = ExtResource("7_uocqb")
 script = ExtResource("8_pnptv")
 animPlayer = NodePath("AnimationPlayer")
-descriptionLabel = NodePath("description/RichTextLabel")
+descriptionLabel = NodePath("description/generations_desc")
 aphidSlot = ExtResource("9_0hi6w")
 aphidContainer = NodePath("ScrollContainer/GridContainer")
 
@@ -1384,7 +1385,7 @@ offset_right = 538.428
 offset_bottom = 720.472
 texture = ExtResource("3_yrmm3")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="generations_panel/description"]
+[node name="generations_desc" type="RichTextLabel" parent="generations_panel/description"]
 layout_mode = 0
 offset_left = 59.0001
 offset_top = 42.8882
@@ -1405,10 +1406,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 121.0
-offset_top = 327.0
-offset_right = 121.0
-offset_bottom = 327.0
+offset_left = -519.0
+offset_top = -33.0
+offset_right = -519.0
+offset_bottom = -33.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_stretch_ratio = 14.62
@@ -1646,6 +1647,7 @@ itemIcon = NodePath("item_info/icon/icon_image")
 itemContainer = ExtResource("29_mvok5")
 buySound = ExtResource("30_mc2ca")
 selectSound = ExtResource("31_0kj0x")
+errorSound = ExtResource("32_p352r")
 
 [node name="store_animator" type="AnimationPlayer" parent="item_shop_panel"]
 libraries = {
@@ -2049,10 +2051,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -519.0
-offset_top = 223.0
-offset_right = 547.0
-offset_bottom = 382.999
+offset_left = -539.0
+offset_top = 183.0
+offset_right = 527.0
+offset_bottom = 342.999
 grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("3_yrmm3")
@@ -2266,6 +2268,7 @@ itemIcon = NodePath("anchor_right/icon/image")
 itemContainer = ExtResource("29_mvok5")
 buySound = ExtResource("30_mc2ca")
 selectSound = ExtResource("31_0kj0x")
+errorSound = ExtResource("32_p352r")
 
 [node name="furniture_player" type="AnimationPlayer" parent="furniture_menu"]
 libraries = {

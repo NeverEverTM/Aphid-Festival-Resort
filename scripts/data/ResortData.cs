@@ -34,6 +34,13 @@ public partial class ResortManager : Node2D, SaveSystem.ISaveData
 		for (int i = 0; i < Instance.EntityRoot.GetChildCount(); i++)
 		{
 			Node2D _item = Instance.EntityRoot.GetChild(i) as Node2D;
+
+			if (!_item.HasMeta("id"))
+			{
+				Logger.Print(Logger.LogPriority.Error, $"ResortManager: The object {_item.Name}({_item.GetClass()}) did not have a valid id.");
+				continue;
+			}
+
 			Data.Items[i] = new()
 			{
 				Id = _item.GetMeta("id").ToString(),

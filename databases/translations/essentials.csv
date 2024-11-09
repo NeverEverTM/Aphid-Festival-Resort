@@ -36,7 +36,7 @@ Press and hold “Yes” to confirm","¿Estas seguro?
 Manten presionado “Si” para confirmar"
 confirmation_2,Are you sure?,¿Estas seguro?
 confirmation_yes,Yes,Si
-confirmation_no,No,No
+confirmation_no,Nope,No
 options_music,Music,Musica
 options_sounds,Sounds,Sonidos
 options_fullscreen,Fullscreen,Panoramica
@@ -91,7 +91,7 @@ pause_controls,Controls,Controles
 pause_help,Help,Ayuda
 pause_backtomenu,Back to Menu,Volver al Menu
 pause_exit,Exit to Desktop,Salir al Escritorio
-credits_note,"Created in the Godot 4 Engine
+credits_note,"[center]Created in the Godot 4 Engine
 
 SOUND ASSETS
 
@@ -102,16 +102,17 @@ MISC ASSETS
 
 Outline Shader by Julian-Vos
 Shine Shader (for the logo) by ACB_Gamez (and others)
-3D Aphid Model by Leo from the official BF discord (hello)
+3D Aphid Model by Leo (leo6804)
 
 SPECIAL THANKS
 
+To tatetrox, for helping with betatesting and quality control!
 To the fan game Chao Resort Island by Nefault1st for being an inspiration for this!
 
 ---------------------------------
 Unless stated otherwise, all other components had been created, programmed and designed by me, Summer
 Characters and places are from Bug Fables: The Everlasting Sapling by Moonsprout Games
-------------------------","Hecho con el motor Godot 4
+------------------------[/center]","[center]Hecho con el motor Godot 4
 
 ARCHIVOS DE SONIDO
 
@@ -126,18 +127,19 @@ Shine Shader (para el logo) por ACB_Gamez (y otros)
 
 GRACIAS ESPECIALES
 
+A Josefina(tatetrox) por ayudar con testeo y control de calidad!
 Al juego fan Chao Resort Island por Nefault1st por ser una inspiracion para esto!
 
 ---------------------------------
 A menos dicho lo contrario, todo los demas componentes han sido creados, programados y deiseñados por mi Summer
 Caracteres y lugares vienen de Bug Fables: The Everlasting Sapling por Moonsprout Games
-------------------------"
+------------------------[/center]"
 generations_description,"Here you can see all the aphids you have raised through your time in the resort.
 Double click on an aphid to mark its location in the map.","Aquí podras ver a todas las mascotas que has criado a traves del tiempo en el complejo.
 Haz doble click para marcar la ubicacion de una mascota en el mapa."
 generations_owner,Owned By,Dueño De
 generations_parent,Children of,Crío de
-store_item_name,Azzy’s Food Cabinet,Puesto de Alimentos de Azzy
+store_item_name,Azzy’s Food Cabinet,Puesto de Azzy
 store_item_desc,Purchase basic items for Aphid caretaking.,Adquiere objectos basicos para el cuidado de Áfidos.
 store_furniture_name,Furniture Cabinet,Cabina de muebles
 store_furniture_desc,A sorting of all trinkets and props that the resort sells.,Una coleccion de todos los aparatos y decoraciones que el complejo vende.

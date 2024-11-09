@@ -148,7 +148,14 @@ public partial class ResortManager : Node2D
 	}
 	public static void CreateStructure(string _id, Vector2 _position)
 	{
-		Node2D _item = ResourceLoader.Load<PackedScene>(GameManager.StructuresPath + $"/{_id}.tscn").Instantiate() as Node2D;
+		string _path = GameManager.StructuresPath + $"/{_id}.tscn";
+		if (!ResourceLoader.Exists(_path))
+		{
+			Logger.Print(Logger.LogPriority.Error, $"ResortManager: {_id} is not a valid id.");
+			return;
+		}
+
+		Node2D _item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
 		_item.GlobalPosition = _position;
 		Instance.StructureRoot.AddChild(_item);
 	}

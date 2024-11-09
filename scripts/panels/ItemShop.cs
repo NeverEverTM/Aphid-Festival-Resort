@@ -1,16 +1,11 @@
 public partial class ItemShop : ShopInterface
 {
-	protected override void PurchaseItem()
+	protected override void Purchase()
 	{
-		if (string.IsNullOrEmpty(currentItem))
-			return;
-		if (Player.Data.Currency - currentCost < 0)
-			return;
-
-		if (PlayerInventory.StoreItem(currentItem))
+		if (!PlayerInventory.StoreItem(currentItem))
 		{
-			Player.Data.SetCurrency(-currentCost);
-			SoundManager.CreateSound(buySound, true);
+			Player.Data.SetCurrency(currentCost);
+			SoundManager.CreateSound(errorSound, true);
 		}
 	}
 }

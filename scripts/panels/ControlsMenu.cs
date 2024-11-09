@@ -48,7 +48,7 @@ public partial class ControlsMenu : Control
 			if (IsInstanceValid(current_action))
 			{
 				(current_action.FindChild("action") as RichTextLabel).Text = 
-					ControlsManager.GetUserReadableText((ControlsManager.InputBinds.Binds[current_action.Name]).AsText());
+					ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[current_action.Name].AsText());
 			}
 
 			current_action = null;

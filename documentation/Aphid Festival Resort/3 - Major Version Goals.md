@@ -10,8 +10,8 @@ Hoping to make it before the end of this year and start work on 0.3 on early 202
 - Multiple savefiles capacity
 - The goddang base game
 ## Version 0.2 (25%)
-- [DONE] Cooking mechanics similar to that in the game
-- [DONE] Resort customization with the ability to place furniture
+- [DONE] v1.1 Cooking mechanics similar to that in the game
+- [DONE] v1.2 Resort customization with the ability to place furniture
 - Aphid able to learn skills through small minigames within the resort grounds
 - Aphid interactables, such as toys.
 ## Version 0.3

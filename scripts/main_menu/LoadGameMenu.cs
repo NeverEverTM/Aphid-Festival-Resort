@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.Json;
 using Godot;
 
@@ -12,10 +13,29 @@ public partial class LoadGameMenu : Control
 
 	private const string loadGameCategory = "load_game";
 
-    public override void _Ready()
+    public override void _Process(double delta)
     {
-        fileNames = DirAccess.Open(SaveSystem.ProfilesDir).GetDirectories();
+        if (!Visible)
+			menuPlayer.Play("RESET");
+    }
+    public void AddMenuAction()
+	{
+		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDir).Length > 0)
+		{
+			// create load game button
+			MainMenu.Instance.CreateMenuAction(loadGameCategory, OpenLoadMenu);
+			// create continue button
+			if (!string.IsNullOrEmpty(OptionsManager.Settings.Data.LastPlayedResort))
+				MainMenu.Instance.CreateMenuAction("continue", ContinueGame);
+		}
+	}
 
+	private void OpenLoadMenu()
+	{
+		MainMenu.Instance.SetMenu(this);
+
+		// Create savefiles
+		fileNames = DirAccess.Open(SaveSystem.ProfilesDir).GetDirectories();
 		for (int i = 0; i < fileNames.Length; i++)
 		{
 			string _path = SaveSystem.ProfilesDir + $"/{fileNames[i]}/{GameData.Instance.GetId()}.json",
@@ -41,27 +61,7 @@ public partial class LoadGameMenu : Control
 
 			container.AddChild(_slot);
 		}
-    }
-    public override void _Process(double delta)
-    {
-        if (!Visible)
-			menuPlayer.Play("RESET");
-    }
-    public void AddMenuAction()
-	{
-		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDir).Length > 0)
-		{
-			// create load game button
-			MainMenu.Instance.CreateMenuAction(loadGameCategory, OpenLoadMenu);
-			// create continue button
-			if (!string.IsNullOrEmpty(OptionsManager.Settings.Data.LastPlayedResort))
-				MainMenu.Instance.CreateMenuAction("continue", ContinueGame);
-		}
-	}
-
-	private void OpenLoadMenu()
-	{
-		MainMenu.Instance.SetMenu(this);
+		
 		menuPlayer.Play("open");
 	}
 	private void ContinueGame()

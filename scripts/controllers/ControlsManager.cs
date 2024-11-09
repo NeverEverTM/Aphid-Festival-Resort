@@ -115,10 +115,13 @@ public static class ControlsManager
 		foreach (string _action in InputMap.GetActions())
 		{
 			var _events = InputMap.ActionGetEvents(_action);
+			
 			if (_events.Count > 0)
+			{
+				if (_events[0].AsText().StartsWith("ui"))
+					continue;
 				InputBinds.Binds[_action] = _events[0];
-			else
-				Logger.Print(Logger.LogPriority.Warning, "ControlsMenu: ", $"{_action} is not a valid input action");
+			}
 		}
 	}
 	public static void BindAction(InputEvent _event, string _action)
