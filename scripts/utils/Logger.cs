@@ -21,7 +21,7 @@ public static class Logger
 		else if (priority == LogPriority.Warning)
 			GD.Print(_message.Insert(0, $"[{_time}] |-[WARN]-|: "));
 		else
-			GD.Print(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
+			GD.PrintErr(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
 		DebugConsole.Print(_message);
 	}
 	public static void Print(LogPriority priority, GameTermination mode, params object[] args)

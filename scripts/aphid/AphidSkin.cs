@@ -3,6 +3,8 @@ using Godot;
 
 public partial class AphidSkin : Node2D
 {
+	public const string SkinTextureExtension = "PNG";
+
 	[Export] public Sprite2D eyes, antenna, body, back_legs, front_legs;
 	private AphidInstance Instance;
 	private Aphid MyAphid;
@@ -11,8 +13,12 @@ public partial class AphidSkin : Node2D
 	/// Used to keep track of eye expressions after blink.
 	/// So if aphid is happy and blinks, it doesnt reset back to idle.
 	/// </summary>
-	public string lastEyeExpression = "idle", currentEyeExpression;
-	public bool IsFlipped, OverrideMovementAnim;
+	public string lastEyeExpression = "idle", lastLegAction = "idle", currentEyeExpression;
+	/// <summary>
+	/// False : Facing Right - True : Facing Left
+	/// </summary>
+	public bool IsFlipped;
+	public bool OverrideMovementAnim;
 
 	private int walk_shutter;
 	private const int walk_shutter_speed = 8;
@@ -35,14 +41,21 @@ public partial class AphidSkin : Node2D
 		SetBodySkin(_action);
 		SetLegsSkin(_action);
 	}
+// TODO: Turn into static method
 	private Texture2D GetSkinPiece(int _id, string _piece, string _action = "idle")
 	{
 		string _path = $"{GameManager.SkinsPath}/{_id}/";
-		if (Instance.Status.IsAdult)
-			_path += $"{_piece}_{_action}.png";
-		else
-			_path += $"{_piece}_baby_{_action}.png";
 
+		if (Instance.Status.IsAdult)
+			_path += $"{_piece}_{_action}.{SkinTextureExtension}";
+		else
+			_path += $"{_piece}_baby_{_action}.{SkinTextureExtension}";
+
+		if (!FileAccess.FileExists(_path))
+		{
+			Logger.Print(Logger.LogPriority.Error, $"AphidSkin: Skin part at <{_path}> does not exist.");
+			return new PlaceholderTexture2D();
+		}
 		return ResourceLoader.Load<Resource>(_path) as Texture2D;
 	}
 	public void SetEyesSkin(string _action)
@@ -64,6 +77,9 @@ public partial class AphidSkin : Node2D
 	}
 	public void SetLegsSkin(string _action)
 	{
+		if (lastLegAction == _action)
+			return;
+		lastLegAction = _action;
 		Texture2D _legsTexture = GetSkinPiece(Instance.Genes.LegType, "legs", _action);
 		front_legs.SelfModulate = back_legs.SelfModulate = Instance.Genes.LegColor;
 		front_legs.Texture = back_legs.Texture = _legsTexture;
@@ -83,7 +99,6 @@ public partial class AphidSkin : Node2D
 	}
 	public void TickFlip(float _delta)
 	{
-		// False : Facing Right - True : Facing Left
 		if (IsFlipped)
 			Scale = new(Mathf.Lerp(Scale.X, 1, _delta * 3), Scale.Y);
 		else
@@ -117,8 +132,8 @@ public partial class AphidSkin : Node2D
 		MyAphid.PlaySound(Aphid.Audio_Step, true);
 	}
 	/// <summary>
-	/// Makes sure there is actual movement active. 
-	/// Use DoWalkAniminstead and set OverrideMovementAnim to true if you want to execute it standalone.
+	/// Properly handles walking during movement. 
+	/// if you want to play the animation by itself, set OverrideMovementAnim to true and use DoWalkAnim instead.
 	/// </summary>
 	public void StartWalking()
 	{
@@ -136,13 +151,14 @@ public partial class AphidSkin : Node2D
 		DoWalkAnim();
 	}
 
-	public void DoJumpAnim()
+	public void DoJumpAnim(bool _playSound = true)
 	{
 		Tween tween = CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, -5), 0.15f);
 		tween.Finished += () => {
 			CreateAnimationTween(Tween.EaseType.In, Tween.TransitionType.Bounce, "position", new Vector2(0, 0), 0.15f);
 		};
-		SoundManager.CreateSound2D(Aphid.Audio_Jump, MyAphid.GlobalPosition, true);
+		if (_playSound)
+			SoundManager.CreateSound2D(Aphid.Audio_Jump, MyAphid.GlobalPosition, true);
 	}
 	public async Task DoDanceAnim()
 	{

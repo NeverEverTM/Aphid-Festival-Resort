@@ -12,7 +12,7 @@ public partial class Player : CharacterBody2D
 	[Export] private Area2D interactionArea;
 	[Export] private Node2D spriteBody;
 	[Export] private AnimatedSprite2D animator;
-	[Export] private AudioStreamPlayer2D audioPlayer;
+	[Export] private AudioStream Audio_Whistle;
 	[Export] public PlayerInventory inventory;
 
 	/// <summary>
@@ -23,7 +23,9 @@ public partial class Player : CharacterBody2D
 
 	// Movement Params
 	public Vector2 MovementDirection, FacingDirection;
-	private float MovementSpeed = 100;
+	public float MovementSpeed = 100;
+	private const float idleTimer_base = 4; 
+	private float idleTimer = idleTimer_base;
 	private bool flipSwitch, IsRunning;
 	private string currentAnimState = "";
 
@@ -47,6 +49,8 @@ public partial class Player : CharacterBody2D
 	// Input Params
 	private int interact_hold_cycles;
 	private bool interact_is_being_held;
+	private const string player_step_sound = GameManager.SFXPath + "/player/step.wav";
+	private bool menuCheck;
 
 	public override void _EnterTree()
 	{
@@ -76,11 +80,23 @@ public partial class Player : CharacterBody2D
 
 		SaveSystem.AddToProfileData(Instance);
 	}
-	private bool menuCheck;
 	public override void _Ready()
 	{
 		GameManager.GlobalCamera = camera;
 		animator.Play("idle");
+		animator.FrameChanged += () =>
+		{
+			if (animator.Animation == "walk")
+			{
+				if (animator.Frame == 0 || animator.Frame == 3)
+					SoundManager.CreateSound2D(ResourceLoader.Load<AudioStream>(player_step_sound), GlobalPosition, false).VolumeDb = -15;
+			}
+			if (animator.Animation == "run")
+			{
+				if (animator.Frame == 0 || animator.Frame == 3)
+					SoundManager.CreateSound2D(ResourceLoader.Load<AudioStream>(player_step_sound), GlobalPosition);
+			}
+		};
 
 		CanvasManager.Menus.OnSwitch += (bool _state, MenuUtil.MenuInstance _menu) =>
 		{
@@ -91,18 +107,13 @@ public partial class Player : CharacterBody2D
 			}
 		};
 	}
-	public override void _Process(double delta)
-	{
-		if (PickupItem != null && !GameManager.IsBusy)
-			ProcessPickupBehaviour();
-	}
 	public override void _PhysicsProcess(double delta)
 	{
 		// Calculate player movement
 		MovementDirection = Vector2.Zero;
 		if (!IsDisabled && !CanvasManager.Instance.IsInFocus)
 		{
-			IsRunning = Input.IsActionPressed("run");
+			IsRunning = OptionsManager.Settings.Data.SettingAutoRun ? !Input.IsActionPressed("run") : Input.IsActionPressed("run");
 			ReadMovementInput();
 			ReadHeldInput();
 		}
@@ -112,8 +123,11 @@ public partial class Player : CharacterBody2D
 		if (MovementDirection != Vector2.Zero)
 			SetFlipDirection(MovementDirection);
 		TickFlip((float)delta);
-		DoWalkAnim();
+		DoWalkAnim((float)delta);
 		MoveAndSlide();
+
+		if (PickupItem != null && !GameManager.IsBusy)
+			ProcessPickupBehaviour();
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
@@ -197,22 +211,32 @@ public partial class Player : CharacterBody2D
 	{
 		FacingDirection = Input.GetVector("left", "right", "up", "down");
 		MovementDirection = Input.GetVector("left", "right", "up", "down").Normalized();
+
 		if (IsRunning)
 			MovementSpeed = 195;
 		else
 			MovementSpeed = 90;
 	}
-	private void DoWalkAnim()
+	private void DoWalkAnim(float _delta)
 	{
 		if (!MovementDirection.IsEqualApprox(Vector2.Zero))
 		{
+			idleTimer = idleTimer_base;
 			if (IsRunning)
 				SetPlayerAnim("run");
 			else
 				SetPlayerAnim("walk");
 		}
 		else if (!IsDisabled)
-			SetPlayerAnim("idle");
+		{
+			if (idleTimer > 0)
+			{
+				idleTimer -= _delta;
+				SetPlayerAnim("idle");
+			}
+			else
+				SetPlayerAnim("sit");
+		}
 	}
 	private void ReadHeldInput()
 	{
@@ -258,17 +282,23 @@ public partial class Player : CharacterBody2D
 		var tag = (string)_item.GetMeta("tag");
 		return ValidInteractionTags.Contains(tag);
 	}
-	private void CallAllNearbyAphids()
+	private async void CallAllNearbyAphids()
 	{
-		PlaySound(ResourceLoader.Load<AudioStream>(GameManager.SFXPath + "/player/whistle.wav"));
+		if (PickupItem != null)
+			return;
+		MovementDirection = Vector2.Zero;
+		SetDisabled(true);
+		SetPlayerAnim("whistle");
+		await Task.Delay(500);
+		PlaySound(Audio_Whistle);
 		for (int i = 0; i < ResortManager.Instance.AphidsOnResort.Count; i++)
 		{
 			Aphid _aphid = ResortManager.Instance.AphidsOnResort[i];
-			if (_aphid == PickupItem) // Dont call an Aphid if you are goddamn holding it
-				continue;
 			if (_aphid.GlobalPosition.DistanceTo(GlobalPosition) < 400)
 				_aphid.CallTowards(GlobalPosition);
 		}
+		await Task.Delay(600);
+		SetDisabled(false);
 	}
 
 	// ======| Pickup |========
@@ -319,10 +349,10 @@ public partial class Player : CharacterBody2D
 			return false;
 
 		// if sleeping, get annoyed
-		if (_aphid.OurState == Aphid.AphidState.Sleep)
+		if (_aphid.State.Is(Aphid.StateEnum.Sleep))
 			_aphid.WakeUp(true);
 
-		_aphid.SetAphidState(Aphid.AphidState.Idle);
+		_aphid.SetState(Aphid.StateEnum.Idle);
 		_aphid.skin.SetFlipDirection(FacingDirection, true);
 		pickup_isAphid = true;
 		SoundManager.CreateSound2D(_aphid.AudioDynamic_Idle, _aphid.GlobalPosition, true);

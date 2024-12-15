@@ -2,6 +2,7 @@
 
 [sub_resource type="Gradient" id="Gradient_gqira"]
 interpolation_mode = 2
+interpolation_color_space = 1
 offsets = PackedFloat32Array(0.0165289, 0.528926, 1)
 colors = PackedColorArray(0.839216, 0.0470588, 0.27451, 1, 0.582677, 0.669868, 0.271788, 1, 0.258824, 0.72549, 0.772549, 1)
 

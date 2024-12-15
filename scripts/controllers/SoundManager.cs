@@ -22,6 +22,7 @@ public partial class SoundManager : Node
 		};
 		SFXPlayer = new();
 		SFXPlayer2D = new();
+		
 		AudioBus = ResourceLoader.Load<AudioBusLayout>("res://default_bus_layout.tres");
 		ProcessMode = ProcessModeEnum.Always;
 
@@ -110,7 +111,6 @@ public partial class SoundManager : Node
 		if (_pitchRand)
 			_player.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
 		_player.Stream = _stream;
-		_player.Bus = "Sounds";
 		_player.Play();
 		sound_entities.Add(_player);
 		return _audioplayer;
@@ -119,8 +119,14 @@ public partial class SoundManager : Node
 	/// Creates a global sound to be heard, handed back for further manipulation.
 	/// To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.
 	/// </summary>
-	public static AudioStreamPlayer CreateSound(AudioStream _stream, bool _pitchRand = true) =>
-		CreateSound(_stream, SFXPlayer.Duplicate() as AudioStreamPlayer, _pitchRand);
+	public static AudioStreamPlayer CreateSound(AudioStream _stream, bool _pitchRand = true, string _bus = "UI")
+	{
+        AudioStreamPlayer _player = new()
+        {
+            Bus = _bus
+        };
+        return CreateSound(_stream, _player, _pitchRand);
+	}
 
 	/// <summary>
 	/// Creates a sound at a given location that can be heard positionally. Duplicating the given audioplayer as a base.
@@ -132,9 +138,10 @@ public partial class SoundManager : Node
 		GameManager.Instance.AddChild(_player);
 		if (_pitchRand)
 			_player.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
+		_player.Attenuation = 0.5f;
+		_player.MaxDistance = 500;
 		_player.Stream = _stream;
 		_player.GlobalPosition = _position;
-		_player.Bus = "Sounds";
 		_player.Play();
 		sound2d_entities.Add(_player);
 		return _player;
@@ -143,11 +150,12 @@ public partial class SoundManager : Node
 	/// Creates a sound at a given location that can be heard positionally.
 	/// For audio that needs to be heard globally, use CreateSound instead.
 	/// </summary>
-	public static AudioStreamPlayer2D CreateSound2D(AudioStream _stream, Vector2 _position, bool _pitchRand = true) =>
-		CreateSound2D(_stream, SFXPlayer2D.Duplicate() as AudioStreamPlayer2D, _position, _pitchRand);
-
-	public static class SFXUtils
+	public static AudioStreamPlayer2D CreateSound2D(AudioStream _stream, Vector2 _position, bool _pitchRand = true, string _bus = "Sounds")
 	{
-		public static AudioStream Audio_Select, Audio_Switch;
+		AudioStreamPlayer2D _player = new()
+		{
+			Bus = _bus
+		};
+		return CreateSound2D(_stream, _player, _position, _pitchRand);
 	}
 }

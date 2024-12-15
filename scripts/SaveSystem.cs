@@ -38,14 +38,14 @@ public static class SaveSystem
 	}
 
 	// Aphid related methods
-	public static Guid AddAphidInstance(AphidInstance _buddy)
+	public static Guid AddAphid(AphidInstance _buddy)
 	{
 		Guid _guid = Guid.NewGuid();
 		_buddy.ID = _guid.ToString();
 		Aphids.Add(_guid, _buddy);
 		return _guid;
 	}
-	public static void RemoveAphidInstance(Guid _guid)
+	public static void RemoveAphid(Guid _guid)
 	{
 		if (!Aphids.ContainsKey(_guid))
 		{
@@ -54,14 +54,14 @@ public static class SaveSystem
 		}
 		Aphids.Remove(_guid);
 	}
-	public static AphidInstance GetAphidInstance(Guid _guid)
+	public static AphidInstance GetAphid(Guid _guid)
 	{
 		if (Aphids.ContainsKey(_guid))
 			return Aphids[_guid];
 
 		return null;
 	}
-	public static void ReplaceAphidInstance(Guid _guid, AphidInstance _buddy) =>
+	public static void ReplaceAphid(Guid _guid, AphidInstance _buddy) =>
 		Aphids[_guid] = _buddy;
 
 	// ==========| Resort Saving Methods |============
@@ -204,7 +204,7 @@ public static class SaveSystem
 	{
 		using var _stream = FileAccess.Open(_path + ProfileAphidDataDir + "aphids.json", FileAccess.ModeFlags.Read);
 
-		while (_stream.GetPosition() < _stream.GetLength())
+		while (_stream?.GetPosition() < _stream?.GetLength())
 		{
 			var _instance = new AphidInstance();
 			if (!LoadAphid(_stream, ref _instance))

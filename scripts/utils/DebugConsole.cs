@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class DebugConsole : CanvasLayer
 {
@@ -23,39 +24,24 @@ public partial class DebugConsole : CanvasLayer
 
 	public override void _Input(InputEvent @event)
 	{
-		if (command_line_input.HasFocus() && @event is InputEventKey && (@event as InputEventKey).KeyLabel == Key.Enter)
-			TriggerCommand(command_line_input.Text.Split(" "));
+		if (IsEnabled)
+		{
+			if (command_line_input.HasFocus() && @event is InputEventKey && (@event as InputEventKey).KeyLabel == Key.Enter)
+				TriggerCommand(command_line_input.Text.Split(" "));
+		}
+		else
+		{
+			if (!IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt ||
+				!LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair)
+				return;
+
+			CheckForUnlock(@event);
+		}
 	}
 
 	public override void _Process(double delta)
 	{
-		if (!IsEnabled)
-		{
-			if (Input.IsActionJustPressed("debug_0"))
-			{
-				if (!IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt ||
-							!LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair)
-					return;
-
-				if (DidntSayIDidntWarnYouBeforeHand)
-				{
-					if (!IsEnabled)
-					{
-						IsEnabled = true;
-						GameManager.CreatePopup("Welcome to the next level", this);
-					}
-				}
-				else
-				{
-					DidntSayIDidntWarnYouBeforeHand = true;
-					GD.Print("DEBUG MODE ENGAGED: PRESS DEBUG KEY AGAIN TO CONFIRM");
-				}
-			}
-			else if (DidntSayIDidntWarnYouBeforeHand)
-				DidntSayIDidntWarnYouBeforeHand = false;
-		}
-		else
-		{
+		if (IsEnabled)
 			if (Input.IsActionJustPressed("debug_0"))
 			{
 				if (Visible)
@@ -71,50 +57,36 @@ public partial class DebugConsole : CanvasLayer
 				}
 			}
 
-			if (Input.IsActionJustPressed("debug_1"))
-			{
-				if (lastCommand != null)
-					TriggerCommand(lastCommand);
-			}
+		if (Input.IsActionJustPressed("debug_1"))
+		{
+			if (lastCommand != null)
+				TriggerCommand(lastCommand);
+		}
 
-			if (Input.IsActionJustPressed("debug_2"))
-			{
-				Logger.Print(Logger.LogPriority.Log, "Buggy");
-				// SaveSystem.SaveMetadata _config = new("test");
-				// GD.Print("INTIALIZED");
-				// if (!_check)
-				// {
-				// 	_config.SaveGD(OptionsManager.Settings.Data.testPacked, "user://");
-				// 	GD.Print("SAVED SUCCESFULLY");
-				// }
-				// else
-				// {
-				// 	GD.Print("INTIALIZED LOAD");
-				// 	Godot.Collections.Dictionary _loadedData = (Godot.Collections.Dictionary)_config.LoadGD("user://");
-				// 	for(int i = 0; i < _loadedData.Count; i++)
-				// 	{
-				// 		GD.Print(_loadedData[i]);
-				// 	}
-				// }
-				// _check = !_check;
-			}
+		if (Input.IsActionJustPressed("debug_2"))
+		{
+			Logger.Print(Logger.LogPriority.Log, "Buggy");
 		}
 	}
+	private static void CheckForUnlock(InputEvent @event)
+	{
+		if (@event.IsActionPressed("debug_0"))
+		{
+			if (!DidntSayIDidntWarnYouBeforeHand)
+			{
+				DidntSayIDidntWarnYouBeforeHand = true;
+				GD.Print("DEBUG MODE ENGAGED: PRESS DEBUG KEY AGAIN TO CONFIRM");
 
-	/// <summary>
-	/// Base interface for console commands.
-	/// </summary>
-	public interface IConsoleCommand
-	{
-		public void Execute(string[] args);
-		public string HelpText { get; }
+			}
+			else if (!IsEnabled)
+			{
+				IsEnabled = true;
+				GameManager.CreatePopup("Welcome to the next level", GameManager.Instance);
+			}
+		}
+		else if (DidntSayIDidntWarnYouBeforeHand && @event is InputEventKey)
+			DidntSayIDidntWarnYouBeforeHand = false;
 	}
-	public readonly static Dictionary<string, IConsoleCommand> commands = new()
-	{
-		{ "spawn", new Spawner() },
-		{ "motherload", new Motherload() },
-		{ "time", new DeLorean() }
-	};
 	public static bool TriggerCommand(string[] _commandLines)
 	{
 		if (!IsEnabled)
@@ -123,23 +95,36 @@ public partial class DebugConsole : CanvasLayer
 
 		if (commands.ContainsKey(_commandLines[0]))
 		{
+			string[] _args = null;
 			lastCommand = _commandLines;
-			commands[_commandLines[0]].Execute(_commandLines);
+			_commandLines.CopyTo(_args, 1);
+			commands[_commandLines[0]].Execute(_args);
 			return true;
 		}
 		return false;
 	}
 
+	public interface IConsoleCommand
+	{
+		public void Execute(string[] args);
+		public string HelpText { get; }
+	}
+	public readonly static Dictionary<string, IConsoleCommand> commands = new()
+	{
+		{ "help", new Help() },
+		{ "spawn", new Spawner() },
+		{ "motherload", new Motherload() },
+		{ "time", new DeLorean() }
+	};
+	
 	public static void Print(string _message) =>
 		Instance?.log_print_text.AppendText(_message + "\n");
-
 	public static bool CheckArgLength(int argLength, int _validLength)
 	{
 		if (argLength != _validLength)
 			return false;
 		return true;
 	}
-
 	public static bool CheckValidType(string _value, out int _validValue)
 	{
 		if (!int.TryParse(_value, out _validValue))
@@ -159,14 +144,36 @@ public partial class DebugConsole : CanvasLayer
 		return true;
 	}
 
-	private class Spawner : IConsoleCommand
+    private class Help : IConsoleCommand
+    {
+        public string HelpText => "Help yourself!";
+
+        public void Execute(string[] args)
+        {
+			if (args.Length > 0)
+			{
+				if (commands.ContainsKey(args[0]))
+            		Print(commands[args[0]].HelpText);
+				else
+					Print("This command does not exist. Type 'help' to find all available commands");
+			}
+			else
+			{
+				Print("Command available are:\n");
+				for(int i = 0; i < commands.Count; i++)
+					Print(commands.ElementAt(i).Key);
+			}
+			
+        }
+    }
+    private class Spawner : IConsoleCommand
 	{
 		public string HelpText => "Spawns randomized aphids. <spawn>";
 
 		public void Execute(string[] args)
 		{
 			AphidData.Genes _genes = new();
-			_genes.RandomizeColors();
+			_genes.DEBUG_Randomize();
 			_genes.Name += ResortManager.Instance.AphidsOnResort.Count;
 			ResortManager.CreateNewAphid(GameManager.Utils.GetMouseToWorldPosition(), _genes);
 		}
@@ -178,7 +185,7 @@ public partial class DebugConsole : CanvasLayer
 		public void Execute(string[] args)
 		{
 			int _amount = 500;
-			if (args.Length > 1)
+			if (args.Length > 0)
 				CheckValidType(args[1], out _amount);
 
 			Player.Data.Currency += _amount;
@@ -193,11 +200,20 @@ public partial class DebugConsole : CanvasLayer
 		public void Execute(string[] args)
 		{
 			var _date = Time.GetDatetimeDictFromSystem();
-			_date["hour"] = args[1];
-			_date["minute"] = args[2];
+			_date["hour"] = args[0];
+			_date["minute"] = args[1];
 			FieldManager.Instance.SetTime(_date);
 
-			Logger.Print(Logger.LogPriority.Log, $"In-Game Time is now {args[1]}:{args[2]}");
+			Logger.Print(Logger.LogPriority.Log, $"In-Game Time is now {args[0]}:{args[1]}");
 		}
 	}
+    private class AphidDebug : IConsoleCommand
+    {
+        public string HelpText => "<aphid (select/create/)>";
+
+        public void Execute(string[] args)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 }

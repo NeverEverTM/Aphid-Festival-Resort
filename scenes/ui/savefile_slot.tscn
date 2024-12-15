@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cifp27quamefu"]
+[gd_scene load_steps=9 format=3 uid="uid://cifp27quamefu"]
 
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_7dg2u"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_aiyqr"]
@@ -10,21 +10,51 @@
 [sub_resource type="LabelSettings" id="LabelSettings_i2bs8"]
 font_size = 30
 
+[sub_resource type="LabelSettings" id="LabelSettings_l8qfe"]
+font_size = 30
+
 [node name="savefile_slot" type="Control"]
+editor_description = "Node names must not be modified since display code expects them to match.
+See LoadGameMenu.cs for more information on their naming."
 self_modulate = Color(0.545098, 0.0745098, 0.172549, 1)
-custom_minimum_size = Vector2(700, 175)
+custom_minimum_size = Vector2(900, 175)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 829.0
+offset_right = 1118.0
 offset_bottom = 190.0
 mouse_filter = 1
 theme = ExtResource("1_aiyqr")
 
+[node name="load_button" type="TextureButton" parent="."]
+self_modulate = Color(0.545098, 0.0745098, 0.172549, 0)
+layout_mode = 0
+offset_top = 35.0
+offset_right = 976.0
+offset_bottom = 168.0
+texture_normal = ExtResource("1_7dg2u")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("2_m7b1n")
+PressedColor = Color(0.764706, 0.160784, 0.392157, 1)
+FocusColor = Color(0.690196, 0.0627451, 0.584314, 1)
+HoverColor = Color(0.764706, 0.160784, 0.392157, 1)
+
+[node name="NinePatchRect" type="NinePatchRect" parent="load_button"]
+self_modulate = Color(0.545098, 0.0745098, 0.172549, 1)
+layout_mode = 0
+offset_right = 1077.0
+offset_bottom = 133.0
+texture = ExtResource("1_7dg2u")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
 [node name="delete_button" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = 700.0
+offset_left = 1014.0
 offset_top = 47.0
-offset_right = 821.0
+offset_right = 1135.0
 offset_bottom = 160.0
 texture_normal = ExtResource("6_x3euj")
 stretch_mode = 4
@@ -33,26 +63,12 @@ PressedColor = Color(0.25098, 0.262745, 0.262745, 1)
 FocusColor = Color(0.603922, 0.588235, 0.596078, 1)
 HoverColor = Color(0.603922, 0.588235, 0.596078, 1)
 
-[node name="load_button" type="TextureButton" parent="."]
-self_modulate = Color(0.545098, 0.0745098, 0.172549, 1)
-layout_mode = 0
-offset_top = 35.0
-offset_right = 702.0
-offset_bottom = 168.0
-texture_normal = ExtResource("1_7dg2u")
-ignore_texture_size = true
-stretch_mode = 4
-script = ExtResource("2_m7b1n")
-PressedColor = Color(0.764706, 0.160784, 0.392157, 1)
-FocusColor = Color(0.690196, 0.0627451, 0.584314, 1)
-HoverColor = Color(0.764706, 0.160784, 0.392157, 1)
-
 [node name="name_label" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 40.0
-offset_top = 75.0
-offset_right = 668.0
-offset_bottom = 123.0
+offset_left = 41.0
+offset_top = 81.0
+offset_right = 917.0
+offset_bottom = 129.0
 mouse_filter = 2
 theme_override_fonts/normal_font = ExtResource("2_wdaeh")
 theme_override_font_sizes/normal_font_size = 40
@@ -69,7 +85,7 @@ offset_bottom = 62.0
 text = "99:99:99"
 label_settings = SubResource("LabelSettings_i2bs8")
 
-[node name="time_bg" type="TextureRect" parent="time_label"]
+[node name="time_bg" type="NinePatchRect" parent="time_label"]
 self_modulate = Color(0.756863, 0.129412, 0.254902, 1)
 show_behind_parent = true
 layout_mode = 0
@@ -78,12 +94,16 @@ offset_top = -12.0
 offset_right = 188.0
 offset_bottom = 48.0
 texture = ExtResource("1_7dg2u")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
 
 [node name="aphid_label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 499.0
+offset_left = 443.0
 offset_top = 21.0
-offset_right = 567.0
+offset_right = 511.0
 offset_bottom = 69.0
 text = "100"
 
@@ -95,7 +115,7 @@ offset_right = -11.0
 offset_bottom = 45.0
 texture = ExtResource("3_jpjxh")
 
-[node name="aphid_bg" type="TextureRect" parent="aphid_label"]
+[node name="aphid_bg" type="NinePatchRect" parent="aphid_label"]
 self_modulate = Color(0.756863, 0.129412, 0.254902, 1)
 show_behind_parent = true
 layout_mode = 0
@@ -104,3 +124,31 @@ offset_top = -7.0
 offset_right = 142.0
 offset_bottom = 53.0
 texture = ExtResource("1_7dg2u")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="last_played_label" type="Label" parent="."]
+offset_left = 694.0
+offset_top = 13.0
+offset_right = 1011.0
+offset_bottom = 75.0
+text = "Last Played: 11 months ago"
+label_settings = SubResource("LabelSettings_l8qfe")
+horizontal_alignment = 2
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="last_used_bg" type="NinePatchRect" parent="last_played_label"]
+self_modulate = Color(0.756863, 0.129412, 0.254902, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_left = -10.0
+offset_right = 337.0
+offset_bottom = 62.0
+texture = ExtResource("1_7dg2u")
+patch_margin_left = 20
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10

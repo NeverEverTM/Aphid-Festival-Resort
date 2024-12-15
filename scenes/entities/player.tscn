@@ -1,7 +1,20 @@
-[gd_scene load_steps=34 format=3 uid="uid://b2tg0d8sg4vd0"]
+[gd_scene load_steps=53 format=3 uid="uid://b2tg0d8sg4vd0"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_02bb8"]
+[ext_resource type="AudioStream" uid="uid://cv5a0x5ojrrc2" path="res://sfx/player/whistle.wav" id="2_8g5nl"]
 [ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player_0.png" id="2_muo8i"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_37afu"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(256, 128, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5e81h"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(288, 128, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mrbma"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(320, 128, 32, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_o7opw"]
 atlas = ExtResource("2_muo8i")
@@ -91,6 +104,34 @@ region = Rect2(160, 128, 32, 64)
 atlas = ExtResource("2_muo8i")
 region = Rect2(192, 128, 32, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_082qq"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(256, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1cfkd"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(288, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l3uaq"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(320, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sdvne"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(352, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8so0y"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(384, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kw4ta"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(416, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ifmss"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(448, 0, 32, 64)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_ehx8q"]
 atlas = ExtResource("2_muo8i")
 region = Rect2(0, 64, 32, 64)
@@ -111,8 +152,54 @@ region = Rect2(96, 64, 32, 64)
 atlas = ExtResource("2_muo8i")
 region = Rect2(128, 64, 32, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_tcrdk"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(256, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2bd42"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(288, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qwpqg"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(320, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ubmwk"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(352, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0543w"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(384, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38f3g"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(416, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rdtwk"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(448, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qjh1o"]
+atlas = ExtResource("2_muo8i")
+region = Rect2(0, 0, 32, 64)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_mupq7"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_37afu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5e81h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mrbma")
+}],
+"loop": true,
+"name": &"hyperactive",
+"speed": 8.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_o7opw")
@@ -212,7 +299,33 @@ animations = [{
 }],
 "loop": true,
 "name": &"run",
-"speed": 8.0
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_082qq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1cfkd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l3uaq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sdvne")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8so0y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kw4ta")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ifmss")
+}],
+"loop": false,
+"name": &"sit",
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -232,7 +345,42 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk",
-"speed": 4.0
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tcrdk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2bd42")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qwpqg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ubmwk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0543w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ubmwk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0543w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38f3g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rdtwk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qjh1o")
+}],
+"loop": false,
+"name": &"whistle",
+"speed": 8.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r3o6d"]
@@ -243,7 +391,7 @@ size = Vector2(19, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4xmv"]
 size = Vector2(68, 37)
 
-[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("camera", "interactionArea", "spriteBody", "animator", "audioPlayer")]
+[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("camera", "interactionArea", "spriteBody", "animator")]
 motion_mode = 1
 platform_on_leave = 2
 platform_floor_layers = 4294967040
@@ -252,20 +400,15 @@ camera = NodePath("Camera2D")
 interactionArea = NodePath("interaction_area")
 spriteBody = NodePath("animator")
 animator = NodePath("animator")
-audioPlayer = NodePath("AudioStreamPlayer2D")
+Audio_Whistle = ExtResource("2_8g5nl")
 
 [node name="animator" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mupq7")
-animation = &"idle"
-frame_progress = 0.405256
+animation = &"hyperactive"
+autoplay = "idle"
+frame_progress = 0.564067
 offset = Vector2(0, -32)
 flip_h = true
-
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(1, 10)
-volume_db = -20.0
-max_distance = 200.0
-bus = &"Sounds"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, -3)

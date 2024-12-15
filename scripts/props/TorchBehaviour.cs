@@ -48,7 +48,7 @@ public partial class TorchBehaviour : AnimatedSprite2D
 		}
 		else if (!flame.Visible)
 		{
-			light.Energy = 2;
+			light.Energy = 1;
 			light.Enabled = true;
 			flame.Visible = true;
 			flame.Play("lit");
@@ -58,7 +58,7 @@ public partial class TorchBehaviour : AnimatedSprite2D
 	public void CreateFlameIn()
 	{
 		Tween _in = CreateTween();
-		_in.TweenProperty(light, "energy", 2, _RNG.RandfRange(0.5f, 2)).FromCurrent();
+		_in.TweenProperty(light, "energy", 1.1, _RNG.RandfRange(1, 2)).FromCurrent();
 		_in.Finished += CreateFlameOut;
 	}
 	public void CreateFlameOut()
@@ -67,12 +67,12 @@ public partial class TorchBehaviour : AnimatedSprite2D
 
 		if (flame.Visible)
 		{
-			_out.TweenProperty(light, "energy", 2.5, _RNG.RandfRange(0.5f, 2)).FromCurrent();
+			_out.TweenProperty(light, "energy", 1.2, _RNG.RandfRange(1, 2)).FromCurrent();
 			_out.Finished += CreateFlameIn;
 		}
 		else
 		{
-			_out.TweenProperty(light, "energy", 0, _RNG.RandfRange(0.5f, 2)).FromCurrent();
+			_out.TweenProperty(light, "energy", 0, _RNG.RandfRange(1, 2)).FromCurrent();
 			_out.Finished += () => light.Enabled = false;
 		}
 	}

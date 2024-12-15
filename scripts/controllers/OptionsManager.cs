@@ -21,10 +21,16 @@ public static class OptionsManager
             if (Data.ResetBinds)
                 ControlsManager.ResetToDefault();
 
+            // Volume
+            AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb(Data.VolumeMaster));
             AudioServer.SetBusVolumeDb(1, Mathf.LinearToDb(Data.VolumeMusic));
             AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb(Data.VolumeSound));
-            DisplayServer.WindowSetMode((DisplayServer.WindowMode)Data.WindowMode);
-            TranslationServer.SetLocale(Data.Language == 1 ? "es_ES" : "en_US");
+            AudioServer.SetBusVolumeDb(3, Mathf.LinearToDb(Data.VolumeAmbience));
+            AudioServer.SetBusVolumeDb(4, Mathf.LinearToDb(Data.VolumeUI));
+
+            // Display
+            DisplayServer.WindowSetMode(Data.DisplayMode);
+            TranslationServer.SetLocale(Data.Locale);
             return _save;
         }
 
@@ -37,18 +43,24 @@ public static class OptionsManager
     {
         public string LastPlayedResort { get; set; }
 
+        public float VolumeMaster { get; set; }
         public float VolumeMusic { get; set; }
         public float VolumeSound { get; set; }
-        public int WindowMode { get; set; }
-        public int Language { get; set; }
+        public float VolumeAmbience { get; set; }
+        public float VolumeUI { get; set; }
+
+        public DisplayServer.WindowMode DisplayMode { get; set; }
+        public string Locale { get; set; }
+
+        public bool SettingAutoRun { get; set; }
+        public bool SettingCameraSmoothing { get; set; }
         public bool ResetBinds { get; set; }
 
         public Savefile()
         {
-            VolumeMusic = 0.5f;
-            VolumeSound = 0.5f;
-            WindowMode = (int)DisplayServer.WindowMode.Maximized;
-            Language = 0;
+            VolumeMaster = VolumeMusic = VolumeSound = VolumeUI = VolumeAmbience = 0.4f;
+            DisplayMode = DisplayServer.WindowMode.Maximized;
+            Locale = "en_US";
             ResetBinds = false;
         }
     }

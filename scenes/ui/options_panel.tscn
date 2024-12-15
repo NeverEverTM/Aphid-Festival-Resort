@@ -1,16 +1,38 @@
-[gd_scene load_steps=10 format=3 uid="uid://ba1ev1heaa3s6"]
+[gd_scene load_steps=14 format=3 uid="uid://ba1ev1heaa3s6"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_fjlrd"]
 [ext_resource type="Script" path="res://scripts/panels/OptionsMenu.cs" id="2_eio0f"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_d5s5m"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="4_5c30j"]
-[ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="5_bialj"]
-[ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/icons/aphid_child.tres" id="6_fnwq8"]
-[ext_resource type="Texture2D" uid="uid://be65y2gqbnjq0" path="res://sprites/ui/pencil.tres" id="6_ghwfp"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="6_jwgu8"]
 [ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/icon_folder.png" id="6_qdykg"]
+[ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/ui/icons_ui.png" id="7_msete"]
 
-[node name="options_panel" type="Control" node_paths=PackedStringArray("musicSlider", "soundSlider", "saveFolderButton", "windowMode", "language")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_b3a4x"]
+atlas = ExtResource("7_msete")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_acmck"]
+atlas = ExtResource("7_msete")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xa7jr"]
+atlas = ExtResource("7_msete")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ym452"]
+atlas = ExtResource("7_msete")
+region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5sprh"]
+atlas = ExtResource("7_msete")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kl4mf"]
+atlas = ExtResource("7_msete")
+region = Rect2(0, 32, 16, 16)
+
+[node name="options_panel" type="Control" node_paths=PackedStringArray("masterSlider", "musicSlider", "soundSlider", "ambienceSlider", "uiSlider", "saveFolderButton", "windowMode", "language", "autoRun")]
 light_mask = 0
 layout_mode = 3
 anchors_preset = 8
@@ -26,20 +48,57 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_fjlrd")
 script = ExtResource("2_eio0f")
-musicSlider = NodePath("music/HSlider")
-soundSlider = NodePath("sound/HSlider")
-saveFolderButton = NodePath("save_folder/button")
+masterSlider = NodePath("master/master_slider")
+musicSlider = NodePath("music/music_slider")
+soundSlider = NodePath("sound/sound_slider")
+ambienceSlider = NodePath("ambience/ambience_slider")
+uiSlider = NodePath("ui/ui_slider")
+saveFolderButton = NodePath("savefolder_button")
 windowMode = NodePath("windowMode")
 language = NodePath("language")
+autoRun = NodePath("autorun")
+
+[node name="master" type="TextureRect" parent="."]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 1.0
+offset_top = 18.0
+offset_right = 371.0
+offset_bottom = 120.0
+texture = ExtResource("3_d5s5m")
+
+[node name="Label" type="Label" parent="master"]
+light_mask = 0
+layout_mode = 0
+offset_left = 75.0
+offset_top = 11.0
+offset_right = 287.0
+offset_bottom = 59.0
+text = "options_master"
+horizontal_alignment = 1
+
+[node name="master_slider" type="HSlider" parent="master"]
+light_mask = 0
+layout_mode = 0
+offset_left = 38.0
+offset_top = 58.0
+offset_right = 189.0
+offset_bottom = 74.0
+scale = Vector2(2, 2)
+max_value = 0.75
+step = 0.01
+value = 0.4
+scrollable = false
 
 [node name="music" type="TextureRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 231.0
-offset_top = 84.0
-offset_right = 601.0
-offset_bottom = 186.0
+offset_left = 1.0
+offset_top = 145.0
+offset_right = 371.0
+offset_bottom = 247.0
 texture = ExtResource("3_d5s5m")
 
 [node name="Label" type="Label" parent="music"]
@@ -52,7 +111,7 @@ offset_bottom = 59.0
 text = "options_music"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="music"]
+[node name="music_slider" type="HSlider" parent="music"]
 light_mask = 0
 layout_mode = 0
 offset_left = 38.0
@@ -60,44 +119,18 @@ offset_top = 58.0
 offset_right = 189.0
 offset_bottom = 74.0
 scale = Vector2(2, 2)
-max_value = 1.0
+max_value = 0.75
 step = 0.01
-value = 0.5
+value = 0.4
 scrollable = false
-
-[node name="save_folder" type="TextureRect" parent="."]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 779.0
-offset_top = 86.0
-offset_right = 953.0
-offset_bottom = 250.0
-texture = ExtResource("4_5c30j")
-stretch_mode = 4
-
-[node name="button" type="TextureButton" parent="save_folder"]
-light_mask = 0
-layout_mode = 0
-offset_left = 26.0
-offset_top = 25.0
-offset_right = 134.0
-offset_bottom = 135.0
-texture_normal = ExtResource("6_qdykg")
-stretch_mode = 4
-script = ExtResource("6_jwgu8")
-PressedColor = Color(0.533333, 0.533333, 0.533333, 1)
-FocusColor = Color(0.282353, 0.572549, 0.788235, 1)
-HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
 
 [node name="sound" type="TextureRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 230.0
-offset_top = 218.0
-offset_right = 601.0
-offset_bottom = 321.0
+offset_top = 279.0
+offset_right = 371.0
+offset_bottom = 382.0
 texture = ExtResource("3_d5s5m")
 
 [node name="Label" type="Label" parent="sound"]
@@ -110,7 +143,7 @@ offset_bottom = 61.0
 text = "options_sounds"
 horizontal_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="sound"]
+[node name="sound_slider" type="HSlider" parent="sound"]
 light_mask = 0
 layout_mode = 0
 offset_left = 36.0
@@ -118,26 +151,132 @@ offset_top = 56.0
 offset_right = 187.0
 offset_bottom = 73.0
 scale = Vector2(2, 2)
-max_value = 1.0
+max_value = 0.75
 step = 0.01
-value = 0.5
+value = 0.4
 scrollable = false
+
+[node name="ambience" type="TextureRect" parent="."]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_top = 408.0
+offset_right = 371.0
+offset_bottom = 511.0
+texture = ExtResource("3_d5s5m")
+
+[node name="Label" type="Label" parent="ambience"]
+light_mask = 0
+layout_mode = 0
+offset_left = 55.0
+offset_top = 12.0
+offset_right = 324.0
+offset_bottom = 61.0
+text = "options_ambience"
+horizontal_alignment = 1
+
+[node name="ambience_slider" type="HSlider" parent="ambience"]
+light_mask = 0
+layout_mode = 0
+offset_left = 36.0
+offset_top = 56.0
+offset_right = 187.0
+offset_bottom = 73.0
+scale = Vector2(2, 2)
+max_value = 0.75
+step = 0.01
+value = 0.4
+scrollable = false
+
+[node name="ui" type="TextureRect" parent="."]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_top = 530.0
+offset_right = 371.0
+offset_bottom = 633.0
+texture = ExtResource("3_d5s5m")
+
+[node name="Label" type="Label" parent="ui"]
+light_mask = 0
+layout_mode = 0
+offset_left = 71.0
+offset_top = 12.0
+offset_right = 302.0
+offset_bottom = 61.0
+text = "options_ui"
+horizontal_alignment = 1
+
+[node name="ui_slider" type="HSlider" parent="ui"]
+light_mask = 0
+layout_mode = 0
+offset_left = 36.0
+offset_top = 56.0
+offset_right = 187.0
+offset_bottom = 73.0
+scale = Vector2(2, 2)
+max_value = 0.75
+step = 0.01
+value = 0.4
+scrollable = false
+
+[node name="savefolder_button" type="TextureButton" parent="."]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 941.0
+offset_top = 19.0
+offset_right = 1153.0
+offset_bottom = 231.0
+texture_normal = ExtResource("4_5c30j")
+stretch_mode = 4
+script = ExtResource("6_jwgu8")
+PressedColor = Color(0.533333, 0.533333, 0.533333, 1)
+FocusColor = Color(0.282353, 0.572549, 0.788235, 1)
+HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
+
+[node name="icon" type="TextureRect" parent="savefolder_button"]
+light_mask = 0
+layout_mode = 0
+offset_left = 22.0
+offset_top = 21.0
+offset_right = 196.0
+offset_bottom = 185.0
+texture = ExtResource("6_qdykg")
+stretch_mode = 4
 
 [node name="windowMode" type="OptionButton" parent="."]
 light_mask = 0
 layout_mode = 0
-offset_left = 236.0
-offset_top = 346.0
-offset_right = 589.0
-offset_bottom = 422.0
+offset_left = 791.0
+offset_top = 259.0
+offset_right = 1144.0
+offset_bottom = 335.0
 expand_icon = true
 item_count = 2
 selected = 0
 popup/item_0/text = "options_windowed"
-popup/item_0/icon = ExtResource("6_fnwq8")
+popup/item_0/icon = SubResource("AtlasTexture_b3a4x")
 popup/item_0/id = 0
 popup/item_1/text = "options_fullscreen"
-popup/item_1/icon = ExtResource("5_bialj")
+popup/item_1/icon = SubResource("AtlasTexture_acmck")
+popup/item_1/id = 1
+
+[node name="language" type="OptionButton" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = 794.0
+offset_top = 365.0
+offset_right = 1147.0
+offset_bottom = 441.0
+expand_icon = true
+item_count = 2
+selected = 0
+popup/item_0/text = "English"
+popup/item_0/icon = SubResource("AtlasTexture_xa7jr")
+popup/item_0/id = 0
+popup/item_1/text = "Español"
+popup/item_1/icon = SubResource("AtlasTexture_ym452")
 popup/item_1/id = 1
 
 [node name="screen" type="OptionButton" parent="."]
@@ -151,26 +290,17 @@ offset_bottom = -77.0
 expand_icon = true
 item_count = 2
 selected = 0
-popup/item_0/text = "options_screen?"
-popup/item_0/icon = ExtResource("6_fnwq8")
+popup/item_0/text = "options_windowed"
+popup/item_0/icon = SubResource("AtlasTexture_5sprh")
 popup/item_0/id = 1
 popup/item_1/text = "options_fullscreen"
-popup/item_1/icon = ExtResource("5_bialj")
+popup/item_1/icon = SubResource("AtlasTexture_kl4mf")
 popup/item_1/id = 0
 
-[node name="language" type="OptionButton" parent="."]
-light_mask = 0
+[node name="autorun" type="CheckBox" parent="."]
 layout_mode = 0
-offset_left = 239.0
-offset_top = 452.0
-offset_right = 592.0
-offset_bottom = 528.0
-expand_icon = true
-item_count = 2
-selected = 0
-popup/item_0/text = "English"
-popup/item_0/icon = ExtResource("6_ghwfp")
-popup/item_0/id = 0
-popup/item_1/text = "Español"
-popup/item_1/icon = ExtResource("6_ghwfp")
-popup/item_1/id = 1
+offset_left = 794.0
+offset_top = 471.0
+offset_right = 1153.0
+offset_bottom = 561.0
+text = "Auto Run"

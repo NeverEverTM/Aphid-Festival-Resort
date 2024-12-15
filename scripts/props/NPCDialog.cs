@@ -54,7 +54,8 @@ public partial class NPCDialog : AnimatedSprite2D, Player.IObjectInteractable
 		}
 
 		Play("talk");
-		SetFlipDirection(GlobalPosition.DirectionTo(Player.Instance.GlobalPosition));
+		SetFlipDirection(Player.Instance.GlobalPosition - GlobalPosition);
+		Player.Instance.SetFlipDirection(GlobalPosition - Player.Instance.GlobalPosition);
 		_ = DialogManager.Instance.OpenDialog(dialogue_keys[speak_index]);
 		bool _check = true;
 		while (DialogManager.IsActive)

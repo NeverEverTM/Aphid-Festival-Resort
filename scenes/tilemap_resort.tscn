@@ -136,7 +136,7 @@ position = Vector2(-483, -148)
 position = Vector2(793, -209)
 
 [node name="torch" parent="structurePit" instance=ExtResource("5_oqbea")]
-position = Vector2(-381, -108)
+position = Vector2(-183, -387)
 
 [node name="grass_1" parent="structurePit" instance=ExtResource("8_d5da3")]
 position = Vector2(-124, -195)
@@ -247,7 +247,7 @@ position = Vector2(1562, -114)
 position = Vector2(446, -180)
 
 [node name="torch4" parent="structurePit" instance=ExtResource("5_oqbea")]
-position = Vector2(414, 10)
+position = Vector2(453, 13)
 
 [node name="torch5" parent="structurePit" instance=ExtResource("5_oqbea")]
 position = Vector2(-14, 392)
@@ -259,7 +259,7 @@ position = Vector2(-870, -279)
 position = Vector2(-966, -76)
 
 [node name="torch24" parent="structurePit" instance=ExtResource("5_oqbea")]
-position = Vector2(-616, -276)
+position = Vector2(-1273, -369)
 
 [node name="torch20" parent="structurePit" instance=ExtResource("5_oqbea")]
 position = Vector2(56, 143)
@@ -268,7 +268,7 @@ position = Vector2(56, 143)
 position = Vector2(941, -276)
 
 [node name="torch12" parent="structurePit" instance=ExtResource("5_oqbea")]
-position = Vector2(-593, -100)
+position = Vector2(-508, -178)
 
 [node name="torch13" parent="structurePit" instance=ExtResource("5_oqbea")]
 position = Vector2(-1794, 2)

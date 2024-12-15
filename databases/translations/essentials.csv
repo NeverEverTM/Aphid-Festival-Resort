@@ -9,6 +9,7 @@ warning_invalid_resort,This resort is not valid for this action. Maybe it does n
 warning_invalid_name,"This resort name is not valid, be sure to exclude special characters.","Este nombre de complejo no es valido, asegurate de remover caracteres especiales."
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
 warning_key_duplicated,This key is already binded to another action!,¡Esta tecla ya esta conectada a otra accion!
+warning_incompatible_version,The savefile you are trying to load is from another version! Are you sure you want to load?,La partida que intentas cargar es de otra version! ¿Estas seguro que quieres cargarla?
 press_start,Press {0} to start!,Presiona {0} para empezar!
 new_game,New Game,Nueva Partida
 load_game,Load Game,Cargar Partida
@@ -17,11 +18,20 @@ controls,Controls,Controles
 options,Options,Opciones
 credits,Credits,Creditos
 exit,Exit,Salir
-new_note,Save data from the alpha may not carry over to later versions.,Partidas guardadas no tienen garantizado funcionar en versiones posteriores
-new_resort_placeholder,Type a name for your resort,Escribe un nombre para tu complejo
-new_player_placeholder,Type a name for yourself!,Escribe un nombre para ti!
-new_begin,Begin,Comenzar
-load_quote,Choose a resort to play!,¡Escoge una partida para jugar!
+new_game_warning,WARNING: Savefiles may become incompatible with future versions!,ADVERTENCIA: Partidas guardadas no tienen garantizado funcionar en versiones posteriores!
+new_game_player_name,Name:,Nombre:
+new_game_pronouns,Pronouns:,Pronombres:
+new_game_pronouns_placeholder,They/them,Elles/elle
+new_game_resort_name,Resort Name:,Nombre del complejo:
+new_game_creative,Creative Mode,Modo Creativo
+new_game_nodeath,Inmortal Aphids,Áfidos Inmortales
+new_game_begin,Create resort!,Crear complejo!
+new_game_resort_placeholder,Type a name for your resort,Escribe un nombre para tu complejo
+load_game_note,Choose a resort to play! Press the X icon to delete a resort.,¡Escoge una partida para jugar! Presiona el icono X para borrar un complejo.
+load_game_last_played,Last Played:,Ultima vez jugado:
+date_today,Today,Hoy
+date_yesterday,Yesterday,Ayer
+date_daysago,{0} days ago,hace {0} días
 confirmation_0,"Are you sure you want to do that?
 (This action cannot be reverted)
 
@@ -37,10 +47,14 @@ Manten presionado “Si” para confirmar"
 confirmation_2,Are you sure?,¿Estas seguro?
 confirmation_yes,Yes,Si
 confirmation_no,Nope,No
+options_master,Master,Master
 options_music,Music,Musica
 options_sounds,Sounds,Sonidos
+options_ambience,Ambience,Ambiente
+options_ui,User Interface,Interfaz de Usuario
 options_fullscreen,Fullscreen,Panoramica
 options_windowed,Windowed,Ventana
+options_autorun,Hold to Run,Manten para Correr
 controls_up,Move Up,Caminar para Abajo
 controls_down,Move Down,Caminar para Arriba
 controls_left,Move Left,Caminar a la Izquiera
@@ -91,7 +105,8 @@ pause_controls,Controls,Controles
 pause_help,Help,Ayuda
 pause_backtomenu,Back to Menu,Volver al Menu
 pause_exit,Exit to Desktop,Salir al Escritorio
-credits_note,"[center]Created in the Godot 4 Engine
+credits_note,"[center]---------------------------------
+Created in the Godot 4 Engine
 
 SOUND ASSETS
 
@@ -112,7 +127,8 @@ To the fan game Chao Resort Island by Nefault1st for being an inspiration for th
 ---------------------------------
 Unless stated otherwise, all other components had been created, programmed and designed by me, Summer
 Characters and places are from Bug Fables: The Everlasting Sapling by Moonsprout Games
-------------------------[/center]","[center]Hecho con el motor Godot 4
+------------------------[/center]","[center]-------------------------------
+Hecho con el motor Godot 4
 
 ARCHIVOS DE SONIDO
 

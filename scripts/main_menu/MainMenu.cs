@@ -19,15 +19,11 @@ public partial class MainMenu : Node2D
 	[Export] private Node2D entityRoot;
 	[ExportCategory("Menu Panels")]
 	[Export] private StartMenu start_panel;
-	[Export] private LoadGameMenu loadPanel;
-	[Export] private Control new_game_panel, credits_panel, options_panel, controls_panel;
-	[ExportCategory("New Game Behaviour")]
-	[Export] private BaseButton new_game_button;
-	[Export] private TextEdit resort_input_name, player_input_name;
+	[Export] private NewGameMenu new_game_panel;
+	[Export] private LoadGameMenu load_game_panel;
+	[Export] private Control credits_panel, options_panel, controls_panel;
 
 	private static bool HasBeenIntialized;
-	private const int resort_charLimit = 40, name_charLimit = 15;
-	private const string defaultName = "Mello";
 
 	[ExportCategory("Button Wheel Behaviour")]
 	[Export] private AudioStream switchSound;
@@ -37,9 +33,9 @@ public partial class MainMenu : Node2D
 	public int MenuWheelIndex { get; set; }
 
 	// Categories for button wheel
-	public string currentCategory = newGameCategory;
+	public string currentCategory = NewGameMenu.newGameCategory;
 	private Control currentMenu;
-	private const string newGameCategory = "new_game";
+
 	private readonly List<string> MenuCategories = new();
 	public readonly Dictionary<string, Action> MenuActions = new();
 
@@ -51,19 +47,16 @@ public partial class MainMenu : Node2D
 	}
 	public async override void _Ready()
 	{
-		// instance variables
-		player_input_name.Text = defaultName;
 		currentMenu = start_panel;
-		new_game_button.Pressed += CreateResort;
 
 		// create menu button wheel
-		CreateMenuAction(newGameCategory, OnNewGameButton);
-		SetCategory(newGameCategory);
-		loadPanel.AddMenuAction();
+		new_game_panel.AddMenuAction();
+		load_game_panel.AddMenuAction();
 		CreateMenuAction("controls", () => SetMenu(controls_panel));
 		CreateMenuAction("options", () => SetMenu(options_panel));
 		CreateMenuAction("credits", () => SetMenu(credits_panel));
 		CreateMenuAction("exit", () => GetTree().Quit());
+		SetCategory(NewGameMenu.newGameCategory);
 
 		// Start game processes
 		GameManager.CleanSaveData();
@@ -144,64 +137,6 @@ public partial class MainMenu : Node2D
 			return;
 		}
 	}
-    public override void _Input(InputEvent @event)
-    {
-		// we separate it cause, UnhandledInput does not detect it if is hold
-        if (!new_game_panel.Visible)
-			return;
-
-		bool _resortIsFocused = resort_input_name.HasFocus(),
-		_playerIsFocused = player_input_name.HasFocus();
-
-		if ((_resortIsFocused || _playerIsFocused) && @event is InputEventKey && @event.IsPressed())
-		{
-			InputEventKey _input = @event as InputEventKey;
-
-			// move through inputs
-			if (_input.KeyLabel == Key.Up)
-			{
-				if (_resortIsFocused)
-					new_game_button.GrabFocus();
-				else if (_playerIsFocused)
-					resort_input_name.GrabFocus();
-				else
-					player_input_name.GrabFocus();
-				GetViewport().SetInputAsHandled();
-				return;
-			}
-			if (_input.KeyLabel == Key.Down)
-			{
-				if (_resortIsFocused)
-					player_input_name.GrabFocus();
-				else if (_playerIsFocused)
-					new_game_button.GrabFocus();
-				else
-					resort_input_name.GrabFocus();
-				GetViewport().SetInputAsHandled();
-				return;
-			}
-
-			// confirm input
-			if (_input.KeyLabel == Key.Enter)
-			{
-				if (_resortIsFocused)
-					player_input_name.GrabFocus();
-				else
-					new_game_button.GrabFocus();
-				GetViewport().SetInputAsHandled();
-				return;
-			}
-
-			// allow character deletion and moving through the text
-			if (_input.KeyLabel == Key.Backspace || _input.KeyLabel == Key.Left || _input.KeyLabel == Key.Right)
-				return;
-
-			if ((_resortIsFocused && resort_input_name.Text.Length >= resort_charLimit) ||
-			(_playerIsFocused && player_input_name.Text.Length >= name_charLimit))
-				GetViewport().SetInputAsHandled();
-			return;
-		}
-    }
     public override void _Process(double delta)
 	{
 		DoBounceAnim();
@@ -214,7 +149,6 @@ public partial class MainMenu : Node2D
 			MenuWheelIndex = MenuActions.Count - 1;
 		OnMenuSwitch();
 		SoundManager.CreateSound(switchSound);
-
 	}
 	public void GoRightInWheel()
 	{
@@ -237,40 +171,6 @@ public partial class MainMenu : Node2D
 		UsingButtonWheel = false;
 	}
 
-	private async void CreateResort()
-	{
-		string _resortName = resort_input_name.Text;
-
-		// Its a secreeeeeet
-		if (_resortName == "iblamemar")
-		{
-			DebugConsole.IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt = true;
-			SoundManager.CreateSound(Aphid.Audio_Hurt);
-			return;
-		}
-
-		// Invalid resort names
-		if (string.IsNullOrWhiteSpace(_resortName) || !_resortName.IsValidFileName())
-		{
-			GameManager.CreatePopup("warning_invalid_name", canvas);
-			return;
-		}
-
-		// Already Exists
-		SaveSystem.SelectProfile(_resortName);
-		if (DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
-		{
-			GameManager.CreatePopup("warning_already_exists", canvas);
-			return;
-		}
-
-		// Start the game
-		new_game_panel.Hide();
-		ResortManager.IsNewGame = true;
-		Player.NewName = !string.IsNullOrWhiteSpace(player_input_name.Text) ? player_input_name.Text : defaultName;
-		await SaveSystem.CreateProfile();
-		LoadResort();
-	}
 	public static void DeleteResort(string _profile)
 	{
 		SaveSystem.SelectProfile(_profile);
@@ -286,6 +186,7 @@ public partial class MainMenu : Node2D
 	public static async void LoadResort()
 	{
 		OptionsManager.Settings.Data.LastPlayedResort = SaveSystem.Profile;
+		await OptionsManager.Settings.Save();
 		await GameManager.LoadScene(GameManager.SceneName.Resort);
 	}
 
@@ -298,7 +199,7 @@ public partial class MainMenu : Node2D
 	public void RemoveMenuAction(string _key)
 	{
 		MenuCategories.Remove(_key);
-		SetCategory(newGameCategory);
+		SetCategory(NewGameMenu.newGameCategory);
 		MenuWheelIndex = 0;
 	}
 	public void SetMenu(Control _menu)
@@ -338,15 +239,7 @@ public partial class MainMenu : Node2D
 		lastCategoryIndex = MenuWheelIndex;
 		SetCategory(MenuCategories[MenuWheelIndex]);
 	}
-
-	private void OnNewGameButton()
-	{
-		resort_input_name.Text = "";
-		player_input_name.Text = "";
-		resort_input_name.GrabFocus();
-		SetMenu(new_game_panel);
-	}
-
+	
 	// MARK: Cosmetics
 	private bool DirectionForX, DirectionForY;
 	private float MaxWanderDistanceX = 1200, MaxWanderDistanceY = 600;
@@ -367,12 +260,12 @@ public partial class MainMenu : Node2D
 	private float[] babyWeight = new float[] { 90, 10 };
 	private void SpawnBunchaOfAphidsForTheFunnies()
 	{
-		for (int i = 0; i < GameManager.RNG.RandiRange(6, 12); i++)
+		for (int i = 0; i < 6; i++)
 		{
 			var _aphid = aphidPrefab.Instantiate() as Aphid;
 			_aphid.IS_FAKE = true;
 			_aphid.Instance = new();
-			_aphid.Instance.Genes.RandomizeColors();
+			_aphid.Instance.Genes.DEBUG_Randomize();
 			_aphid.Instance.Status.IsAdult = GameManager.GetRandomByWeight(babyWeight) == 0;
 			_aphid.GlobalPosition = GameManager.Utils.GetRandomVector(-300, 300);
 			entityRoot.AddChild(_aphid);

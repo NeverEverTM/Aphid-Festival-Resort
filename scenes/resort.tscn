@@ -1,15 +1,16 @@
-[gd_scene load_steps=52 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=53 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" path="res://scripts/controllers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
+[ext_resource type="AudioStream" uid="uid://snn7cy1t6bia" path="res://sfx/ambience/wind_ambience.mp3" id="3_u23vr"]
 [ext_resource type="PackedScene" uid="uid://dd1kgkvs8hkc6" path="res://scenes/ui/resort_canvas.tscn" id="4_2px7i"]
 [ext_resource type="PackedScene" uid="uid://bufmc14xek8uk" path="res://scenes/ui/canvas.tscn" id="5_t3t74"]
 [ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="5_wdlmu"]
 [ext_resource type="Texture2D" uid="uid://dxsln8cwjpovm" path="res://sprites/characters/azzy_sprite.png" id="11_0kb4s"]
 [ext_resource type="Texture2D" uid="uid://dxql7r1r5qc7k" path="res://sprites/props/resort_table.png" id="12_thkyw"]
-[ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="13_cp3xn"]
 [ext_resource type="Texture2D" uid="uid://b1go4uvd135xi" path="res://sprites/characters/kut_sprite.png" id="13_vwevc"]
 [ext_resource type="Texture2D" uid="uid://bhvqj7snoodkf" path="res://sprites/props/resort_shelf.png" id="14_1yqxr"]
+[ext_resource type="AudioStream" uid="uid://dr8pjwr0i4kbv" path="res://sfx/ambience/river_ambience.mp3" id="16_7qi0k"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="19_l0dmi"]
 [ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/entities/character.tscn" id="28_py445"]
 [ext_resource type="PackedScene" uid="uid://cum5tqdw2hog8" path="res://scenes/entities/menu_trigger.tscn" id="51_xwwsq"]
@@ -330,6 +331,12 @@ EntityRoot = NodePath("entityPit")
 StructureRoot = NodePath("tilemap_resort/structurePit")
 aphidPrefab = ExtResource("3_d14m5")
 
+[node name="wind_ambience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_u23vr")
+volume_db = -10.0
+autoplay = true
+bus = &"Ambience"
+
 [node name="topleft" type="Node2D" parent="."]
 position = Vector2(-2334, -839)
 
@@ -348,6 +355,10 @@ TopLeft = NodePath("../topleft")
 BottomRight = NodePath("../bottomright")
 
 [node name="canvas" parent="." instance=ExtResource("5_t3t74")]
+
+[node name="weather_text" parent="canvas/datetime/weater_bg" index="0"]
+offset_top = 233.0
+offset_bottom = 321.0
 
 [node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
 process_priority = -1000
@@ -380,12 +391,6 @@ metadata/_edit_lock_ = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="resort_table/StaticBody2D"]
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_2j0ix")
-
-[node name="PointLight2D" type="PointLight2D" parent="resort_table"]
-position = Vector2(-40, -35)
-energy = 0.5
-texture = ExtResource("13_cp3xn")
-metadata/_edit_lock_ = true
 
 [node name="shelf" type="Sprite2D" parent="."]
 position = Vector2(793, -212)
@@ -430,6 +435,92 @@ IsWandering = true
 [node name="CollisionShape2D" parent="crystal_aphid/hitbox" index="0"]
 position = Vector2(0, -12.5)
 shape = SubResource("RectangleShape2D_lya4f")
+
+[node name="river_ambience" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(-2260, -216)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience2" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(-2206, 437)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience3" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(-966, 789)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience4" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(-1604, 551)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience5" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(-486, 1432)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience6" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(1597, 1437)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience7" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(473, 1445)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience8" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(2018, 771)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience9" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(2019, -40)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="NPC" parent="." instance=ExtResource("28_py445")]
+position = Vector2(-193, 345)
+dialogue_keys = PackedStringArray("echo_flavor_0", "echo_flavor_1", "echo_flavor_2")
+DialogueMode = 2
 
 [editable path="resort_canvas"]
 [editable path="resort_canvas/generations_panel/ScrollContainer/GridContainer/aphid_slot"]

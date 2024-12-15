@@ -3,45 +3,34 @@ using Godot;
 public partial class AphidHatch : RigidBody2D
 {
 	public bool IsNatural;
-	private Timer hatch = new();
+	private Timer hatch;
 
-	// Default Hatch Params
+	// These are used for generic egg items
 	[Export] private int[] parts_ids = new int[4];
 	[Export] private Color[] colors = new Color[4];
 
-	// Natural Hatch Params
-	public AphidData.Genes naturalGenes;
+	public AphidData.Genes given_genes = null;
 
 	public override void _Ready()
 	{
-		AddChild(hatch);
-
+		hatch = new();
 		hatch.Timeout += () =>
 		{
-			if (IsNatural)
-				HatchNatural();
-			else
-				HatchDefault();
-		};
-		hatch.Start(5);
-	}
-
-	private void HatchDefault()
-	{
-		ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y),
-			new()
+			if (given_genes == null) // only generate new info if is a generic bought egg
 			{
-				AntennaColor = colors[0],
-				EyeColor = colors[1],
-				BodyColor = colors[2],
-				LegColor = colors[3]
+				given_genes = new()
+				{
+					AntennaColor = colors[0],
+					EyeColor = colors[1],
+					BodyColor = colors[2],
+					LegColor = colors[3]
+				};
+				given_genes.GenerateNewAphid();
 			}
-		);
-		QueueFree();
-	}
-	private void HatchNatural()
-	{
-		ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y), naturalGenes);
-		QueueFree();
+			ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y), given_genes);
+			QueueFree();
+		};
+		AddChild(hatch);
+		hatch.Start(5);
 	}
 }

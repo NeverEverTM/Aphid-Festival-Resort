@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d0ymlkk21ckmp"
-path="res://.godot/imported/legs_sleep.png-db115c679a09a1627c204b9aaa6eaeb0.ctex"
+path="res://.godot/imported/legs_sleep.PNG-46d699f97740f9bb1b6ffe2ec62e75f9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://databases/skins/0/legs_sleep.png"
-dest_files=["res://.godot/imported/legs_sleep.png-db115c679a09a1627c204b9aaa6eaeb0.ctex"]
+source_file="res://databases/skins/0/legs_sleep.PNG"
+dest_files=["res://.godot/imported/legs_sleep.PNG-46d699f97740f9bb1b6ffe2ec62e75f9.ctex"]
 
 [params]
 

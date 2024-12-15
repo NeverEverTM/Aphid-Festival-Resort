@@ -47,6 +47,17 @@ joy_flavor_3,">(char(joy))Remember to treat your Aphids with respect!
 They need love and care if you want them to grow big and strong.",">(char(joy))Recuerda tratar tus Áfidos con amor y cariño!
 Necesitaran de todo el cuidado del mundo si quieres verlos crecer
 grandes y fuertes."
+joy_flavor_4,">(char(joy))Did you know how much personality can a single Aphid have?
+(...)Well now you'll do!
+>Surely, you have saw each one act different than others?(...)
+Aphids have all sorts of little unique traits that make them so unique!
+>I spent so much time just watching them interact with one another...(...)
+I wonder what they are saying?",">(char(joy))¿Sabes cuanta personalidad puede un áfido tener?
+(...)Bueno, ¡ahora lo sabras!
+>De seguro, ¿No habras visto como cada uno actua diferente que los otros?(...)
+¡Los áfidos tienen todo tipo de rasgos que los hacen tan unicos!
+>Solia verlos por horas como interactuaban el uno al otro...(...)
+¿Me pregunto de que hablaran?"
 azzy_flavor_0,">(char(azzy))(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
@@ -105,3 +116,14 @@ Algunos más...(...) diferentes que otros.
 crystal_flavor_0,>(char(crystal))Phi,>(char(crystal))Phi
 crystal_flavor_1,>(char(crystal))Fi Fi,>(char(crystal))Fi Fi
 crystal_flavor_2,>(char(crystal))Eep!,>(char(crystal))Eep!
+echo_flavor_0,">(char(echo))...(...)What do you want?(...)
+Don't I look busy to you?",">(char(echo))...(...)¿Que es lo que buscas?(...)
+¿No te parezco ocupade?"
+echo_flavor_1,">(char(echo))Not in the mood to talk(...)
+I'm never in the mood, so though luck.",">(char(echo))No estoy para hablar(...)
+Nunca estoy para nada, así que, suerte."
+echo_flavor_2,">(char(echo))[font_size=10]Did I really have to join her for this...[/font_size]...(...)
+Erhm, hello?
+>Mind your own business?",">(char(echo))[font_size=10]De verdad tenia que formar parte de esto por ella...[/font_size]...(...)
+Huh, ¿hola?
+>¿Te importa?"

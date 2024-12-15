@@ -118,20 +118,20 @@ public partial class GenerationsTracker : Control, SaveSystem.ISaveData
         string _path = GameManager.SkinsPath + "/";
         // Antenna
         SetSkinPiece(_skin.GetChild(0), _path +
-            (_isAdult ? $"{_value.AntennaType}/antenna_idle.png" : $"{_value.AntennaType}/antenna_baby_idle.png"),
+            (_isAdult ? $"{_value.AntennaType}/antenna_idle.PNG" : $"{_value.AntennaType}/antenna_baby_idle.PNG"),
             _value.AntennaColor);
         // Body
         SetSkinPiece(_skin.GetChild(2), _path +
-            (_isAdult ? $"{_value.BodyType}/body_idle.png" : $"{_value.BodyType}/body_baby_idle.png"),
+            (_isAdult ? $"{_value.BodyType}/body_idle.PNG" : $"{_value.BodyType}/body_baby_idle.PNG"),
             _value.BodyColor);
         // Legs
-        string _pathLegs = _path + (_isAdult ? $"{_value.LegType}/legs_idle.png" :
-        $"{_value.LegType}/legs_baby_idle.png");
+        string _pathLegs = _path + (_isAdult ? $"{_value.LegType}/legs_idle.PNG" :
+        $"{_value.LegType}/legs_baby_idle.PNG");
         SetSkinPiece(_skin.GetChild(4), _pathLegs, _value.LegColor);
         SetSkinPiece(_skin.GetChild(1), _pathLegs, _value.LegColor);
         // Eyes
         SetSkinPiece(_skin.GetChild(3), _path +
-            (_isAdult ? $"{_value.EyeType}/eyes_idle.png" : $"{_value.EyeType}/eyes_baby_idle.png"),
+            (_isAdult ? $"{_value.EyeType}/eyes_idle.PNG" : $"{_value.EyeType}/eyes_baby_idle.PNG"),
             _value.EyeColor);
     }
     private static void SetSkinPiece(Node _node, string _path, Color _color)

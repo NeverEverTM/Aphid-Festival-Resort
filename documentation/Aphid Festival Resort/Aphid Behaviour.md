@@ -19,7 +19,7 @@ Stores the current status of the aphid, such as their hunger, thirst, sleepiness
 ## Genes
 Stores an Aphids DNA and Identity, their name, body colors, preferences, etc. This arent changed often (with the exception of maybe name).
 
-## Instance (located in [AphidInstance.cs])
+## Instance (located in [aphid.Instancecs])
 This renders an unique aphid instance that holds the data above, an Aphid in-game entity should NEVER carry data that is important for them. Instance exists for this very reason, it also will facilitate a switch between an active state and a passive state (Seeing them in action/Being out the resort)
 
 # [AphidSkin.cs]

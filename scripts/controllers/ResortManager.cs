@@ -102,7 +102,7 @@ public partial class ResortManager : Node2D
 		};
 		_aphid.GlobalPosition = _position;
 
-		SaveSystem.AddAphidInstance(_aphid.Instance);
+		SaveSystem.AddAphid(_aphid.Instance);
 		Instance.AddChild(_aphid);
 		Instance.AphidsOnResort.Add(_aphid);
 		return _aphid;

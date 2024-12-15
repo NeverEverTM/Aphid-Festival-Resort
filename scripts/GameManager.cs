@@ -9,7 +9,7 @@ using Godot;
 /// </summary>
 public partial class GameManager : Node2D
 {
-	public const int GAME_VERSION = 130;
+	public const int GAME_VERSION = 200;
 
 	public static GameManager Instance { get; private set; }
 	public static Camera2D GlobalCamera { get; set; }
@@ -29,7 +29,7 @@ public partial class GameManager : Node2D
 		LoadingScreenPath = "res://scenes/ui/loading_screen.tscn",
 		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
 		PopupWindowPath = "res://scenes/ui/popup.tscn",
-		OutlineShader = "res://scripts/shaders/outline.gdshader";
+		OutlineShader = "res://scripts/shaders/outline-canvas-group.gdshader";
 	public const string
 		SFXPath = "res://sfx",
 		IconPath = "res://sprites/icons",
@@ -137,7 +137,7 @@ public partial class GameManager : Node2D
 	private void OnSizeChange()
 	{
 		ScreenSize = GetViewport().GetVisibleRect().Size;
-		ScreenCenter = ScreenSize  / 2;
+		ScreenCenter = ScreenSize / 2;
 		QuarterScreen = ScreenCenter / 2;
 	}
 	// MARK: Game Initialization
@@ -348,19 +348,21 @@ public partial class GameManager : Node2D
 	}
 
 	// MARK: Dedicated Functions
-	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position)
+	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position, bool _setRootAsParent = true)
 	{
 		var _item = _particles.Instantiate() as GpuParticles2D;
 		_item.GlobalPosition = _position;
 		_item.Emitting = true;
+		_item.ProcessMode = ProcessModeEnum.Pausable;
 
-		Instance.AddChild(_item);
+		if (_setRootAsParent)
+			Instance.AddChild(_item);
 		Instance.particles.Add(_item);
 
 		return _item;
 	}
-	public static GpuParticles2D EmitParticles(string _name, Vector2 _position) =>
-		EmitParticles(ResourceLoader.Load<PackedScene>($"res://scenes/particles/{_name}.tscn"), _position);
+	public static GpuParticles2D EmitParticles(string _name, Vector2 _position, bool _setRootAsParent = true) =>
+		EmitParticles(ResourceLoader.Load<PackedScene>($"res://scenes/particles/{_name}.tscn"), _position, _setRootAsParent);
 	public void CleanAllParticles()
 	{
 		for (int i = 0; i < particles.Count; i++)
@@ -514,5 +516,13 @@ public partial class GameManager : Node2D
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
 		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));
+
+		public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+		{
+			// Unix timestamp is seconds past epoch
+			DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+			dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+			return dateTime;
+		}
 	}
 }

@@ -95,9 +95,9 @@ frame_progress = 0.395285
 [node name="light" type="PointLight2D" parent="."]
 process_priority = 100
 material = ExtResource("3_srj3x")
-position = Vector2(0, -6)
-enabled = false
-color = Color(0.862745, 0.666667, 0.172549, 1)
+position = Vector2(-1.50001, -8.5)
+scale = Vector2(1.00342, 0.632324)
+color = Color(1, 0.862745, 0.647059, 1)
 energy = 0.0
 range_z_min = -10
 range_z_max = 10

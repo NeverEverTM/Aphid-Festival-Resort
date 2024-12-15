@@ -443,7 +443,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Vector2(367, 132), Vector2(367, 800)]
+"values": [Vector2(450, 132), Vector2(450, 800)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -482,7 +482,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Vector2(367, 800), Vector2(367, 132)]
+"values": [Vector2(450, 800), Vector2(450, 132)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -747,7 +747,8 @@ scroll_active = false
 
 [node name="dialog_audio" type="AudioStreamPlayer" parent="dialog_box"]
 stream = ExtResource("12_fyjyg")
-bus = &"Sounds"
+volume_db = -5.0
+bus = &"UI"
 
 [node name="dialog_advance_cursor" type="TextureRect" parent="dialog_box"]
 visible = false
@@ -773,10 +774,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -547.0
-offset_top = -334.0
-offset_right = -507.0
-offset_bottom = -294.0
+offset_left = -640.0
+offset_top = -360.0
+offset_right = -600.0
+offset_bottom = -320.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_pcakw")
@@ -801,10 +802,10 @@ texture_filter = 1
 texture_repeat = 2
 material = SubResource("ShaderMaterial_6fndo")
 layout_mode = 0
-offset_left = -119.0
-offset_top = -53.0
-offset_right = 220.0
-offset_bottom = 144.0
+offset_left = -40.0
+offset_top = -28.0
+offset_right = 299.0
+offset_bottom = 169.0
 scale = Vector2(4, 4)
 texture = ExtResource("18_i8b57")
 stretch_mode = 1
@@ -812,18 +813,18 @@ stretch_mode = 1
 [node name="options_panel" parent="pause_menu" instance=ExtResource("19_h41ts")]
 visible = false
 layout_mode = 1
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = 71.0
+offset_top = 4.0
+offset_right = 111.0
+offset_bottom = 44.0
 
 [node name="controls_panel" parent="pause_menu" instance=ExtResource("23_au4eg")]
 visible = false
 layout_mode = 1
-offset_left = 515.0
-offset_top = 301.0
-offset_right = 555.0
-offset_bottom = 341.0
+offset_left = 606.0
+offset_top = 325.0
+offset_right = 646.0
+offset_bottom = 365.0
 
 [node name="help_panel" type="Control" parent="pause_menu" node_paths=PackedStringArray("helpDescriptions")]
 visible = false
@@ -833,10 +834,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 507.0
-offset_top = 294.0
-offset_right = 547.0
-offset_bottom = 334.0
+offset_left = 598.0
+offset_top = 318.0
+offset_right = 638.0
+offset_bottom = 358.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_xmavb")
@@ -846,7 +847,7 @@ helpDescriptions = [NodePath("ScrollContainer/Control/desc_0/welcome"), NodePath
 layout_mode = 0
 offset_left = -612.0
 offset_top = -338.0
-offset_right = 654.0
+offset_right = 641.0
 offset_bottom = 381.0
 horizontal_scroll_mode = 0
 

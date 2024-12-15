@@ -1,11 +1,14 @@
-[gd_resource type="Theme" load_steps=12 format=3 uid="uid://c26milatu6udv"]
+[gd_resource type="Theme" load_steps=20 format=3 uid="uid://c26milatu6udv"]
 
 [ext_resource type="StyleBox" uid="uid://dr2mf5bmmc0m0" path="res://button_style.tres" id="1_hijc8"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="2_1p6bo"]
-[ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/icon_arrow.png" id="3_0k0xr"]
+[ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/ui/icons_ui.png" id="3_17y4s"]
 [ext_resource type="StyleBox" uid="uid://c5n7wtc84u08e" path="res://menu_border.tres" id="4_0fmu8"]
+[ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="4_m6sp0"]
 [ext_resource type="StyleBox" uid="uid://dxni6lp0btors" path="res://border_bg.tres" id="4_pts8h"]
+[ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="5_884w7"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="5_h1sdp"]
+[ext_resource type="Texture2D" uid="uid://3wk8a5raqbq4" path="res://sprites/ui/icon_menu.png" id="6_mlhna"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n56tp"]
 texture = ExtResource("2_1p6bo")
@@ -22,6 +25,34 @@ expand_margin_top = 10.0
 expand_margin_right = 5.0
 expand_margin_bottom = 10.0
 modulate_color = Color(0.898039, 0.203922, 0.356863, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fvdlo"]
+atlas = ExtResource("3_17y4s")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wafm1"]
+atlas = ExtResource("3_17y4s")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_460wl"]
+texture = ExtResource("4_m6sp0")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 2
+region_rect = Rect2(8, 8, 240, 32)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5an64"]
+texture = ExtResource("4_m6sp0")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 2
+region_rect = Rect2(8, 8, 240, 32)
+modulate_color = Color(0.160784, 0.984314, 0.992157, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ac6x6"]
+texture = ExtResource("5_884w7")
+texture_margin_top = 8.0
+texture_margin_bottom = 8.0
+region_rect = Rect2(8, 0, 240, 48)
+modulate_color = Color(0.490196, 0.0352941, 0.164706, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vd7mj"]
 texture = ExtResource("2_1p6bo")
@@ -68,6 +99,8 @@ Button/styles/focus = ExtResource("1_hijc8")
 Button/styles/hover = SubResource("StyleBoxTexture_n56tp")
 Button/styles/normal = ExtResource("1_hijc8")
 Button/styles/pressed = SubResource("StyleBoxTexture_gx173")
+CheckBox/constants/check_v_offset = 0
+CheckBox/constants/h_separation = 20
 CheckButton/colors/font_hover_color = Color(0.984314, 0.517647, 0.576471, 1)
 CheckButton/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 CheckButton/styles/focus = ExtResource("1_hijc8")
@@ -75,11 +108,17 @@ CheckButton/styles/hover = ExtResource("1_hijc8")
 CheckButton/styles/hover_pressed = ExtResource("1_hijc8")
 GridContainer/constants/h_separation = 8
 GridContainer/constants/v_separation = 8
+HSlider/constants/center_grabber = 1
+HSlider/icons/grabber = SubResource("AtlasTexture_fvdlo")
+HSlider/icons/grabber_highlight = SubResource("AtlasTexture_wafm1")
+HSlider/styles/grabber_area = SubResource("StyleBoxTexture_460wl")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxTexture_5an64")
+HSlider/styles/slider = SubResource("StyleBoxTexture_ac6x6")
 OptionButton/colors/font_focus_color = Color(0, 1, 0.898039, 1)
 OptionButton/constants/arrow_margin = 8
-OptionButton/constants/h_separation = 8
+OptionButton/constants/h_separation = 10
 OptionButton/constants/modulate_arrow = 1
-OptionButton/icons/arrow = ExtResource("3_0k0xr")
+OptionButton/icons/arrow = ExtResource("6_mlhna")
 OptionButton/styles/focus = ExtResource("1_hijc8")
 OptionButton/styles/hover = ExtResource("1_hijc8")
 OptionButton/styles/hover_mirrored = ExtResource("1_hijc8")
@@ -95,3 +134,6 @@ PopupPanel/styles/panel = ExtResource("4_pts8h")
 TextEdit/colors/background_color = Color(0.0745098, 0.27451, 0.176471, 0)
 TextEdit/colors/font_placeholder_color = Color(0.305882, 0.611765, 0.458824, 0.6)
 TextEdit/styles/normal = SubResource("StyleBoxFlat_i1e6c")
+VScrollBar/styles/grabber = ExtResource("4_pts8h")
+VScrollBar/styles/grabber_highlight = ExtResource("4_pts8h")
+VScrollBar/styles/grabber_pressed = ExtResource("4_pts8h")

@@ -1,7 +1,9 @@
 using Godot;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
-public partial class AphidData : Node
+public class AphidData
 {
 	public enum FoodType { Sweet, Sour, Salty, Bitter, Vile, Bland, Neutral }
 	private readonly static float[] flavor_weights = new float[]{
@@ -35,12 +37,15 @@ public partial class AphidData : Node
 		moneyPerHarvest_baby = 4, moneyPerHarvest_adult = 8;
 	public const float PET_DURATION = 1;
 
+	/// <summary>
+	/// Current living status of the aphid and its needs
+	/// </summary>
 	public class Status
 	{
 		// Basic stats
 		public float Hunger { get; set; }
 		public float Thirst { get; set; }
-		public float Sleepiness { get; set; }
+		public float Tiredness { get; set; }
 		public float Affection { get; set; }
 		public float Bondship { get; set; }
 
@@ -60,7 +65,7 @@ public partial class AphidData : Node
 		// State
 		public float PositionX { get; set; }
 		public float PositionY { get; set; }
-		public Aphid.AphidState LastActiveState { set; get; }
+		public Aphid.StateEnum LastActiveState { set; get; }
 
 		// Gen Data
 		public Status()
@@ -68,11 +73,25 @@ public partial class AphidData : Node
 			Health = 100;
 			Hunger = 50;
 			Thirst = 50;
-			Sleepiness = 50;
+			Tiredness = 50;
 			Affection = 50;
 			BreedMode = -1;
 		}
+
+		public virtual void AddHunger(float _amount) =>
+			Hunger = Math.Clamp(Hunger + _amount, 0, 100);
+		public virtual void AddThirst(float _amount) =>
+			Thirst = Math.Clamp(Thirst + _amount, 0, 100);
+		public virtual void AddTiredness(float _amount) =>
+			Tiredness = Math.Clamp(Tiredness + _amount, 0, 100);
+		public virtual void AddBondship(int _amount) =>
+			Bondship = Math.Clamp(Bondship + _amount, 0, 100);
+		public virtual void AddAffection(int _amount) =>
+			Affection = Math.Clamp(Affection + _amount, 0, 100);
 	}
+	/// <summary>
+	/// Genetic Information about the aphid's preferences and personality
+	/// </summary>
 	public record Genes
 	{
 		public string Name { get; set; }
@@ -81,39 +100,86 @@ public partial class AphidData : Node
 		public string Mother { get; set; }
 
 		public Color AntennaColor { get; set; }
+		public Color EyeColor { get; set; }
 		public Color BodyColor { get; set; }
 		public Color LegColor { get; set; }
-		public Color EyeColor { get; set; }
 
-		public int LegType { get; set; }
-		public int BodyType { get; set; }
 		public int AntennaType { get; set; }
 		public int EyeType { get; set; }
+		public int BodyType { get; set; }
+		public int LegType { get; set; }
 
 		public FoodType FoodPreference { get; set; }
 		public float[] FoodMultipliers { get; set; }
 
-		public Dictionary<string, IAphidAbility> Abilities { get; set; }
+		public List<Aphid.Skill> Skills { get; set; }
+		public List<string> Traits { get; set; }
 
-		public Genes()
+		/// <summary>
+		/// Called to define a new Aphid personality.
+		/// This function generates new info completely from scratch without taking inheritance into account.
+		/// </summary>
+		public void GenerateNewAphid()
 		{
 			Name = NameArchive[GameManager.RNG.RandiRange(0, NameArchive.Length - 1)];
 			Mother = Father = "Joy";
 			Owner = Player.Data.Name;
-			Abilities = new()
-			{
-				//"stamina", new IAphidSkill()
-			};
-			SetFoodPreferences();
+			GenerateSkills();
+			GenerateFoodPreferences();
+			GenerateTraits();
 		}
-		public void RandomizeColors()
+		// TODO: variation in color and limbs depends on combined skill points and levels from both parents 
+		public void BreedNewAphid(AphidInstance _father, AphidInstance _mother)
 		{
-			AntennaColor = GameManager.Utils.GetRandomColor();
-			BodyColor = GameManager.Utils.GetRandomColor();
-			LegColor = GameManager.Utils.GetRandomColor();
-			EyeColor = GameManager.Utils.GetRandomColor();
+			AphidInstance[] _parents = new AphidInstance[] { _mother, _father };
+			Father = _father.Genes.Name;
+			Mother = _mother.Genes.Name;
+
+			AntennaType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.AntennaType;
+			EyeType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.EyeType;
+			BodyType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.BodyType;
+			LegType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.LegType;
+			AntennaColor = GameManager.Utils.LerpColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor);
+			EyeColor = GameManager.Utils.LerpColor(_mother.Genes.EyeColor, _father.Genes.EyeColor);
+			BodyColor = GameManager.Utils.LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor);
+			LegColor = GameManager.Utils.LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor);
 		}
-		public void SetFoodPreferences()
+		public virtual void GenerateSkills()
+		{
+			Skills = new()
+			{
+				new Aphid.Skill("stamina"),
+				new Aphid.Skill("strength"),
+				new Aphid.Skill("intelligence"),
+				new Aphid.Skill("speed"),
+			};
+		}
+		public virtual void GenerateTraits()
+		{
+			Traits = new();
+			List<string> registered_traits = AphidTraits.TRAITS.Keys.ToList();
+
+			while (Traits.Count < 5)
+			{
+				// we draw a trait from the global pool using a local list
+				string _trait = registered_traits[GameManager.RNG.RandiRange(0, registered_traits.Count - 1)];
+
+				// check if this trait is compatible with all others
+				// otherwise ignore it now and in all follwing checks by removing it from the list 
+				Aphid.ITrait _traitToCheck = AphidTraits.TRAITS[_trait];
+				for (int i = 0; i < Traits.Count; i++)
+				{
+					if (_traitToCheck.IsIncompatibleWith(_trait))
+					{
+						registered_traits.Remove(_trait);
+						continue;
+					}
+				}
+
+				Traits.Add(_trait);
+			}
+		}
+		public virtual void GenerateFoodPreferences()
 		{
 			FoodPreference = (FoodType)GameManager.GetRandomByWeight(flavor_weights);
 			FoodMultipliers = new float[]{
@@ -128,40 +194,27 @@ public partial class AphidData : Node
 		}
 		public float GetMultiplier(FoodType _type) =>
 			0.5f + (_type == FoodPreference ? 0.5f : 0) + GameManager.RNG.Randf();
+
+		/// <summary>
+		/// FOR DEBUG PURPOSES
+		/// </summary>
+		public void DEBUG_Randomize()
+		{
+			RandomNumberGenerator _gen = new();
+			AntennaColor = GameManager.Utils.GetRandomColor();
+			BodyColor = GameManager.Utils.GetRandomColor();
+			LegColor = GameManager.Utils.GetRandomColor();
+			EyeColor = GameManager.Utils.GetRandomColor();
+			AntennaType = _gen.RandiRange(0, 1);
+			EyeType = _gen.RandiRange(0, 1);
+			BodyType = _gen.RandiRange(0, 1);
+			LegType = _gen.RandiRange(0, 1);
+		}
 	}
 
-	public interface IAphidAbility
+	public class AphidRelationship
 	{
-		public int Points { get; set; }
-		public int Level { get; set; }
-
-		public virtual void SetPoints(int _points)
-		{
-			if (_points > 9)
-				return;
-			Points = _points;
-			if (Points < 0) // Clamp at zero, cant level down
-				Points = 0;
-		}
-		public virtual void GivePoints(int _points)
-		{
-			if (_points > 10)
-				return;
-			Points += _points;
-			if (Points > 9) // Level up once you reach 10 points
-			{
-				Level++;
-				Points -= 10;
-			}
-			else if (Points < 0) // Clamp at zero, cant level down
-				Points = 0;
-			OnLevelUp();
-		}
-		public virtual void GiveLevel(int _level)
-		{
-			Level += _level;
-			OnLevelUp();
-		}
-		public void OnLevelUp();
+		public Guid aphid;
+		public sbyte relationship;
 	}
 }

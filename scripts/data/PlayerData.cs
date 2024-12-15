@@ -8,10 +8,12 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 	public static SaveFile Data = new();
 	public string GetId() => "player_data";
 	public static string NewName { get; set; }
+	public static string[] NewPronouns { get; set; }
 
 	public class SaveFile
 	{
 		public string Name { get; set; }
+		public string[] Pronouns { get; set; }
 		public int Level { get; set; }
 		public string Room { get; set; }
 
@@ -67,6 +69,11 @@ public partial class Player : CharacterBody2D, SaveSystem.ISaveData
 		{
 			Data.Name = NewName;
 			NewName = null;
+		}
+		if (NewPronouns != null)
+		{
+			Data.Pronouns = NewPronouns;
+			NewPronouns = null;
 		}
 		CanvasManager.UpdateCurrency();
 		return Task.CompletedTask;
