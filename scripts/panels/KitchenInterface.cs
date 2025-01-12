@@ -11,7 +11,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 	[Export] private Label resultName;
 	[Export] private Container inventoryGrid;
 	private string ingredient1, ingredient2, result;
-	private GameManager.Recipe resultRecipe;
+	private GlobalManager.Recipe resultRecipe;
 	private const string mistake = "mistake", bigMistake = "big_mistake";
 
 	public MenuUtil.MenuInstance Menu { get; set; }
@@ -54,7 +54,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 			_item.SetMeta("id", _item_name);
 
 			// check for available icon
-			(_item.GetChild(0) as TextureRect).Texture = GameManager.GetIcon(_item_name);
+			(_item.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
 
 			// press function
 			_item.Pressed += () => OnInvSlotPressed(_item_name);
@@ -64,14 +64,14 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 
 	private void SetIngredientSlot(string _item_name, int _index)
 	{
-		if (_item_name != null && GameManager.G_ITEMS[_item_name].tag != "food")
+		if (_item_name != null && GlobalManager.G_ITEMS[_item_name].tag != "food")
 			return; // if is not a food item, dont bother
 
 		if (_index == 0)
 		{
 			if (_item_name != null) // if it DOES NOT have an ingredient, add it
 			{
-				ingredient1Icon.Texture = GameManager.GetIcon(_item_name);
+				ingredient1Icon.Texture = GlobalManager.GetIcon(_item_name);
 				ingredient1 = _item_name;
 			}
 			else // if it DOES have an ingredient, remove it
@@ -85,7 +85,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		{
 			if (_item_name != null) // if it DOES NOT have an ingredient, add it
 			{
-				ingredient2Icon.Texture = GameManager.GetIcon(_item_name);
+				ingredient2Icon.Texture = GlobalManager.GetIcon(_item_name);
 				ingredient2 = _item_name;
 			}
 			else // if it DOES have an ingredient, remove it
@@ -101,7 +101,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 	{
 		if (_state)
 		{
-			resultIcon.Texture = GameManager.GetIcon(result);
+			resultIcon.Texture = GlobalManager.GetIcon(result);
 			resultName.Text = Tr(result + "_name");
 			(resultName.GetParent() as Control).Show();
 		}
@@ -224,7 +224,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		bool _single = ingredient1 == null || ingredient2 == null; // we assume ATLEAST ONE INGREDIENT EXISTS
 
 		// look for recipe that matches all ingredients
-		GameManager.Recipe _recipe = GameManager.G_RECIPES.Find((GameManager.Recipe _r) =>
+		GlobalManager.Recipe _recipe = GlobalManager.G_RECIPES.Find((GlobalManager.Recipe _r) =>
 		{
 			if (_r.Ingredient1 == ingredient1 || _r.Ingredient1 == ingredient2)
 			{

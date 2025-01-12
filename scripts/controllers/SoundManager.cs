@@ -84,7 +84,7 @@ public partial class SoundManager : Node
 	/// <param name="_full_name">Must be relative file name path to SFX (ex. "misc/title.wav")</param>
 	public static void PlaySong(string _full_name)
 	{
-		AudioStream _music = ResourceLoader.Load<AudioStream>($"{GameManager.SFXPath}/{_full_name}");
+		AudioStream _music = ResourceLoader.Load<AudioStream>($"{GlobalManager.SFXPath}/{_full_name}");
 		MusicPlayer.Stream = _music;
 		MusicPlayer.Play();
 	}
@@ -107,9 +107,9 @@ public partial class SoundManager : Node
 	public static AudioStreamPlayer CreateSound(AudioStream _stream, AudioStreamPlayer _audioplayer, bool _pitchRand = true)
 	{
 		AudioStreamPlayer _player = _audioplayer.Duplicate() as AudioStreamPlayer;
-		GameManager.Instance.AddChild(_player);
+		GlobalManager.Instance.AddChild(_player);
 		if (_pitchRand)
-			_player.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
+			_player.PitchScale = GlobalManager.RNG.RandfRange(0.81f, 1.27f);
 		_player.Stream = _stream;
 		_player.Play();
 		sound_entities.Add(_player);
@@ -135,9 +135,9 @@ public partial class SoundManager : Node
 	public static AudioStreamPlayer2D CreateSound2D(AudioStream _stream, AudioStreamPlayer2D _audioplayer, Vector2 _position, bool _pitchRand = true)
 	{
 		AudioStreamPlayer2D _player = _audioplayer.Duplicate() as AudioStreamPlayer2D;
-		GameManager.Instance.AddChild(_player);
+		GlobalManager.Instance.AddChild(_player);
 		if (_pitchRand)
-			_player.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
+			_player.PitchScale = GlobalManager.RNG.RandfRange(0.81f, 1.27f);
 		_player.Attenuation = 0.5f;
 		_player.MaxDistance = 500;
 		_player.Stream = _stream;

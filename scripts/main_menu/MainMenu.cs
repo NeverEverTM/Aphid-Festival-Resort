@@ -42,12 +42,13 @@ public partial class MainMenu : Node2D
 	public override void _EnterTree()
 	{
 		Instance = this;
-		cameraMenu.Position = GameManager.Utils.GetRandomVector(-300, 300);
+		cameraMenu.Position = GlobalManager.Utils.GetRandomVector(-300, 300);
 		(sweep_animator.GetParent() as Control).Visible = true;
 	}
 	public async override void _Ready()
 	{
 		currentMenu = start_panel;
+		GlobalManager.GlobalCamera = cameraMenu;
 
 		// create menu button wheel
 		new_game_panel.AddMenuAction();
@@ -58,12 +59,9 @@ public partial class MainMenu : Node2D
 		CreateMenuAction("exit", () => GetTree().Quit());
 		SetCategory(NewGameMenu.newGameCategory);
 
-		// Start game processes
-		GameManager.CleanSaveData();
-
 		if (!HasBeenIntialized)
 		{
-			GameManager.BOOT_LOADING_LABEL = BOOT_LOADING_LABEL;
+			GlobalManager.BOOT_LOADING_LABEL = BOOT_LOADING_LABEL;
 			logo_animator.Play("start");
 			while (logo_animator.IsPlaying())
 			{
@@ -71,7 +69,7 @@ public partial class MainMenu : Node2D
 					logo_animator.Play("RESET");
 				await Task.Delay(1);
 			}
-			await GameManager.INTIALIZE_GAME_PROCESS();
+			await GlobalManager.INTIALIZE_GAME_PROCESS();
 			sweep_animator.Play("slide_up");
 		}
 		else
@@ -81,7 +79,7 @@ public partial class MainMenu : Node2D
 		}
 		SoundManager.PlaySong("misc/title.wav");
 		title_animator.Play("slide_down");
-		if (!string.IsNullOrEmpty(OptionsManager.Settings.Data.LastPlayedResort))
+		if (!string.IsNullOrEmpty(OptionsManager.Settings.LastPlayedResort))
 			SetCategory("continue");
 		SpawnBunchaOfAphidsForTheFunnies();
 		start_panel.SetPanel();
@@ -89,7 +87,7 @@ public partial class MainMenu : Node2D
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (GameManager.IsBusy)
+		if (GlobalManager.IsBusy)
 			return;
 
 		// Press To Start - Pressed
@@ -176,7 +174,7 @@ public partial class MainMenu : Node2D
 		SaveSystem.SelectProfile(_profile);
 		if (!DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
-			GameManager.CreatePopup("warning_invalid_resort", Instance.canvas);
+			GlobalManager.CreatePopup("warning_invalid_resort", Instance.canvas);
 			return;
 		}
 
@@ -185,9 +183,9 @@ public partial class MainMenu : Node2D
 	}
 	public static async void LoadResort()
 	{
-		OptionsManager.Settings.Data.LastPlayedResort = SaveSystem.Profile;
-		await OptionsManager.Settings.Save();
-		await GameManager.LoadScene(GameManager.SceneName.Resort);
+		OptionsManager.Settings.LastPlayedResort = SaveSystem.Profile;
+		await OptionsManager.Module.Save();
+		await GlobalManager.LoadScene(GlobalManager.SceneName.Resort);
 	}
 
 	// MARK: Menu Managment
@@ -242,7 +240,7 @@ public partial class MainMenu : Node2D
 	
 	// MARK: Cosmetics
 	private bool DirectionForX, DirectionForY;
-	private float MaxWanderDistanceX = 1200, MaxWanderDistanceY = 600;
+	private float MaxWanderDistanceX = 1800, MaxWanderDistanceY = 600;
 	private void DoBounceAnim()
 	{
 		if (cameraMenu.Position.X > MaxWanderDistanceX)
@@ -257,17 +255,17 @@ public partial class MainMenu : Node2D
 
 		cameraMenu.Position += new Vector2(DirectionForX ? -1 : 1, DirectionForY ? -1 : 1);
 	}
-	private float[] babyWeight = new float[] { 90, 10 };
+	private float[] babyWeight = new float[] { 70, 30 };
 	private void SpawnBunchaOfAphidsForTheFunnies()
 	{
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 15; i++)
 		{
 			var _aphid = aphidPrefab.Instantiate() as Aphid;
 			_aphid.IS_FAKE = true;
 			_aphid.Instance = new();
 			_aphid.Instance.Genes.DEBUG_Randomize();
-			_aphid.Instance.Status.IsAdult = GameManager.GetRandomByWeight(babyWeight) == 0;
-			_aphid.GlobalPosition = GameManager.Utils.GetRandomVector(-300, 300);
+			_aphid.Instance.Status.IsAdult = GlobalManager.GetRandomByWeight(babyWeight) == 0;
+			_aphid.GlobalPosition = GlobalManager.Utils.GetRandomVector(-300, 300);
 			entityRoot.AddChild(_aphid);
 			_aphid.skin.SetSkin("idle");
 		}

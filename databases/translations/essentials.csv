@@ -21,10 +21,12 @@ exit,Exit,Salir
 new_game_warning,WARNING: Savefiles may become incompatible with future versions!,ADVERTENCIA: Partidas guardadas no tienen garantizado funcionar en versiones posteriores!
 new_game_player_name,Name:,Nombre:
 new_game_pronouns,Pronouns:,Pronombres:
-new_game_pronouns_placeholder,They/them,Elles/elle
+new_game_pronouns_placeholder,They/them,Elle/elles
+pronouns_they,They,Elle
+pronouns_them,them,elles
 new_game_resort_name,Resort Name:,Nombre del complejo:
 new_game_creative,Creative Mode,Modo Creativo
-new_game_nodeath,Inmortal Aphids,Áfidos Inmortales
+new_game_nodeath,No Aphid Death,Áfidos No Mueren
 new_game_begin,Create resort!,Crear complejo!
 new_game_resort_placeholder,Type a name for your resort,Escribe un nombre para tu complejo
 load_game_note,Choose a resort to play! Press the X icon to delete a resort.,¡Escoge una partida para jugar! Presiona el icono X para borrar un complejo.
@@ -67,7 +69,7 @@ controls_open_inventory,Open Inventory,Abrir Inventario
 controls_open_generations,Open Album,Abrir Album
 controls_interact,Interact,Interactuar
 controls_cancel,Cancel/Go Back,Cancelar/Regresar
-controls_pickup,Pickup Items/Aphids,Recoger/Tomar
+controls_pickup,Pickup/Drop,Recoger/Soltar
 controls_movement_name,Movement,Movimiento
 controls_interactions_name,Interactions,Interacciones
 controls_mode_name,Camera & Build Mode,Camara y Construcción
@@ -115,9 +117,7 @@ SOUND ASSETS
 
 MISC ASSETS
 
-Outline Shader by Julian-Vos
-Shine Shader (for the logo) by ACB_Gamez (and others)
-3D Aphid Model by Leo (leo6804)
+3D Aphid Model by Leo
 
 SPECIAL THANKS
 
@@ -128,7 +128,7 @@ To the fan game Chao Resort Island by Nefault1st for being an inspiration for th
 Unless stated otherwise, all other components had been created, programmed and designed by me, Summer
 Characters and places are from Bug Fables: The Everlasting Sapling by Moonsprout Games
 ------------------------[/center]","[center]-------------------------------
-Hecho con el motor Godot 4
+Hecho con Godot 4
 
 ARCHIVOS DE SONIDO
 
@@ -137,9 +137,7 @@ ARCHIVOS DE SONIDO
 
 ARCHIVOS MISCELANEOS
 
-Outline Shader por Julian-Vos
-Shine Shader (para el logo) por ACB_Gamez (y otros)
-3D Aphid Model por Leo del discord official de Bug Fables
+3D Aphid Model por Leo
 
 GRACIAS ESPECIALES
 
@@ -151,22 +149,38 @@ A menos dicho lo contrario, todo los demas componentes han sido creados, program
 Caracteres y lugares vienen de Bug Fables: The Everlasting Sapling por Moonsprout Games
 ------------------------[/center]"
 generations_description,"Here you can see all the aphids you have raised through your time in the resort.
-Double click on an aphid to mark its location in the map.","Aquí podras ver a todas las mascotas que has criado a traves del tiempo en el complejo.
+Double click on an aphid to mark its location in the map.","Aquí podras ver a todas los áfidos que has criado en tu tiempo en el complejo.
 Haz doble click para marcar la ubicacion de una mascota en el mapa."
-generations_owner,Owned By,Dueño De
-generations_parent,Children of,Crío de
-store_item_name,Azzy’s Food Cabinet,Puesto de Azzy
-store_item_desc,Purchase basic items for Aphid caretaking.,Adquiere objectos basicos para el cuidado de Áfidos.
+generations_owner,Owned By,Criado por
+generations_parent,Children of,Cría de
+store_item_name,Azzy’s Bazaar,Bazar de Azzy
+store_item_desc,"Purchase basic items for Aphid caretaking. Food, toys, eggs, and more!","Adquiere objectos basicos para el cuidado de Áfidos. Comida, juegetes, huevos y mucho más!"
+store_item_phrase,Hi!,Hola!
 store_furniture_name,Furniture Cabinet,Cabina de muebles
-store_furniture_desc,A sorting of all trinkets and props that the resort sells.,Una coleccion de todos los aparatos y decoraciones que el complejo vende.
-resort_golden_name,Golden Plains,NOT_IMPLEMENTED
-resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.",NOT_IMPLEMENTED
-bio_name_placeholder,Aphid Name,Nombre del Áfido
+store_furniture_desc,The resort's stock for land decoration. Members are allowed to decorate at their heart's content.,El stock del complejo para decoracion. Los miembros tienen permiso de decorar a su gusto.
+store_furniture_phrase,On Sale,En venta
+kitchen_name,Kut's Cooking Table,NOT_IMPLEMENTED
+kitchen_desc,Hand me some ingredients and let a master take the wheel.,NOT_IMPLEMENTED
+kitchen_success,Aha! A dish of the upmost quality like you've never seen before.,NOT_IMPLEMENTED
+kitchen_fail,...I could only do so much with such a poorly thought combo.,NOT_IMPLEMENTED
 kitchen_lockrecipe,Repeat Recipe,Repetir Receta
-flavor_0,Sweet,Dulce
-flavor_1,Sour,Agrio
-flavor_2,Salty,Salado
-flavor_3,Bitter,Amargo
-flavor_4,Vile,Vil
-flavor_5,Bland,Soso
-flavor_6,Average,Decente
+resort_golden_name,Golden Plains,Planicies Doradas
+resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.","Situada en el Asentamiento Dorado, es la primer acomodacion de muchas."
+bio_name_placeholder,Aphid Name,Nombre del Áfido
+prompt_pickup,Pickup,Recoger
+prompt_drop,Drop,Soltar
+prompt_interact,Interact,Interactuar
+prompt_pet,Pet,Acariciar
+prompt_talk,Talk,Conversar
+prompt_harvest,Harvest,Cosechar
+prompt_sell,Sell,Vender
+prompt_store,Store,Almacenar
+prompt_align_to_grid,Grid Align,Alinear
+prompt_open_menu,Open Menu,Abrir Menu
+food_flavor_0,Sweet,Dulce
+food_flavor_1,Sour,Agrio
+food_flavor_2,Salty,Salado
+food_flavor_3,Bitter,Amargo
+food_flavor_4,Vile,Vil
+food_flavor_5,Bland,Soso
+food_flavor_6,Average,Decente

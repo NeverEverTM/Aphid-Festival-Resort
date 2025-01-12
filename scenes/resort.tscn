@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=79 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" path="res://scripts/controllers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
@@ -6,13 +6,21 @@
 [ext_resource type="PackedScene" uid="uid://dd1kgkvs8hkc6" path="res://scenes/ui/resort_canvas.tscn" id="4_2px7i"]
 [ext_resource type="PackedScene" uid="uid://bufmc14xek8uk" path="res://scenes/ui/canvas.tscn" id="5_t3t74"]
 [ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="5_wdlmu"]
+[ext_resource type="AudioStream" uid="uid://5p863eutge4e" path="res://sfx/dialog/kut_idle.wav" id="9_d3dcb"]
 [ext_resource type="Texture2D" uid="uid://dxsln8cwjpovm" path="res://sprites/characters/azzy_sprite.png" id="11_0kb4s"]
 [ext_resource type="Texture2D" uid="uid://dxql7r1r5qc7k" path="res://sprites/props/resort_table.png" id="12_thkyw"]
 [ext_resource type="Texture2D" uid="uid://b1go4uvd135xi" path="res://sprites/characters/kut_sprite.png" id="13_vwevc"]
 [ext_resource type="Texture2D" uid="uid://bhvqj7snoodkf" path="res://sprites/props/resort_shelf.png" id="14_1yqxr"]
+[ext_resource type="AudioStream" uid="uid://dbw4onual26kt" path="res://sfx/dialog/azzy_idle.wav" id="14_250cd"]
 [ext_resource type="AudioStream" uid="uid://dr8pjwr0i4kbv" path="res://sfx/ambience/river_ambience.mp3" id="16_7qi0k"]
+[ext_resource type="Texture2D" uid="uid://d3lnnuc8qvifd" path="res://sprites/characters/echo_sheet.png" id="16_r1cpt"]
+[ext_resource type="AudioStream" uid="uid://bmkn14kqqqi0t" path="res://sfx/dialog/joy_idle.wav" id="16_u8bv1"]
+[ext_resource type="PackedScene" uid="uid://fe2rj3qknw8t" path="res://scenes/entities/npc_physics.tscn" id="17_ap2f3"]
+[ext_resource type="AudioStream" uid="uid://clwk2gsgssete" path="res://sfx/dialog/crystal_idle.wav" id="17_fq2sr"]
+[ext_resource type="Texture2D" uid="uid://cpvpnfbm7q8of" path="res://sprites/characters/crystal_sheet.png" id="18_3qwm4"]
+[ext_resource type="AudioStream" uid="uid://lrbhcgxkpwhw" path="res://sfx/dialog/echo_idle.wav" id="19_ghwkx"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="19_l0dmi"]
-[ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/entities/character.tscn" id="28_py445"]
+[ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/entities/npc.tscn" id="28_py445"]
 [ext_resource type="PackedScene" uid="uid://cum5tqdw2hog8" path="res://scenes/entities/menu_trigger.tscn" id="51_xwwsq"]
 [ext_resource type="Texture2D" uid="uid://cwecy5ses13x5" path="res://sprites/characters/joy_sheet.png" id="67_yel3x"]
 
@@ -265,63 +273,197 @@ animations = [{
 "speed": 4.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_aqtbm"]
-atlas = ExtResource("67_yel3x")
-region = Rect2(0, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="AtlasTexture_24v51"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(0, 0, 48, 48)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ntuov"]
-atlas = ExtResource("67_yel3x")
-region = Rect2(48, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="AtlasTexture_i2men"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(48, 0, 48, 48)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_dm00h"]
-atlas = ExtResource("67_yel3x")
-region = Rect2(96, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="AtlasTexture_nxs0j"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(96, 0, 48, 48)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_mtwnq"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_yx61y"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r7lpl"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_waojn"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hnoss"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(192, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8qbjh"]
+atlas = ExtResource("18_3qwm4")
+region = Rect2(240, 0, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ib0l4"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aqtbm")
+"texture": SubResource("AtlasTexture_24v51")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ntuov")
+"texture": SubResource("AtlasTexture_i2men")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aqtbm")
+"texture": SubResource("AtlasTexture_24v51")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_dm00h")
+"texture": SubResource("AtlasTexture_nxs0j")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aqtbm")
+"texture": SubResource("AtlasTexture_24v51")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ntuov")
+"texture": SubResource("AtlasTexture_i2men")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aqtbm")
+"texture": SubResource("AtlasTexture_24v51")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ntuov")
+"texture": SubResource("AtlasTexture_i2men")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yx61y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i2men")
 }],
 "loop": true,
 "name": &"default",
-"speed": 3.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aqtbm")
+"texture": SubResource("AtlasTexture_r7lpl")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ntuov")
+"texture": SubResource("AtlasTexture_waojn")
 }],
 "loop": true,
 "name": &"talk",
-"speed": 24.0
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hnoss")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8qbjh")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lya4f"]
-size = Vector2(30, 9)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bpu2g"]
+size = Vector2(32, 11)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jt22a"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(0, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_od1e4"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(32, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_585mi"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(64, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cj6gw"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(96, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_74uq7"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(128, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_drehg"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(160, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_66d0s"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(192, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pxxem"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(224, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ms26u"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(0, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t842j"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(32, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vsnoy"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(64, 64, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yct5b"]
+atlas = ExtResource("16_r1cpt")
+region = Rect2(96, 64, 32, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jk5p2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jt22a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_od1e4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_585mi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cj6gw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_74uq7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_drehg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_66d0s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pxxem")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ms26u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t842j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsnoy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yct5b")
+}],
+"loop": true,
+"name": &"talk",
+"speed": 8.0
+}]
 
 [node name="resort" type="Node2D" node_paths=PackedStringArray("EntityRoot", "StructureRoot")]
 y_sort_enabled = true
@@ -331,11 +473,15 @@ EntityRoot = NodePath("entityPit")
 StructureRoot = NodePath("tilemap_resort/structurePit")
 aphidPrefab = ExtResource("3_d14m5")
 
-[node name="wind_ambience" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_u23vr")
-volume_db = -10.0
-autoplay = true
-bus = &"Ambience"
+[node name="resort_canvas" parent="." node_paths=PackedStringArray("TopLeft", "BottomRight") instance=ExtResource("4_2px7i")]
+TopLeft = NodePath("../topleft")
+BottomRight = NodePath("../bottomright")
+
+[node name="canvas" parent="." instance=ExtResource("5_t3t74")]
+
+[node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
+process_priority = -1000
+metadata/_edit_lock_ = true
 
 [node name="topleft" type="Node2D" parent="."]
 position = Vector2(-2334, -839)
@@ -350,20 +496,6 @@ y_sort_enabled = true
 position = Vector2(-2, 0)
 inventory = NodePath("../canvas/inventory")
 
-[node name="resort_canvas" parent="." node_paths=PackedStringArray("TopLeft", "BottomRight") instance=ExtResource("4_2px7i")]
-TopLeft = NodePath("../topleft")
-BottomRight = NodePath("../bottomright")
-
-[node name="canvas" parent="." instance=ExtResource("5_t3t74")]
-
-[node name="weather_text" parent="canvas/datetime/weater_bg" index="0"]
-offset_top = 233.0
-offset_bottom = 321.0
-
-[node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
-process_priority = -1000
-metadata/_edit_lock_ = true
-
 [node name="kut" parent="." instance=ExtResource("28_py445")]
 position = Vector2(-484, -166)
 sprite_frames = SubResource("SpriteFrames_ckexh")
@@ -371,6 +503,7 @@ animation = &"talk"
 frame_progress = 0.243786
 dialogue_keys = PackedStringArray("kut_flavor_0", "kut_flavor_1", "kut_flavor_2")
 DialogueMode = 2
+DefaultVoice = ExtResource("9_d3dcb")
 
 [node name="kitchen" parent="." node_paths=PackedStringArray("triggerObject") instance=ExtResource("51_xwwsq")]
 position = Vector2(-478, -160)
@@ -410,31 +543,50 @@ triggerObject = NodePath("../resort_canvas/item_shop_panel")
 [node name="azzy" parent="." instance=ExtResource("28_py445")]
 position = Vector2(712, -219)
 sprite_frames = SubResource("SpriteFrames_eps0x")
-frame_progress = 0.318632
+animation = &"talk"
+frame = 1
+frame_progress = 0.92029
 dialogue_keys = PackedStringArray("azzy_flavor_0", "azzy_flavor_1")
 DialogueMode = 2
+DefaultVoice = ExtResource("14_250cd")
 
 [node name="joy" parent="." instance=ExtResource("28_py445")]
 position = Vector2(-7, 120)
 sprite_frames = SubResource("SpriteFrames_ue4ko")
 animation = &"talk"
-frame_progress = 0.932212
+frame_progress = 0.779681
 dialogue_keys = PackedStringArray("joy_flavor_0", "joy_flavor_1", "joy_flavor_2", "joy_flavor_3")
 DialogueMode = 2
+DefaultVoice = ExtResource("16_u8bv1")
 FlipDirection = true
 
-[node name="crystal_aphid" parent="." instance=ExtResource("28_py445")]
-position = Vector2(-66, 183)
-sprite_frames = SubResource("SpriteFrames_mtwnq")
-animation = &"talk"
-frame_progress = 0.465361
-dialogue_keys = PackedStringArray("crystal_flavor_0", "crystal_flavor_1", "crystal_flavor_2")
-DialogueMode = 2
-IsWandering = true
+[node name="crystal" parent="." instance=ExtResource("17_ap2f3")]
+position = Vector2(-69, 157)
 
-[node name="CollisionShape2D" parent="crystal_aphid/hitbox" index="0"]
-position = Vector2(0, -12.5)
-shape = SubResource("RectangleShape2D_lya4f")
+[node name="sprite" parent="crystal" index="0"]
+sprite_frames = SubResource("SpriteFrames_ib0l4")
+animation = &"walk"
+frame_progress = 0.219296
+offset = Vector2(0, -21.47)
+dialogue_keys = PackedStringArray("crystal_flavor_0", "crystal_flavor_1", "crystal_flavor_2")
+DialogueMode = 1
+DefaultVoice = ExtResource("17_fq2sr")
+
+[node name="CollisionShape2D" parent="crystal" index="1"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_bpu2g")
+
+[node name="echo" parent="." instance=ExtResource("28_py445")]
+position = Vector2(-2136, 50)
+sprite_frames = SubResource("SpriteFrames_jk5p2")
+autoplay = "default"
+frame = 2
+frame_progress = 0.334476
+offset = Vector2(4.415, -32)
+dialogue_keys = PackedStringArray("echo_flavor_0", "echo_flavor_1", "echo_flavor_2", "echo_flavor_3")
+DialogueMode = 2
+DefaultVoice = ExtResource("19_ghwkx")
+FlipDirection = true
 
 [node name="river_ambience" type="AudioStreamPlayer2D" parent="."]
 position = Vector2(-2260, -216)
@@ -508,6 +660,12 @@ max_distance = 500.0
 attenuation = 0.5
 bus = &"Ambience"
 
+[node name="wind_ambience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_u23vr")
+volume_db = -10.0
+autoplay = true
+bus = &"Ambience"
+
 [node name="river_ambience9" type="AudioStreamPlayer2D" parent="."]
 position = Vector2(2019, -40)
 stream = ExtResource("16_7qi0k")
@@ -517,14 +675,7 @@ max_distance = 500.0
 attenuation = 0.5
 bus = &"Ambience"
 
-[node name="NPC" parent="." instance=ExtResource("28_py445")]
-position = Vector2(-193, 345)
-dialogue_keys = PackedStringArray("echo_flavor_0", "echo_flavor_1", "echo_flavor_2")
-DialogueMode = 2
-
 [editable path="resort_canvas"]
-[editable path="resort_canvas/generations_panel/ScrollContainer/GridContainer/aphid_slot"]
 [editable path="canvas"]
-[editable path="tilemap_resort"]
 [editable path="kitchen"]
-[editable path="crystal_aphid"]
+[editable path="crystal"]

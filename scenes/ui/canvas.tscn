@@ -1,14 +1,17 @@
-[gd_scene load_steps=57 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=62 format=3 uid="uid://bufmc14xek8uk"]
 
 [ext_resource type="Script" path="res://scripts/gui/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
 [ext_resource type="Texture2D" uid="uid://sgkiuo2x4mba" path="res://sprites/ui/weather_night.png" id="3_7sasc"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="4_bri73"]
+[ext_resource type="Texture2D" uid="uid://bxc35yxy7uvir" path="res://sprites/ui/gui_icons/icon_inventory_close.png" id="4_s23ya"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="5_ea4nc"]
+[ext_resource type="PackedScene" uid="uid://uk8rbyvf7hlf" path="res://scenes/ui/control_prompt.tscn" id="6_2mjwi"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="6_pcakw"]
-[ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/icon_camera.png" id="7_pfkc3"]
+[ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/gui_icons/icon_camera.png" id="7_pfkc3"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_y632t"]
-[ext_resource type="Texture2D" uid="uid://3wk8a5raqbq4" path="res://sprites/ui/icon_menu.png" id="9_b5qdd"]
+[ext_resource type="Texture2D" uid="uid://3wk8a5raqbq4" path="res://sprites/ui/gui_icons/icon_menu.png" id="9_b5qdd"]
+[ext_resource type="Texture2D" uid="uid://cbd6a8ft3xjb6" path="res://sprites/ui/gui_icons/icon_inventory_open.png" id="9_smev1"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="10_svke5"]
 [ext_resource type="Script" path="res://scripts/gui/PlayerInventory.cs" id="10_wibaw"]
 [ext_resource type="Script" path="res://scripts/gui/DialogManager.cs" id="11_4ktwe"]
@@ -17,7 +20,9 @@
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="13_7k46k"]
 [ext_resource type="Script" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="15_4n2d7"]
+[ext_resource type="AudioStream" uid="uid://biqb5tx1cjmwl" path="res://sfx/ui/backpack_open.wav" id="15_jpkck"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="16_crekn"]
+[ext_resource type="AudioStream" uid="uid://bsk5hdjfe6fiy" path="res://sfx/ui/backpack_close.wav" id="16_wn1tp"]
 [ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="19_h41ts"]
@@ -48,7 +53,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("weater_bg/weather_text:position")
+tracks/0/path = NodePath("CanvasGroup/weater_bg/weather_text:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -60,7 +65,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("weater_bg/weather_text:visible")
+tracks/1/path = NodePath("CanvasGroup/weater_bg/weather_text:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -72,7 +77,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("weater_bg/weather_text:self_modulate")
+tracks/2/path = NodePath("CanvasGroup/weater_bg/weather_text:self_modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -108,7 +113,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("weater_bg:position")
+tracks/5/path = NodePath("CanvasGroup/weater_bg:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -120,6 +125,7 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_f24s7"]
 resource_name = "close"
+length = 0.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -147,11 +153,11 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_vdyy6"]
 resource_name = "open"
-length = 2.0
+length = 1.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("weater_bg/weather_text:position")
+tracks/0/path = NodePath("CanvasGroup/weater_bg/weather_text:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -163,7 +169,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("weater_bg/weather_text:visible")
+tracks/1/path = NodePath("CanvasGroup/weater_bg/weather_text:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -175,7 +181,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("weater_bg/weather_text:self_modulate")
+tracks/2/path = NodePath("CanvasGroup/weater_bg/weather_text:self_modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -211,7 +217,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("weater_bg:position")
+tracks/5/path = NodePath("CanvasGroup/weater_bg:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -254,9 +260,22 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(0, 0)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anchor/count_bg:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-482, 244)]
+}
 
 [sub_resource type="Animation" id="Animation_sfayx"]
-resource_name = "slide_down"
+resource_name = "close"
+length = 0.4
 step = 0.125
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -265,10 +284,10 @@ tracks/0/path = NodePath(".:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.25),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [false]
+"values": [true, false]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -282,9 +301,22 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(0, -350), Vector2(0, 0)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anchor/count_bg:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-482, 236)]
+}
 
 [sub_resource type="Animation" id="Animation_7dphq"]
-resource_name = "slide_up"
+resource_name = "open"
+length = 0.4
 step = 0.125
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -310,12 +342,24 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(0, 0), Vector2(0, -350)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anchor/count_bg:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.125, 0.25, 0.375),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-482, 292), Vector2(-482, 228), Vector2(-482, 236)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tekbc"]
 _data = {
 "RESET": SubResource("Animation_5upln"),
-"slide_down": SubResource("Animation_sfayx"),
-"slide_up": SubResource("Animation_7dphq")
+"close": SubResource("Animation_sfayx"),
+"open": SubResource("Animation_7dphq")
 }
 
 [sub_resource type="Animation" id="Animation_vqegb"]
@@ -523,19 +567,25 @@ shader_parameter/number_of_images = Vector2(1, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_gopes"]
 font_size = 30
 
-[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("currency_text", "weather_text", "weather_bg", "weather_player", "screenshot_button", "menu_button")]
+[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("hud_element", "currency_text", "weather_text", "weather_bg", "weather_player", "screenshot_button", "menu_button", "inventoryButton", "inventory_control_label", "prompt_grid")]
 process_mode = 1
 script = ExtResource("1_vek4n")
+hud_element = NodePath("hud")
 currency_text = NodePath("berries_bar/amount")
-weather_text = NodePath("datetime/weater_bg/weather_text")
+weather_text = NodePath("datetime/CanvasGroup/weater_bg/weather_text")
 weather_sprites = Array[Texture2D]([ExtResource("2_gvumt"), ExtResource("3_7sasc")])
-weather_bg = NodePath("datetime/weater_bg")
+weather_bg = NodePath("datetime/CanvasGroup/weater_bg")
 weather_player = NodePath("datetime/AnimationPlayer")
-screenshot_button = NodePath("screenshotButton")
-menu_button = NodePath("menuButton")
+screenshot_button = NodePath("hud/screenshotButton")
+menu_button = NodePath("hud/menuButton")
+inventoryButton = NodePath("hud/inventoryButton")
+inventory_button_sprites = [ExtResource("4_s23ya"), ExtResource("9_smev1")]
+inventory_control_label = NodePath("hud/inventoryButton/control_icon")
+prompt_grid = NodePath("DO NOT REMOVE/prompt_grid")
+prompt_element = ExtResource("6_2mjwi")
 
 [node name="berries_bar" type="NinePatchRect" parent="."]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -568,28 +618,96 @@ theme = ExtResource("6_pcakw")
 text = "086"
 horizontal_alignment = 1
 
-[node name="screenshotButton" type="TextureButton" parent="."]
-anchors_preset = 2
+[node name="DO NOT REMOVE" type="Control" parent="."]
+editor_description = "This control is so the grid doesnt reposition itself back into the top left, it doesnt show in the editor but in-game it will be broken"
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -163.0
+offset_top = 9.0
+offset_right = -123.0
+offset_bottom = 49.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="prompt_grid" type="VBoxContainer" parent="DO NOT REMOVE"]
+light_mask = 0
+layout_mode = 0
+offset_bottom = 200.0
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment = 2
+
+[node name="hud" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="screenshotButton" type="TextureButton" parent="hud"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -75.0
-offset_right = 75.0
+offset_left = 1165.0
+offset_top = 605.0
+offset_right = 1240.0
+offset_bottom = 680.0
+grow_horizontal = 0
 grow_vertical = 0
 focus_mode = 0
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("7_pfkc3")
-stretch_mode = 0
+stretch_mode = 5
 script = ExtResource("8_y632t")
 PressedColor = Color(0.282353, 0.294118, 0.286275, 1)
 HoverColor = Color(0.670588, 0.670588, 0.65098, 1)
 
-[node name="menuButton" type="TextureButton" parent="."]
-offset_left = 2.0
-offset_top = 8.0
-offset_right = 77.0
-offset_bottom = 83.0
+[node name="inventoryButton" type="TextureButton" parent="hud"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = 605.0
+offset_right = 75.0
+offset_bottom = 680.0
+grow_vertical = 0
 focus_mode = 0
+mouse_default_cursor_shape = 2
+theme = ExtResource("6_pcakw")
+texture_normal = ExtResource("9_smev1")
+stretch_mode = 5
+script = ExtResource("8_y632t")
+PressedColor = Color(0.282353, 0.294118, 0.286275, 1)
+HoverColor = Color(0.670588, 0.670588, 0.65098, 1)
+
+[node name="control_icon" type="RichTextLabel" parent="hud/inventoryButton"]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 21.0
+offset_right = 210.0
+offset_bottom = 71.0
+mouse_filter = 1
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+bbcode_enabled = true
+text = " Tab"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="menuButton" type="TextureButton" parent="hud"]
+layout_mode = 0
+offset_right = 75.0
+offset_bottom = 75.0
+focus_mode = 0
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("9_b5qdd")
-stretch_mode = 0
+stretch_mode = 5
 script = ExtResource("8_y632t")
 PressedColor = Color(0.282353, 0.294118, 0.286275, 1)
 HoverColor = Color(0.670588, 0.670588, 0.65098, 1)
@@ -606,9 +724,10 @@ offset_right = -224.0
 offset_bottom = -80.0
 grow_vertical = 0
 
-[node name="weater_bg" type="TextureRect" parent="datetime"]
+[node name="CanvasGroup" type="CanvasGroup" parent="datetime"]
+
+[node name="weater_bg" type="TextureRect" parent="datetime/CanvasGroup"]
 self_modulate = Color(0.435066, 0.32983, 0.823487, 1)
-layout_mode = 0
 offset_left = 224.0
 offset_top = -406.0
 offset_right = 584.999
@@ -616,15 +735,15 @@ offset_bottom = -49.0
 texture = ExtResource("2_gvumt")
 stretch_mode = 4
 
-[node name="weather_text" type="Label" parent="datetime/weater_bg"]
+[node name="weather_text" type="Label" parent="datetime/CanvasGroup/weater_bg"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 15.0
-offset_top = 233.0
+offset_top = -124.0
 offset_right = 231.0
-offset_bottom = 321.0
+offset_bottom = -36.0
 grow_vertical = 0
 theme = ExtResource("6_pcakw")
 text = "02/06"
@@ -648,12 +767,15 @@ offset_top = -40.0
 offset_right = 20.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 1
 theme = ExtResource("6_pcakw")
 script = ExtResource("10_wibaw")
 inventory_player = NodePath("animator")
 inventoryGrid = NodePath("anchor/inventory_container")
 invItemContainer = ExtResource("11_u4uj5")
 inventoryCount = NodePath("anchor/count_bg/inventory_count")
+audio_inventory_open = ExtResource("15_jpkck")
+audio_inventory_close = ExtResource("16_wn1tp")
 
 [node name="animator" type="AnimationPlayer" parent="inventory"]
 libraries = {
@@ -665,23 +787,27 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="bg" type="TextureRect" parent="inventory/anchor"]
+[node name="bg" type="NinePatchRect" parent="inventory/anchor"]
 self_modulate = Color(0.47451, 0.0235294, 0.184314, 1)
 layout_mode = 0
-offset_left = -545.0
-offset_top = 250.0
-offset_right = 587.0
-offset_bottom = 429.0
+offset_left = -503.0
+offset_top = 284.0
+offset_right = 557.0
+offset_bottom = 409.0
 texture = ExtResource("20_qrmy7")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="count_bg" type="TextureRect" parent="inventory/anchor"]
 self_modulate = Color(0.32549, 0.0117647, 0.117647, 1)
 show_behind_parent = true
 layout_mode = 0
 offset_left = -482.0
-offset_top = 213.0
+offset_top = 244.0
 offset_right = -354.0
-offset_bottom = 341.0
+offset_bottom = 372.0
 texture = ExtResource("4_bri73")
 
 [node name="inventory_count" type="Label" parent="inventory/anchor/count_bg"]
@@ -696,12 +822,13 @@ vertical_alignment = 1
 [node name="inventory_container" type="HBoxContainer" parent="inventory/anchor"]
 layout_mode = 0
 offset_left = -470.0
-offset_top = 300.0
+offset_top = 308.0
 offset_right = 1506.0
-offset_bottom = 428.0
+offset_bottom = 436.0
 scale = Vector2(0.5, 0.5)
 
 [node name="dialog_box" type="Control" parent="." node_paths=PackedStringArray("dialogDoneSign", "dialogText", "dialogAudio")]
+auto_translate_mode = 2
 visible = false
 layout_mode = 3
 anchors_preset = 8
@@ -715,13 +842,13 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
-auto_translate = false
 localize_numeral_system = false
 theme = ExtResource("6_pcakw")
 script = ExtResource("11_4ktwe")
 dialogDoneSign = NodePath("dialog_advance_cursor")
 dialogText = NodePath("dialog_label")
 dialogAudio = NodePath("dialog_audio")
+defaultAudio = ExtResource("12_fyjyg")
 
 [node name="dialog_bg" type="TextureRect" parent="dialog_box"]
 layout_mode = 0
@@ -1173,6 +1300,7 @@ offset_bottom = 302.0
 [node name="resume" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
 self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
@@ -1194,6 +1322,7 @@ vertical_alignment = 1
 [node name="options" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
 self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
@@ -1215,6 +1344,7 @@ vertical_alignment = 1
 [node name="controls" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
 self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
@@ -1236,6 +1366,7 @@ vertical_alignment = 1
 [node name="help" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
 self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
@@ -1257,6 +1388,7 @@ vertical_alignment = 1
 [node name="backToMenu" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
 self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")
@@ -1278,6 +1410,7 @@ vertical_alignment = 1
 [node name="exit" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
 self_modulate = Color(0.913725, 0, 0.25098, 1)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 texture_normal = ExtResource("20_qrmy7")
 texture_pressed = ExtResource("25_8tdi4")
 texture_hover = ExtResource("25_8tdi4")

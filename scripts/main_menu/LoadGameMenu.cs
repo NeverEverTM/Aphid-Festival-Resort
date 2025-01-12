@@ -1,5 +1,5 @@
 using System;
-using System.Text.Json;
+using System.IO;
 using Godot;
 
 public partial class LoadGameMenu : Control
@@ -19,12 +19,12 @@ public partial class LoadGameMenu : Control
     }
     public void AddMenuAction()
 	{
-		if (DirAccess.GetDirectoriesAt(SaveSystem.ProfilesDir).Length > 0)
+		if (DirAccess.GetDirectoriesAt(SaveSystem.PROFILES_DIR).Length > 0)
 		{
 			// create load game button
 			MainMenu.Instance.CreateMenuAction(loadGameCategory, OpenLoadMenu);
 			// create continue button
-			if (!string.IsNullOrEmpty(OptionsManager.Settings.Data.LastPlayedResort))
+			if (!string.IsNullOrEmpty(OptionsManager.Settings.LastPlayedResort))
 				MainMenu.Instance.CreateMenuAction("continue", ContinueGame);
 		}
 	}
@@ -36,31 +36,13 @@ public partial class LoadGameMenu : Control
 		MainMenu.Instance.SetMenu(this);
 
 		// Create savefiles
-		fileNames = DirAccess.Open(SaveSystem.ProfilesDir).GetDirectories();
+		fileNames = DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories();
 		for (int i = 0; i < fileNames.Length; i++)
 		{
-			string _path = SaveSystem.ProfilesDir + $"/{fileNames[i]}/{GameData.Instance.GetId()}.json",
-				_profile = fileNames[i];
-			GameData.Savefile _data = null; 
-
 			// Get the metdata of a savefile
-			if (FileAccess.FileExists(_path))
-			{
-				try
-				{
-					using var _stream = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
-					_data = JsonSerializer.Deserialize<GameData.Savefile>(_stream.GetPascalString());
-					if (_data == null)
-						throw new NullReferenceException();
-				}
-				catch(Exception e)
-				{
-					Logger.Print(Logger.LogPriority.Warning, e, "LoadGameMenu: Unable to load this savefile.");
-					continue;
-				}
-			}
-			else
-				continue;
+			string _profile = fileNames[i];
+			GameManager.ProfileSaveModule.RootPath = Path.Combine(SaveSystem.PROFILES_DIR, fileNames[i]);
+			GameManager.GameData _data = GameManager.ProfileSaveModule.Load(false);
 
 			Control _slot = savefile_slot.Instantiate() as Control;
 
@@ -69,7 +51,7 @@ public partial class LoadGameMenu : Control
 			(_slot.FindChild("aphid_label") as Label).Text = _data.AphidCount.ToString("000");
 
 			// sets the proper string for when the game was last played
-			TimeSpan _lastPlayedInterval = DateTime.Now - GameManager.Utils.UnixTimeStampToDateTime(FileAccess.GetModifiedTime(_path));
+			TimeSpan _lastPlayedInterval = DateTime.Now - GlobalManager.Utils.UnixTimeStampToDateTime(Godot.FileAccess.GetModifiedTime(GameManager.ProfileSaveModule.GetPath()));
 			var _lastPlayedTime = "???";
 
 			if (_lastPlayedInterval.TotalDays < 1)
@@ -90,13 +72,13 @@ public partial class LoadGameMenu : Control
 	}
 	private void ContinueGame()
 	{
-		if (string.IsNullOrWhiteSpace(OptionsManager.Settings.Data.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
+		if (string.IsNullOrWhiteSpace(OptionsManager.Settings.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
 			MainMenu.Instance.RemoveMenuAction("continue");
-			GameManager.CreatePopup("Could not find valid profile to continue", this);
+			GlobalManager.CreatePopup("Could not find valid profile to continue", this);
 			return;
 		}
-		SaveSystem.SelectProfile(OptionsManager.Settings.Data.LastPlayedResort);
+		SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
 
 		MainMenu.LoadResort();
 	}

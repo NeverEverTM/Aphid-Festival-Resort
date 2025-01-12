@@ -70,9 +70,11 @@ offset = Vector2(0.5, -8.5)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, -6)
 shape = SubResource("RectangleShape2D_5soec")
+debug_color = Color(0.890196, 0.207843, 0.627451, 0)
 
 [node name="TriggerArea" type="Area2D" parent="."]
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerArea"]
 shape = SubResource("CircleShape2D_7a8x1")
+debug_color = Color(0, 0.580392, 0.678431, 0)

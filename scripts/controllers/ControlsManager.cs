@@ -1,43 +1,17 @@
 using Godot;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Manager in charge of controlling custom input binding.
 /// </summary>
 public static class ControlsManager
 {
-	public class Data : SaveSystem.SaveDataGD<Godot.Collections.Dictionary<string, string>>
+	public class DataModule : SaveSystem.IDataModule<Variant>
 	{
-		public Data(string ID) : base(ID)
+		public void Set(Variant _data)
 		{
-			RelativePath = "config/";
-			Extension = ".cfg";
-			Data = new();
-		}
-		public Godot.Collections.Dictionary<string, InputEvent> Binds = new();
-		public override Task Save()
-		{
-			Data = new();
-
-			foreach (KeyValuePair<string, InputEvent> _pair in Binds)
-			{
-				if (_pair.Key.Contains("ui"))
-					continue;
-
-				if (_pair.Value is InputEventKey)
-					Data.Add(_pair.Key, "InputEventKey" + ":" + ((long)(_pair.Value as InputEventKey).Keycode).ToString());
-				else if (_pair.Value is InputEventMouseButton)
-					Data.Add(_pair.Key, "InputEventMouseButton" + ":" + ((long)(_pair.Value as InputEventMouseButton).ButtonIndex).ToString());
-			}
-
-			return base.Save();
-		}
-		public override Variant Load(bool loadToClass = true)
-		{
-			base.Load(loadToClass);
-
-			foreach (KeyValuePair<string, string> _pair in Data)
+			ResetToDefault();
+			foreach (KeyValuePair<string, string> _pair in (Godot.Collections.Dictionary<string, string>)_data)
 			{
 				string[] _keyValues = _pair.Value.Split(":");
 				// dont bind non assigned variables
@@ -59,68 +33,97 @@ public static class ControlsManager
 					};
 					BindAction(_key, _pair.Key);
 				}
-            }
+			}
+		}
+		public Variant Get()
+		{
+			Godot.Collections.Dictionary<string, string> _binds = new();
+			foreach (KeyValuePair<string, InputEvent> _pair in Binds)
+			{
+				if (_pair.Key.Contains("ui"))
+					continue;
 
-			return Data;
+				if (_pair.Value is InputEventKey)
+					_binds.Add(_pair.Key, "InputEventKey" + ":" + ((long)(_pair.Value as InputEventKey).Keycode).ToString());
+				else if (_pair.Value is InputEventMouseButton)
+					_binds.Add(_pair.Key, "InputEventMouseButton" + ":" + ((long)(_pair.Value as InputEventMouseButton).ButtonIndex).ToString());
+			}
+			return _binds;
 		}
-		public override Variant GetDefault()
+		public Variant Default()
 		{
-			ResetToDefault();
-			return Data;
-		}
-		public override Variant GetVariantData()
-		{
-			return Data;
-		}
-		public override void SetVariantData(Variant Data)
-		{
-			this.Data = (Godot.Collections.Dictionary<string, string>)Data;
+			return new Godot.Collections.Dictionary<string, string>();
 		}
 	}
-	public readonly static Data InputBinds = new("controls");
-	/// <summary>
-	/// Clean action names for user display.
-	/// </summary>
-	public static string GetUserReadableText(string _displayAction)
+
+	public const string GUI_ICONS_PATH = "res://sprites/ui/gui_icons/";
+
+	internal static Godot.Collections.Dictionary<string, InputEvent> Binds = new();
+	internal readonly static SaveSystem.SaveModuleGD InputBinds = new("controls", new DataModule())
 	{
-		if (_displayAction.Contains(" (Physical)"))
-			_displayAction = _displayAction.Replace(" (Physical)", "");
+		RelativePath = SaveSystem.CONFIG_DIR,
+		Extension = SaveSystem.CONFIGFILE_EXTENSION
+	};
 
-		if (_displayAction.Equals("Left Mouse Button"))
-			_displayAction = $"[img]res://sprites/ui/icon_mouse_left.png[/img]";
+	/// <summary>
+	/// Cleans action names under specific requirements.
+	/// </summary>
+	public static string CleanActionName(InputEvent _input) =>
+		CleanActionName(_input.AsText());
+	public static string CleanActionName(string _raw_action_name)
+	{
+		if (_raw_action_name.Contains(" (Physical)"))
+			_raw_action_name = _raw_action_name.Replace(" (Physical)", "");
 
-		if (_displayAction.Equals("Right Mouse Button"))
-			_displayAction = $"[img]res://sprites/ui/icon_mouse_right.png[/img]";
-
-		if (_displayAction.Equals("Middle Mouse Button"))
-			_displayAction = $"[img]res://sprites/ui/icon_mouse_middle.png[/img]";
-
-		if (_displayAction.Equals("Mouse Thumb Button 1"))
-			_displayAction = $"[img]res://sprites/ui/icon_mouse_extra1.png[/img]";
-
-		if (_displayAction.Equals("Mouse Thumb Button 2"))
-			_displayAction = $"[img]res://sprites/ui/icon_mouse_extra2.png[/img]";
-
-		return _displayAction;
+		return _raw_action_name;
 	}
-	public static string GetUserReadableText(InputEvent _event)
+	/// <summary>
+	/// Returns the human-friendly name for an action. Intended for UI display.
+	/// </summary>
+	public static string GetActionName(InputEvent _event)
 	{
 		string _action = _event.AsText();
-		return GetUserReadableText(_action);
+
+		if (_action.Contains(" (Physical)"))
+			_action = _action.Replace(" (Physical)", "");
+
+		switch (_action)
+		{
+			case "Space":
+				return $"[img]{GUI_ICONS_PATH}icon_space.png[/img]";
+			case "Left Mouse Button":
+				return $"[img]{GUI_ICONS_PATH}icon_mouse_left.png[/img]";
+			case "Right Mouse Button":
+				return $"[img]{GUI_ICONS_PATH}icon_mouse_right.png[/img]";
+			case "Middle Mouse Button":
+				return $"[img]{GUI_ICONS_PATH}icon_mouse_middle.png[/img]";
+			case "Mouse Thumb Button 1":
+				return $"[img]{GUI_ICONS_PATH}icon_mouse_extra1.png[/img]";
+			case "Mouse Thumb Button 2":
+				return $"[img]{GUI_ICONS_PATH}icon_mouse_extra2.png[/img]";
+		}
+
+		return _action;
 	}
+	/// <summary>
+	/// Returns the human-friendly name for an action. Intended for UI display.
+	/// </summary>
+	public static string GetActionName(string _action_name) =>
+		GetActionName(Binds[_action_name]);
 	public static void ResetToDefault()
 	{
 		InputMap.LoadFromProjectSettings();
+		Binds.Clear();
 
 		foreach (string _action in InputMap.GetActions())
 		{
 			var _events = InputMap.ActionGetEvents(_action);
-			
+
 			if (_events.Count > 0)
 			{
 				if (_events[0].AsText().StartsWith("ui"))
 					continue;
-				InputBinds.Binds[_action] = _events[0];
+				Binds[_action] = _events[0];
 			}
 		}
 	}
@@ -128,6 +131,6 @@ public static class ControlsManager
 	{
 		InputMap.ActionEraseEvents(_action);
 		InputMap.ActionAddEvent(_action, _event);
-		InputBinds.Binds[_action] = _event;
+		Binds[_action] = _event;
 	}
 }

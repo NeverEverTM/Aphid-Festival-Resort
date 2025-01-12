@@ -1,19 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://boxaly7dtxe0r"]
+[gd_scene load_steps=4 format=3 uid="uid://boxaly7dtxe0r"]
 
-[ext_resource type="Material" uid="uid://cwaid2g5ctnpy" path="res://scripts/shaders/unshaded.tres" id="1_1q30d"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_wjg32"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="2_1b0ib"]
 [ext_resource type="Texture2D" uid="uid://dlh8bljak1r51" path="res://sprites/icons/honey_drop.tres" id="2_6uvhf"]
 
 [node name="inv_item_container" type="TextureButton"]
 self_modulate = Color(0.87451, 0, 0.435294, 1)
-material = ExtResource("1_1q30d")
+light_mask = 0
 focus_mode = 0
 texture_normal = ExtResource("1_wjg32")
 texture_pressed = ExtResource("2_1b0ib")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-use_parent_material = true
+light_mask = 0
 layout_mode = 0
 offset_left = 16.0
 offset_top = 16.0

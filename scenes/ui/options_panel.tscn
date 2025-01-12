@@ -5,8 +5,8 @@
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_d5s5m"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="4_5c30j"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="6_jwgu8"]
-[ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/icon_folder.png" id="6_qdykg"]
-[ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/ui/icons_ui.png" id="7_msete"]
+[ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/gui_icons/icon_folder.png" id="6_qdykg"]
+[ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="7_msete"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_b3a4x"]
 atlas = ExtResource("7_msete")

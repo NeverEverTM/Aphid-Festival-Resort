@@ -7,27 +7,28 @@ public partial class PlayerInventory : Control
 	[Export] private HBoxContainer inventoryGrid;
 	[Export] private PackedScene invItemContainer;
 	[Export] private Label inventoryCount;
-
-	public override void _GuiInput(InputEvent @event)
-	{
-		if (@event is InputEventMouseButton && (@event as InputEventMouseButton).Pressed)
-			GetViewport().SetInputAsHandled();
-	}
+	[Export] private AudioStream audio_inventory_open, audio_inventory_close;
 
 	// =======| GUI |========
-	public void Enable(bool _state)
+	public void SetTo(bool _state)
 	{
+		if (_state == Visible)
+			return;
+
 		if (_state)
 		{
 			Update();
-			inventory_player.Play("slide_up");
+			inventory_player.Play("open");
 		}
 		else
 		{
 			for (int i = 0; i < inventoryGrid.GetChildCount(); i++)
-				inventoryGrid.GetChild(i).QueueFree();
-			inventory_player.Play("slide_down");
+				inventoryGrid.GetChild(i).ProcessMode = ProcessModeEnum.Disabled;
+			inventory_player.Play("close");
 		}
+
+		SoundManager.CreateSound(_state ? audio_inventory_open : audio_inventory_close);
+		CanvasManager.UpdateInventoryIcon(_state);
 	}
 	public void Update()
 	{
@@ -50,7 +51,7 @@ public partial class PlayerInventory : Control
 			_item_slot.TooltipText = $"{Tr(_item_name + "_name")}\n"
 				+ $"{Tr(_item_name + "_desc")}";
 
-			(_item_slot.GetChild(0) as TextureRect).Texture = GameManager.GetIcon(_item_name);
+			(_item_slot.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
 			// press function
 			_item_slot.Pressed += () =>
 			{
@@ -59,7 +60,7 @@ public partial class PlayerInventory : Control
 				if (Instance.PickupItem != null)
 					StoreCurrentItem();
 				PullItem(_item_name);
-				inventory_player.Play("slide_down");
+				SetTo(false);
 			};
 		}
 		else
@@ -87,7 +88,7 @@ public partial class PlayerInventory : Control
 	}
 	public static bool StoreItem(string _item)
 	{
-		if (Data.Inventory.Count >= Data.InventoryMaxCapacity)
+		if (!CanStoreItem())
 			return false;
 		Data.Inventory.Add(_item);
 
@@ -96,9 +97,11 @@ public partial class PlayerInventory : Control
 
 		return true;
 	}
+	public static bool CanStoreItem() =>
+		Data.Inventory.Count < Data.InventoryMaxCapacity;
 	public static void StoreCurrentItem()
 	{
-		if (Instance.PickupItem.GetMeta("tag").ToString() == "aphid")
+		if (Instance.PickupItem.GetMeta("tag").ToString() == Aphid.Tag)
 			return;
 
 		if (!StoreItem(Instance.PickupItem.GetMeta("id").ToString()))

@@ -28,27 +28,19 @@ public partial class ControlsMenu : Control
 			if (Visible)
 				return;
 
-			if (was_modified)
-			{
-				ControlsManager.InputBinds.Save();
-				// GameManager.IsBusy = true;
-				// ConfirmationPopup.Create(
-				// 	_onConfirm: () => {
-				// 		SaveSystem.SaveGlobalData();
-				// 		GameManager.IsBusy = false;
-				// 		},
-				// 	_onCancel: () => {
-				// 		InputMap.LoadFromProjectSettings();
-				// 		GameManager.IsBusy = false;
-				// 	});
-			}
-
 			is_remapping = false;
 
 			if (IsInstanceValid(current_action))
 			{
-				(current_action.FindChild("action") as RichTextLabel).Text = 
-					ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[current_action.Name].AsText());
+				(current_action.FindChild("action") as RichTextLabel).Text =
+					ControlsManager.GetActionName(current_action.Name);
+			}
+
+			if (was_modified && !ConfirmationPopup.IsConfirming)
+			{
+				ConfirmationPopup.Create(
+					_onConfirm: () => { ControlsManager.InputBinds.Save(); },
+					_onCancel: () => { ControlsManager.InputBinds.Load(); RefreshBinds(); });
 			}
 
 			current_action = null;
@@ -62,10 +54,10 @@ public partial class ControlsMenu : Control
 		foreach (Control _inputButton in controls)
 		{
 			// get the corresponding action
-			if (!ControlsManager.InputBinds.Binds.ContainsKey(_inputButton.Name))
+			if (!ControlsManager.Binds.ContainsKey(_inputButton.Name))
 				continue;
 			validActions.Add(_inputButton.Name);
-			string _displayAction = ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[_inputButton.Name].AsText());
+			string _displayAction = ControlsManager.GetActionName(_inputButton.Name);
 
 			// Set text and functinality of control binders
 			(_inputButton.FindChild("action") as RichTextLabel).Text = _displayAction;
@@ -77,7 +69,7 @@ public partial class ControlsMenu : Control
 	{
 		foreach (Control _inputButton in controls)
 		{
-			string _displayAction = ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[_inputButton.Name].AsText());
+			string _displayAction = ControlsManager.GetActionName(_inputButton.Name);
 
 			// Set text and functinality of control binders
 			(_inputButton.FindChild("action") as RichTextLabel).Text = _displayAction;
@@ -91,12 +83,12 @@ public partial class ControlsMenu : Control
 
 		is_remapping = true;
 		current_action = _control;
-		current_keybind = ControlsManager.InputBinds.Binds[current_action.Name];
+		current_keybind = ControlsManager.Binds[current_action.Name];
 		(_control.FindChild("action") as RichTextLabel).Text = "...";
 	}
 	private bool IsKeyDuplicated(InputEvent _keybind)
 	{
-		string _inputedKey = ControlsManager.GetUserReadableText(_keybind.AsText());
+		string _inputedKey = ControlsManager.CleanActionName(_keybind);
 		// it only checks for duplicate values for available binds in the menu
 		for (int i = 0; i < validActions.Count; i++)
 		{
@@ -104,12 +96,12 @@ public partial class ControlsMenu : Control
 			if (validActions[i] == current_action.Name)
 				continue;
 
-			string _storedKey = ControlsManager.GetUserReadableText(ControlsManager.InputBinds.Binds[validActions[i]].AsText());
+			string _storedKey = ControlsManager.CleanActionName(ControlsManager.Binds[validActions[i]]);
 
 			if (_inputedKey == _storedKey)
 			{
 				SoundManager.CreateSound(fail_sound);
-				GameManager.CreatePopup("warning_key_duplicated", GetParent());
+				GlobalManager.CreatePopup("warning_key_duplicated", GetParent());
 				return true;
 			}
 		}
@@ -149,7 +141,7 @@ public partial class ControlsMenu : Control
 				return;
 
 			ControlsManager.BindAction(@event, current_action.Name);
-			(current_action.FindChild("action") as RichTextLabel).Text = ControlsManager.GetUserReadableText(@event.AsText());
+			(current_action.FindChild("action") as RichTextLabel).Text = ControlsManager.GetActionName(@event);
 
 			// reset state
 			is_remapping = false;
@@ -160,7 +152,7 @@ public partial class ControlsMenu : Control
 		}
 	}
 	public override void _Process(double delta)
-	{	
+	{
 		if (!Visible || is_remapping)
 			return;
 

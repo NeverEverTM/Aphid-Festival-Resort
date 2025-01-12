@@ -1,21 +1,59 @@
-[gd_scene load_steps=8 format=3 uid="uid://ddw72xf4o5h3x"]
+[gd_scene load_steps=11 format=3 uid="uid://ddw72xf4o5h3x"]
 
 [ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_xdrh8"]
-[ext_resource type="Texture2D" uid="uid://dackluogv1m7p" path="res://sprites/icons/big_mistake.tres" id="2_5f6oq"]
-[ext_resource type="PackedScene" uid="uid://dsumfeixta5kj" path="res://scenes/particles/mistake.tscn" id="3_f2vgl"]
-[ext_resource type="Texture2D" uid="uid://00e3bwje1sas" path="res://sprites/icons/missing.tres" id="4_ag2rd"]
+[ext_resource type="Texture2D" uid="uid://bn3tnbbaha27c" path="res://sprites/ui/hashtag.tres" id="3_btptd"]
+[ext_resource type="Texture2D" uid="uid://dackluogv1m7p" path="res://sprites/icons/big_mistake.tres" id="4_ag2rd"]
+[ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="4_jv8om"]
 
-[sub_resource type="Curve" id="Curve_2bjqr"]
-_data = [Vector2(0, 0.969811), 0.0, 0.0, 0, 0, Vector2(1, 0.0339622), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_iqxmv"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.456604), -0.542164, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_x7yw8"]
-curve = SubResource("Curve_2bjqr")
+[sub_resource type="CurveTexture" id="CurveTexture_lm3wu"]
+curve = SubResource("Curve_iqxmv")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_41uej"]
+lifetime_randomness = 0.44
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(2, 2, 1)
+angle_min = -87.3
+angle_max = 65.5
+direction = Vector3(0, -0.25, 0)
+spread = 15.0
+initial_velocity_min = 48.35
+initial_velocity_max = 48.35
+orbit_velocity_min = -0.855
+orbit_velocity_max = 0.97
+gravity = Vector3(0, 0, 0)
+scale_min = 0.25
+scale_curve = SubResource("CurveTexture_lm3wu")
+turbulence_enabled = true
+turbulence_noise_strength = 8.6
+turbulence_noise_scale = 5.915
+turbulence_noise_speed = Vector3(-2.485, 1.98, 0)
+turbulence_noise_speed_random = 0.4
+turbulence_influence_min = 0.437
+turbulence_influence_max = 1.0
+turbulence_initial_displacement_min = -14.1
+turbulence_initial_displacement_max = 14.1
+
+[sub_resource type="Gradient" id="Gradient_7fhot"]
+offsets = PackedFloat32Array(0, 0.611429, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.577358, 0, 0.0669823, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_aigim"]
+gradient = SubResource("Gradient_7fhot")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_umrmf"]
 lifetime_randomness = 1.0
 particle_flag_disable_z = true
-inherit_velocity_ratio = 1.0
+emission_shape_scale = Vector3(3, 3, 1)
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 2.0
+emission_ring_inner_radius = 3.0
 spread = 180.0
 initial_velocity_min = 15.0
 initial_velocity_max = 15.0
@@ -24,9 +62,9 @@ angular_velocity_max = 109.09
 orbit_velocity_min = -0.71
 orbit_velocity_max = 0.715
 gravity = Vector3(0, 0, 0)
-scale_min = 0.25
-scale_max = 0.5
-alpha_curve = SubResource("CurveTexture_x7yw8")
+scale_min = 0.05
+scale_max = 0.05
+color_ramp = SubResource("GradientTexture1D_aigim")
 turbulence_noise_strength = 18.55
 turbulence_noise_scale = 10.0
 turbulence_noise_speed = Vector3(-0.15, 0.425, 0)
@@ -39,12 +77,25 @@ metadata/food_type = 4
 metadata/food_value = 20.0
 
 [node name="Sprite2D" parent="." index="0"]
-texture = ExtResource("2_5f6oq")
+texture = ExtResource("4_ag2rd")
 
-[node name="GPU_Particles" parent="." index="2" instance=ExtResource("3_f2vgl")]
+[node name="mistake_GPUParticles" type="GPUParticles2D" parent="." index="2"]
+process_mode = 1
+z_index = 1000
+amount = 5
+process_material = SubResource("ParticleProcessMaterial_41uej")
+texture = ExtResource("3_btptd")
+lifetime = 3.0
+randomness = 0.95
+local_coords = true
+
+[node name="GPU_Particles" type="GPUParticles2D" parent="." index="3"]
+process_mode = 1
+z_index = 1000
 amount = 20
 process_material = SubResource("ParticleProcessMaterial_umrmf")
-texture = ExtResource("4_ag2rd")
-explosiveness = 0.6
+texture = ExtResource("4_jv8om")
+lifetime = 3.0
+randomness = 1.0
 interpolate = false
 fract_delta = false

@@ -215,6 +215,7 @@ public partial class AphidActions : Aphid
 					aphid.rng.RandfRange(-idle_rand_range, idle_rand_range)) + aphid.GlobalPosition;
 				aphid.SetMovementDirection(Vector2.Zero);
 				(aphid.StateArgs as IdleArgs).timeleft = aphid.rng.RandfRange(idle_timer_range, idle_timer_range * 2);
+				timeout = 0;
 				return;
 			}
 
@@ -284,15 +285,13 @@ public partial class AphidActions : Aphid
 			}
 
 			// If close, eat it, else try walk to it
-			if (aphid.GlobalPosition.DistanceTo(food_item.GlobalPosition) < 30)
+			if (aphid.GlobalPosition.DistanceTo(food_item.GlobalPosition) < 25)
 			{
 				aphid.SetMovementDirection(Vector2.Zero);
 				food_item.RemoveMeta("tag"); // Stops others from eating it
 				food_item.SetMeta("pickup", false);
 				aphid.IsEating = true;
-
-				food_item.GlobalPosition = aphid.GlobalPosition +
-					new Vector2(aphid.skin.IsFlipped ? -25 : 25, aphid.GlobalPosition.Y);
+				food_item.GlobalPosition = aphid.GlobalPosition + (aphid.skin.IsFlipped ? new Vector2(-8,0) : new Vector2(8,0));
 
 				for (int i = 0; i < food_item.GetChildCount(); i++)
 				{
@@ -333,7 +332,7 @@ public partial class AphidActions : Aphid
 				if (IsInstanceValid(food_item))
 				{
 					string _id = food_item.GetMeta("id").ToString();
-					GameManager.Food _food = GameManager.G_FOOD[_id];
+					GlobalManager.Food _food = GlobalManager.G_FOOD[_id];
 					float _multi = aphid.Instance.Genes.FoodMultipliers[(int)_food.type];
 					if (_food.food_value > 0)
 						aphid.Instance.Status.AddHunger(_food.food_value * _multi);
@@ -357,7 +356,7 @@ public partial class AphidActions : Aphid
 			(food_ignore_list.Count > 0 && food_ignore_list.Exists((Node2D _food_node_list) => _food_node.Equals(_food_node_list))))
 				return;
 
-			var _foodItem = GameManager.G_FOOD[_food_node.GetMeta("id").ToString()];
+			var _foodItem = GlobalManager.G_FOOD[_food_node.GetMeta("id").ToString()];
 			var _flavor = _foodItem.type;
 			// if Vile, reject it cause yucky, unless you like it for some reason
 			if (_flavor == AphidData.FoodType.Vile && _flavor != aphid.Instance.Genes.FoodPreference)
@@ -394,7 +393,6 @@ public partial class AphidActions : Aphid
 
 			// Set current food item to pursue
 			food_item = _food_node;
-			food_item.GlobalPosition = aphid.GlobalPosition + (aphid.skin.IsFlipped ? new Vector2(-8, -25) : new Vector2(-8, 25));
 			food_pursue_timer = new()
 			{
 				OneShot = true
@@ -438,7 +436,7 @@ public partial class AphidActions : Aphid
 		{
 			aphid.skin.SetEyesSkin("sleep");
 			aphid.skin.SetLegsSkin("sleep");
-			sleep_effect = GameManager.EmitParticles("sleep", aphid.GlobalPosition);
+			sleep_effect = GlobalManager.EmitParticles("sleep", aphid.GlobalPosition);
 			aphid.skin.Position = new(0, 2);
 		}
 
@@ -497,7 +495,7 @@ public partial class AphidActions : Aphid
 				// If low on affection, raise bondship too
 				if (aphid.Instance.Status.Affection < 80)
 				{
-					GameManager.EmitParticles("heart", aphid.GlobalPosition - new Vector2(0, 10));
+					GlobalManager.EmitParticles("heart", aphid.GlobalPosition - new Vector2(0, 10));
 					aphid.Instance.Status.AddBondship(1);
 				}
 				aphid.Instance.Status.AddAffection(10);

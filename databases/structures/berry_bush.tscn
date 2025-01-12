@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://bj8hvpt1kjaiw"]
+
+[ext_resource type="Texture2D" uid="uid://vu7nfemnhodu" path="res://sprites/props/berry_bush_empty.png" id="1_q1h30"]
+[ext_resource type="Script" path="res://scripts/props/BerryBushBehaviour.cs" id="2_ied3s"]
+[ext_resource type="Texture2D" uid="uid://44vmfjus0as2" path="res://sprites/props/berry_bush.png" id="3_8l5nk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iqnwb"]
+size = Vector2(59, 11)
+
+[node name="berry_bush" type="Sprite2D"]
+texture = ExtResource("1_q1h30")
+offset = Vector2(0, -15)
+script = ExtResource("2_ied3s")
+berryTextures = [ExtResource("1_q1h30"), ExtResource("3_8l5nk")]
+metadata/id = "berry_bush"
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+mass = 999.0
+gravity_scale = 0.0
+sleeping = true
+lock_rotation = true
+freeze = true
+freeze_mode = 1
+metadata/tag = "interactable"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+position = Vector2(-0.5, -4.5)
+shape = SubResource("RectangleShape2D_iqnwb")

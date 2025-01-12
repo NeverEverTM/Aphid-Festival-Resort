@@ -34,7 +34,7 @@ public class AphidData
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	};
 	public const int adulthoodAge = 1200, breedTimer = 1200, deathAge = 7200, productionCooldown = 120,
-		moneyPerHarvest_baby = 4, moneyPerHarvest_adult = 8;
+		HarvestValue_Baby = 4, HarvestValue_Adult = 8;
 	public const float PET_DURATION = 1;
 
 	/// <summary>
@@ -116,14 +116,14 @@ public class AphidData
 		public List<string> Traits { get; set; }
 
 		/// <summary>
-		/// Called to define a new Aphid personality.
 		/// This function generates new info completely from scratch without taking inheritance into account.
+		/// Used exclusively for new aphids.
 		/// </summary>
 		public void GenerateNewAphid()
 		{
-			Name = NameArchive[GameManager.RNG.RandiRange(0, NameArchive.Length - 1)];
+			Name = NameArchive[GlobalManager.RNG.RandiRange(0, NameArchive.Length - 1)];
 			Mother = Father = "Joy";
-			Owner = Player.Data.Name;
+			Owner = Player.Data?.Name;
 			GenerateSkills();
 			GenerateFoodPreferences();
 			GenerateTraits();
@@ -135,14 +135,14 @@ public class AphidData
 			Father = _father.Genes.Name;
 			Mother = _mother.Genes.Name;
 
-			AntennaType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.AntennaType;
-			EyeType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.EyeType;
-			BodyType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.BodyType;
-			LegType = _parents[GameManager.RNG.RandiRange(0, 1)].Genes.LegType;
-			AntennaColor = GameManager.Utils.LerpColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor);
-			EyeColor = GameManager.Utils.LerpColor(_mother.Genes.EyeColor, _father.Genes.EyeColor);
-			BodyColor = GameManager.Utils.LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor);
-			LegColor = GameManager.Utils.LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor);
+			AntennaType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.AntennaType;
+			EyeType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.EyeType;
+			BodyType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.BodyType;
+			LegType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.LegType;
+			AntennaColor = GlobalManager.Utils.LerpColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor);
+			EyeColor = GlobalManager.Utils.LerpColor(_mother.Genes.EyeColor, _father.Genes.EyeColor);
+			BodyColor = GlobalManager.Utils.LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor);
+			LegColor = GlobalManager.Utils.LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor);
 		}
 		public virtual void GenerateSkills()
 		{
@@ -158,30 +158,39 @@ public class AphidData
 		{
 			Traits = new();
 			List<string> registered_traits = AphidTraits.TRAITS.Keys.ToList();
+			int TIMEOUT = 0;
 
-			while (Traits.Count < 5)
+			while (Traits.Count < 3)
 			{
+				if (TIMEOUT > 500)
+					break;
+				TIMEOUT++;
 				// we draw a trait from the global pool using a local list
-				string _trait = registered_traits[GameManager.RNG.RandiRange(0, registered_traits.Count - 1)];
+				var _trait = registered_traits[GlobalManager.RNG.RandiRange(0, registered_traits.Count - 1)];
 
 				// check if this trait is compatible with all others
 				// otherwise ignore it now and in all follwing checks by removing it from the list 
 				Aphid.ITrait _traitToCheck = AphidTraits.TRAITS[_trait];
+				bool _isIncompatible = false;
+
 				for (int i = 0; i < Traits.Count; i++)
 				{
 					if (_traitToCheck.IsIncompatibleWith(_trait))
 					{
 						registered_traits.Remove(_trait);
-						continue;
+						_isIncompatible = true;
+						break;
 					}
 				}
-
-				Traits.Add(_trait);
+				if (_isIncompatible)
+					continue;
+				else
+					Traits.Add(_trait);
 			}
 		}
 		public virtual void GenerateFoodPreferences()
 		{
-			FoodPreference = (FoodType)GameManager.GetRandomByWeight(flavor_weights);
+			FoodPreference = (FoodType)GlobalManager.GetRandomByWeight(flavor_weights);
 			FoodMultipliers = new float[]{
 				GetMultiplier(FoodType.Sweet),
 				GetMultiplier(FoodType.Sour),
@@ -193,7 +202,7 @@ public class AphidData
 			};
 		}
 		public float GetMultiplier(FoodType _type) =>
-			0.5f + (_type == FoodPreference ? 0.5f : 0) + GameManager.RNG.Randf();
+			0.5f + (_type == FoodPreference ? 0.5f : 0) + GlobalManager.RNG.Randf();
 
 		/// <summary>
 		/// FOR DEBUG PURPOSES
@@ -201,14 +210,15 @@ public class AphidData
 		public void DEBUG_Randomize()
 		{
 			RandomNumberGenerator _gen = new();
-			AntennaColor = GameManager.Utils.GetRandomColor();
-			BodyColor = GameManager.Utils.GetRandomColor();
-			LegColor = GameManager.Utils.GetRandomColor();
-			EyeColor = GameManager.Utils.GetRandomColor();
+			AntennaColor = GlobalManager.Utils.GetRandomColor();
+			BodyColor = GlobalManager.Utils.GetRandomColor();
+			LegColor = GlobalManager.Utils.GetRandomColor();
+			EyeColor = GlobalManager.Utils.GetRandomColor();
 			AntennaType = _gen.RandiRange(0, 1);
 			EyeType = _gen.RandiRange(0, 1);
 			BodyType = _gen.RandiRange(0, 1);
 			LegType = _gen.RandiRange(0, 1);
+			GenerateNewAphid();
 		}
 	}
 

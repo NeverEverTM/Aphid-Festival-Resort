@@ -26,6 +26,8 @@ aphid_egg_red,100,2,item,item
 aphid_egg_green,100,2,item,item
 aphid_egg_blue,100,2,item,item
 aphid_egg_yellow,100,2,item,item
+applesauce,8,0,food,item
+honey_pancakes,0,0,food,
 tv,25,0,deco,furniture
 sign_wanted,15,0,deco,furniture
 torch,8,0,deco,furniture
@@ -36,4 +38,5 @@ grass_1,1,0,deco,furniture
 largegrass_0,2,0,deco,furniture
 bee_rug,10,0,deco,furniture
 sign_no_aphid,15,0,deco,furniture
-applesauce,8,0,food,item
+sunshade,8,0,deco,furniture
+berry_bush,70,0,deco,furniture

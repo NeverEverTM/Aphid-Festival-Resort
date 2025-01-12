@@ -4,42 +4,40 @@ using Godot;
 /// Main manager for option configuration, save and load.
 /// This class holds to all saved video, audio, input and language configurations.
 /// </summary>
-public static class OptionsManager
+internal static class OptionsManager
 {
-    public static Data Settings = new("settings"){
-        Extension = ".cfg",
-        RelativePath = "config/",
-        Data = new()
-    };
-    public class Data : SaveSystem.SaveData<Savefile>
-    {
-        public Data(string ID) : base(ID) { }
+    public static Savefile Settings { get; set; }
 
-        public override Savefile Load(bool loadToClass = true)
+    internal static SaveSystem.SaveModule<Savefile> Module = new("settings", new DataModule()){
+        RelativePath = SaveSystem.CONFIG_DIR,
+        Extension = SaveSystem.CONFIGFILE_EXTENSION,
+    };
+    internal class DataModule : SaveSystem.IDataModule<Savefile>
+    {
+        public void Set(Savefile _data)
         {
-            Savefile _save = base.Load(loadToClass);
-            if (Data.ResetBinds)
+            Settings = _data;
+            if (Settings.ResetBinds)
                 ControlsManager.ResetToDefault();
 
             // Volume
-            AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb(Data.VolumeMaster));
-            AudioServer.SetBusVolumeDb(1, Mathf.LinearToDb(Data.VolumeMusic));
-            AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb(Data.VolumeSound));
-            AudioServer.SetBusVolumeDb(3, Mathf.LinearToDb(Data.VolumeAmbience));
-            AudioServer.SetBusVolumeDb(4, Mathf.LinearToDb(Data.VolumeUI));
+            AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb(Settings.VolumeMaster));
+            AudioServer.SetBusVolumeDb(1, Mathf.LinearToDb(Settings.VolumeMusic));
+            AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb(Settings.VolumeSound));
+            AudioServer.SetBusVolumeDb(3, Mathf.LinearToDb(Settings.VolumeAmbience));
+            AudioServer.SetBusVolumeDb(4, Mathf.LinearToDb(Settings.VolumeUI));
 
             // Display
-            DisplayServer.WindowSetMode(Data.DisplayMode);
-            TranslationServer.SetLocale(Data.Locale);
-            return _save;
+            DisplayServer.WindowSetMode(Settings.DisplayMode);
+            TranslationServer.SetLocale(Settings.Locale);
         }
-
-        public override Savefile GetDefault()
+        public Savefile Get()
         {
-            return new();
+            return Settings;
         }
+        public Savefile Default() => new();
     }
-    public class Savefile
+    public record Savefile
     {
         public string LastPlayedResort { get; set; }
 

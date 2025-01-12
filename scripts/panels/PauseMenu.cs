@@ -50,7 +50,7 @@ public partial class PauseMenu : Control
 	{
 		if (_state)
 		{
-			if (ResortGUI.Instance.WasFreeCamera || CanvasManager.Menus.IsInMenu || DialogManager.IsActive)
+			if (ResortGUI.Instance.WasFreeCamera || CanvasManager.Menus.IsBusy || DialogManager.IsActive)
 				return;
 				
 			SoundManager.PauseSong();
@@ -94,13 +94,13 @@ public partial class PauseMenu : Control
 					SetPauseMenu(false);
 			}
 		} // opening pause menu
-		else if (@event.IsActionPressed("escape") && !CanvasManager.Menus.IsInMenu)
+		else if (@event.IsActionPressed("escape") && !CanvasManager.Menus.IsBusy)
 			SetPauseMenu(true);
 	}
 
 	private void OnButtonPress(Action _action)
 	{
-		if (GameManager.IsBusy)
+		if (GlobalManager.IsBusy)
 			return;
 
 		_action();
@@ -117,7 +117,7 @@ public partial class PauseMenu : Control
 	private async void BackToMenuButton()
 	{
 		await SaveSystem.SaveProfile();
-		await GameManager.LoadScene(GameManager.SceneName.Menu);
+		await GlobalManager.LoadScene(GlobalManager.SceneName.Menu);
 	}
 	private async void ExitButton()
 	{

@@ -18,13 +18,14 @@ public partial class ConfirmationPopup : CanvasLayer
 	public enum ConfirmationEnum { Safe, Standard, Fast }
 	public ConfirmationEnum confirmationType;
 	private Action confirmationAction, cancelAction;
-	private Timer standardTimer = new();
+	private float standardTimer;
 
 	[Export] private AnimationPlayer player;
 	[Export] private BaseButton cancel_button, yes_button, no_button;
 	[Export] private TextEdit confirmation_edit;
 	[Export] private RichTextLabel confirmation_label;
 	[Export] private TextureProgressBar progress;
+	[Export] private Curve progressCurve;
 
 	public override void _Ready()
 	{
@@ -38,8 +39,7 @@ public partial class ConfirmationPopup : CanvasLayer
 			case ConfirmationEnum.Standard:
 				progress.Show();
 				confirmation_edit.Hide();
-				standardTimer.Timeout += Accept;
-				yes_button.Pressed += () => standardTimer.Start(3);
+				standardTimer = 1;
 				no_button.Pressed += Cancel;
 				break;
 			case ConfirmationEnum.Fast:
@@ -89,13 +89,20 @@ public partial class ConfirmationPopup : CanvasLayer
 			{
 				if (progress.Visible)
 					progress.Hide();
-				standardTimer.Stop();
+				standardTimer = 1;
 			}
 			else
 			{
 				if (!progress.Visible)
 					progress.Show();
-				progress.Value = standardTimer.TimeLeft / 3;
+				standardTimer -= (float)delta;
+				if (standardTimer < 0)
+				{
+					progress.Value = 100;
+					Accept();
+					return;
+				}
+				progress.Value = 100 - 100 * progressCurve.Sample(standardTimer);
 			}
 		}
 	}
@@ -105,7 +112,7 @@ public partial class ConfirmationPopup : CanvasLayer
 		if (confirmation_edit.Text == Tr("confirmation_yes"))
 		{
 			try { confirmationAction(); }
-			catch (Exception e) { GameManager.CreatePopup(e.ToString(), GameManager.Instance); GD.PrintErr(e); Cancel(); }
+			catch (Exception e) { GlobalManager.CreatePopup(e.ToString(), GlobalManager.Instance); GD.PrintErr(e); Cancel(); }
 			Accept();
 		}
 		else
@@ -120,14 +127,14 @@ public partial class ConfirmationPopup : CanvasLayer
 		IsConfirming = true;
 		if (IsInstanceValid(currentPopup))
 			currentPopup.QueueFree();
-		currentPopup = ResourceLoader.Load<PackedScene>(GameManager.ConfirmationWindowPath).Instantiate() as ConfirmationPopup;
+		currentPopup = ResourceLoader.Load<PackedScene>(GlobalManager.ConfirmationWindowPath).Instantiate() as ConfirmationPopup;
 
 		currentPopup.confirmationType = _type;
 		currentPopup.confirmationAction = _onConfirm;
 		currentPopup.cancelAction = _onCancel;
-		GameManager.Instance.GetViewport().SetInputAsHandled();
-		GameManager.Instance.GetTree().Root.CallDeferred(Node.MethodName.AddChild, currentPopup);
-		GameManager.Instance.GetTree().Root.ProcessMode = ProcessModeEnum.Disabled;
+		GlobalManager.Instance.GetViewport().SetInputAsHandled();
+		GlobalManager.Instance.GetTree().Root.CallDeferred(Node.MethodName.AddChild, currentPopup);
+		GlobalManager.Instance.GetTree().Root.ProcessMode = ProcessModeEnum.Disabled;
 		return currentPopup;
 	}
 	public static void Accept()

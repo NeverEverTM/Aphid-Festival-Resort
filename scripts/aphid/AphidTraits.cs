@@ -136,7 +136,7 @@ public partial class AphidTraits : Aphid
                 {
                     case 0:
                         _aphid.CallTowards(Player.Instance.GlobalPosition);
-                        GameManager.EmitParticles("heart", _aphid.GlobalPosition - new Vector2(0, 10));
+                        GlobalManager.EmitParticles("heart", _aphid.GlobalPosition - new Vector2(0, 10));
                         break;
                     case 1:
                         _aphid.skin.SetFlipDirection(_node.GlobalPosition - _aphid.GlobalPosition);
@@ -152,6 +152,7 @@ public partial class AphidTraits : Aphid
         public const string ID = "lazy";
         public string Name => ID;
         public string[] IncompatibleTraits => new string[] { HyperActive.ID };
+        bool doItOnceYouTwat = false;
 
         public void Activate(Aphid aphid, EventArgs args)
         {
@@ -176,9 +177,21 @@ public partial class AphidTraits : Aphid
             AphidActions.IdleState.IdleArgs _args = args as AphidActions.IdleState.IdleArgs;
 
             if (_args.timeleft > 0)
-                aphid.skin.SetLegsSkin("sleep");
+            {
+                if (!doItOnceYouTwat)
+                {
+                    doItOnceYouTwat = true;
+                    aphid.skin.SetLegsSkin("sleep");
+                }
+            }
             else 
-                aphid.skin.SetLegsSkin("idle");
+            {
+                if (doItOnceYouTwat)
+                {
+                    doItOnceYouTwat = false;
+                    aphid.skin.SetLegsSkin("idle");
+                }
+            }
         }
 
         public ITrait GetTrait() => new Lazy();

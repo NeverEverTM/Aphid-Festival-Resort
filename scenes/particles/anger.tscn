@@ -1,9 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3yni1x81j23w"]
+[gd_scene load_steps=7 format=3 uid="uid://c3yni1x81j23w"]
 
 [ext_resource type="Texture2D" uid="uid://barw6wrv7sqo2" path="res://sprites/particles/anger_sprite.tres" id="1_34ki3"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_e7k4y"]
-light_mode = 1
 
 [sub_resource type="Curve" id="Curve_qasph"]
 _data = [Vector2(0, 0), 0.0, 14.4822, 0, 0, Vector2(0.122727, 1), 0.319303, 0.319303, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -45,8 +42,8 @@ turbulence_influence_min = 1.0
 turbulence_influence_max = 1.0
 
 [node name="GPU_HeartParticles" type="GPUParticles2D"]
+light_mask = 0
 z_index = 1000
-material = SubResource("CanvasItemMaterial_e7k4y")
 emitting = false
 amount = 5
 process_material = SubResource("ParticleProcessMaterial_41uej")

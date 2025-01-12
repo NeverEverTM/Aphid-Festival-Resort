@@ -9,14 +9,14 @@ public partial class BuildMenu : Control
 	[Export] public AnimationPlayer menu_player;
 
 	// Variables
-	private readonly List<Building> activeBuildingsList = new();
-	public enum RemoveMode { None, Sell, Store }
+	private readonly List<Building> active_buildings = new();
+	public enum RemoveMode { Sell, Store }
 
-	private Building selectedBuilding;
-	private CollisionShape2D currentShape;
-	private Vector2 mouseOffset;
-	private bool isHoveringBuilding, isMovingBuilding;
-	public bool isStorageOpen;
+	private Building selected_building;
+	private CollisionShape2D current_shape;
+	private Vector2 mouse_offset, last_valid_position = new();
+	private int previous_light_mask;
+	private bool isHoveringBuilding, isMovingBuilding, isStorageOpen;
 
 	public record class Building
 	{
@@ -36,22 +36,20 @@ public partial class BuildMenu : Control
 	{
 		isStorageOpen = false;
 		ResortGUI.SetFreeCameraHud(false);
-		CanvasManager.SetHudElements(false);
 
 		// Sets all building rects
-		if (activeBuildingsList.Count == 0)
+		if (active_buildings.Count == 0)
 		{
-			for (int i = 0; i < ResortManager.Instance.StructureRoot.GetChildCount(); i++)
-				CreateBuilding(ResortManager.Instance.StructureRoot.GetChild(i) as Node2D);
+			for (int i = 0; i < ResortManager.CurrentResort.StructureRoot.GetChildCount(); i++)
+				CreateBuilding(ResortManager.CurrentResort.StructureRoot.GetChild(i) as Node2D);
 		}
 
 		UpdateStorage();
 	}
 	public async void OnCloseMenu(MenuUtil.MenuInstance _)
 	{
-		activeBuildingsList.Clear();
+		active_buildings.Clear();
 		ResortGUI.SetFreeCameraHud(true);
-		CanvasManager.SetHudElements(true);
 
 		while (menu_player.CurrentAnimation == "close")
 			await Task.Delay(1);
@@ -75,7 +73,7 @@ public partial class BuildMenu : Control
 			TextureButton _item = item_container.Instantiate<TextureButton>();
 			string _structure = Player.Data.Storage[i];
 			_item.TooltipText = Tr($"{_structure}_name") + "\n" + Tr($"{_structure}_desc");
-			(_item.GetChild(0) as TextureRect).Texture = GameManager.GetIcon(_structure);
+			(_item.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_structure);
 			_item.Pressed += () =>
 			{
 				GrabFromStorage(_structure);
@@ -90,20 +88,23 @@ public partial class BuildMenu : Control
 	{
 		if (!Visible)
 		{
-			if (selectedBuilding != null)
-				UnassignStructure();
+			if (selected_building != null)
+				UnassignBuilding();
 			return;
 		}
 
-		if (Input.IsActionJustPressed("interact"))
-			OnSelect();
-
-		if (selectedBuilding != null)
-			ProcessStructureInteraction();
+		if (selected_building != null)
+			ProcessBuildingInteraction();
 	}
-	private void ProcessStructureInteraction()
+	public override void _UnhandledInput(InputEvent @event)
 	{
-		isHoveringBuilding = selectedBuilding.Collider.HasPoint(GameManager.Utils.GetMouseToWorldPosition());
+		if (@event.IsActionPressed(InputNames.Interact))
+			SelectBuilding();
+	}
+
+	private void ProcessBuildingInteraction()
+	{
+		isHoveringBuilding = selected_building.Collider.HasPoint(GlobalManager.Utils.GetMouseToWorldPosition());
 		bool _isSelectPressed = Input.IsActionPressed("select");
 		if (!isMovingBuilding)
 		{
@@ -112,19 +113,24 @@ public partial class BuildMenu : Control
 			if (Input.IsActionJustPressed("select"))
 			{
 				if (isHoveringBuilding)
-					StartMoveStructure();
-				else if (!OnSelect())
-					UnassignStructure();
+					StartMoveBuilding();
+				else if (!SelectBuilding())
+					UnassignBuilding();
 			}
 		}
 		else if (_isSelectPressed) // if let go, stop moving completly
-			MoveBuilding();
+		{
+			Vector2 _position = GlobalManager.Utils.GetMouseToWorldPosition() + mouse_offset;
+			if (Input.IsActionPressed(InputNames.AlignToGrid))
+				_position = (_position / 10).Round() * 10;
+			MoveBuilding(_position);
+		}
 		else
-			StopMoveStructure();
+			StopMoveBuilding();
 
 		if (Input.IsActionJustPressed("deselect"))
 		{
-			UnassignStructure();
+			UnassignBuilding();
 			return;
 		}
 
@@ -140,102 +146,150 @@ public partial class BuildMenu : Control
 			return;
 		}
 	}
-	private bool OnSelect()
+	private bool SelectBuilding()
 	{
 		Building _structure = GetStructureUnderMouse();
 
 		if (_structure == null)
 			return false;
 
-		AssignStructure(_structure);
+		AssignBuilding(_structure);
 		return true;
 	}
-	private void StartMoveStructure()
+	private void StartMoveBuilding()
 	{
 		ResortGUI.Instance.EnableMouseCameraControl = true;
 		isMovingBuilding = true;
-		mouseOffset = selectedBuilding.Self.GlobalPosition - GameManager.Utils.GetMouseToWorldPosition();
-		for (int i = 0; i < selectedBuilding.Self.GetChildCount(); i++)
+		mouse_offset = selected_building.Self.GlobalPosition - GlobalManager.Utils.GetMouseToWorldPosition();
+		last_valid_position = selected_building.Self.GlobalPosition;
+
+		CanvasManager.AddControlPrompt("prompt_" + InputNames.Sell, InputNames.Sell, InputNames.Sell);
+		CanvasManager.AddControlPrompt("prompt_" + InputNames.Store, InputNames.Store, InputNames.Store);
+		CanvasManager.AddControlPrompt("prompt_" + InputNames.AlignToGrid, InputNames.AlignToGrid, InputNames.AlignToGrid);
+
+		// Deactivate collision
+		for (int i = 0; i < selected_building.Self.GetChildCount(); i++)
 		{
-			if (selectedBuilding.Self.GetChild(i) is PhysicsBody2D && selectedBuilding.Self.GetChild(i).GetChildCount() > 0)
+			if (selected_building.Self.GetChild(i) is PhysicsBody2D && selected_building.Self.GetChild(i).GetChildCount() > 0)
 			{
-				currentShape = selectedBuilding.Self.GetChild(i).GetChild(0) as CollisionShape2D;
-				currentShape.Disabled = true;
+				current_shape = selected_building.Self.GetChild(i).GetChild(0) as CollisionShape2D;
+				current_shape.Disabled = true;
+				break;
 			}
 		}
 	}
-	private void StopMoveStructure()
+	private void StopMoveBuilding()
 	{
 		ResortGUI.Instance.EnableMouseCameraControl = false;
 		isMovingBuilding = false;
 
-		if (IsInstanceValid(currentShape))
+		CanvasManager.RemoveControlPrompt(InputNames.Sell);
+		CanvasManager.RemoveControlPrompt(InputNames.Store);
+		CanvasManager.RemoveControlPrompt(InputNames.AlignToGrid);
+
+		// prevent furniture from being placed in invalid areas
+		if (IsBeingObstructed())
 		{
-			currentShape.Disabled = false;
-			currentShape = null;
+			MoveBuilding(last_valid_position);
+			return;
+		}
+
+		if (IsInstanceValid(current_shape))
+		{
+			current_shape.Disabled = false;
+			current_shape = null;
 		}
 	}
 
-	public void AssignStructure(Building _structure)
+	private void AssignBuilding(Building _structure)
 	{
 		// set new closest strucuture
-		UnassignStructure();
-		selectedBuilding = _structure;
+		UnassignBuilding();
+		selected_building = _structure;
 
 		// Set highlights for selected item
+		previous_light_mask = selected_building.Self.LightMask;
+		selected_building.Self.LightMask = 0;
 		ShaderMaterial _outline = new()
 		{
-			Shader = ResourceLoader.Load<Shader>(GameManager.OutlineShader)
+			Shader = ResourceLoader.Load<Shader>(GlobalManager.OutlineShader)
 		};
 		_outline.SetShaderParameter("color", new Color(0.15f, 0, 0.8f));
 		_outline.SetShaderParameter("pattern", 1);
 		_outline.SetShaderParameter("add_margins", true);
 		_structure.Self.Material = _outline;
 	}
-	public void UnassignStructure()
+	private void UnassignBuilding()
 	{
 		ResortGUI.Instance.EnableMouseCameraControl = false;
-		StopMoveStructure();
+		StopMoveBuilding();
 
-		if (selectedBuilding != null)
+		if (selected_building != null)
 		{
-			if (selectedBuilding.Self != null)
-				selectedBuilding.Self.Material = null;
+			if (selected_building.Self != null)
+			{
+				selected_building.Self.Modulate = new Color("white");
+				selected_building.Self.Material = null;
+				selected_building.Self.LightMask = previous_light_mask;
+			}
 			isHoveringBuilding = false;
 		}
 
-		selectedBuilding = null;
+		selected_building = null;
 	}
-	public Building GetStructureUnderMouse()
-	{
-		Vector2 _mousePosition = GameManager.Utils.GetMouseToWorldPosition();
 
-		for (int i = 0; i < activeBuildingsList.Count; i++)
+	private Building GetStructureUnderMouse()
+	{
+		Vector2 _mousePosition = GlobalManager.Utils.GetMouseToWorldPosition();
+
+		for (int i = 0; i < active_buildings.Count; i++)
 		{
-			if (activeBuildingsList[i].Collider.HasPoint(_mousePosition))
-				return activeBuildingsList[i];
+			if (active_buildings[i].Collider.HasPoint(_mousePosition))
+				return active_buildings[i];
 		}
 		return null;
 	}
-
-	public void GrabFromStorage(string _structureName)
+	private bool IsBeingObstructed()
+	{
+		if (selected_building == null)
+			return false;
+		else
+			return GlobalManager.Utils.Raycast(selected_building.Collider.Position + new Vector2(0, selected_building.Collider.Size.Y),
+				new Vector2(selected_building.Collider.Size.X, 0), null).Count > 0;
+	}
+	private void GrabFromStorage(string _structureName)
 	{
 		Node2D _structure = ResourceLoader.Load<PackedScene>
-		(GameManager.StructuresPath + $"/{_structureName}.tscn").Instantiate() as Node2D;
+		(GlobalManager.StructuresPath + $"/{_structureName}.tscn").Instantiate() as Node2D;
 		if (!IsInstanceValid(_structure))
 		{
 			Logger.Print(Logger.LogPriority.Warning, "BuildMenu: ", $"{_structureName} is not a valid structure");
 			return;
 		}
-		_structure.GlobalPosition = GameManager.GlobalCamera.GlobalPosition;
-		ResortManager.Instance.StructureRoot.AddChild(_structure);
+		_structure.GlobalPosition = GlobalManager.GlobalCamera.GlobalPosition;
+		ResortManager.CurrentResort.StructureRoot.AddChild(_structure);
 
 		Building _building = CreateBuilding(_structure);
 		if (_building == null)
 			return;
-		AssignStructure(_building);
+		last_valid_position = _building.Self.GlobalPosition;
+		AssignBuilding(_building);
+		SetStorage(false);
 	}
-	public Building CreateBuilding(Node2D _self)
+	public void SetStorage(bool _state)
+	{
+		if (_state == isStorageOpen)
+			return;
+		isStorageOpen = _state;
+		if (isStorageOpen)
+			menu_player.Play("open_bar");
+		else
+			menu_player.Play("close_bar");
+	}
+	public void SetStorage() => 
+		SetStorage(!isStorageOpen);
+
+	private Building CreateBuilding(Node2D _self)
 	{
 		Vector2 _offset, _size;
 
@@ -263,32 +317,41 @@ public partial class BuildMenu : Control
 
 		Vector2 _origin = _self.GlobalPosition + _offset - _size / 2;
 		Building _building = new(new Rect2(_origin, _size), _self, _offset);
-		activeBuildingsList.Add(_building);
+		active_buildings.Add(_building);
 		return _building;
 	}
-	public void RemoveBuilding(RemoveMode _mode = RemoveMode.None)
+	private void RemoveBuilding(RemoveMode _mode)
 	{
-		activeBuildingsList.Remove(selectedBuilding);
+		active_buildings.Remove(selected_building);
 
 		if (_mode == RemoveMode.Sell)
 		{
-			Player.Data.SetCurrency(GameManager.G_ITEMS[selectedBuilding.Self.GetMeta("id").ToString()].cost / 2);
-			SoundManager.CreateSound(CanvasManager.Audio_SellSound);
+			Player.Data.SetCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta("id").ToString()].cost / 2);
+			SoundManager.CreateSound(CanvasManager.AudioSell);
 		}
 		if (_mode == RemoveMode.Store)
 		{
-			Player.Data.Storage.Add(selectedBuilding.Self.GetMeta("id").ToString());
-			SoundManager.CreateSound(CanvasManager.Audio_StoreSound);
+			Player.Data.Storage.Add(selected_building.Self.GetMeta("id").ToString());
+			SoundManager.CreateSound(CanvasManager.AudioStore);
 			UpdateStorage(Player.Data.Storage.Count - 1);
 		}
-		selectedBuilding.Self.QueueFree();
-		UnassignStructure();
+		selected_building.Self.QueueFree();
+		UnassignBuilding();
 	}
-	public void MoveBuilding()
+	private void MoveBuilding(Vector2 _position)
 	{
-		selectedBuilding.Self.GlobalPosition = GameManager.Utils.GetMouseToWorldPosition() + mouseOffset;
-		Vector2 _size = selectedBuilding.Collider.Size,
-		_origin = selectedBuilding.Self.GlobalPosition + selectedBuilding.Offset - _size / 2;
-		selectedBuilding.Collider = new(_origin, _size);
+		selected_building.Self.GlobalPosition = _position;
+		Vector2 _size = selected_building.Collider.Size,
+		_origin = selected_building.Self.GlobalPosition + selected_building.Offset - _size / 2;
+		selected_building.Collider = new(_origin, _size);
+
+		// check if is obstructed and highlight if so
+		if (IsBeingObstructed())
+			selected_building.Self.Modulate = new Color("red");
+		else
+		{
+			selected_building.Self.Modulate = new Color("white");
+			last_valid_position = _position;
+		}
 	}
 }

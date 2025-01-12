@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_02bb8"]
 [ext_resource type="AudioStream" uid="uid://cv5a0x5ojrrc2" path="res://sfx/player/whistle.wav" id="2_8g5nl"]
 [ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player_0.png" id="2_muo8i"]
+[ext_resource type="PackedScene" uid="uid://cy6ba6twhk3o3" path="res://scenes/particles/leaves_overlay.tscn" id="4_fhurh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_37afu"]
 atlas = ExtResource("2_muo8i")
@@ -55,10 +56,6 @@ region = Rect2(0, 128, 32, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_jgcd8"]
 atlas = ExtResource("2_muo8i")
 region = Rect2(32, 128, 32, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ql8aq"]
-atlas = ExtResource("2_muo8i")
-region = Rect2(0, 192, 32, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bgdnh"]
 atlas = ExtResource("2_muo8i")
@@ -254,9 +251,6 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ql8aq")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_bgdnh")
 }, {
 "duration": 1.0,
@@ -276,7 +270,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"pickup",
-"speed": 10.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -404,9 +398,8 @@ Audio_Whistle = ExtResource("2_8g5nl")
 
 [node name="animator" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mupq7")
-animation = &"hyperactive"
+animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.564067
 offset = Vector2(0, -32)
 flip_h = true
 
@@ -438,3 +431,6 @@ position = Vector2(0, -20)
 zoom = Vector2(2, 2)
 
 [node name="AudioListener2D" type="AudioListener2D" parent="Camera2D"]
+
+[node name="GPUParticles2D" parent="Camera2D" instance=ExtResource("4_fhurh")]
+position = Vector2(14, -223)

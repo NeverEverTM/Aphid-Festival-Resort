@@ -23,24 +23,14 @@ public partial class ResortGUI : CanvasLayer
 		quitTween = CreateTween();
 		quitTween.Kill();
 
-		if (IsInstanceValid(GameManager.GlobalCamera))
-		{
-			GameManager.GlobalCamera.LimitTop = (int)TopLeft.GlobalPosition.Y;
-			GameManager.GlobalCamera.LimitBottom = (int)BottomRight.GlobalPosition.Y;
-			GameManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
-			GameManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
-		}
+		GlobalManager.GlobalCamera.LimitTop = (int)TopLeft.GlobalPosition.Y;
+		GlobalManager.GlobalCamera.LimitBottom = (int)BottomRight.GlobalPosition.Y;
+		GlobalManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
+		GlobalManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
 
 		build_button.Pressed += () => CanvasManager.Menus.OpenMenu(new MenuUtil.MenuInstance("build",
 			build_menu.menu_player, build_menu.OnOpenMenu, build_menu.OnCloseMenu, false));
-		show_storage_button.Pressed += () =>
-		{
-			if (!build_menu.isStorageOpen)
-				build_menu.menu_player.Play("open_bar");
-			else
-				build_menu.menu_player.Play("close_bar");
-			build_menu.isStorageOpen = !build_menu.isStorageOpen;
-		};
+		show_storage_button.Pressed += build_menu.SetStorage;
 	}
 	public override void _ExitTree()
 	{
@@ -54,13 +44,13 @@ public partial class ResortGUI : CanvasLayer
 		{
 			if (EnableMouseCameraControl)
 			{
-				Vector2 _movement = GameManager.Utils.GetMouseToWorldPosition() - GameManager.GlobalCamera.GlobalPosition;
-				if (Math.Abs(_movement.X) > GameManager.QuarterScreen.X * 0.8f || Math.Abs(_movement.Y) > GameManager.QuarterScreen.Y * 0.8f)
-					GameManager.GlobalCamera.GlobalPosition += _movement.Normalized() * 8;
+				Vector2 _movement = GlobalManager.Utils.GetMouseToWorldPosition() - GlobalManager.GlobalCamera.GlobalPosition;
+				if (Math.Abs(_movement.X) > GlobalManager.QuarterScreen.X * 0.8f || Math.Abs(_movement.Y) > GlobalManager.QuarterScreen.Y * 0.8f)
+					GlobalManager.GlobalCamera.GlobalPosition += _movement.Normalized() * 8;
 			}
 
-			GameManager.GlobalCamera.GlobalPosition += Input.GetVector("left", "right", "up", "down") * 8;
-			GameManager.GlobalCamera.GlobalPosition = GameManager.GlobalCamera.GlobalPosition.Clamp(TopLeft.GlobalPosition + GameManager.QuarterScreen, BottomRight.GlobalPosition - GameManager.QuarterScreen);
+			GlobalManager.GlobalCamera.GlobalPosition += Input.GetVector("left", "right", "up", "down") * 8;
+			GlobalManager.GlobalCamera.GlobalPosition = GlobalManager.GlobalCamera.GlobalPosition.Clamp(TopLeft.GlobalPosition + GlobalManager.QuarterScreen, BottomRight.GlobalPosition - GlobalManager.QuarterScreen);
 
 		}
 	}
@@ -74,44 +64,45 @@ public partial class ResortGUI : CanvasLayer
 			if (!WasInMenu && (@event.IsActionPressed("escape") || @event.IsActionPressed("cancel")))
 				SetFreeCameraMode(false);
 
-			WasInMenu = CanvasManager.Menus.IsInMenu;
+			WasInMenu = CanvasManager.Menus.IsBusy;
 		}
 
 	}
 
 	public static void SetFreeCameraMode(bool _state)
 	{
-		if (Instance.quitTween.IsValid() || CanvasManager.Instance.IsInFocus || CanvasManager.Menus.IsInMenu || DialogManager.IsActive)
+		if (Instance.quitTween.IsValid() || CanvasManager.Instance.IsInFocus || CanvasManager.Menus.IsBusy || DialogManager.IsActive)
 			return;
 
 		Instance.IsFreeCamera = _state;
-		Player.Instance.SetDisabled(Instance.IsFreeCamera);
+		Player.Instance.SetDisabled(Instance.IsFreeCamera, true);
 
 		if (Instance.IsFreeCamera)
 		{
 			// Set camera free from player anchor
-			Player.Instance.RemoveChild(GameManager.GlobalCamera);
-			Instance.GetTree().Root.AddChild(GameManager.GlobalCamera);
-			GameManager.GlobalCamera.GlobalPosition = Player.Instance.GlobalPosition;
+			Player.Instance.RemoveChild(GlobalManager.GlobalCamera);
+			Instance.GetTree().Root.AddChild(GlobalManager.GlobalCamera);
+			GlobalManager.GlobalCamera.GlobalPosition = Player.Instance.GlobalPosition;
 
 			// Show free camera hud and hide other elements
 			SetFreeCameraHud(true);
 			CanvasManager.SetHudElements(false);
+			CanvasManager.ClearControlPrompts();
 		}
 		else
 		{
-			Vector2 _prev_g_position = GameManager.GlobalCamera.GlobalPosition;
+			Vector2 _prev_g_position = GlobalManager.GlobalCamera.GlobalPosition;
 
 			// Move Camera back to player
-			Instance.GetTree().Root.RemoveChild(GameManager.GlobalCamera);
-			Player.Instance.AddChild(GameManager.GlobalCamera);
+			Instance.GetTree().Root.RemoveChild(GlobalManager.GlobalCamera);
+			Player.Instance.AddChild(GlobalManager.GlobalCamera);
 
 			// sweep back to player
-			GameManager.GlobalCamera.GlobalPosition = _prev_g_position;
-			Instance.quitTween = GameManager.GlobalCamera.CreateTween();
+			GlobalManager.GlobalCamera.GlobalPosition = _prev_g_position;
+			Instance.quitTween = GlobalManager.GlobalCamera.CreateTween();
 			Instance.quitTween.SetEase(Tween.EaseType.Out);
 			Instance.quitTween.SetTrans(Tween.TransitionType.Circ);
-			Instance.quitTween.TweenProperty(GameManager.GlobalCamera, "position", new Vector2(0, -20), 0.2f);
+			Instance.quitTween.TweenProperty(GlobalManager.GlobalCamera, "position", new Vector2(0, -20), 0.2f);
 
 			// Hide free camera hud
 			SetFreeCameraHud(false);

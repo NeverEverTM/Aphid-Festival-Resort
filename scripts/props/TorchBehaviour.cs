@@ -21,7 +21,17 @@ public partial class TorchBehaviour : AnimatedSprite2D
 		FieldManager.OnTimeChange += SetLight;
 		SetLightInstant();
 	}
-	public void SetLight()
+    public override void _Process(double delta)
+    {
+        if (GlobalManager.GlobalCamera != null)
+		{
+			if (light.Visible && GlobalPosition.DistanceTo(GlobalManager.GlobalCamera.GlobalPosition) > 600)
+				light.Visible = false;
+			else if (!light.Visible && GlobalPosition.DistanceTo(GlobalManager.GlobalCamera.GlobalPosition) <= 600)
+				light.Visible = true;
+		}
+    }
+    public void SetLight()
 	{
 		if (!spawnCheck)
 		{

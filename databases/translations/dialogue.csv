@@ -6,124 +6,123 @@ You can check updates at the Itch.io page of the game!
 >Presiona Escape para acceder a paneles de informacion sobre Ayuda y Controles! Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
 >Cualquier feedback es agradecido."
 welcome_1,,
-joy_welcome_0,">(char(joy))Hello!(...) You are (name), right? Come on in!(...)
-I'll give you a quick tour around!",">(char(joy))Hola!(...) Tu tienes que ser (name), ¿no? Adelante!(...)
+joy_welcome_0,">Hello!(...) You are (name), right? Come on in!(...)
+I'll give you a quick tour around!",">Hola!(...) Tu tienes que ser (name), ¿no? Adelante!(...)
 Tenemos el complejo preparado para ti. Te dare un paseo!"
 joy_welcome_1,">Here it is. The aphid resort!(...)
 So,(...) what do you think?
 >Things are shaping up as we grow so please bear with me, [wave amp=25.0 freq=5.0 connected=1]we will get there[/wave].","Y aqui esta, el complejo de áfidos!"
-joy_flavor_0,">(char(joy))Quite a cozy place, isn’t it (name)?(...)
+joy_flavor_0,">Quite a cozy place, isn’t it (name)?(...)
 It’s such a joy to work as a keeper for the lil buddies. (...)
 [wave amp=50.0 freq=5.0 connected=1]They even let me have my own one![/wave]
 >Her name is Crystal. Isn't she a cutie? 
->Just wished more people came along to visit...(...)
+>Just wished more bugs came along to visit...(...)
 Apart from festival times, it gets pretty quiet around here.(...)
->Speaking of, I think that is coming pretty soon!(...(0.5))
-hopefully...",">(char(joy))Un lugar agradable, verdad (name)?(...)
-Es todo un placer trabajar de cuidadora de los pequeñitos.(...)
+>Speaking of, I think that is coming pretty soon!(...[0.5])
+hopefully...",">Un lugar agradable, no es así (name)?(...)
+Me encanta trabajar de cuidadora para los pequeñines.(...)
 [wave amp=50.0 freq=5.0 connected=1]Incluso me dejan tener el mió propio! [/wave]
->Su nombre es Cristal. No es una ternura?
->Solo desearia que más gente se pasara por aquí...(...)
-Aparte de tiempos de festival, este lugar se queda silencioso.
->Hablando de, creo que esta por llegar!(...(0.5))
+>Su nombre es Cristal, a que es una ternura!
+>Solo desearia que más bichos se pasasen por aquí...(...)
+Aparte de en tiempos de festival, este lugar es bastante silencioso.
+>Hablando de aquello, creo que esta por llegar!(...[0.5])
 espero..."
-joy_flavor_1,">(char(joy))They are still filling the resort with all sorts of wonders
+joy_flavor_1,">They are still filling the resort with all sorts of wonders
 So sorry for all the mess of boxes! They won't let me touch them.
 >I don't know why either, that moth at the gate told me not to.
 >When I got nearby one, they just gave me a death stare(...)
-So I stay away from them ever since...",">(char(joy))Todavia estan llenando el complejo con todo tipo de fantasias
+So I stay away from them ever since...",">Todavia estan llenando el complejo con todo tipo de artilugios
 Asi que lo siento por el monton de cajas! No me dejan tocarlas.
 >Yo tampoco lo se, aquella polilla en la entrada me dijo que no podia.
->Cuando me acerque a una, me dio una mirada asesina(...)
+>Cuando me acerque a una, me devolvio una mirada asesina(...)
 Desde entonces no me acerco..."
-joy_flavor_2,">(char(joy))Aphid breeding has been on the rise more and more recently.
+joy_flavor_2,">Aphid breeding has been on the rise more and more recently.
 Looks like bugs outside the Golden Settlement ask us for some of our own.
 >Makes me wonder why.
->You should be able to help sooner or later, I heard they pay well!",">(char(joy))La crianza de afidos ha estado en la alza utlimamente.
+>You should be able to help sooner or later, I heard they pay well!",">La crianza de afidos ha estado en la alza utlimamente.
 Parece que bichos fuera del Asentamiento nos piden unos pocos de los nuestros.
 >Me hace preguntar el porque.
 >Podras ayudar con eso en algun punto, ¡He escuchado que pagan bien!"
-joy_flavor_3,">(char(joy))Remember to treat your Aphids with respect!
-They need love and care if you want them to grow big and strong.",">(char(joy))Recuerda tratar tus Áfidos con amor y cariño!
+joy_flavor_3,">Remember to treat your Aphids with respect!
+They need love and care if you want them to grow big and strong.",">Recuerda tratar tus Áfidos con amor y cariño!
 Necesitaran de todo el cuidado del mundo si quieres verlos crecer
 grandes y fuertes."
-joy_flavor_4,">(char(joy))Did you know how much personality can a single Aphid have?
+joy_flavor_4,">Did you know how much personality can a single Aphid have?
 (...)Well now you'll do!
 >Surely, you have saw each one act different than others?(...)
 Aphids have all sorts of little unique traits that make them so unique!
 >I spent so much time just watching them interact with one another...(...)
-I wonder what they are saying?",">(char(joy))¿Sabes cuanta personalidad puede un áfido tener?
+I wonder what they are saying?",">¿Sabes cuanta personalidad puede un áfido tener?
 (...)Bueno, ¡ahora lo sabras!
 >De seguro, ¿No habras visto como cada uno actua diferente que los otros?(...)
 ¡Los áfidos tienen todo tipo de rasgos que los hacen tan unicos!
 >Solia verlos por horas como interactuaban el uno al otro...(...)
 ¿Me pregunto de que hablaran?"
-azzy_flavor_0,">(char(azzy))(name)! Hello, Hello!
+azzy_flavor_0,">(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
 >Except, weapons, they do not allow me to sell you darts
-Not like you need them anyways!",">(char(azzy))(name)! Hey, Hey!
+Not like you need them anyways!",">(name)! Hey, Hey!
 Si necesitas algo, lo tengo aqui mismo!
 Y si no... pues puede que luego.
 >Excepto armas, no me permiten venderte dardos.
 No es lo que necesites de todos modos!"
-azzy_flavor_1,">(char(azzy))I always think how weird the owner is
->The ambient around him gets so cold...(...)
-But on the opposite(...), he has such a warm personality.
->I probably shouldn't be gossiping about that though
-Don't tell him anything, a'rite?",">(char(azzy))Siempre pense que el dueño era muy extraño...
->Quiero decir, el ambiente siempre se siente mas helado alreador suyo(...)
-Por el otro lado, tiene una personalidad tan calida.
->Aunque no deberia estar de chismosa
-No le digas nada, va?"
-azzy_flavor_2,">(char(azzy))I wonder how  things are up with the Wasps?...
+azzy_flavor_1,">I heard lots of stories of the guy who owns this resort(...)
+Apparently he's gone adventuring a tad lot in the past.
+>Not suprised for how much it costs to upkeep this place
+It takes the queen's wealth entire worth and much more!
+",">He oido muchas historias sobre el tipo que lleva el complejo(...)
+Aparentemente solía irse de aventura con frecuencia en el pasado.
+>No me sorprende teniendo en cuenta el costo de mantenimiento de este sitio.
+Requiere la entera riqueza de la reina misma y mucho más!"
+azzy_flavor_2,">I wonder how  things are up there with the Wasps?...
 I left that place [wave amp=25.0 freq=5.0 connected=1]loooong[/wave] ago but I 'ear some stuff recently.
->Maybe it was for the best. I enjoy life 'ere anyways.
-Even met my partner thanks to it.
+>Maybe it was for the best. I enjoy life 'ere in the settlement anyways.
+Even met my partner thanks to it. So bless Venus and allat.
 >Oh sorry, there goes me rambling again...(...)
-What'cha need, (name)?",">(char(azzy))Me pregunto que estaran haciendo las Avispas?...
-Deje ese lugar hace [wave amp=25.0 freq=5.0 connected=1]baaastante[/wave] rato, pero he oido cotilleos recientemente.
->Creo que mejor por mi. Disfruto de la vida aqui.
-Incluso conoci a mi pareja aqui.
->Oops, perdon, se me ha ido el hilo otra vez...(...)
-¿Que ocupas, (name)?"
-kut_flavor_0,">(char(kut)) No one in this town has proved more expert taste than the aphids.
+What'cha need, (name)?",">Me pregunto que estaran haciendo las Avispas en el norte?...
+Deje ese lugar hace [wave amp=25.0 freq=5.0 connected=1]baaastante[/wave] rato, pero he oido cosas recientemente.
+>Creo que fue lo mejor. Disfruto la vida aquí en el asentamiento.
+Incluso conoci a mi pareja aqui. Así que, gracias a Venus y demas charla.
+>Oops, perdona, se me ha ido el hilo otra vez...(...)
+¿Que necesitabas, (name)?"
+kut_flavor_0,">No one in this town has proved more expert taste than the aphids.
 The best customers I ever had.
 >They even gather around to see my craft.
-Truly an inspiring environment.",">(char(kut))Nadie en este pueblo ha provado tener un sentido del gusto
-tan exquisito como los áfidos.
+Truly an inspiring environment.",">Nadie en este pueblo ha provado tener un sentido del gusto tan exquisito como los áfidos.
 Los mejores clientes que uno puede pedir.
 >Incluso se reunen para ver mi arte.
 Un ambiente asi me inspira."
-kut_flavor_1,">(char(kut))Mmpfh...
-Should I try spice it up(...(0.3)) or(...(0.3)) should I make it sickly sweet.
->Oh, you're(...(0.3)), (name)?
+kut_flavor_1,">Mmpfh...
+Should I try spice it up(...) or(...) should I make it sickly sweet.
+>Oh, you're(...), (name)?
 Did you came to see a culinary master in action?",">(char(kut))Mmpfh...
 ¿Deberia intentar añadirle picor(...) o hacerlo amargamente dulce?.
 >Oh, tu eres(...(0.5)), (name)?
 ¿Has venido a ver a un maestro culinario en acción?"
-kut_flavor_2,">(char(kut))What do I recommend?
+kut_flavor_2,">...What would I recommend? (...)
 That is up to your little one.
 >They all have an unique afinity to a particular flavour.
 Some more...(...) different than others.
->Sour(...(0.3)), Sweet(...(0.3)), Salty(...(0.3)) and Bitter.(...(0.3))
-[rainbow freq=0.5 sat=1.0 val=0.8]An infinite ocean of experiences to surf along.[/rainbow]",">(char(kut))¿Que es lo que recomiendo?
-Eso lo dira tu pequeñin.
+>Sour(...), Sweet(...), Salty(...) and Bitter.(...)
+And all depends on their ingredients you use.",">¿Que es lo que recomendaria?(...)
+Eso lo dicta tu pequeñin.
 >Todos tiene una afinidad a un sabor particular.
 Algunos más...(...) diferentes que otros.
->Agrio(...(0.3)), Dulce(...(0.3)), Salado(...(0.3)) y Amargo.(...(0.3))
-[rainbow freq=0.5 sat=1.0 val=0.8]Un oceano de experiencias infinitas el cual surfear[/rainbow]"
-crystal_flavor_0,>(char(crystal))Phi,>(char(crystal))Phi
-crystal_flavor_1,>(char(crystal))Fi Fi,>(char(crystal))Fi Fi
-crystal_flavor_2,>(char(crystal))Eep!,>(char(crystal))Eep!
-echo_flavor_0,">(char(echo))...(...)What do you want?(...)
-Don't I look busy to you?",">(char(echo))...(...)¿Que es lo que buscas?(...)
+>Agrio(...), Dulce(...), Salado(...) y Amargo.(...)
+Y todo depende de los ingredientes que uses."
+crystal_flavor_0,>Fi,>Fi
+crystal_flavor_1,>Fi Fi,>Fi Fi
+crystal_flavor_2,>[wave amp=25.0 freq=5.0 connected=1][color='grey']squeak,>[wave amp=25.0 freq=5.0 connected=1][color='grey']squeak
+echo_flavor_0,">...(...)What do you want?(...)
+Don't I look busy to you?",">...(...)¿Que es lo que buscas?(...)
 ¿No te parezco ocupade?"
-echo_flavor_1,">(char(echo))Not in the mood to talk(...)
-I'm never in the mood, so though luck.",">(char(echo))No estoy para hablar(...)
+echo_flavor_1,">Not in the mood to talk...(...)
+I'm never in the mood though, so tough luck.",">No estoy para hablar...(...)
 Nunca estoy para nada, así que, suerte."
-echo_flavor_2,">(char(echo))[font_size=10]Did I really have to join her for this...[/font_size]...(...)
+echo_flavor_2,">Pfft [font_size=20]Did I really have to join her for this...[/font_size]...(...)
 Erhm, hello?
->Mind your own business?",">(char(echo))[font_size=10]De verdad tenia que formar parte de esto por ella...[/font_size]...(...)
+>Could you mind your own business?",">Pfft [font_size=20]De verdad tenia que formar parte de esto por ella...[/font_size]...(...)
 Huh, ¿hola?
 >¿Te importa?"
+echo_flavor_3,>...(...[1.0]) Get lost.,>...(...[1.0]) Pierdete.

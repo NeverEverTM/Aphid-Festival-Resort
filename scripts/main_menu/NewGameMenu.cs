@@ -9,8 +9,9 @@ public partial class NewGameMenu : Control
 	[Export] private AnimationPlayer menuPlayer;
 	[Export] private Control popup_anchor;
 
-	private const int resort_charLimit = 40, name_charLimit = 15;
+	private const int resort_char_limit = 40, name_char_limit = 15, pronouns_char_limit = 25;
 	private const string defaultName = "Mello";
+	
 
 	public override void _Ready()
 	{
@@ -29,74 +30,52 @@ public partial class NewGameMenu : Control
 			return;
 
 		bool _resortIsFocused = resort_name_input.HasFocus(),
-		_playerIsFocused = player_name_input.HasFocus();
+		_playerIsFocused = player_name_input.HasFocus(), _pronounsIsFocused = pronouns_input.HasFocus();
 
-		if ((_resortIsFocused || _playerIsFocused) && @event is InputEventKey && @event.IsPressed())
+		if ((_resortIsFocused || _playerIsFocused || _pronounsIsFocused) && @event is InputEventKey && @event.IsPressed())
 		{
 			InputEventKey _input = @event as InputEventKey;
 
-			// move through inputs
-			if (_input.KeyLabel == Key.Up)
-			{
-				if (_resortIsFocused)
-					new_game_button.GrabFocus();
-				else if (_playerIsFocused)
-					resort_name_input.GrabFocus();
-				else
-					player_name_input.GrabFocus();
-				GetViewport().SetInputAsHandled();
-				return;
-			}
-			if (_input.KeyLabel == Key.Down)
-			{
-				if (_resortIsFocused)
-					player_name_input.GrabFocus();
-				else if (_playerIsFocused)
-					new_game_button.GrabFocus();
-				else
-					resort_name_input.GrabFocus();
-				GetViewport().SetInputAsHandled();
-				return;
-			}
-
 			// confirm input
-			if (_input.KeyLabel == Key.Enter)
+			if (_input.KeyLabel == Key.Enter || _input.KeyLabel == Key.Tab) 
 			{
-				if (_resortIsFocused)
-					player_name_input.GrabFocus();
+				if (_playerIsFocused)
+					pronouns_input.GrabFocus();
+				else if (_pronounsIsFocused)
+					resort_name_input.GrabFocus();
 				else
 					new_game_button.GrabFocus();
 				GetViewport().SetInputAsHandled();
 				return;
 			}
 
-			// allow character deletion and moving through the text
+			// allow character deletion and moving through ui
 			if (_input.KeyLabel == Key.Backspace || _input.KeyLabel == Key.Left || _input.KeyLabel == Key.Right)
 				return;
 
-			if ((_resortIsFocused && resort_name_input.Text.Length >= resort_charLimit) ||
-			(_playerIsFocused && player_name_input.Text.Length >= name_charLimit))
+			if ((_resortIsFocused && resort_name_input.Text.Length >= resort_char_limit) || // Resort Name Char Limit
+				(_playerIsFocused && player_name_input.Text.Length >= name_char_limit) || // Player Name Char Limit
+				(_pronounsIsFocused && (pronouns_input.Text.Split('/').Length > 4 // Pronouns Max Elements
+					|| pronouns_input.Text.Length >= pronouns_char_limit))) // Pronouns Char Limit
 				GetViewport().SetInputAsHandled();
-			return;
 		}
 	}
 
 	public void AddMenuAction()
 	{
-
 		MainMenu.Instance.CreateMenuAction(newGameCategory, () =>
 		{
 			resort_name_input.Text = "";
 			player_name_input.Text = "";
 			pronouns_input.Text = "";
-			resort_name_input.GrabFocus();
+			player_name_input.GrabFocus();
 			MainMenu.Instance.SetMenu(this);
 			menuPlayer.Play("open");
 		});
 	}
 	private async void CreateResort()
 	{
-		if (GameManager.IsBusy)
+		if (GlobalManager.IsBusy)
 			return;
 
 		string _resortName = resort_name_input.Text;
@@ -112,7 +91,7 @@ public partial class NewGameMenu : Control
 		// Invalid resort names
 		if (string.IsNullOrWhiteSpace(_resortName) || !_resortName.IsValidFileName())
 		{
-			GameManager.CreatePopup("warning_invalid_name", popup_anchor);
+			GlobalManager.CreatePopup("warning_invalid_name", popup_anchor);
 			return;
 		}
 
@@ -120,14 +99,21 @@ public partial class NewGameMenu : Control
 		SaveSystem.SelectProfile(_resortName);
 		if (DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
-			GameManager.CreatePopup("warning_already_exists", popup_anchor);
+			GlobalManager.CreatePopup("warning_already_exists", popup_anchor);
 			return;
 		}
 
 		// Start the game
-		ResortManager.IsNewGame = true;
-		Player.NewName = !string.IsNullOrWhiteSpace(player_name_input.Text) ? player_name_input.Text : defaultName;
-		Player.NewPronouns = !string.IsNullOrWhiteSpace(pronouns_input.Text) ? pronouns_input.Text.Split("/") : new string[] { "They", "them" };
+		GameManager.IsNewGame = true;
+		Player.NewName = !string.IsNullOrWhiteSpace(player_name_input.Text) ? 
+				player_name_input.Text : defaultName;
+		if (!string.IsNullOrWhiteSpace(pronouns_input.Text))
+		{
+			Player.NewPronouns = pronouns_input.Text.Split("/");
+			Player.NewPronouns[0].Capitalize();
+		} 
+		else
+			Player.NewPronouns = new string[] { Tr("pronouns_they"), Tr("pronouns_them") };
 		await SaveSystem.CreateProfile();
 		MainMenu.LoadResort();
 	}

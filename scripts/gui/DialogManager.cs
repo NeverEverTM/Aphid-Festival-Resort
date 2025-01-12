@@ -8,14 +8,13 @@ public partial class DialogManager : Control
 	[Export] private Control dialogDoneSign;
 	[Export] private RichTextLabel dialogText;
 	[Export] private AudioStreamPlayer dialogAudio;
+	[Export] private AudioStream defaultAudio;
 	private AnimationPlayer dialogDoneAnimator;
 
 	public static DialogManager Instance { get; private set; }
 	public static bool IsActive { get; private set; }
 	public static bool IsDialogFinished { get; private set; }
-	private bool MoveToNext, JustPressed;
-
-	private const char commandStart = '(', commandEnd = ')';
+	private bool move_to_next, just_pressed;
 
 	// Dialog Params
 	public string Dialog { get; set; }
@@ -29,7 +28,6 @@ public partial class DialogManager : Control
 		{ "name", new PlayerNameCommand() },
 		{ "char", new VoiceCommand() }
 	};
-	public static readonly List<IDialogCommand> ActiveCommands = new();
 
 	public override void _Ready()
 	{
@@ -37,8 +35,7 @@ public partial class DialogManager : Control
 		IsActive = IsDialogFinished = false;
 
 		Speed = 1;
-		LettersPerBleep = 4;
-		PaddingDelay = 0;
+		LettersPerBleep = 2;
 
 		dialogDoneAnimator = dialogDoneSign.GetChild(0) as AnimationPlayer;
 	}
@@ -51,34 +48,42 @@ public partial class DialogManager : Control
 		if (Input.IsActionJustPressed("interact"))
 		{
 			// This is done so it doesnt skip the first text
-			if (JustPressed)
+			if (just_pressed)
 			{
-				JustPressed = false;
+				just_pressed = false;
 				return;
 			}
 
 			if (!IsDialogFinished)
 				IsDialogFinished = true;
 			else
-				MoveToNext = true;
+				move_to_next = true;
 		}
 
 		// ultra fast text skip
 		if (Input.IsActionPressed("cancel"))
 		{
 			dialogAudio.Stop();
-			IsDialogFinished = MoveToNext = true;
+			IsDialogFinished = move_to_next = true;
 		}
 	}
 
 	// ======| Dialog Functions |=======
-	public async Task OpenDialog(string _dialog_key)
+	/// <summary>
+	/// Opens the dialog box and formats, writes and displays the result.
+	/// </summary>
+	/// <param name="_dialog_key">The TranslationKey from which read, no further formatting is needed.</param>
+	/// <param name="_voice">The voice to start the dialogue with. Can be changed midway through with dialogue commands.</param>
+	/// <returns></returns>
+	public async Task OpenDialogBox(string _dialog_key, AudioStream _voice = null)
 	{
 		if (IsActive)
 			return;
+
 		// Set dialog state
-		IsActive = JustPressed = true;
-		Player.Instance.SetDisabled(true);
+		IsActive = just_pressed = true;
+		dialogAudio.Stream = _voice ?? defaultAudio;
+		Player.Instance.SetDisabled(true, true);
 		if (!Instance.Visible)
 			Instance.Show();
 
@@ -90,7 +95,7 @@ public partial class DialogManager : Control
 			{
 				// reset dialog state
 				Instance.dialogDoneSign.Hide();
-				MoveToNext = IsDialogFinished = false;
+				move_to_next = IsDialogFinished = false;
 				Instance.dialogText.Text = "";
 				PaddingDelay = 0;
 
@@ -112,7 +117,7 @@ public partial class DialogManager : Control
 				await Task.Delay(1); // padding
 				Instance.dialogDoneSign.Show();
 				Instance.dialogDoneAnimator.Play("squiggly");
-				while (!MoveToNext) // wait for the player to advance to the next box
+				while (!move_to_next) // wait for the player to advance to the next box
 					await Task.Delay(1);
 			}
 		}
@@ -125,38 +130,33 @@ public partial class DialogManager : Control
 	}
 	private async Task WriteDialog()
 	{
+		dialogText.VisibleCharacters = 0;
+		dialogText.Text = Dialog;
+		int _bbcSkipped = 0;
 		RandomNumberGenerator _rng = new();
-		for (int i = 0; i < Dialog.Length; i++)
+		int i = 0;
+		while (i < dialogText.Text.Length)
 		{
-			if (Dialog[i] == commandStart) // Command active
+			// dialog commands start with '(', they are triggered and then redacted out of dialog 
+			if (dialogText.Text[i] == '(')
+				RegisterDialogCommand(i);
+			
+			// bbc isnt accounted for in visiblecharacters but it is in length
+			// so we need to get how much we need to skip forward, then set visiblecharacters to index minus skipped bbc characters
+			if (dialogText.Text[i] == '[')
 			{
-				i += RegisterDialogCommand(i + 1);
-				continue;
-			}
-
-			if (Dialog[i] == '[') //  BBC active
-			{
-				while (Dialog[i] != ']')
+				while (dialogText.Text[i] != ']')
 				{
-					Instance.dialogText.Text += Dialog[i];
 					i++;
+					_bbcSkipped++;
 				}
-				Instance.dialogText.Text += Dialog[i];
-				continue;
+				i++;
+				_bbcSkipped++;
 			}
 
-			Instance.dialogText.Text += Dialog[i];
-
-			// Avoid doing this if dialog has been skipped
+			// Pre setup
 			if (!IsDialogFinished)
 			{
-				// Dialog bleep
-				if (i % LettersPerBleep == 0)
-				{
-					Instance.dialogAudio.PitchScale = _rng.RandfRange(0.9f, 1.15f);
-					Instance.dialogAudio.Play();
-				}
-
 				// Queued Delay for the next sentence
 				while (PaddingDelay > 0)
 				{
@@ -168,13 +168,26 @@ public partial class DialogManager : Control
 					PaddingDelay--;
 					await Task.Delay(1);
 				}
-
-				if (!IsDialogFinished)
-					await Task.Delay(Speed * 10);
 			}
+
+			dialogText.VisibleCharacters = i + 1 - _bbcSkipped;
+
+			// Post setup
+			if (!IsDialogFinished)
+			{
+				// Dialog bleep
+				if (i % LettersPerBleep == 0)
+				{
+					dialogAudio.PitchScale = _rng.RandfRange(0.9f, 1.15f);
+					dialogAudio.Play();
+				}
+
+				await Task.Delay(Speed * 20);
+			}
+			i++;
 		}
 		IsDialogFinished = true;
-		JustPressed = false;
+		just_pressed = false;
 	}
 	public void CloseDialog()
 	{
@@ -183,86 +196,98 @@ public partial class DialogManager : Control
 		Player.Instance.SetDisabled(false);
 		Instance.Hide();
 	}
-	private int RegisterDialogCommand(int _index)
+	private void RegisterDialogCommand(int _startIndex)
 	{
-		if (Dialog[_index] == '/')
-		{
-			ActiveCommands[^1].Remove();
-			ActiveCommands.RemoveAt(ActiveCommands.Count - 1);
-			return 2;
-		}
-
-		int _skip = 0;
+		// ignore the first '('
+		int _characterToDelete = 1;
+		int _index = _startIndex + 1;
 		// get command line
 		string _command = "";
-		for (int _c = _index; _c < Dialog.Length; _c++, _skip++)
+		while (_index < Instance.dialogText.Text.Length)
 		{
-			if (Dialog[_c] == commandEnd || Dialog[_c] == commandStart)
-			{
-				_skip++;
-				break;
-			}
-			_command += Dialog[_c];
+			_characterToDelete++;
+			if (Instance.dialogText.Text[_index] == ')' || Instance.dialogText.Text[_index] == '[')
+				break; // finish if you find end of command or start of args
+			_command += Instance.dialogText.Text[_index];
+			_index++;
 		}
-		// get args in parenthesis
-		string _argLine = "";
-		if (Dialog[_index + _skip - 1] == commandStart)
+
+		// get args in parenthesis if command has a set of parenthesis too
+		string _argLine = null;
+		if (dialogText.Text[_index] == '[')
 		{
-			for (int _c = _index + _skip; _c < Dialog.Length; _c++, _skip++)
+			_index++;
+			while (_index < dialogText.Text.Length)
 			{
-				if (Dialog[_c] == commandEnd)
+				_characterToDelete++;
+				if (dialogText.Text[_index] == ']')
 				{
-					_skip += 2;
+					_characterToDelete++;
 					break;
 				}
-				_argLine += Dialog[_c];
+				_argLine += dialogText.Text[_index];
+				_index++;
 			}
 		}
-		string[] _args = _argLine.Split(",");
+		// args are splited by a coma
+		string[] _args = _argLine?.Split(",");
 
+		// execute command, remove it from dialogue and insert given text if any 
 		if (Commands.ContainsKey(_command))
-			Commands[_command].Execute(_index + _skip, _args);
-		return _skip;
+		{
+			string _textToInsert =  Commands[_command].Execute(_args) ?? string.Empty;
+			dialogText.Text = dialogText.Text.Remove(_startIndex, _characterToDelete);
+			dialogText.Text = dialogText.Text.Insert(_startIndex, _textToInsert);
+		}
 	}
 
 	public interface IDialogCommand
 	{
-		/// <summary>
-		/// Executes the command, if the command is not self-ending -> (like a single-use delay),
-		/// then make sure to add manually this class to ActiveCommands in order for [/] to end your action.
-		/// </summary>
-		public void Execute(int _index, string[] _args);
-		/// <summary>
-		/// Ends your action via the last [/] seen.
-		/// </summary>
-		public void Remove()
+		public string Execute(string[] _args)
+		{
+			return string.Empty;
+		}
+		public void Finish()
 		{
 			return;
 		}
 	}
 	public class DotCommand : IDialogCommand
 	{
-		public void Execute(int _, string[] _args)
+		public string Execute(string[] _args)
 		{
-			float _padding;
-			if (_args.Length == 0 || !float.TryParse(_args[0], out _padding))
-				_padding = 0.5f;
+			float _padding = 0.3f;
+			if (_args != null)
+				_ = float.TryParse(_args[0], out _padding);
 
 			Instance.PaddingDelay = (int)(_padding * 100);
+			return string.Empty;
 		}
 	}
 	public class PlayerNameCommand : IDialogCommand
 	{
-		public void Execute(int _index, string[] _args) =>
-			Instance.Dialog = Instance.Dialog.Insert(_index, Player.Data.Name ??= "Superstar");
+		public string Execute(string[] _) =>
+			Player.Data.Name;
 	}
 	public class VoiceCommand : IDialogCommand
 	{
-		public void Execute(int _index, string[] _args)
+		public string Execute(string[] _args)
 		{
 			// Get voice
 			string _voice = _args[0];
-			Instance.dialogAudio.Stream = ResourceLoader.Load<AudioStream>($"{GameManager.SFXPath}/dialog/{_voice}_idle.wav");
+			Instance.dialogAudio.Stream = ResourceLoader.Load<AudioStream>($"{GlobalManager.SFXPath}/dialog/{_voice}_idle.wav");
+			return string.Empty;
 		}
 	}
+    public class PronounsPossesive : IDialogCommand
+    {
+        public string Execute(string[] _args)
+        {
+           if (OptionsManager.Settings.Locale == "es_ES")
+		   {
+				return "w";
+		   }
+		   return "e";
+        }
+    }
 }

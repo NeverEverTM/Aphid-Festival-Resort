@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
-public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
+public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 {
 	public AphidInstance Instance;
 	/// <summary>
 	/// For aphids that do not belong to the player, acting as NPCs.
 	/// </summary>
 	public bool IS_FAKE = false;
+	public const string Tag = "aphid";
 
 	[Export] public AphidSkin skin;
 	[Export] private Area2D triggerArea;
@@ -132,8 +133,12 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			}
 			blink_timer.Start(rng.RandfRange(4.5f, 6.7f));
 		};
-
 		blink_timer.Start(rng.RandfRange(4.5f, 6.7f));
+
+		// this makes them able to blink and sqeak while being grabbed
+		blink_duration_timer.ProcessMode = ProcessModeEnum.Pausable;
+		blink_timer.ProcessMode = ProcessModeEnum.Pausable;
+		squeak_timer.ProcessMode = ProcessModeEnum.Pausable;
 
 		for (int i = 0; i < DecayActions.Count; i++)
 			DecayActions[i].Start(this, new());
@@ -271,7 +276,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 	public void PlaySound(AudioStream _audio, bool _pitchRand = false)
 	{
 		if (_pitchRand)
-			audioPlayer.PitchScale = GameManager.RNG.RandfRange(0.81f, 1.27f);
+			audioPlayer.PitchScale = GlobalManager.RNG.RandfRange(0.81f, 1.27f);
 		audioPlayer.Stream = _audio;
 		audioPlayer.Play();
 	}
@@ -301,21 +306,13 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 		if (!_forcefully)
 			return;
 		Instance.Status.AddAffection(-5);
-		AddChild(GameManager.EmitParticles("anger", new(), false));
+		AddChild(GlobalManager.EmitParticles("anger", new(), false));
 		PlaySound(Audio_Hurt);
 	}
 
 	// =======| Stat Related Functions |=======
 	public virtual async void Die()
 	{
-		// If you got saved to generations but didnt got removed from current, then discard yourself now
-		if (GenerationsTracker.Data.Generations.ContainsKey(new Guid(Instance.ID)))
-		{
-			SaveSystem.RemoveAphid(Guid.Parse(Instance.ID));
-			QueueFree();
-			return;
-		}
-
 		SetState(StateEnum.Idle);
 		IsDisabled = true;
 
@@ -335,8 +332,10 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			await Task.Delay(80);
 			skin.Modulate -= new Color(0, 0, 0, 0.025f);
 		}
-		GenerationsTracker.Data.AddAphid(Instance);
-		SaveSystem.RemoveAphid(Guid.Parse(Instance.ID));
+		GenerationsTracker.Data.Add(Instance);
+		GameManager.RemoveAphid(Guid.Parse(Instance.ID));
+		Instance = null;
+		QueueFree();
 	}
 
 	protected virtual void TickHarvest(float _delta)
@@ -348,12 +347,12 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			IsReadyForHarvest = true;
 			ShaderMaterial _outline = new()
 			{
-				Shader = ResourceLoader.Load<Shader>(GameManager.OutlineShader)
+				Shader = ResourceLoader.Load<Shader>(GlobalManager.CanvasGroupOutlineShader)
 			};
 			_outline.SetShaderParameter("line_colour", Color.FromHtml("f25400"));
 			_outline.SetShaderParameter("line_thickness", 2);
 			skin.Material = _outline;
-			harvest_effect = GameManager.EmitParticles("harvest", GlobalPosition, false);
+			harvest_effect = GlobalManager.EmitParticles("harvest", new(), false);
 			AddChild(harvest_effect);
 		}
 	}
@@ -367,7 +366,8 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 		harvest_effect = null;
 		// result
 		Instance.Status.MilkBuildup = 0;
-		Player.Data.SetCurrency(Instance.Status.IsAdult ? AphidData.moneyPerHarvest_adult : AphidData.moneyPerHarvest_baby);
+		Player.Data.SetCurrency(Instance.Status.IsAdult ? AphidData.HarvestValue_Adult : AphidData.HarvestValue_Baby);
+		CanvasManager.RemoveControlPrompt(Tag);
 	}
 
 	// ========| Breeding Control|==========
@@ -390,15 +390,15 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 	{
 		// Set breed state
 		SetState(StateEnum.Breed);
-		GameManager.EmitParticles("mating", GlobalPosition).OneShot = true;
+		GlobalManager.EmitParticles("mating", GlobalPosition).OneShot = true;
 
 		// Set breed mode
 		if (_mode == -1)
 		{
-			if (SaveSystem.Aphids.Count == 1)
+			if (GameManager.Aphids.Count == 1)
 				_mode = 1; // This is to make sure new games get a second aphid as soon as possible
 			else
-				_mode = GameManager.GetRandomByWeight(rng, breeding_weights);
+				_mode = GlobalManager.GetRandomByWeight(rng, breeding_weights);
 		}
 		Instance.Status.BreedMode = _mode;
 
@@ -406,12 +406,12 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 		{
 			TriggerActions.Add(ActiveStates[StateEnum.Breed] as AphidActions.ITriggerEvent);
 			breed_timeout_timer = breed_timeout;
-			breed_effect = GameManager.EmitParticles("mating", GlobalPosition);
+			breed_effect = GlobalManager.EmitParticles("mating", GlobalPosition);
 		}
 		else // Mate with yourself
 		{
 			IsBreeding = true;
-			breed_effect = GameManager.EmitParticles("heart", GlobalPosition);
+			breed_effect = GlobalManager.EmitParticles("heart", GlobalPosition);
 			breed_effect.OneShot = false;
 			await skin.DoDanceAnim();
 			Breed(Instance, true);
@@ -483,7 +483,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			_father.Status.BreedBuildup = 0;
 			_father.Entity.SetState(StateEnum.Idle);
 		}
-		GameManager.EmitParticles("heart", GlobalPosition - new Vector2(0, 10));
+		GlobalManager.EmitParticles("heart", GlobalPosition - new Vector2(0, 10));
 	}
 
 	// =======| Collision Behaviours |========
@@ -523,7 +523,7 @@ public partial class Aphid : CharacterBody2D, Player.IObjectInteractable
 			{
 				// timer
 				Player.Instance.SetDisabled(true);
-				Player.Instance.LockPositionCooldown.Start(AphidData.PET_DURATION);
+				Player.Instance.RunDisabledTimer(AphidData.PET_DURATION);
 				Player.Instance.MovementDirection = Vector2.Zero;
 
 				// visuals

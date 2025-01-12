@@ -13,7 +13,7 @@ public partial class AphidSkin : Node2D
 	/// Used to keep track of eye expressions after blink.
 	/// So if aphid is happy and blinks, it doesnt reset back to idle.
 	/// </summary>
-	public string lastEyeExpression = "idle", lastLegAction = "idle", currentEyeExpression;
+	public string lastEyeExpression = "idle", currentEyeExpression;
 	/// <summary>
 	/// False : Facing Right - True : Facing Left
 	/// </summary>
@@ -41,17 +41,17 @@ public partial class AphidSkin : Node2D
 		SetBodySkin(_action);
 		SetLegsSkin(_action);
 	}
-// TODO: Turn into static method
-	private Texture2D GetSkinPiece(int _id, string _piece, string _action = "idle")
-	{
-		string _path = $"{GameManager.SkinsPath}/{_id}/";
 
-		if (Instance.Status.IsAdult)
+	public static Texture2D GetSkinPiece(int _id, string _piece, string _action = "idle", bool _isAdult = true)
+	{
+		string _path = $"{GlobalManager.SkinsPath}/{_id}/";
+
+		if (_isAdult)
 			_path += $"{_piece}_{_action}.{SkinTextureExtension}";
 		else
 			_path += $"{_piece}_baby_{_action}.{SkinTextureExtension}";
 
-		if (!FileAccess.FileExists(_path))
+		if (!ResourceLoader.Exists(_path))
 		{
 			Logger.Print(Logger.LogPriority.Error, $"AphidSkin: Skin part at <{_path}> does not exist.");
 			return new PlaceholderTexture2D();
@@ -60,27 +60,24 @@ public partial class AphidSkin : Node2D
 	}
 	public void SetEyesSkin(string _action)
 	{
-		eyes.Texture = GetSkinPiece(Instance.Genes.EyeType, "eyes", _action);
+		eyes.Texture = GetSkinPiece(Instance.Genes.EyeType, "eyes", _action, Instance.Status.IsAdult);
 		eyes.SelfModulate = Instance.Genes.EyeColor;
 		lastEyeExpression = currentEyeExpression;
 		currentEyeExpression = _action;
 	}
 	public void SetAntennaSkin(string _action)
 	{
-		antenna.Texture = GetSkinPiece(Instance.Genes.AntennaType, "antenna", _action);
+		antenna.Texture = GetSkinPiece(Instance.Genes.AntennaType, "antenna", _action, Instance.Status.IsAdult);
 		antenna.SelfModulate = Instance.Genes.AntennaColor;
 	}
 	public void SetBodySkin(string _action)
 	{
-		body.Texture = GetSkinPiece(Instance.Genes.BodyType, "body", _action); ;
+		body.Texture = GetSkinPiece(Instance.Genes.BodyType, "body", _action, Instance.Status.IsAdult); ;
 		body.SelfModulate = Instance.Genes.BodyColor;
 	}
 	public void SetLegsSkin(string _action)
 	{
-		if (lastLegAction == _action)
-			return;
-		lastLegAction = _action;
-		Texture2D _legsTexture = GetSkinPiece(Instance.Genes.LegType, "legs", _action);
+		Texture2D _legsTexture = GetSkinPiece(Instance.Genes.LegType, "legs", _action, Instance.Status.IsAdult);
 		front_legs.SelfModulate = back_legs.SelfModulate = Instance.Genes.LegColor;
 		front_legs.Texture = back_legs.Texture = _legsTexture;
 	}

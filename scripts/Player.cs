@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
-using Godot.Collections;
 
 public partial class Player : CharacterBody2D
 {
@@ -22,46 +22,109 @@ public partial class Player : CharacterBody2D
 	private int QueuedDisabled = 0;
 
 	// Movement Params
-	public Vector2 MovementDirection, FacingDirection;
+	public Vector2 MovementDirection { get; set; }
+	public Vector2 FacingDirection { get; set; }
 	public float MovementSpeed = 100;
-	private const float idleTimer_base = 4; 
+	private const float idleTimer_base = 4;
 	private float idleTimer = idleTimer_base;
 	private bool flipSwitch, IsRunning;
 	private string currentAnimState = "";
 
-	// Collision Params
+	// Interaction Params
+	public const string InteractableTag = "interactable";
 	private string[] ValidInteractionTags = new string[]
 	{
-		"aphid", "npc", "menu", "interactable"
+		Aphid.Tag, NPCBehaviour.Tag, "menu", InteractableTag
 	};
+	private readonly List<Node2D> interactables_nearby = new();
+	private readonly List<Node2D> pickups_nearby = new();
+	private readonly List<string> current_prompts = new();
+	private Timer overlapping_monitoring = new();
+	private int interact_hold_cycles;
+	private bool interact_is_being_held;
 
 	// Pickup Params
 	public Node2D PickupItem { set; get; }
 	private Vector2 pickup_ground_position = new(35, 0); // facing right by default
 	private bool pickup_isAphid;
-	public Timer LockPositionCooldown;
+	protected Timer LockPositionCooldown;
 
 	public delegate void PickupEventHandler(string _tag);
 	public delegate void DropEventHandler();
 	public event PickupEventHandler OnPickup;
 	public event DropEventHandler OnDrop;
 
-	// Input Params
-	private int interact_hold_cycles;
-	private bool interact_is_being_held;
-	private const string player_step_sound = GameManager.SFXPath + "/player/step.wav";
-	private bool menuCheck;
+	// Audio
+	private AudioStream audio_step;
+
+	// Savedata params
+	internal static SaveData Data;
+	public static string NewName { get; set; }
+	public static string[] NewPronouns { get; set; }
+
+	public record SaveData
+	{
+		public string Name { get; set; }
+		public string[] Pronouns { get; set; }
+		public int Level { get; set; }
+		public string Room { get; set; }
+
+		public float PositionX { get; set; }
+		public float PositionY { get; set; }
+
+		public List<string> Inventory { get; set; }
+		public List<string> Storage { get; set; }
+		public int Currency { get; set; }
+		public int InventoryMaxCapacity { get; set; }
+
+		public SaveData()
+		{
+			Room = "resort_golden_grounds";
+			Inventory = new();
+			Storage = new();
+			Currency = 30;
+			Name = NewName;
+			Pronouns = NewPronouns;
+			InventoryMaxCapacity = 15;
+		}
+		public void SetCurrency(int _amount, bool _setToValue = false)
+		{
+			if (_setToValue)
+				Currency = _amount;
+			else
+				Currency += _amount;
+			CanvasManager.UpdateCurrency();
+		}
+	}
+	public class SaveModule : SaveSystem.IDataModule<SaveData>
+	{
+		public void Set(SaveData _data)
+		{
+			Data = _data;
+			Instance.GlobalPosition = new(Data.PositionX, Data.PositionY);
+			CanvasManager.UpdateCurrency();
+		}
+		public SaveData Get()
+		{
+			Data.PositionX = Instance.GlobalPosition.X;
+			Data.PositionY = Instance.GlobalPosition.Y;
+			return Data;
+		}
+		public SaveData Default() => new();
+	}
 
 	public override void _EnterTree()
 	{
 		Instance = this;
-		void _leaveItemInGround()
+		GlobalManager.GlobalCamera = camera;
+
+		void _leaveItemInGround(GlobalManager.SceneName _)
 		{
 			if (PickupItem != null)
 				PickupItem.GlobalPosition = GlobalPosition;
-			GameManager.OnPreLoadScene -= _leaveItemInGround;
+			GlobalManager.OnPreLoadScene -= _leaveItemInGround;
 		}
-		GameManager.OnPreLoadScene += _leaveItemInGround;
+		GlobalManager.OnPreLoadScene += _leaveItemInGround;
 
 		// facing
 		FacingDirection = Vector2.Left;
@@ -73,86 +136,104 @@ public partial class Player : CharacterBody2D
 		};
 		LockPositionCooldown.Timeout += () =>
 		{
-			SetDisabled(false, false);
+			SetDisabled(false);
 			SetPlayerAnim("idle");
 		};
 		AddChild(LockPositionCooldown);
 
-		SaveSystem.AddToProfileData(Instance);
+		SaveSystem.ProfileClassData.Add(new SaveSystem.SaveModule<SaveData>("player", new SaveModule(), 1000));
 	}
 	public override void _Ready()
 	{
-		GameManager.GlobalCamera = camera;
-		animator.Play("idle");
+		audio_step = ResourceLoader.Load<AudioStream>(GlobalManager.SFXPath + "/player/step.wav");
 		animator.FrameChanged += () =>
 		{
 			if (animator.Animation == "walk")
 			{
 				if (animator.Frame == 0 || animator.Frame == 3)
-					SoundManager.CreateSound2D(ResourceLoader.Load<AudioStream>(player_step_sound), GlobalPosition, false).VolumeDb = -15;
+					SoundManager.CreateSound2D(audio_step, GlobalPosition, false).VolumeDb = -10;
 			}
 			if (animator.Animation == "run")
 			{
 				if (animator.Frame == 0 || animator.Frame == 3)
-					SoundManager.CreateSound2D(ResourceLoader.Load<AudioStream>(player_step_sound), GlobalPosition);
+					SoundManager.CreateSound2D(audio_step, GlobalPosition);
 			}
 		};
 
-		CanvasManager.Menus.OnSwitch += (bool _state, MenuUtil.MenuInstance _menu) =>
+		AddChild(overlapping_monitoring);
+		overlapping_monitoring.Timeout += () =>
 		{
-			if (menuCheck != _state) // prevent multiple queues 
+			if (IsDisabled)
+				return;
+
+			CheckForInteractables();
+			ChechForPickups();
+		};
+		overlapping_monitoring.Start(0.15f);
+
+		CanvasManager.Menus.OnSwitch += (MenuUtil.MenuInstance _lastMenu, MenuUtil.MenuInstance _menu) =>
+		{
+			if (_menu != null && _menu.ID != "pause")
 			{
-				menuCheck = _state;
-				SetDisabled(_state, _menu?.ID != "pause");
+				if (PickupItem != null)
+					_ = Drop();
+				inventory?.SetTo(false);
+				if (animator.Animation == "idle" == (animator.Animation == "sit"))
+					SetPlayerAnim("idle");
 			}
 		};
 	}
 	public override void _PhysicsProcess(double delta)
 	{
+		IsDisabled = QueuedDisabled > 0 || CanvasManager.Menus.IsBusy || CanvasManager.Instance.IsInFocus;
 		// Calculate player movement
 		MovementDirection = Vector2.Zero;
-		if (!IsDisabled && !CanvasManager.Instance.IsInFocus)
+		if (!IsDisabled)
 		{
-			IsRunning = OptionsManager.Settings.Data.SettingAutoRun ? !Input.IsActionPressed("run") : Input.IsActionPressed("run");
+			IsRunning = OptionsManager.Settings.SettingAutoRun ? !Input.IsActionPressed("run") : Input.IsActionPressed("run");
 			ReadMovementInput();
 			ReadHeldInput();
 		}
 		Velocity = MovementDirection * MovementSpeed;
 
 		// apply movement phyiscs and animations
-		if (MovementDirection != Vector2.Zero)
-			SetFlipDirection(MovementDirection);
 		TickFlip((float)delta);
-		DoWalkAnim((float)delta);
+		ProcessMovementAnimations((float)delta);
 		MoveAndSlide();
 
-		if (PickupItem != null && !GameManager.IsBusy)
+		if (PickupItem != null && !GlobalManager.IsBusy)
 			ProcessPickupBehaviour();
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (IsDisabled || !@event.IsPressed())
-			return;
-		// TODO: Input reader with names and functions
-		if (@event.IsAction("open_generations"))
+		if (IsDisabled)
 		{
-			CanvasManager.Menus.OpenMenu(GenerationsTracker.Instance.Menu);
+			if (@event.IsActionPressed("open_generations") && CanvasManager.Menus.CurrentMenu.Equals(GenerationsTracker.Menu))
+				CanvasManager.Menus.OpenMenu(GenerationsTracker.Menu);
 			return;
 		}
 
-		if (@event.IsAction("open_inventory"))
+		//TODO: SET INPUT SYSTEM FOR THIS
+
+		if (@event.IsActionPressed("open_generations"))
 		{
-			inventory?.Enable(!inventory.Visible);
+			CanvasManager.Menus.OpenMenu(GenerationsTracker.Menu);
 			return;
 		}
 
-		if (@event.IsAction("interact"))
+		if (@event.IsActionPressed("open_inventory"))
+		{
+			inventory?.SetTo(!inventory.Visible);
+			return;
+		}
+
+		if (@event.IsActionPressed("interact"))
 		{
 			TryInteract();
 			return;
 		}
 
-		if (@event.IsAction("pickup"))
+		if (@event.IsActionPressed("pickup"))
 		{
 			if (PickupItem == null)
 				TryPickup();
@@ -161,7 +242,7 @@ public partial class Player : CharacterBody2D
 			return;
 		}
 
-		if (@event.IsAction("pull"))
+		if (@event.IsActionPressed("pull"))
 		{
 			// either pull the first item or store it in inventory
 			if (PickupItem != null)
@@ -175,7 +256,7 @@ public partial class Player : CharacterBody2D
 	/// One must be careful to track and handle their requests.
 	/// </summary>
 	/// <param name="_queuedState">State to be queued. True adds a queue and False removes a queue</param>
-	public void SetDisabled(bool _queuedState, bool _cancelActions = true)
+	public void SetDisabled(bool _queuedState, bool _cancelActions = false)
 	{
 		QueuedDisabled += _queuedState ? 1 : -1;
 
@@ -185,28 +266,34 @@ public partial class Player : CharacterBody2D
 			Logger.Print(Logger.LogPriority.Error, "Player was requested to unqueue a disable call, but there was no queued disables!");
 		}
 
-		IsDisabled = QueuedDisabled > 0;
+		IsDisabled = QueuedDisabled > 0 || CanvasManager.Menus.IsBusy || CanvasManager.Instance.IsInFocus;
 
-		if (IsDisabled && _cancelActions) // Disallow some behaviours from persisting after disabled
+		if (_cancelActions)
 		{
 			if (PickupItem != null)
 				_ = Drop();
-			inventory?.Enable(false);
-			SetPlayerAnim("idle");
+			inventory?.SetTo(false);
+			if (animator.Animation == "idle" == (animator.Animation == "sit"))
+				SetPlayerAnim("idle");
 		}
 	}
-	public void SetDisabledTimer(float _secondsDuration)
+	/// <summary>
+	/// Runs a global player timer that deactivates the disable state after the timer runs out.
+	/// This function DOES NOT call SetDisabled, and it can be overriden if someone calls it midway through.
+	/// (It properly disposes of its last call if so)
+	/// </summary>
+	public void RunDisabledTimer(float _secondsDuration)
 	{
 		if (LockPositionCooldown.TimeLeft > 0) // end early
 		{
-			SetDisabled(false, false);
+			SetDisabled(false);
 			SetPlayerAnim("idle");
 		}
 
 		LockPositionCooldown.Start(_secondsDuration);
 	}
 
-	// =========| Input Related |========
+	// =========| Interaction Related |========
 	private void ReadMovementInput()
 	{
 		FacingDirection = Input.GetVector("left", "right", "up", "down");
@@ -217,7 +304,7 @@ public partial class Player : CharacterBody2D
 		else
 			MovementSpeed = 90;
 	}
-	private void DoWalkAnim(float _delta)
+	private void ProcessMovementAnimations(float _delta)
 	{
 		if (!MovementDirection.IsEqualApprox(Vector2.Zero))
 		{
@@ -226,6 +313,7 @@ public partial class Player : CharacterBody2D
 				SetPlayerAnim("run");
 			else
 				SetPlayerAnim("walk");
+			SetFlipDirection(MovementDirection);
 		}
 		else if (!IsDisabled)
 		{
@@ -252,36 +340,108 @@ public partial class Player : CharacterBody2D
 			interact_hold_cycles = 0;
 	}
 
-	// ======| Interactions |=======
-	private void TryInteract()
+	private void CheckForInteractables()
 	{
-		if (IsDisabled)
-			return;
-
-		Array<Node2D> _collisionList = interactionArea.GetOverlappingBodies();
-
-		if (_collisionList.Count == 0)
-			return;
+		Godot.Collections.Array<Node2D> _collisionList = interactionArea.GetOverlappingBodies();
+		List<string> _last_prompts = current_prompts.ToList();
+		current_prompts.Clear();
+		interactables_nearby.Clear();
 
 		for (int i = 0; i < _collisionList.Count; i++)
 		{
 			if (!_collisionList[i].HasMeta("tag"))
 				continue;
-			if (CheckForTag(_collisionList[i]))
+			string _tag = (string)_collisionList[i].GetMeta("tag");
+			if (ValidInteractionTags.Contains(_tag))
 			{
-				if (_collisionList[i].HasMethod("Interact")) // Within CollisionObject
-					_collisionList[i].CallDeferred("Interact");
-				else if (_collisionList[i].GetParent().HasMethod("Interact")) // Parent of CollisionObject
-					_collisionList[i].GetParent().CallDeferred("Interact");
-				return;
+				interactables_nearby.Add(_collisionList[i]);
+				current_prompts.Add(_tag);
 			}
 		}
+
+		// we set the popup control prompts to indicate interactibility with objects nearby
+		SetPromptsIfAny();
+
+		// then we remove any previous instances where the player is no longer nearby an object that triggers the prompt
+		for (int i = 0; i < _last_prompts.Count; i++)
+		{
+			if (current_prompts.Contains(_last_prompts[i]))
+				continue;
+
+			CanvasManager.RemoveControlPrompt(_last_prompts[i]);
+		}
 	}
-	private bool CheckForTag(Node2D _item)
+	private void ChechForPickups()
 	{
-		var tag = (string)_item.GetMeta("tag");
-		return ValidInteractionTags.Contains(tag);
+		if (PickupItem != null)
+			return;
+
+		var _collisionList = interactionArea.GetOverlappingBodies();
+		pickups_nearby.Clear();
+
+		for (int i = 0; i < _collisionList.Count; i++)
+		{
+			var _item = _collisionList[i];
+			if (!_item.HasMeta("pickup")) // is it a pickup
+				continue;
+
+			if (!(bool)_item.GetMeta("pickup")) // can it be picked up
+				return;
+
+			pickups_nearby.Add(_item);
+		}
+
+		if (pickups_nearby.Count > 0)
+			CanvasManager.AddControlPrompt(CanvasManager.Prompt_Pickup, InputNames.Pickup, InputNames.Pickup);
+		else
+			CanvasManager.RemoveControlPrompt(InputNames.Pickup);
 	}
+	internal void TryInteract()
+	{
+		if (IsDisabled || interactables_nearby.Count == 0)
+			return;
+
+		Node2D _node = interactables_nearby[0];
+		float _minDistance = GlobalPosition.DistanceTo(_node.GlobalPosition);
+
+		for (int i = 0; i < interactables_nearby.Count; i++)
+		{
+			float _distanceFromPlayer = GlobalPosition.DistanceTo(interactables_nearby[i].GlobalPosition);
+			if (_distanceFromPlayer < _minDistance)
+			{
+				_minDistance = _distanceFromPlayer;
+				_node = interactables_nearby[i];
+			}
+		}
+
+		if (_node.HasMethod("Interact")) // Within CollisionObject
+			_node.CallDeferred("Interact");
+		else if (_node.GetParent().HasMethod("Interact")) // Parent of CollisionObject
+			_node.GetParent().CallDeferred("Interact");
+	}
+	private void SetPromptsIfAny()
+	{
+		if (PickupItem != null)
+			return;
+
+		if (current_prompts.Contains(Aphid.Tag))
+		{
+			if ((interactables_nearby.Find((e) => e is Aphid) as Aphid).IsReadyForHarvest)
+				CanvasManager.AddControlPrompt(CanvasManager.Prompt_Harvest, Aphid.Tag, InputNames.Interact);
+			else
+				CanvasManager.AddControlPrompt(CanvasManager.Prompt_Pet, Aphid.Tag, InputNames.Interact);
+		}
+
+		if (current_prompts.Contains(NPCBehaviour.Tag))
+			CanvasManager.AddControlPrompt(CanvasManager.Prompt_Talk, NPCBehaviour.Tag, InputNames.Interact);
+
+		if (current_prompts.Contains("menu"))
+			CanvasManager.AddControlPrompt("prompt_open_menu", "menu", InputNames.Interact);
+
+		if (current_prompts.Contains("interactable"))
+			CanvasManager.AddControlPrompt(CanvasManager.Prompt_Interact, InteractableTag, InputNames.Interact);
+	}
+
 	private async void CallAllNearbyAphids()
 	{
 		if (PickupItem != null)
@@ -290,10 +450,10 @@ public partial class Player : CharacterBody2D
 		SetDisabled(true);
 		SetPlayerAnim("whistle");
 		await Task.Delay(500);
-		PlaySound(Audio_Whistle);
-		for (int i = 0; i < ResortManager.Instance.AphidsOnResort.Count; i++)
+		SoundManager.CreateSound2D(Audio_Whistle, Instance.GlobalPosition, true);
+		for (int i = 0; i < ResortManager.CurrentResort.AphidsOnResort.Count; i++)
 		{
-			Aphid _aphid = ResortManager.Instance.AphidsOnResort[i];
+			Aphid _aphid = ResortManager.CurrentResort.AphidsOnResort[i];
 			if (_aphid.GlobalPosition.DistanceTo(GlobalPosition) < 400)
 				_aphid.CallTowards(GlobalPosition);
 		}
@@ -301,52 +461,47 @@ public partial class Player : CharacterBody2D
 		SetDisabled(false);
 	}
 
-	// ======| Pickup |========
 	private void TryPickup()
 	{
-		if (IsDisabled)
+		if (IsDisabled || pickups_nearby.Count == 0)
 			return;
 
-		// Find a node
-		Node _node = GetOverlappingNodeWithMeta("pickup");
-		if (_node == null)
-			return;
-
-		if (!(bool)_node.GetMeta("pickup"))
-			return;
-
-		var _tag = _node.HasMeta("tag") ? (string)_node.GetMeta("tag") : null;
+		var _node = pickups_nearby[0];
+		var _tag = _node.HasMeta("tag") ? (string)_node.GetMeta("tag") : "item";
 		// If is an aphid, do a bunch of extra shit
-		if (_tag.Equals("aphid") && !OnAphidPickup(_node as Aphid))
+		if (_tag == Aphid.Tag && IsAphidBusy(_node as Aphid))
 			return;
 
-		_ = Pickup(_node as Node2D, _tag);
+		_ = Pickup(_node, _tag);
 	}
 	public async Task Pickup(Node2D _node, string _tag, bool _playAnim = true)
 	{
 		if (LockPositionCooldown.TimeLeft > 0)
 			return;
+
+		
 		_node.SetMeta("pickup", false);
 		_node.ProcessMode = ProcessModeEnum.Disabled;
 
 		if (_playAnim)
 		{
-			SetDisabled(true, false);
+			SetDisabled(true);
 			SetPlayerAnim("pickup");
 			SetFlipDirection(_node.GlobalPosition - GlobalPosition);
-			float _duration = animator.SpriteFrames.GetFrameCount("pickup") / 11f;
-			SetDisabledTimer(_duration);
-			await Task.Delay((int)(_duration * 1000) - 100);
+			RunDisabledTimer(0.5f);
+			await Task.Delay((int)(0.5f * 1000) - 100);
 		}
 
 		_node.ZIndex = 1;
 		PickupItem = _node;
+		CanvasManager.RemoveControlPrompt(InputNames.Pickup);
+		CanvasManager.AddControlPrompt(CanvasManager.Prompt_Drop, InputNames.Pickup, InputNames.Pickup);
 		OnPickup?.Invoke(_tag);
 	}
-	private bool OnAphidPickup(Aphid _aphid)
+	private bool IsAphidBusy(Aphid _aphid)
 	{
 		if (_aphid.IsEating)
-			return false;
+			return true;
 
 		// if sleeping, get annoyed
 		if (_aphid.State.Is(Aphid.StateEnum.Sleep))
@@ -356,18 +511,18 @@ public partial class Player : CharacterBody2D
 		_aphid.skin.SetFlipDirection(FacingDirection, true);
 		pickup_isAphid = true;
 		SoundManager.CreateSound2D(_aphid.AudioDynamic_Idle, _aphid.GlobalPosition, true);
-		return true;
+		return false;
 	}
 	public async Task Drop(bool _setPosition = true)
 	{
 		if (LockPositionCooldown.TimeLeft > 0 ||
-		 GameManager.Utils.Raycast(GlobalPosition, flipSwitch ? pickup_ground_position : -pickup_ground_position, null).Count > 0)
+		 GlobalManager.Utils.Raycast(GlobalPosition, flipSwitch ? pickup_ground_position : -pickup_ground_position, null).Count > 0)
 			return;
-		SetDisabled(true, false);
+		CanvasManager.RemoveControlPrompt(InputNames.Pickup);
+		SetDisabled(true);
 		SetPlayerAnim("pickup", true);
-		float _duration = animator.SpriteFrames.GetFrameCount("pickup") / 13f;
-		SetDisabledTimer(_duration);
-		await Task.Delay((int)(_duration * 1000) - 200);
+		RunDisabledTimer(0.5f);
+		await Task.Delay((int)(0.4f * 1000));
 
 		OnDrop?.Invoke();
 		pickup_isAphid = false;
@@ -418,45 +573,8 @@ public partial class Player : CharacterBody2D
 		else
 			animator.PlayBackwards(_name);
 	}
-	public static void PlaySound(AudioStream _audio, bool _pitchRand = false)
-		=> SoundManager.CreateSound2D(_audio, Instance.GlobalPosition, _pitchRand);
 
-	private Node GetOverlappingNodeWithMeta(string _meta)
-	{
-		var _collisionList = interactionArea.GetOverlappingBodies();
-		if (_collisionList.Count <= 0)
-			return null;
-
-		for (int i = 0; i < _collisionList.Count; i++)
-		{
-			// Is this an aphid?
-			var _item = _collisionList[i];
-			if (!_item.HasMeta(_meta))
-				continue;
-
-			return _item;
-		}
-		return null;
-	}
-	private Node GetOverlappingNodeWithTag(string _tag)
-	{
-		var _collisionList = interactionArea.GetOverlappingBodies();
-		if (_collisionList.Count <= 0)
-			return null;
-
-		for (int i = 0; i < _collisionList.Count; i++)
-		{
-			// Is this an aphid?
-			var _item = _collisionList[i];
-			if (!_item.HasMeta("_tag") && !((string)_item.GetMeta("tag")).Equals(_tag))
-				continue;
-
-			return _item;
-		}
-		return null;
-	}
-
-	public interface IObjectInteractable
+	public interface IPlayerInteractable
 	{
 		/// <summary>
 		/// Function used to dictate what happens when the player interacts with this.

@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -81,7 +82,7 @@ public partial class DebugConsole : CanvasLayer
 			else if (!IsEnabled)
 			{
 				IsEnabled = true;
-				GameManager.CreatePopup("Welcome to the next level", GameManager.Instance);
+				GlobalManager.CreatePopup("Welcome to the next level", GlobalManager.Instance);
 			}
 		}
 		else if (DidntSayIDidntWarnYouBeforeHand && @event is InputEventKey)
@@ -95,9 +96,12 @@ public partial class DebugConsole : CanvasLayer
 
 		if (commands.ContainsKey(_commandLines[0]))
 		{
-			string[] _args = null;
 			lastCommand = _commandLines;
-			_commandLines.CopyTo(_args, 1);
+
+			// parse args and execut command
+			string[] _args = new string[_commandLines.Length];
+			if (_commandLines.Length > 1)
+				Array.Copy(_commandLines, 1, _args, 0, _args.Length - 1);
 			commands[_commandLines[0]].Execute(_args);
 			return true;
 		}
@@ -174,8 +178,8 @@ public partial class DebugConsole : CanvasLayer
 		{
 			AphidData.Genes _genes = new();
 			_genes.DEBUG_Randomize();
-			_genes.Name += ResortManager.Instance.AphidsOnResort.Count;
-			ResortManager.CreateNewAphid(GameManager.Utils.GetMouseToWorldPosition(), _genes);
+			_genes.Name += ResortManager.CurrentResort.AphidsOnResort.Count;
+			ResortManager.CreateAphid(GlobalManager.Utils.GetMouseToWorldPosition(), _genes);
 		}
 	}
 	private class Motherload : IConsoleCommand
@@ -186,7 +190,7 @@ public partial class DebugConsole : CanvasLayer
 		{
 			int _amount = 500;
 			if (args.Length > 0)
-				CheckValidType(args[1], out _amount);
+				CheckValidType(args[0], out _amount);
 
 			Player.Data.Currency += _amount;
 			CanvasManager.UpdateCurrency();

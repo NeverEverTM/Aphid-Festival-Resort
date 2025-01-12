@@ -10,6 +10,8 @@ mushroom_salad,leaf_salad,cooked_shroom
 berry_juice,berry,water
 berry_juice,berry,shaved_ice
 cooked_shroom,shroom,
+berry_icecream,icecream,berry
+berry_icecream,shaved_ice,berry
 honey_icecream,icecream,honey_drop
 honey_icecream,icecream,glazed_honey
 honey_icecream,shaved_ice,glazed_honey
@@ -24,3 +26,4 @@ abomihoney,honey_drop,glazed_honey
 abomihoney,glazed_honey,
 cold_salad,leaf,shaved_ice
 cold_salad,leaf_salad,shaved_ice
+honey_pancakes,glazed_honey,flour_bag

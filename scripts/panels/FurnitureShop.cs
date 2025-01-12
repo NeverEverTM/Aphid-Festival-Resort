@@ -7,6 +7,7 @@ public partial class FurnitureShop : ShopInterface
 
 	protected override void Purchase()
 	{
+		base.Purchase();
 		Player.Data.Storage.Add(currentItem);
 	}
 

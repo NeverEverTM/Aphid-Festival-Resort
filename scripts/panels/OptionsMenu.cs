@@ -25,7 +25,6 @@ public partial class OptionsMenu : Control
 	- Create a new serializeable variable in the Savefile config
 	- Create a menu element that allows the user to modify it (aka Slider, Select, Check)
 	- Create a function that sets the value both in the savefile and in-game
-
 	*/
 	public override void _Ready()
 	{
@@ -38,33 +37,31 @@ public partial class OptionsMenu : Control
 		windowMode.ItemSelected += OnDisplaySelect;
 		language.ItemSelected += OnLocaleSelect;
 		autoRun.Toggled += OnAutoRunToggle;
-
-		OptionsManager.Settings.Data ??= new();
-
+		
 		VisibilityChanged += () =>
 		{
 			if (!Visible)
-				OptionsManager.Settings.Save();
+				OptionsManager.Module.Save();
 			else
 			{
 				masterSlider.GrabFocus();
-				masterSlider.Value = OptionsManager.Settings.Data.VolumeMaster;
-				musicSlider.Value = OptionsManager.Settings.Data.VolumeMusic;
-				soundSlider.Value = OptionsManager.Settings.Data.VolumeSound;
-				ambienceSlider.Value = OptionsManager.Settings.Data.VolumeAmbience;
-				uiSlider.Value = OptionsManager.Settings.Data.VolumeUI;
+				masterSlider.Value = OptionsManager.Settings.VolumeMaster;
+				musicSlider.Value = OptionsManager.Settings.VolumeMusic;
+				soundSlider.Value = OptionsManager.Settings.VolumeSound;
+				ambienceSlider.Value = OptionsManager.Settings.VolumeAmbience;
+				uiSlider.Value = OptionsManager.Settings.VolumeUI;
 
 				foreach (KeyValuePair<int, DisplayServer.WindowMode> _pair in display)
 				{
-					if (_pair.Value.Equals(OptionsManager.Settings.Data.DisplayMode))
+					if (_pair.Value.Equals(OptionsManager.Settings.DisplayMode))
 					{
 						windowMode.Select(_pair.Key);
 						break;
 					}
 				}
 				
-				language.Select(locales[OptionsManager.Settings.Data.Locale]);
-				autoRun.SetPressedNoSignal(OptionsManager.Settings.Data.SettingAutoRun);
+				language.Select(locales[OptionsManager.Settings.Locale]);
+				autoRun.SetPressedNoSignal(OptionsManager.Settings.SettingAutoRun);
 			}
 		};
 
@@ -74,43 +71,43 @@ public partial class OptionsMenu : Control
 	private void OnMasterSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.Data.VolumeMaster = (float)value;
+		OptionsManager.Settings.VolumeMaster = (float)value;
 	}
 	private void OnMusicSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(1, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.Data.VolumeMusic = (float)value;
+		OptionsManager.Settings.VolumeMusic = (float)value;
 	}
 	private void OnSoundSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.Data.VolumeSound = (float)value;
+		OptionsManager.Settings.VolumeSound = (float)value;
 		SoundManager.CreateSound(Aphid.Audio_Step, false, "Sounds");
 	}
 	private void OnAmbienceSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(3, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.Data.VolumeAmbience = (float)value;
+		OptionsManager.Settings.VolumeAmbience = (float)value;
 		SoundManager.CreateSound(Aphid.Audio_Step, false, "Ambience");
 	}
 	private void OnUISlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(4, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.Data.VolumeUI = (float)value;
+		OptionsManager.Settings.VolumeUI = (float)value;
 		SoundManager.CreateSound(Aphid.Audio_Step);
 	}
 	
 	private void OnDisplaySelect(long _index) 
 	{
 		DisplayServer.WindowSetMode(display[(int)_index]);
-		OptionsManager.Settings.Data.DisplayMode = display[(int)_index];
+		OptionsManager.Settings.DisplayMode = display[(int)_index];
 	}
 	private void OnAutoRunToggle(bool _toggledOn) =>
-		OptionsManager.Settings.Data.SettingAutoRun = _toggledOn;
+		OptionsManager.Settings.SettingAutoRun = _toggledOn;
 	private void OnLocaleSelect(long _index)
 	{
 		string _locale = locales.Keys.ToList()[(int)_index];
 		TranslationServer.SetLocale(_locale);
-		OptionsManager.Settings.Data.Locale = _locale;
+		OptionsManager.Settings.Locale = _locale;
 	}
 }

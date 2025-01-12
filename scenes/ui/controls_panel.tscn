@@ -6,7 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="3_17ft4"]
 [ext_resource type="PackedScene" uid="uid://gof2jiow0man" path="res://scenes/ui/control_button.tscn" id="3_oryf4"]
 [ext_resource type="AudioStream" uid="uid://c2i25l6w3yeqq" path="res://sfx/ui/button_fail.wav" id="4_tjoj8"]
-[ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/icon_x.png" id="5_5ucel"]
+[ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="5_5ucel"]
 [ext_resource type="AudioStream" uid="uid://bao78ra8itplt" path="res://sfx/ui/button_reset.wav" id="5_khu8e"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="9_ru27g"]
 
@@ -41,7 +41,7 @@ interaction_curve = SubResource("Curve_rqcp8")
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 0
 offset_left = -633.0
-offset_top = -338.0
+offset_top = -345.0
 offset_right = 633.0
 offset_bottom = 375.0
 follow_focus = true

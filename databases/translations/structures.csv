@@ -1,5 +1,5 @@
 ,en,es
-tv_name,Aphid TV,Áfido TV
+tv_name,Virtual Display,Áfido TV
 tv_desc,It has one single channel and no way of changing it. Atleast it keeps them entertained.,Tiene un solo canal y no forma de cambiarlo. Por lo menos los mantiene entrenidos.
 sign_wanted_name,“WANTED” Poster Sign ,Señal Poster “SE BUSCA” 
 sign_wanted_desc,"Whoever that is, they sure look like they are rooting and tooting.",Un poster de un criminal en fuga. Espero que no sea uno de los mios...
@@ -19,3 +19,13 @@ largegrass_0_name,Flame Vine,Vid Flama
 largegrass_0_desc,A common type of tuft that grows everywhere in the Golden Path.,Una mata común en los alreadores del Camino Dorado
 sign_no_aphid_name,“No Aphids Allowed” Sign,Señal “Prohibido Áfidos”
 sign_no_aphid_desc,"That sign can't stop me, because I can't read!",¡Este letrero no puede detenerme porque no sé leer!
+berry_bush_name,Berry Bush,Arbusto de Bayas
+berry_bush_desc,"This bush grows edible berries every so often, and they can be used to feed Aphids.","Este arbusto crece bayas ocasionalmente, y se pueden usan para alimentar a los Áfidos."
+sunshade_name,Leaf Sunshade,Parasol de Hoja
+sunshade_desc,Keep the sun from hurting you by sitting underneath the shade of this unaturally cool leaf.,Manten al sol lejos de ti sentandote debajo de la inexplicada fresca sombra de esta hoja.
+water_torch_name,Lily Pad Torch,Antorcha de Nenúfar
+water_torch_desc,Make any puddle of water look like the night sky above by placing these beautiful lights around.,Haz que cualquier charco de agua parezca como la bella noche misma colocando estos delicados adornos alreadedor.
+bee_flag_name,Bee Kingdom Pennant,Estandarte - Reino de las Abejas
+bee_flag_desc,A flag that waves the emblem of the Bee Kingdom. For some reason it is sold as a souvenir too.,Una bandera que yergue el emblema del Reino de las Abejas. Por alguna razon lo venden como recuerdo.
+bench_name,Bench,Banco
+bench_desc,"Why don't you just take a minute, and relax? I'm sure you turned off the stove.",¿Porque no te tomas un minuto y te relajas? Estoy seguro que no te dejaste el horno encendido.

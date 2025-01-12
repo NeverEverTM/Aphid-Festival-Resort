@@ -27,7 +27,7 @@ public partial class AphidHatch : RigidBody2D
 				};
 				given_genes.GenerateNewAphid();
 			}
-			ResortManager.CreateNewAphid(new(GlobalPosition.X, GlobalPosition.Y), given_genes);
+			ResortManager.CreateAphid(new(GlobalPosition.X, GlobalPosition.Y), given_genes);
 			QueueFree();
 		};
 		AddChild(hatch);

@@ -33,10 +33,10 @@ public static class Logger
             case GameTermination.Minor:
                 break;
             case GameTermination.Major:
-			_ = GameManager.LoadScene(GameManager.SceneName.Menu);
+			_ = GlobalManager.LoadScene(GlobalManager.SceneName.Menu);
                 break;
             case GameTermination.Complete:
-				GameManager.Instance.GetTree().Quit(1);
+				GlobalManager.Instance.GetTree().Quit(1);
                 break;
         }
     }
