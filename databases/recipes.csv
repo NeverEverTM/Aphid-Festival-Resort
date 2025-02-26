@@ -15,10 +15,8 @@ berry_icecream,shaved_ice,berry
 honey_icecream,icecream,honey_drop
 honey_icecream,icecream,glazed_honey
 honey_icecream,shaved_ice,glazed_honey
-icecream,shaved_ice,honey_drop
-icecream,shaved_ice,aphid_dew
+icecream,shaved_ice,applesauce
 shaved_ice,water,
-shaved_ice,shaved_ice,
 roasted_berries,berry,
 mushroom_gummies,flour_bag,shroom
 dry_bread,flour_bag,
@@ -27,3 +25,9 @@ abomihoney,glazed_honey,
 cold_salad,leaf,shaved_ice
 cold_salad,leaf_salad,shaved_ice
 honey_pancakes,glazed_honey,flour_bag
+cake,applesauce,flour_bag
+nutty_cake,berry,flour_bag
+nutty_cake,roasted_berries,flour_bag
+plain_tea,leaf,water
+leaf_croissant,leaf,dry_bread
+leaf_croissant,leaf,flour_bag

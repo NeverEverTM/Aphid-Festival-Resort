@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 {
 	// Default Parameters
 	[Export] public string Resort;
-	[Export] public Node2D EntityRoot, StructureRoot;
+	[Export] public Node2D EntityRoot, StructureRoot, SpawnPoint;
 	[Export] private PackedScene aphidPrefab;
 
 	public static ResortManager CurrentResort { get; private set; }
@@ -115,7 +114,8 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 		SaveSystem.ProfileClassData.Add(ResortSaveModule);
 
 		// Set Resort music loop
-		SoundManager.MusicPlayer.Finished += CheckSongToPlay;
+		if (IsInstanceValid(SoundManager.MusicPlayer)) // this check is just for when you load directly into the scene
+			SoundManager.MusicPlayer.Finished += CheckSongToPlay;
 		static void FinishedSignal(GlobalManager.SceneName _)
 		{
 			SoundManager.MusicPlayer.Finished -= CheckSongToPlay;
@@ -182,6 +182,11 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	}
 	public static Node2D CreateItem(string _item_name, Vector2 _position)
 	{
+		if (_item_name == null)
+		{
+			Logger.Print(Logger.LogPriority.Error, "ResortManager: Item name is null!");
+			return null;
+		}
 		Node2D _item;
 		string _path = $"{GlobalManager.ItemPath}/{_item_name}.tscn";
 		if (ResourceLoader.Exists(_path))
@@ -189,26 +194,8 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 			_item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
 		else
 		{
-			// create a new item dynamically
-			_item = new RigidBody2D()
-			{
-				GravityScale = 0,
-				LockRotation = true,
-				Freeze = true,
-				FreezeMode = RigidBody2D.FreezeModeEnum.Kinematic
-			};
-			_item.AddChild(new CollisionShape2D()
-			{
-				Shape = new CircleShape2D()
-				{
-					Radius = 5
-				}
-			});
-			_item.AddChild(new Sprite2D()
-			{
-				Texture = GlobalManager.GetIcon(_item_name),
-				Position = new()
-			});
+			_item = ResourceLoader.Load<PackedScene>(GlobalManager.ItemEntity).Instantiate() as Node2D;
+			(_item.GetChild(0) as Sprite2D).Texture = GlobalManager.GetIcon(_item_name);
 		}
 
 		_item.SetMeta("pickup", true);

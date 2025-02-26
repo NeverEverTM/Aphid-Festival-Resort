@@ -4,10 +4,16 @@ using Godot;
 
 public static class Logger
 {
-	public enum LogPriority { Log, Warning, Error }
+	public enum LogPriority { Debug, Info, Log, Warning, Error }
+	public enum LogPriorityMode { All, Verbose, Default, Warnings, Exceptions }
+
+	/// <summary>
+	/// Minor: Execute a custom function to correct yourself (the first argument in the object args)
+	/// Major: Exits to menu
+	/// Complete: Exits the game
+	/// </summary>
 	public enum GameTermination { Minor, Major, Complete }
-	public enum LogLevel { Verbose, WarnAndError, OnlyError, None }
-	public static LogLevel LogMode = LogLevel.WarnAndError;
+	public static LogPriorityMode LogMode { get; set; }
 
 	public static void Print(LogPriority priority, params object[] args)
 	{
@@ -16,12 +22,16 @@ public static class Logger
 
 		string _time = DateTime.Now.ToString("hh:mm:ss");
 		string _message = Array.ConvertAll(args, x => x.ToString()).Join(" ");
-		if (priority == LogPriority.Log)
-			GD.Print(_message.Insert(0, $"[{_time}] [Log]: "));
+		if (priority == LogPriority.Debug)
+			GD.Print(_message.Insert(0, $"[{_time}] [DEBUG]: "));
+		else if (priority == LogPriority.Info)
+			GD.PrintRich(_message.Insert(0, $"[{_time}] [Info]: "));
+		else if (priority == LogPriority.Log)
+			GD.PrintRich(_message.Insert(0, $"[{_time}] [Log]: "));
 		else if (priority == LogPriority.Warning)
-			GD.Print(_message.Insert(0, $"[{_time}] |-[WARN]-|: "));
+			GD.PushWarning(_message.Insert(0, $"[{_time}] |-[WARN]-|: "));
 		else
-			GD.PrintErr(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
+			GD.PushError(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
 		DebugConsole.Print(_message);
 	}
 	public static void Print(LogPriority priority, GameTermination mode, params object[] args)
@@ -31,6 +41,8 @@ public static class Logger
         switch (mode)
         {
             case GameTermination.Minor:
+				if (args.Length > 0 && args[0] is Action)
+					(args[0] as Action)();
                 break;
             case GameTermination.Major:
 			_ = GlobalManager.LoadScene(GlobalManager.SceneName.Menu);

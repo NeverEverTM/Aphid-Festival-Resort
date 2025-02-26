@@ -326,7 +326,7 @@ public partial class BuildMenu : Control
 
 		if (_mode == RemoveMode.Sell)
 		{
-			Player.Data.SetCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta("id").ToString()].cost / 2);
+			Player.Data.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta("id").ToString()].cost / 2);
 			SoundManager.CreateSound(CanvasManager.AudioSell);
 		}
 		if (_mode == RemoveMode.Store)

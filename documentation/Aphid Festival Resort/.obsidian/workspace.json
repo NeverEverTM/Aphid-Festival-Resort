@@ -13,20 +13,6 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "SaveData Implementation.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "SaveData Implementation"
-            }
-          },
-          {
-            "id": "379c26e72c1742be",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
                 "file": "4 - Development Log.md",
                 "mode": "source",
                 "source": false
@@ -35,8 +21,7 @@
               "title": "4 - Development Log"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -55,7 +40,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -177,16 +163,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "379c26e72c1742be",
+  "active": "bace62636a088ca2",
   "lastOpenFiles": [
     "2 - Changelogs.md",
+    "3 - Major Version Goals.md",
     "1 - Welcome.md",
-    "Structure Implementation.md",
     "4 - Development Log.md",
     "SaveData Implementation.md",
-    "3 - Major Version Goals.md",
-    "Food & Recipes.md",
     "Aphid Behaviour.md",
+    "Food & Recipes.md",
+    "Structure Implementation.md",
     "databases/structures_translation.ods",
     "databases/items_translation - copia.ods",
     "databases/recipes_values - copia.ods",

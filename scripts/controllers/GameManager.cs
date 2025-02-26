@@ -29,10 +29,11 @@ public partial class GameManager : Node
 		else
 		{
 			IsNewGame = false;
-			await DialogManager.Instance.OpenDialogBox("intro_welcome");
 			PlayerInventory.StoreItem("aphid_egg");
 			PlayerInventory.StoreItem("aphid_egg");
+			Player.Instance.GlobalPosition = ResortManager.CurrentResort.SpawnPoint.GlobalPosition;
 			await SaveSystem.SaveProfile();
+			await DialogManager.Instance.OpenDialogBox("intro_welcome");
 		}
     }
 
@@ -53,7 +54,7 @@ public partial class GameManager : Node
 	{
 		if (!Aphids.ContainsKey(_guid))
 		{
-			GD.PrintErr("SaveSystem: (RemoveAphidInstance)", _guid, " does not exist.");
+			Logger.Print(Logger.LogPriority.Error, $"GameManager: Cannot delete <{_guid}> as it does not exist.");
 			return;
 		}
 		Aphids.Remove(_guid);

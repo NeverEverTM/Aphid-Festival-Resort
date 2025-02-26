@@ -21,29 +21,37 @@ curve = SubResource("Curve_obm67")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_41uej"]
 particle_flag_disable_z = true
-emission_shape_scale = Vector3(10, 10, 1)
+emission_shape_offset = Vector3(0, -1, 0)
+emission_shape_scale = Vector3(50, 1, 1)
 emission_shape = 3
 emission_box_extents = Vector3(1, 1, 1)
 angle_min = -18.0
 angle_max = 18.0
-orbit_velocity_min = -1.1
-orbit_velocity_max = 0.95
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+angular_velocity_min = -43.06
+angular_velocity_max = 34.36
 gravity = Vector3(0, 0, 0)
 attractor_interaction_enabled = false
-scale_min = 3.0
-scale_max = 4.0
+scale_max = 2.0
 scale_curve = SubResource("CurveTexture_xneat")
 alpha_curve = SubResource("CurveTexture_apq25")
 turbulence_noise_strength = 20.0
-turbulence_noise_scale = 6.28
-turbulence_influence_min = 0.359
-turbulence_influence_max = 0.969
+turbulence_noise_scale = 7.005
+turbulence_noise_speed = Vector3(2.275, 3.96, 0)
+turbulence_influence_min = 0.881
+turbulence_influence_max = 1.0
+turbulence_initial_displacement_min = 9.6
+turbulence_initial_displacement_max = 9.6
 
 [node name="GPU_HeartParticles" type="GPUParticles2D"]
 z_index = 1000
 material = SubResource("CanvasItemMaterial_sih33")
-amount = 2
+amount = 15
 process_material = SubResource("ParticleProcessMaterial_41uej")
 texture = ExtResource("1_l7itr")
 lifetime = 3.0
-explosiveness = 0.5
+randomness = 0.5
+interpolate = false

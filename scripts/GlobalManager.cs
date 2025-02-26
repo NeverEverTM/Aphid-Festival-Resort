@@ -30,20 +30,27 @@ internal partial class GlobalManager : Node2D
 		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
 		PopupWindowPath = "res://scenes/ui/popup.tscn",
 		CanvasGroupOutlineShader = "res://scripts/shaders/outline-canvas-group.gdshader",
+		ItemEntity = "res://scenes/entities/item.tscn",
 		OutlineShader = "res://scripts/shaders/outline.gdshader";
 	public const string
-		SFXPath = "res://sfx",
+		SFXPath = "res://sfx/",
 		IconPath = "res://sprites/icons",
+		ParticlesPath = "res://scenes/particles",
 		ItemPath = "res://databases/items",
 		SkinsPath = "res://databases/skins",
 		StructuresPath = "res://databases/structures",
 		DatabasesPath = "res://databases";
 
-	// =========| LOADED VALUES |===========
-	public static readonly Dictionary<string, Texture2D> G_ICONS = new();
+	// =========| GLOBAL LOADED VALUES |===========
 	public static readonly Dictionary<string, Item> G_ITEMS = new();
 	public static readonly Dictionary<string, Food> G_FOOD = new();
 	public static readonly List<Recipe> G_RECIPES = new();
+
+	// todo: replace G_ICONS and G_AUDIO with ResourcePreloaders, add G_SKINS while you are at it
+	public static readonly Dictionary<string, Texture2D> G_ICONS = new();
+	public static readonly Dictionary<string, AudioStream> G_AUDIO = new();
+	public static readonly ResourcePreloader G_PARTICLES = new();
+
 	public readonly struct Item
 	{
 		public readonly int cost;
@@ -85,7 +92,7 @@ internal partial class GlobalManager : Node2D
 
 	public static Texture2D GetIcon(string _key)
 	{
-		if (G_ICONS.ContainsKey(_key))
+		if (_key != null && G_ICONS.ContainsKey(_key))
 			return G_ICONS[_key];
 		else
 			return new PlaceholderTexture2D();
@@ -96,7 +103,7 @@ internal partial class GlobalManager : Node2D
 	public static Vector2 ScreenSize { get; private set; }
 	public static Vector2 QuarterScreen { get; private set; }
 	private PhysicsDirectSpaceState2D spaceState;
-	private readonly List<GpuParticles2D> particles = new();
+	private readonly static List<GpuParticles2D> ACTIVE_PARTICLES_CACHED = new();
 
 	internal static Label BOOT_LOADING_LABEL;
 
@@ -107,7 +114,9 @@ internal partial class GlobalManager : Node2D
 		Scene = SceneName.Menu;
 		SaveSystem.CreateBaseDirectories();
 #if DEBUG
-		Logger.LogMode = Logger.LogLevel.Verbose;
+		Logger.LogMode = Logger.LogPriorityMode.All;
+#else
+		Logger.LogMode = Logger.LogPriorityMode.Default;
 #endif
 		GetViewport().SizeChanged += OnSizeChange;
 		OnSizeChange();
@@ -127,14 +136,14 @@ internal partial class GlobalManager : Node2D
 	public override void _Process(double delta)
 	{
 		// Cleans particles periodically once finished
-		for (int i = 0; i < particles.Count; i++)
+		for (int i = 0; i < ACTIVE_PARTICLES_CACHED.Count; i++)
 		{
-			bool _valid = IsInstanceValid(particles[i]);
-			if (_valid && particles[i].Emitting)
+			bool _valid = IsInstanceValid(ACTIVE_PARTICLES_CACHED[i]);
+			if (_valid && ACTIVE_PARTICLES_CACHED[i].Emitting)
 				continue;
 			if (_valid)
-				particles[i].QueueFree();
-			particles.RemoveAt(i);
+				ACTIVE_PARTICLES_CACHED[i].QueueFree();
+			ACTIVE_PARTICLES_CACHED.RemoveAt(i);
 		}
 	}
 	private void OnSizeChange()
@@ -162,6 +171,7 @@ internal partial class GlobalManager : Node2D
 			await LOAD_SKINS();
 			await LOAD_SFX();
 			await LOAD_DATA();
+			await LOAD_PARTICLES();
 			IsBusy = false;
 			_node.Visible = false;
 		}
@@ -182,43 +192,28 @@ internal partial class GlobalManager : Node2D
 			await Task.Delay(int.MaxValue);
 		}
 	}
-
 	private static async Task LOAD_ICONS()
 	{
 		string[] _icons = DirAccess.GetFilesAt(IconPath);
-		ResourceLoader.ThreadLoadStatus _status;
 
 		for (int i = 0; i < _icons.Length; i++)
 		{
+			if (_icons[i].EndsWith(".import"))
+				continue;
 			string _path = $"{IconPath}/{_icons[i]}";
-			ResourceLoader.LoadThreadedRequest(_path, "", true);
-			_status = ResourceLoader.LoadThreadedGetStatus(_path);
-
-			await Task.Delay(1);
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (0/2) ({i + 1}/{_icons.Length})";
+			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (1/2) ({i + 1}/{_icons.Length})";
 
 			// Wait until it yields
-			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-				_status = ResourceLoader.LoadThreadedGetStatus(_path);
-
-			// action state: if anything but good, close application
-			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
-			{
-				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
-					GD.PushError($"Item <{_icons[i]}> is not a valid resource or request.");
-				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-					GD.PushError($"Icon <{_icons[i]}> was not able to be loaded.");
-
-				Instance.GetTree().Quit(2);
-			}
-
-			G_ICONS.Add(_icons[i].Remove(_icons[i].Length - 5), ResourceLoader.LoadThreadedGet(_path) as Texture2D);
+			var _resource = await PRELOAD_RESOURCE(_path);
+			string _iconName = _icons[i].EndsWith(".tres") ?
+					_icons[i][..^5] : // .tres
+					_icons[i][..^4]; // .png
+			G_ICONS.Add(_iconName, _resource as Texture2D);
 		}
 	}
 	private static async Task LOAD_STRUCTURE_ICONS()
 	{
 		string[] _structures = DirAccess.GetFilesAt(StructuresPath);
-		ResourceLoader.ThreadLoadStatus _status;
 
 		for (int i = 0; i < _structures.Length; i++)
 		{
@@ -231,28 +226,11 @@ internal partial class GlobalManager : Node2D
 				continue;
 
 			string _path = $"{StructuresPath}/{_structures[i]}";
-			ResourceLoader.LoadThreadedRequest(_path, "", true);
-			_status = ResourceLoader.LoadThreadedGetStatus(_path);
+			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (2/2) ({i + 1})";
 
+			// we load and create an icon directly from the resources sprite
+			Node2D _packedScene = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
 			await Task.Delay(1);
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (1/2) ({i + 1}/{_structures.Length})";
-
-			// Wait until it yields
-			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-				_status = ResourceLoader.LoadThreadedGetStatus(_path);
-
-			// action state: if anything but good, close application
-			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
-			{
-				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
-					GD.PushError($"Item <{_structures[i]}> is not a valid resource or request.");
-				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-					GD.PushError($"Icon <{_structures[i]}> was not able to be loaded.");
-
-				Instance.GetTree().Quit(2);
-			}
-
-			Node2D _packedScene = (ResourceLoader.LoadThreadedGet(_path) as PackedScene).Instantiate() as Node2D;
 			if (_packedScene is Sprite2D)
 				G_ICONS.Add(_structureName, (_packedScene as Sprite2D).Texture);
 			else if (_packedScene is AnimatedSprite2D)
@@ -280,10 +258,6 @@ internal partial class GlobalManager : Node2D
 			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
 				_status = ResourceLoader.LoadThreadedGetStatus(_path);
 
-#if DEBUG
-			await Task.Delay(1);
-#endif
-
 			// action states
 			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
 			{
@@ -294,48 +268,19 @@ internal partial class GlobalManager : Node2D
 
 				Instance.GetTree().Quit(2);
 			}
+
+			// add a preloader here woops
 		}
 	}
 	private static async Task LOAD_SFX()
 	{
 		// Get all SFX paths (only checks folders at SFX root folder)
-		List<string> _sfx = new();
 		string[] _directories = DirAccess.GetDirectoriesAt(SFXPath);
 		for (int i = 0; i < _directories.Length; i++)
-			SEARCH_SFX_FOLDER(SFXPath + $"/{_directories[i]}", ref _sfx);
-		SEARCH_SFX_FOLDER(SFXPath, ref _sfx);
-
-		// Begin loading all sfx assets
-		string[] _resources = _sfx.ToArray();
-		ResourceLoader.ThreadLoadStatus _status;
-
-		for (int i = 0; i < _resources.Length; i++)
-		{
-			// Start thread and wait for its response
-			ResourceLoader.LoadThreadedRequest(_resources[i], "", true);
-			_status = ResourceLoader.LoadThreadedGetStatus(_resources[i]);
-			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-				_status = ResourceLoader.LoadThreadedGetStatus(_resources[i]);
-
-			await Task.Delay(1);
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({i + 1}/{_resources.Length})";
-
-			// action states
-			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
-			{
-				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
-					GD.PrintErr($"Item <{_resources[i]}> is not a valid resource or request.");
-				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-					GD.PrintErr($"Icon <{_resources[i]}> was not able to be loaded.");
-
-				Instance.GetTree().Quit(2);
-			}
-		}
-
-		// we should probably load paths as strings too
+			await SEARCH_SFX_FOLDER(_directories[i]);
 
 		// Load aphid SFX
-		string aphidPath = $"{SFXPath}/aphid/";
+		string aphidPath = $"{SFXPath}aphid/";
 		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(aphidPath + "nom.wav");
 		Aphid.Audio_Idle = ResourceLoader.Load<AudioStream>(aphidPath + "idle.wav");
 		Aphid.Audio_Idle_Baby = ResourceLoader.Load<AudioStream>(aphidPath + "baby_idle.wav");
@@ -344,24 +289,46 @@ internal partial class GlobalManager : Node2D
 		Aphid.Audio_Hurt = ResourceLoader.Load<AudioStream>(aphidPath + "hurt.wav");
 		Aphid.Audio_Boing = ResourceLoader.Load<AudioStream>(aphidPath + "boing.wav");
 
-		string uiPath = $"{SFXPath}/ui/";
+		string uiPath = $"{SFXPath}ui/";
 		CanvasManager.AudioSell = ResourceLoader.Load<AudioStream>(uiPath + "kaching.wav");
 		CanvasManager.AudioStore = ResourceLoader.Load<AudioStream>(uiPath + "button_select.wav");
 	}
-	private static void SEARCH_SFX_FOLDER(string _path, ref List<string> _sfx)
+	private static async Task SEARCH_SFX_FOLDER(string _directory)
 	{
-		string[] _files = DirAccess.GetFilesAt(_path);
-		for (int a = 0; a < _files.Length; a++)
+		string[] _files = DirAccess.GetFilesAt(SFXPath + _directory);
+		for (int i = 0; i < _files.Length; i++)
 		{
-			if (_files[a].EndsWith(".import"))
+			// _filename = audio_example.wav
+			// _id = ui/audio_example
+			string _fileName = _directory + "/" + _files[i].Replace(".import", string.Empty),
+					_id = _fileName.Split('.')[0];
+
+			if (G_AUDIO.ContainsKey(_id))
 				continue;
-			_sfx.Add($"{_path}/{_files[a]}");
+
+			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({_directory}[{i}/{_files.Length}])";
+			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(SFXPath + _fileName) as AudioStream);
 		}
 	}
 	private static async Task LOAD_DATA()
 	{
-		await LOAD_DATABASE("items", (string[] _info) =>
+		await LOAD_DATABASE("items", _info =>
 		{
+			if (G_ITEMS.ContainsKey(_info[0]))
+			{
+				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> is duplicated.");
+				return;
+			}
+			if (Instance.Tr(_info[0] + "_name") == _info[0] + "_name")
+			{
+				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> has no name.");
+				return;
+			}
+			if (Instance.Tr(_info[0] + "_desc") == _info[0] + "_desc")
+			{
+				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> has no description.");
+				return;
+			}
 			G_ITEMS.Add(_info[0], new(
 				cost: int.Parse(_info[1]),
 				unlockableLevel: int.Parse(_info[2]),
@@ -369,16 +336,36 @@ internal partial class GlobalManager : Node2D
 				shopTag: _info[4].ToString()
 			));
 		});
-		await LOAD_DATABASE("foods", (string[] _info) =>
+		await LOAD_DATABASE("foods", _info =>
 		{
+			if (G_FOOD.ContainsKey(_info[0]))
+			{
+				Logger.Print(Logger.LogPriority.Warning, $"FoodDatabase: <{_info[0]}> is duplicated.");
+				return;
+			}
+			if (!G_ITEMS.ContainsKey(_info[0]))
+			{
+				Logger.Print(Logger.LogPriority.Warning, $"FoodDatabase: <{_info[0]}> does not exist as an item.");
+				return;
+			}
 			G_FOOD.Add(_info[0], new(
 				type: (AphidData.FoodType)int.Parse(_info[1]),
 				food_value: float.Parse(_info[2]),
 				drink_value: float.Parse(_info[3])
 			));
 		});
-		await LOAD_DATABASE("recipes", (string[] _info) =>
+		await LOAD_DATABASE("recipes", _info =>
 		{
+			if (!string.IsNullOrWhiteSpace(_info[1]) && !G_ITEMS.ContainsKey(_info[1]))
+			{
+				Logger.Print(Logger.LogPriority.Warning, $"RecipeDatabase: Ingredient <{_info[1]}> does not exist as an item and cannot be an ingredient.");
+				return;
+			}
+			if (!string.IsNullOrWhiteSpace(_info[2]) && !G_ITEMS.ContainsKey(_info[2]))
+			{
+				Logger.Print(Logger.LogPriority.Warning, $"RecipeDatabase: Ingredient <{_info[2]}> does not exist as an item and cannot be an ingredient.");
+				return;
+			}
 			G_RECIPES.Add(new Recipe(
 				_info[0],
 				_info[1],
@@ -397,32 +384,88 @@ internal partial class GlobalManager : Node2D
 			BOOT_LOADING_LABEL.Text = $"{_boot} ({(int)((float)_file.GetPosition() / (float)_file.GetLength() * 100)}%)";
 		}
 	}
+	private static async Task LOAD_PARTICLES()
+	{
+		var _particleList = DirAccess.GetFilesAt(ParticlesPath);
+
+		for (int i = 0; i < _particleList.Length; i++)
+		{
+			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_3")} ({i}/{_particleList.Length})";
+			string _path = $"{ParticlesPath}/{_particleList[i]}";
+
+			var _resource = await PRELOAD_RESOURCE(_path);
+			var _particle = (_resource as PackedScene).Instantiate() as GpuParticles2D;
+
+			// we instantiate it and then delete it
+			// we do this so Godot properly loads it now, so it doesnt cause a lag spike later
+			Instance.AddChild(_particle);
+			await Task.Delay(1);
+			_particle.QueueFree();
+
+			G_PARTICLES.AddResource(_particleList[i].Split('.')[0], _resource);
+		}
+	}
+	private static async Task<Resource> PRELOAD_RESOURCE(string _path)
+	{
+		ResourceLoader.LoadThreadedRequest(_path, "", true);
+		ResourceLoader.ThreadLoadStatus _status = ResourceLoader.LoadThreadedGetStatus(_path);
+
+		// start thread and await for its response
+		while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
+		{
+			await Task.Delay(1);
+			_status = ResourceLoader.LoadThreadedGetStatus(_path);
+		}
+
+		// action states
+		if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
+		{
+			if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
+				Logger.Print(Logger.LogPriority.Error, $"PRELOAD_RESOURCE: Resource <{_path.Substring(_path.LastIndexOf('/'))}> is not a valid resource or request.");
+			else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
+				Logger.Print(Logger.LogPriority.Error, $"PRELOAD_RESOURCE: Resource <{_path.Substring(_path.LastIndexOf('/'))}> is unable to load.");
+
+			Instance.GetTree().Quit(2);
+			return null;
+		}
+
+		return ResourceLoader.LoadThreadedGet(_path);
+	}
 
 	// MARK: Dedicated Functions
-	public static GpuParticles2D EmitParticles(PackedScene _particles, Vector2 _position, bool _setRootAsParent = true)
+	/// <summary>
+	/// Spawns a set of particles and manages its place in memory. Used to handle long-lasting particles in memory automatically.
+	/// </summary>
+	/// <param name="_name">Name of the particles prefab</param>
+	/// <param name="_position">Position to spawn them in</param>
+	/// <param name="_parentless">Automatically adds it as a child outside the current scene</param>
+	/// <param name="_essential">Non-essential particles cannot spawn when above the particle limit</param>
+	/// <returns></returns>
+	public static GpuParticles2D EmitParticles(string _name, Vector2 _position, bool _essential = true)
+			=> EmitParticles(_name, _position, Instance, _essential);
+	public static GpuParticles2D EmitParticles(string _name, Vector2 _position, Node2D _parent, bool _essential = true)
 	{
-		var _item = _particles.Instantiate() as GpuParticles2D;
+		if (!_essential && ACTIVE_PARTICLES_CACHED.Count > 50)
+			return null;
+		var _item = (G_PARTICLES.GetResource(_name) as PackedScene).Instantiate() as GpuParticles2D;
 		_item.GlobalPosition = _position;
 		_item.Emitting = true;
 		_item.ProcessMode = ProcessModeEnum.Pausable;
-
-		if (_setRootAsParent)
-			Instance.AddChild(_item);
-		Instance.particles.Add(_item);
-
+		_parent.AddChild(_item);
+		
+		ACTIVE_PARTICLES_CACHED.Add(_item);
 		return _item;
 	}
-	public static GpuParticles2D EmitParticles(string _name, Vector2 _position, bool _setRootAsParent = true) =>
-		EmitParticles(ResourceLoader.Load<PackedScene>($"res://scenes/particles/{_name}.tscn"), _position, _setRootAsParent);
-	public void CleanAllParticles()
+	public static void CleanAllParticles()
 	{
-		for (int i = 0; i < particles.Count; i++)
-			particles[i].QueueFree();
-		particles.Clear();
+		for (int i = 0; i < ACTIVE_PARTICLES_CACHED.Count; i++)
+			ACTIVE_PARTICLES_CACHED[i].QueueFree();
+		ACTIVE_PARTICLES_CACHED.Clear();
 	}
 
 	public async static Task LoadScene(SceneName _scene)
 	{
+		await Task.Delay(1);
 		string _path = _scene switch
 		{
 			SceneName.Menu => MenuScenePath,
@@ -463,7 +506,7 @@ internal partial class GlobalManager : Node2D
 			await Task.Delay(1);
 		OnPreLoadScene?.Invoke(Scene);
 		SaveSystem.ProfileClassData.Clear();
-		Instance.CleanAllParticles();
+		CleanAllParticles();
 		SoundManager.CleanAllSounds();
 		await Task.Delay(1);
 
@@ -503,31 +546,7 @@ internal partial class GlobalManager : Node2D
 		_vanish.Start(1.5f);
 		_timer.Start(2);
 	}
-	public static int GetRandomByWeight(RandomNumberGenerator _engine, float[] weights)
-	{
-		// We take a sum of all weights
-		float _total = 0;
-		Array.ForEach(weights, (float _weight) =>
-		{
-			_total += _weight;
-		});
 
-		// We get a random number between 0 and total
-		float _random_cap = Mathf.Ceil(_engine.Randf() * _total);
-
-		// Guess where the cap landed and give that as our result
-		float _array_cursor = 0;
-		for (int i = 0; i < weights.Length; i++)
-		{
-			_array_cursor += weights[i];
-			if (_array_cursor >= _random_cap)
-				return i;
-		}
-		GD.Print("It did happen :pensive:");
-		return 0; // Should in theory, never happen
-	}
-	public static int GetRandomByWeight(float[] weights) =>
-		GetRandomByWeight(RNG, weights);
 	public static class Utils
 	{
 		public static Godot.Collections.Dictionary Raycast(Vector2 _position, Vector2 _direction, Godot.Collections.Array<Rid> _excludeList)
@@ -542,6 +561,33 @@ internal partial class GlobalManager : Node2D
 			_query.To = _position + _direction;
 			return Instance.spaceState.IntersectRay(_query);
 		}
+
+		public static int GetRandomByWeight(float[] weights) =>
+			GetRandomByWeight(RNG, weights);
+		public static int GetRandomByWeight(RandomNumberGenerator _engine, float[] weights)
+		{
+			// We take a sum of all weights
+			float _total = 0;
+			Array.ForEach(weights, (float _weight) =>
+			{
+				_total += _weight;
+			});
+
+			// We get a random number between 0 and total
+			float _random_cap = Mathf.Ceil(_engine.Randf() * _total);
+
+			// Guess where the cap landed and give that as our result
+			float _array_cursor = 0;
+			for (int i = 0; i < weights.Length; i++)
+			{
+				_array_cursor += weights[i];
+				if (_array_cursor >= _random_cap)
+					return i;
+			}
+			Logger.Print(Logger.LogPriority.Error, "GlobalManager: Weighted RNG. It did happen :pensive:");
+			return 0; // Should in theory, never happen
+		}
+
 		/// <returns>The mouse position translated to global position/returns>
 		public static Vector2 GetMouseToWorldPosition() => GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() - ScreenCenter) * 0.5f;
 		public static Vector2 GetMouseToCanvasCenter() => Instance.GetViewport().GetMousePosition() - ScreenCenter;
@@ -558,7 +604,9 @@ internal partial class GlobalManager : Node2D
 			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
 		}
 		public static Color LerpColor(Color _color1, Color _color2) =>
-			_color1.Blend(_color2);
+			_color1.Lerp(_color2, RNG.RandfRange(0.2f, 0.4f));
+		public static Color LerpColor(Color _color1, Color _color2, float _weight) =>
+			_color1.Lerp(_color2, _weight);
 
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
@@ -566,10 +614,8 @@ internal partial class GlobalManager : Node2D
 
 		public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
 		{
-			// Unix timestamp is seconds past epoch
 			DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-			dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-			return dateTime;
+			return dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
 		}
 	}
 }

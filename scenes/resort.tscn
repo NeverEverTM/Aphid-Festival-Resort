@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=80 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" path="res://scripts/controllers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
@@ -99,11 +99,14 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_a4pua"]
-size = Vector2(97, 20)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uh6ig"]
+size = Vector2(92, 37)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2j0ix"]
 size = Vector2(96, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7w54"]
+size = Vector2(63, 35)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_djjg3"]
 atlas = ExtResource("11_0kb4s")
@@ -465,17 +468,33 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="resort" type="Node2D" node_paths=PackedStringArray("EntityRoot", "StructureRoot")]
+[node name="resort" type="Node2D" node_paths=PackedStringArray("EntityRoot", "StructureRoot", "SpawnPoint")]
 y_sort_enabled = true
 script = ExtResource("1_ay1ca")
 Resort = "golden"
 EntityRoot = NodePath("entityPit")
 StructureRoot = NodePath("tilemap_resort/structurePit")
+SpawnPoint = NodePath("spawnpoint")
 aphidPrefab = ExtResource("3_d14m5")
+
+[node name="spawnpoint" type="Node2D" parent="."]
+position = Vector2(-2142, 80)
 
 [node name="resort_canvas" parent="." node_paths=PackedStringArray("TopLeft", "BottomRight") instance=ExtResource("4_2px7i")]
 TopLeft = NodePath("../topleft")
 BottomRight = NodePath("../bottomright")
+
+[node name="dialog" parent="resort_canvas/kitchen_menu" index="3"]
+offset_left = -485.0
+offset_right = 102.0
+
+[node name="recipe_interface" parent="resort_canvas/kitchen_menu" index="4"]
+offset_top = -304.0
+offset_bottom = -264.0
+
+[node name="inventory_bg" parent="resort_canvas/kitchen_menu" index="5"]
+offset_top = -11.0
+offset_bottom = 297.0
 
 [node name="canvas" parent="." instance=ExtResource("5_t3t74")]
 
@@ -506,12 +525,12 @@ DialogueMode = 2
 DefaultVoice = ExtResource("9_d3dcb")
 
 [node name="kitchen" parent="." node_paths=PackedStringArray("triggerObject") instance=ExtResource("51_xwwsq")]
-position = Vector2(-478, -160)
+position = Vector2(-478, -155)
 triggerObject = NodePath("../resort_canvas/kitchen_menu")
 
 [node name="CollisionShape2D" parent="kitchen/trigger_store" index="0"]
-position = Vector2(16.5, 1)
-shape = SubResource("RectangleShape2D_a4pua")
+position = Vector2(16, 17.5)
+shape = SubResource("RectangleShape2D_uh6ig")
 
 [node name="resort_table" type="Sprite2D" parent="."]
 position = Vector2(-483, -152)
@@ -540,28 +559,33 @@ shape = SubResource("RectangleShape2D_2j0ix")
 position = Vector2(798, -233)
 triggerObject = NodePath("../resort_canvas/item_shop_panel")
 
+[node name="CollisionShape2D" parent="shop/trigger_store" index="0"]
+position = Vector2(14.5, 33.5)
+shape = SubResource("RectangleShape2D_p7w54")
+
 [node name="azzy" parent="." instance=ExtResource("28_py445")]
 position = Vector2(712, -219)
 sprite_frames = SubResource("SpriteFrames_eps0x")
 animation = &"talk"
 frame = 1
 frame_progress = 0.92029
-dialogue_keys = PackedStringArray("azzy_flavor_0", "azzy_flavor_1")
+dialogue_keys = PackedStringArray("azzy_flavor_0", "azzy_flavor_1", "azzy_flavor_2")
 DialogueMode = 2
 DefaultVoice = ExtResource("14_250cd")
 
 [node name="joy" parent="." instance=ExtResource("28_py445")]
-position = Vector2(-7, 120)
+position = Vector2(-1589, 8)
 sprite_frames = SubResource("SpriteFrames_ue4ko")
 animation = &"talk"
 frame_progress = 0.779681
-dialogue_keys = PackedStringArray("joy_flavor_0", "joy_flavor_1", "joy_flavor_2", "joy_flavor_3")
+dialogue_keys = PackedStringArray("joy_flavor_0", "joy_flavor_1", "joy_flavor_2", "joy_flavor_3", "joy_flavor_4", "joy_flavor_5")
 DialogueMode = 2
 DefaultVoice = ExtResource("16_u8bv1")
 FlipDirection = true
 
 [node name="crystal" parent="." instance=ExtResource("17_ap2f3")]
-position = Vector2(-69, 157)
+position = Vector2(-1537, 8)
+maxWanderRange = 210.0
 
 [node name="sprite" parent="crystal" index="0"]
 sprite_frames = SubResource("SpriteFrames_ib0l4")
@@ -577,19 +601,19 @@ position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_bpu2g")
 
 [node name="echo" parent="." instance=ExtResource("28_py445")]
-position = Vector2(-2136, 50)
+position = Vector2(-2146, 340)
 sprite_frames = SubResource("SpriteFrames_jk5p2")
 autoplay = "default"
 frame = 2
 frame_progress = 0.334476
 offset = Vector2(4.415, -32)
-dialogue_keys = PackedStringArray("echo_flavor_0", "echo_flavor_1", "echo_flavor_2", "echo_flavor_3")
+dialogue_keys = PackedStringArray("echo_flavor_0", "echo_flavor_1", "echo_flavor_2", "echo_flavor_3", "echo_flavor_4")
 DialogueMode = 2
 DefaultVoice = ExtResource("19_ghwkx")
 FlipDirection = true
 
 [node name="river_ambience" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-2260, -216)
+position = Vector2(-2226, -431)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -598,7 +622,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience2" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-2206, 437)
+position = Vector2(-2246, 358)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -607,7 +631,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience3" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-966, 789)
+position = Vector2(-1874, 548)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -616,7 +640,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience4" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-1604, 551)
+position = Vector2(-1141, 703)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -625,7 +649,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience5" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-486, 1432)
+position = Vector2(-251, 1438)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -634,7 +658,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience6" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(1597, 1437)
+position = Vector2(357, 1043)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -643,7 +667,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience7" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(473, 1445)
+position = Vector2(705, 625)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -652,7 +676,16 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience8" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(2018, 771)
+position = Vector2(1858, 490)
+stream = ExtResource("16_7qi0k")
+volume_db = -5.0
+autoplay = true
+max_distance = 500.0
+attenuation = 0.5
+bus = &"Ambience"
+
+[node name="river_ambience9" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(2013, -131)
 stream = ExtResource("16_7qi0k")
 volume_db = -5.0
 autoplay = true
@@ -666,16 +699,8 @@ volume_db = -10.0
 autoplay = true
 bus = &"Ambience"
 
-[node name="river_ambience9" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(2019, -40)
-stream = ExtResource("16_7qi0k")
-volume_db = -5.0
-autoplay = true
-max_distance = 500.0
-attenuation = 0.5
-bus = &"Ambience"
-
 [editable path="resort_canvas"]
 [editable path="canvas"]
 [editable path="kitchen"]
+[editable path="shop"]
 [editable path="crystal"]

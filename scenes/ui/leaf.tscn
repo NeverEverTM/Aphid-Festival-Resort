@@ -1,27 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://cnrce4gppoc5m"]
+[gd_scene load_steps=2 format=3 uid="uid://cnrce4gppoc5m"]
 
-[ext_resource type="Material" uid="uid://cwaid2g5ctnpy" path="res://scripts/shaders/unshaded.tres" id="1_jg0cn"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="1_mf5iy"]
 
 [node name="Control" type="Control"]
+light_mask = 0
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -576.0
-offset_top = -324.0
-offset_right = -512.0
-offset_bottom = -260.0
+offset_left = -639.0
+offset_top = -360.0
+offset_right = -575.0
+offset_bottom = -296.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TextureRect" type="TextureRect" parent="."]
-material = ExtResource("1_jg0cn")
 layout_mode = 0
 offset_left = -34.0
-offset_top = -31.0
+offset_top = -30.0
 offset_right = 30.0
-offset_bottom = 33.0
+offset_bottom = 34.0
 texture = ExtResource("1_mf5iy")

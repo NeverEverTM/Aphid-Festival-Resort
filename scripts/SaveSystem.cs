@@ -97,9 +97,7 @@ public static class SaveSystem
 		}
 		catch (Exception _err)
 		{
-			GD.Print("SaveAphid: Error");
-			GD.PrintErr(_err.Message);
-			GD.PrintErr(_err.StackTrace);
+			Logger.Print(Logger.LogPriority.Error, $"SaveAphid: Error on saving aphid <{_data?.ID}>:\n", _err);
 			return false;
 		}
 		return true;
@@ -210,7 +208,7 @@ public static class SaveSystem
 		await CreateProfileDir(ProfilePath);
 		await CreateProfileDir(ProfilePath + PROFILEBACKUP_DIR);
 
-		GD.Print($"ProfileCreate: Succesfully created profile of <{Profile}>.");
+		Logger.Print(Logger.LogPriority.Info, $"ProfileCreate: Succesfully created profile of <{Profile}>.");
 	}
 	private static Task CreateProfileDir(string _path)
 	{
@@ -219,7 +217,7 @@ public static class SaveSystem
 
 		if (_dir == null)
 		{
-			GD.PrintErr(DirAccess.GetOpenError());
+			Logger.Print(Logger.LogPriority.Error, "SaveSystem: DirAccess error on opening directory:\n", DirAccess.GetOpenError());
 			return Task.CompletedTask;
 		}
 
@@ -237,13 +235,13 @@ public static class SaveSystem
 			return Task.CompletedTask;
 		if (!_path.Contains(Profile) || !_path.Contains("profiles"))
 		{
-			GD.Print($"Cannot delete file in path: {_path}");
+			Logger.Print(Logger.LogPriority.Error, $"ProfileDelete: Cannot delete file in path: {_path}");
 			return Task.CompletedTask;
 		}
 
 		// Scary!
 		System.IO.Directory.Delete(_path, true);
-		GD.Print($"ProfileDelete: Succesfully deleted profile <{_profile}>.");
+		Logger.Print(Logger.LogPriority.Info, $"ProfileDelete: Succesfully deleted profile <{_profile}>.");
 		return Task.CompletedTask;
 	}
 	public static Task FlushProfile()
@@ -277,7 +275,13 @@ public static class SaveSystem
 			LoadOrderPriority = LoadPriority;
 		}
 
-		public string GetPath() => System.IO.Path.Join(RootPath, RelativePath, ID + Extension);
+		/// <summary>
+		/// Returns the path to the saved contents.
+		/// </summary>
+		/// <param name="_global">Return this path as a global OS file path instead of a Godot file path?</param>
+		public string GetPath(bool _global = false) => !_global ?
+				System.IO.Path.Join(RootPath, RelativePath, ID + Extension)
+				: ProjectSettings.GlobalizePath(System.IO.Path.Join(RootPath, RelativePath, ID + Extension));
 
 		public abstract void CallSave();
 		public abstract void CallLoad();
@@ -325,43 +329,47 @@ public static class SaveSystem
 			string _path = GetPath();
 			using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Write);
 
-			// Save game version of file
-			_file.Store32(GameVersion);
-
 			// Store Data
 			if (Mode == SaveMode.PlainText)
 				_file.StorePascalString(JsonSerializer.Serialize(Data.Get(), JsonOptions));
 			else
 				_file.StoreVar(JsonSerializer.Serialize(Data.Get(), JsonOptions));
 
-			Logger.Print(Logger.LogPriority.Log, "SaveData: Saved succesfully - path: " + _path);
+			// Save most recent game version this file was saved in
+			_file.Store32(GameVersion);
+
+			Logger.Print(Logger.LogPriority.Log, "ProfileSave: Saved succesfully - path: " + _path);
 			return Task.CompletedTask;
 		}
 		public virtual T Load(bool loadToClass = true)
 		{
-			string _path = GetPath();
+			string _path = GetPath(), _path_old = _path.Replace(".data", "_data.json");
 			T _data = Data.Default();
+
+			// patch for 0.1.3v savefiles, renames file "_data" into ".data"
+			if (!FileAccess.FileExists(_path) && FileAccess.FileExists(_path_old))
+				System.IO.File.Move(ProjectSettings.GlobalizePath(_path_old), ProjectSettings.GlobalizePath(_path));
 
 			if (FileAccess.FileExists(_path))
 			{
 				using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
-				string _raw_data = string.Empty;
+				// Load Data back into a string
+				string _raw_data = Mode == SaveMode.PlainText ?
+					_raw_data = _file.GetPascalString() :
+					_raw_data = _file.GetVar().ToString();
 
-				// Load game version from end of file (130)
+				// Load game version from start of file
 				try
 				{
-					GameVersion = _file.Get32();
+					if (_file.GetPosition() >= _file.GetLength())
+						GameVersion = GlobalManager.GAME_VERSION;
+					else
+						GameVersion = _file.Get32();
 				}
 				catch (Exception)
 				{
-					GameVersion = 130;
+					GameVersion = GlobalManager.GAME_VERSION;
 				}
-
-				// Load Data back into a string
-				if (Mode == SaveMode.PlainText)
-					_raw_data = _file.GetPascalString();
-				else
-					_raw_data = _file.GetVar().ToString();
 
 				// Apply patches if needed
 				if (GameVersion != GlobalManager.GAME_VERSION)
@@ -370,12 +378,12 @@ public static class SaveSystem
 					_data = JsonSerializer.Deserialize<T>(_raw_data);
 			}
 			else
-				Logger.Print(Logger.LogPriority.Log, $"SaveData: {ID} was not found. Creating new instance. Path: " + RootPath + RelativePath + ID + Extension);
+				Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: {ID} was not found. Creating new instance. Path: " + RootPath + RelativePath + ID + Extension);
 
 			if (loadToClass)
 				Data.Set(_data);
 
-			Logger.Print(Logger.LogPriority.Log, $"SaveData: Loaded succesfully(toClass={loadToClass}) - LP: "
+			Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: Loaded succesfully(toClass={loadToClass}) - LP: "
 				+ LoadOrderPriority + " path: " + _path);
 			return _data;
 		}
@@ -413,16 +421,16 @@ public static class SaveSystem
 			string _path = GetPath();
 			using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Write);
 
-			// Save game version of file
-			_file.Store32(GameVersion);
-
 			// Store Data
 			if (Mode == SaveMode.PlainText)
 				_file.StorePascalString(Json.Stringify(Data.Get()));
 			else
 				_file.StoreVar(Data.Get());
 
-			Logger.Print(Logger.LogPriority.Log, "SaveData: Saved succesfully - LP: " + LoadOrderPriority + " path: " + _path);
+			// Save most recent game version this file was saved in
+			_file.Store32(GameVersion);
+
+			Logger.Print(Logger.LogPriority.Log, "ProfileSave: Saved succesfully. path: " + _path);
 			return Task.CompletedTask;
 		}
 		public virtual Variant Load(bool loadToClass = true)
@@ -435,21 +443,24 @@ public static class SaveSystem
 				using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
 				Variant _raw_data = string.Empty;
 
-				// Load game version from end of file
-				try
-				{
-					GameVersion = _file.Get32();
-				}
-				catch (Exception)
-				{
-					GameVersion = 130;
-				}
-
 				// Load either the plain text or the encoded var data
 				if (Mode == SaveMode.PlainText)
 					_raw_data = _file.GetPascalString();
 				else
 					_raw_data = _file.GetVar();
+
+				// Load game version from start of file
+				try
+				{
+					if (_file.GetPosition() >= _file.GetLength())
+						GameVersion = GlobalManager.GAME_VERSION;
+					else
+						GameVersion = _file.Get32();
+				}
+				catch (Exception)
+				{
+					GameVersion = GlobalManager.GAME_VERSION;
+				}
 
 				// Apply patches if needed
 				if (GameVersion != GlobalManager.GAME_VERSION)
@@ -458,12 +469,12 @@ public static class SaveSystem
 					_data = ApplyParseMethod(_raw_data);
 			}
 			else
-				Logger.Print(Logger.LogPriority.Log, $"SaveData: {ID} was not found. Creating new instance. Path: " + _path);
+				Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: {ID} was not found. Creating new instance. Path: " + _path);
 
 			if (loadToClass)
 				Data.Set(_data);
 
-			Logger.Print(Logger.LogPriority.Log, $"SaveData: Loaded succesfully(toClass={loadToClass}) - LP: "
+			Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: Loaded succesfully(toClass={loadToClass}) - LP: "
 					+ LoadOrderPriority + " path: " + _path);
 			return _data;
 		}

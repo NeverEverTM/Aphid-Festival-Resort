@@ -395,8 +395,10 @@ interactionArea = NodePath("interaction_area")
 spriteBody = NodePath("animator")
 animator = NodePath("animator")
 Audio_Whistle = ExtResource("2_8g5nl")
+metadata/tag = "player"
 
 [node name="animator" type="AnimatedSprite2D" parent="."]
+scale = Vector2(-1, 1)
 sprite_frames = SubResource("SpriteFrames_mupq7")
 animation = &"idle"
 autoplay = "idle"

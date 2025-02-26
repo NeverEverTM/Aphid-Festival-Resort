@@ -132,12 +132,12 @@ public partial class AphidSkin : Node2D
 	/// Properly handles walking during movement. 
 	/// if you want to play the animation by itself, set OverrideMovementAnim to true and use DoWalkAnim instead.
 	/// </summary>
-	public void StartWalking()
+	public void StartWalk()
 	{
 		if (OverrideMovementAnim)
 			return;
 
-		if (MyAphid.MovementDirection == Vector2.Zero)
+		if (MyAphid.MovementDirection.IsEqualApprox(Vector2.Zero))
 		{
 			// Reset back to idle standing
 			front_legs.Position = front_legs_position;

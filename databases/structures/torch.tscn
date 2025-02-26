@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://dbeu087woc2bk" path="res://sprites/props/stick_torch.png" id="1_anu0x"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="2_o66eh"]
 [ext_resource type="Script" path="res://scripts/props/TorchBehaviour.cs" id="2_pkvx2"]
-[ext_resource type="Material" uid="uid://cwaid2g5ctnpy" path="res://scripts/shaders/unshaded.tres" id="3_srj3x"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_syt6f"]
 atlas = ExtResource("1_anu0x")
@@ -36,6 +35,9 @@ animations = [{
 "name": &"default",
 "speed": 2.0
 }]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lc44r"]
+light_mode = 1
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_j38gq"]
 atlas = ExtResource("1_anu0x")
@@ -88,7 +90,7 @@ metadata/id = "torch"
 visible = false
 show_behind_parent = true
 light_mask = 0
-material = ExtResource("3_srj3x")
+material = SubResource("CanvasItemMaterial_lc44r")
 position = Vector2(-7, -43)
 sprite_frames = SubResource("SpriteFrames_wn218")
 animation = &"lit"
@@ -96,11 +98,12 @@ frame_progress = 0.395285
 
 [node name="light" type="PointLight2D" parent="."]
 process_priority = 100
-material = ExtResource("3_srj3x")
-position = Vector2(-1.50001, -8.5)
+position = Vector2(1, -4)
 scale = Vector2(1.00342, 0.632324)
 color = Color(1, 0.862745, 0.647059, 1)
 energy = 0.0
+range_z_min = -2000
+range_z_max = 2000
 texture = ExtResource("2_o66eh")
 texture_scale = 0.4
 height = 10.0

@@ -18,18 +18,6 @@ To implement a recipe it needs three things:
 - icon to display itself, this is done in the editor through the [res://sprites/icons]
 - [Optional] It can be a packed scene instead in the res://databases/items folder for custom behaviour
 
-| ***Implemented food *** |                  |                 |
-| ----------------------- | ---------------- | --------------- |
-| honey_drop              | icecream         | cooked_shroom   |
-| leaf                    | leaf_honey       | roasted_berries |
-| shroom                  | leaf_salad       | mushroom_salad  |
-| berry                   | flour_bag        | abomihoney      |
-| berry_juice             | honey_icecream   |                 |
-| water                   | dry_bread        |                 |
-| shaved_ice              | glazed_honey     |                 |
-| mistake                 | cold_salad       |                 |
-| big_mistake             | mushroom_gummies |                 |
-
 | ***Pending Food:*** | food_value | drink_value | flavour_type |
 | ------------------- | ---------- | ----------- | ------------ |
 | tangy_berry         | 10         | 10          | sour         |

@@ -1,17 +1,102 @@
-[gd_scene load_steps=4 format=3 uid="uid://xhg54cgj8fbp"]
+[gd_scene load_steps=9 format=3 uid="uid://xhg54cgj8fbp"]
 
 [ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="1_3k45m"]
 [ext_resource type="Script" path="res://scripts/utils/DebugConsole.cs" id="1_qd4sp"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_5yuy2"]
-font_color = Color(0.160784, 0, 0.403922, 1)
+[sub_resource type="FontFile" id="FontFile_6itwx"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
 
-[node name="command console" type="CanvasLayer" node_paths=PackedStringArray("command_line_input", "log_print_text")]
+[sub_resource type="LabelSettings" id="LabelSettings_aivhf"]
+font = SubResource("FontFile_6itwx")
+
+[sub_resource type="FontFile" id="FontFile_y6kvk"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/2/0/ascent = 0.0
+cache/0/2/0/descent = 0.0
+cache/0/2/0/underline_position = 0.0
+cache/0/2/0/underline_thickness = 0.0
+cache/0/2/0/scale = 1.0
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_bf4fs"]
+font = SubResource("FontFile_y6kvk")
+font_size = 20
+
+[sub_resource type="FontFile" id="FontFile_ct4i1"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+
+[sub_resource type="FontFile" id="FontFile_8ifad"]
+cache/0/40/0/ascent = 0.0
+cache/0/40/0/descent = 0.0
+cache/0/40/0/underline_position = 0.0
+cache/0/40/0/underline_thickness = 0.0
+cache/0/40/0/scale = 1.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/30/0/ascent = 0.0
+cache/0/30/0/descent = 0.0
+cache/0/30/0/underline_position = 0.0
+cache/0/30/0/underline_thickness = 0.0
+cache/0/30/0/scale = 1.0
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+cache/0/10/0/ascent = 0.0
+cache/0/10/0/descent = 0.0
+cache/0/10/0/underline_position = 0.0
+cache/0/10/0/underline_thickness = 0.0
+cache/0/10/0/scale = 1.0
+cache/0/1/0/ascent = 0.0
+cache/0/1/0/descent = 0.0
+cache/0/1/0/underline_position = 0.0
+cache/0/1/0/underline_thickness = 0.0
+cache/0/1/0/scale = 1.0
+cache/0/15/0/ascent = 0.0
+cache/0/15/0/descent = 0.0
+cache/0/15/0/underline_position = 0.0
+cache/0/15/0/underline_thickness = 0.0
+cache/0/15/0/scale = 1.0
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+
+[node name="command console" type="CanvasLayer" node_paths=PackedStringArray("command_line_input", "log_print_text", "debug_status")]
 process_mode = 3
+process_priority = -1000
+layer = 42
 visible = false
 script = ExtResource("1_qd4sp")
 command_line_input = NodePath("command_window/console/TextEdit")
 log_print_text = NodePath("command_window/console/Label2")
+debug_status = NodePath("command_window/stats")
 
 [node name="command_window" type="Control" parent="."]
 layout_mode = 3
@@ -27,16 +112,16 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="stats" type="TextureRect" parent="command_window"]
-self_modulate = Color(0.34902, 0.607843, 0.898039, 1)
+[node name="keybinds" type="TextureRect" parent="command_window"]
+self_modulate = Color(0, 0, 0, 0.388235)
 layout_mode = 0
-offset_left = -509.0
-offset_top = -247.0
-offset_right = -14.0
-offset_bottom = 74.0
+offset_left = -593.0
+offset_top = -326.0
+offset_right = -98.0
+offset_bottom = -213.0
 texture = ExtResource("1_3k45m")
 
-[node name="Label2" type="Label" parent="command_window/stats"]
+[node name="Label2" type="Label" parent="command_window/keybinds"]
 layout_mode = 0
 offset_left = 23.0
 offset_top = 20.0
@@ -46,75 +131,61 @@ text = "F2 - Open/Close Window
 F3 - Repeat Last Command
 F4 - Test Command (FOR DEVELOPMENT PURPOSES ONLY)
 "
+label_settings = SubResource("LabelSettings_aivhf")
 autowrap_mode = 3
 justification_flags = 161
 
-[node name="Label3" type="Label" parent="command_window/stats"]
+[node name="stats" type="Label" parent="command_window"]
 layout_mode = 0
-offset_left = 22.0
-offset_top = 125.0
-offset_right = 474.0
-offset_bottom = 302.0
-text = "DEBUG STATS
-DEBUG STATS
-DEBUG STATS
-DEBUG STATS
+offset_left = -570.0
+offset_top = -162.0
+offset_right = -376.0
+offset_bottom = 309.0
+text = "Aphid Stat Window
+
+Use 'aphid get' to display information.
+
 "
+label_settings = SubResource("LabelSettings_bf4fs")
 autowrap_mode = 3
 justification_flags = 161
 
-[node name="console" type="TextureRect" parent="command_window"]
-self_modulate = Color(0.34902, 0.607843, 0.898039, 1)
+[node name="stats2" type="TextureRect" parent="command_window/stats"]
+self_modulate = Color(0, 0, 0, 0.388235)
+show_behind_parent = true
 layout_mode = 0
-offset_left = 18.0
-offset_top = -245.0
-offset_right = 513.0
-offset_bottom = 317.0
+offset_left = -23.0
+offset_top = -20.0
+offset_right = 223.0
+offset_bottom = 500.0
 texture = ExtResource("1_3k45m")
 
-[node name="Label" type="Label" parent="command_window/console"]
+[node name="console" type="TextureRect" parent="command_window"]
+self_modulate = Color(0, 0, 0, 0.607843)
 layout_mode = 0
-offset_left = 98.0
-offset_top = 13.0
-offset_right = 393.0
-offset_bottom = 36.0
-text = "Debug Command Console (DCC) v1.0.1"
+offset_left = -61.0
+offset_top = -323.0
+offset_right = 623.0
+offset_bottom = 239.0
+texture = ExtResource("1_3k45m")
 
 [node name="Label2" type="RichTextLabel" parent="command_window/console"]
 layout_mode = 0
 offset_left = 23.0
-offset_top = 55.0
-offset_right = 469.0
+offset_top = 19.0
+offset_right = 665.0
 offset_bottom = 505.0
+theme_override_fonts/normal_font = SubResource("FontFile_ct4i1")
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
 scroll_following = true
 
 [node name="TextEdit" type="TextEdit" parent="command_window/console"]
 layout_mode = 0
 offset_left = 11.0
-offset_top = 520.0
-offset_right = 485.0
+offset_top = 517.0
+offset_right = 665.0
 offset_bottom = 555.0
-placeholder_text = "Write \"help all\" or \"help <command>\" to know more"
-
-[node name="flavor" type="TextureRect" parent="command_window"]
-self_modulate = Color(0.34902, 0.607843, 0.898039, 1)
-layout_mode = 0
-offset_left = -508.0
-offset_top = 88.0
-offset_right = -13.0
-offset_bottom = 313.0
-texture = ExtResource("1_3k45m")
-
-[node name="Label3" type="Label" parent="command_window/flavor"]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 22.0
-offset_right = 472.0
-offset_bottom = 202.0
-text = "To live a life of power, you must have faith that what you believe is right, even if others tell you you're wrong.
-The first thing you must do to live a life of power is to find courage. You must be ready to reach beyond the boundaries of Time itself.
-And to do that, all you need is the will to take that first step..."
-label_settings = SubResource("LabelSettings_5yuy2")
-horizontal_alignment = 1
-autowrap_mode = 3
-justification_flags = 161
+theme_override_fonts/font = SubResource("FontFile_8ifad")
+theme_override_font_sizes/font_size = 20
+placeholder_text = "Type 'help' for a list of commands."

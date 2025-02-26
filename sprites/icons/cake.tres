@@ -1,0 +1,7 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://boomciqukiw36"]
+
+[ext_resource type="Texture2D" uid="uid://bsw45c1ouka3g" path="res://sprites/atlases/food_sprites.png" id="1_alu34"]
+
+[resource]
+atlas = ExtResource("1_alu34")
+region = Rect2(128, 0, 16, 16)

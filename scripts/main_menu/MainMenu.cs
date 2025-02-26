@@ -263,11 +263,12 @@ public partial class MainMenu : Node2D
 			var _aphid = aphidPrefab.Instantiate() as Aphid;
 			_aphid.IS_FAKE = true;
 			_aphid.Instance = new();
-			_aphid.Instance.Genes.DEBUG_Randomize();
-			_aphid.Instance.Status.IsAdult = GlobalManager.GetRandomByWeight(babyWeight) == 0;
+			_aphid.Instance.Genes.DEBUG_Randomize(false);
+			_aphid.Instance.Status.IsAdult = GlobalManager.Utils.GetRandomByWeight(babyWeight) == 0;
 			_aphid.GlobalPosition = GlobalManager.Utils.GetRandomVector(-300, 300);
 			entityRoot.AddChild(_aphid);
 			_aphid.skin.SetSkin("idle");
+			(_aphid.StateArgs as AphidActions.IdleState.IdleArgs).timeleft = 0;
 		}
 	}
 }

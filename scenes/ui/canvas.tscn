@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=59 format=3 uid="uid://bufmc14xek8uk"]
 
 [ext_resource type="Script" path="res://scripts/gui/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
@@ -27,7 +27,6 @@
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="19_h41ts"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="20_qrmy7"]
-[ext_resource type="Shader" path="res://scripts/shaders/outline.gdshader" id="21_6i3dt"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/ui/controls_panel.tscn" id="23_au4eg"]
 [ext_resource type="Script" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="25_8tdi4"]
@@ -36,12 +35,11 @@
 [ext_resource type="Texture2D" uid="uid://b8fsibtdj5m8p" path="res://sprites/help_examples/food.PNG" id="28_cw4t2"]
 [ext_resource type="Texture2D" uid="uid://bjqhamn66qnsn" path="res://sprites/help_examples/shop.PNG" id="29_uxl73"]
 [ext_resource type="Texture2D" uid="uid://c2lrlam0erhiq" path="res://sprites/help_examples/money.PNG" id="30_7xxid"]
-[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="31_2tm07"]
+[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="30_snkug"]
 [ext_resource type="Texture2D" uid="uid://c6kkr4rw1ce15" path="res://sprites/help_examples/kut.PNG" id="31_uwabr"]
 [ext_resource type="Texture2D" uid="uid://b76u5f8hbpncc" path="res://sprites/help_examples/stats.PNG" id="31_x27oh"]
 [ext_resource type="Texture2D" uid="uid://drtx08aejoe38" path="res://sprites/help_examples/album.PNG" id="32_o4x4n"]
 [ext_resource type="Texture2D" uid="uid://6mmehkh5ph1d" path="res://sprites/help_examples/storage.PNG" id="33_mlkyv"]
-[ext_resource type="Texture2D" uid="uid://betmn30i4o88u" path="res://sprites/help_examples/furniture.PNG" id="34_v6us5"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_kugfj"]
 font_size = 75
@@ -465,6 +463,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_ew6dt"]
 resource_name = "close"
+length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -472,7 +471,7 @@ tracks/0/path = NodePath("background:self_modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0.588235), Color(1, 1, 1, 0)]
@@ -484,7 +483,7 @@ tracks/1/path = NodePath("panel_bg:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
 "values": [Vector2(450, 132), Vector2(450, 800)]
@@ -496,14 +495,15 @@ tracks/2/path = NodePath(".:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.5),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [false]
+"values": [true, false]
 }
 
 [sub_resource type="Animation" id="Animation_beomf"]
 resource_name = "open"
+length = 0.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -511,7 +511,7 @@ tracks/0/path = NodePath("background:self_modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.588235)]
@@ -523,7 +523,7 @@ tracks/1/path = NodePath("panel_bg:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
 "values": [Vector2(450, 800), Vector2(450, 132)]
@@ -553,16 +553,6 @@ shader = ExtResource("17_g6i7k")
 shader_parameter/speed = 0.1
 shader_parameter/node_size = Vector2(32, 32)
 shader_parameter/color = Color(1, 1, 1, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_11acl"]
-shader = ExtResource("21_6i3dt")
-shader_parameter/color = Color(0.721569, 0.0313726, 0.164706, 1)
-shader_parameter/ignore_modulate = true
-shader_parameter/width = 8.879
-shader_parameter/pattern = 1
-shader_parameter/inside = false
-shader_parameter/add_margins = true
-shader_parameter/number_of_images = Vector2(1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_gopes"]
 font_size = 30
@@ -925,14 +915,15 @@ libraries = {
 
 [node name="background" type="TextureRect" parent="pause_menu"]
 self_modulate = Color(1, 1, 1, 0)
+light_mask = 0
 texture_filter = 1
 texture_repeat = 2
 material = SubResource("ShaderMaterial_6fndo")
 layout_mode = 0
-offset_left = -40.0
-offset_top = -28.0
-offset_right = 299.0
-offset_bottom = 169.0
+offset_left = -32.0
+offset_top = -30.0
+offset_right = 304.0
+offset_bottom = 168.0
 scale = Vector2(4, 4)
 texture = ExtResource("18_i8b57")
 stretch_mode = 1
@@ -940,10 +931,10 @@ stretch_mode = 1
 [node name="options_panel" parent="pause_menu" instance=ExtResource("19_h41ts")]
 visible = false
 layout_mode = 1
-offset_left = 71.0
-offset_top = 4.0
-offset_right = 111.0
-offset_bottom = 44.0
+offset_left = 22.0
+offset_top = 16.0
+offset_right = 62.0
+offset_bottom = 56.0
 
 [node name="controls_panel" parent="pause_menu" instance=ExtResource("23_au4eg")]
 visible = false
@@ -955,6 +946,7 @@ offset_bottom = 365.0
 
 [node name="help_panel" type="Control" parent="pause_menu" node_paths=PackedStringArray("helpDescriptions")]
 visible = false
+light_mask = 0
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -968,318 +960,366 @@ offset_bottom = 358.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_xmavb")
-helpDescriptions = [NodePath("ScrollContainer/Control/desc_0/welcome"), NodePath("ScrollContainer/Control/desc_1/care"), NodePath("ScrollContainer/Control/desc_2/shop"), NodePath("ScrollContainer/Control/desc_3/money"), NodePath("ScrollContainer/Control/desc_4/kitchen"), NodePath("ScrollContainer/Control/desc_6/album"), NodePath("ScrollContainer/Control/desc_5/stats"), NodePath("ScrollContainer/Control/desc_7/resort")]
+helpDescriptions = [NodePath("ScrollContainer/Control/intro_panel/welcome"), NodePath("ScrollContainer/Control/caretake_panel/care"), NodePath("ScrollContainer/Control/shop_panel/shop"), NodePath("ScrollContainer/Control/money_panel/money"), NodePath("ScrollContainer/Control/kitchen_panel/kitchen"), NodePath("ScrollContainer/Control/generations_panel/album"), NodePath("ScrollContainer/Control/stats_panel/stats"), NodePath("ScrollContainer/Control/resort_misc_panel/resort")]
 
 [node name="ScrollContainer" type="ScrollContainer" parent="pause_menu/help_panel"]
 layout_mode = 0
-offset_left = -612.0
-offset_top = -338.0
-offset_right = 641.0
+offset_left = -556.0
+offset_top = -206.0
+offset_right = 597.0
 offset_bottom = 381.0
 horizontal_scroll_mode = 0
 
 [node name="Control" type="Control" parent="pause_menu/help_panel/ScrollContainer"]
-custom_minimum_size = Vector2(1142.29, 3800)
+custom_minimum_size = Vector2(1142.29, 3700)
 layout_mode = 2
 
-[node name="img" type="Control" parent="pause_menu/help_panel/ScrollContainer/Control"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="open_inv_image" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="intro_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
 layout_mode = 0
-offset_left = 151.0
-offset_top = 279.0
-offset_right = 572.0
-offset_bottom = 527.0
+offset_left = 47.0
+offset_top = 29.0
+offset_right = 1119.0
+offset_bottom = 626.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="welcome" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/intro_panel"]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 38.0
+offset_right = 986.0
+offset_bottom = 209.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "Welcome to the Resort! Start by hatching your first Aphid.
+Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
+Use the same button to pickup stuff as well!"
+scroll_active = false
+
+[node name="open_inv_image" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/intro_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 71.0
+offset_top = 233.0
+offset_right = 525.0
+offset_bottom = 530.0
 texture = ExtResource("26_6gm3y")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="drop_item_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="drop_item_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/intro_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
 layout_mode = 0
-offset_left = 656.0
-offset_top = 274.0
-offset_right = 999.0
-offset_bottom = 526.0
+offset_left = 653.0
+offset_top = 240.0
+offset_right = 1029.0
+offset_bottom = 528.0
 texture = ExtResource("27_hp0ii")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="food_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="caretake_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
 layout_mode = 0
-offset_left = 662.0
-offset_top = 604.0
-offset_right = 1122.0
-offset_bottom = 952.0
+offset_left = 50.0
+offset_top = 652.0
+offset_right = 1118.0
+offset_bottom = 1002.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="care" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/caretake_panel"]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 45.0
+offset_right = 649.0
+offset_bottom = 314.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "Welcome to the Resort! Start by hatching your first Aphid.
+Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
+Use the same button to pickup stuff as well!"
+scroll_active = false
+
+[node name="food_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/caretake_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 708.0
+offset_top = 45.0
+offset_right = 1010.0
+offset_bottom = 305.0
 texture = ExtResource("28_cw4t2")
 stretch_mode = 4
 
-[node name="shop_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="shop_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
 layout_mode = 0
-offset_left = 354.0
-offset_top = 1208.0
-offset_right = 838.0
-offset_bottom = 1509.0
+offset_left = 52.0
+offset_top = 1026.0
+offset_right = 1117.0
+offset_bottom = 1409.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="shop" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/shop_panel"]
+layout_mode = 0
+offset_left = 580.0
+offset_top = 41.0
+offset_right = 1006.0
+offset_bottom = 344.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="shop_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/shop_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 46.0
+offset_top = 41.0
+offset_right = 530.0
+offset_bottom = 342.0
 texture = ExtResource("29_uxl73")
 stretch_mode = 4
 
-[node name="money_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="money_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
 layout_mode = 0
-offset_left = 653.0
-offset_top = 1549.0
-offset_right = 1063.0
-offset_bottom = 1871.0
+offset_left = 52.0
+offset_top = 1435.0
+offset_right = 617.0
+offset_bottom = 1823.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="money_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/money_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 614.0
+offset_top = 32.0
+offset_right = 1016.0
+offset_bottom = 354.0
 texture = ExtResource("30_7xxid")
 stretch_mode = 4
 
-[node name="kitchen_npc_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="money" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/money_panel"]
 layout_mode = 0
-offset_left = 147.0
-offset_top = 2145.0
-offset_right = 540.0
-offset_bottom = 2372.0
+offset_left = 42.0
+offset_top = 31.0
+offset_right = 527.0
+offset_bottom = 367.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="kitchen_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 53.0
+offset_top = 1845.0
+offset_right = 1096.0
+offset_bottom = 2391.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="kitchen_npc_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/kitchen_panel"]
+light_mask = 0
+texture_filter = 2
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 560.0
+offset_top = 192.0
+offset_right = 991.0
+offset_bottom = 499.0
 texture = ExtResource("31_uwabr")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="kitchen_interface_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="kitchen" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/kitchen_panel"]
 layout_mode = 0
-offset_left = 598.0
-offset_top = 2148.0
-offset_right = 986.0
-offset_bottom = 2375.0
-texture = ExtResource("31_2tm07")
-expand_mode = 1
-stretch_mode = 4
+offset_left = 53.0
+offset_top = 42.0
+offset_right = 515.0
+offset_bottom = 483.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
 
-[node name="stats_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="stats_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
 layout_mode = 0
-offset_left = 623.0
-offset_top = 2409.0
-offset_right = 1049.0
-offset_bottom = 2752.0
+offset_left = 51.0
+offset_top = 2416.0
+offset_right = 1096.0
+offset_bottom = 2809.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="stats" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/stats_panel"]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 36.0
+offset_right = 555.0
+offset_bottom = 360.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="stats_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/stats_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 600.0
+offset_top = 26.0
+offset_right = 1008.0
+offset_bottom = 369.0
 texture = ExtResource("31_x27oh")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="album_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="generations_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
 layout_mode = 0
-offset_left = 283.0
-offset_top = 2977.0
-offset_right = 795.0
-offset_bottom = 3281.0
+offset_left = 51.0
+offset_top = 2834.0
+offset_right = 1097.0
+offset_bottom = 3175.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="album_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/generations_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 498.0
+offset_top = 26.0
+offset_right = 1010.0
+offset_bottom = 330.0
 texture = ExtResource("32_o4x4n")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="build_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="album" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/generations_panel"]
 layout_mode = 0
-offset_left = 202.0
-offset_top = 3531.0
-offset_right = 456.0
-offset_bottom = 3771.0
+offset_left = 43.0
+offset_top = 27.0
+offset_right = 460.0
+offset_bottom = 300.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="resort_misc_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 51.0
+offset_top = 3203.0
+offset_right = 1099.0
+offset_bottom = 3653.0
+texture = ExtResource("4_bri73")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="resort" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/resort_misc_panel"]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 36.0
+offset_right = 520.0
+offset_bottom = 396.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+
+[node name="build_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/resort_misc_panel"]
+light_mask = 0
+material = ExtResource("30_snkug")
+layout_mode = 0
+offset_left = 558.0
+offset_top = 60.0
+offset_right = 1011.0
+offset_bottom = 391.0
 texture = ExtResource("33_mlkyv")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="furniture_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/img"]
-material = SubResource("ShaderMaterial_11acl")
+[node name="title_bg" type="NinePatchRect" parent="pause_menu/help_panel"]
+self_modulate = Color(0.490616, 0.0316169, 0.179899, 1)
 layout_mode = 0
-offset_left = 542.0
-offset_top = 3536.0
-offset_right = 895.0
-offset_bottom = 3767.0
-texture = ExtResource("34_v6us5")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="desc_0" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 47.0
-offset_top = 29.0
-offset_right = 1106.0
-offset_bottom = 271.0
+offset_left = -540.0
+offset_top = -308.0
+offset_right = 612.0
+offset_bottom = -190.0
 texture = ExtResource("20_qrmy7")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
-[node name="welcome" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_0"]
+[node name="Label" type="Label" parent="pause_menu/help_panel/title_bg"]
+light_mask = 0
 layout_mode = 0
-offset_left = 66.0
-offset_top = 38.0
-offset_right = 986.0
-offset_bottom = 209.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "Welcome to the Resort! Start by hatching your first Aphid.
-Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
-Use the same button to pickup stuff as well!"
-scroll_active = false
-
-[node name="desc_1" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 47.0
-offset_top = 548.0
-offset_right = 636.0
-offset_bottom = 1002.0
-texture = ExtResource("4_bri73")
-
-[node name="care" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_1"]
-layout_mode = 0
-offset_left = 66.0
-offset_top = 43.0
-offset_right = 528.0
-offset_bottom = 409.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "Welcome to the Resort! Start by hatching your first Aphid.
-Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
-Use the same button to pickup stuff as well!"
-scroll_active = false
-
-[node name="desc_2" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 47.0
-offset_top = 997.0
-offset_right = 1106.0
-offset_bottom = 1199.0
-texture = ExtResource("20_qrmy7")
-
-[node name="shop" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_2"]
-layout_mode = 0
-offset_left = 66.0
-offset_top = 38.0
-offset_right = 986.0
-offset_bottom = 209.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="desc_3" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 66.0
-offset_top = 1525.0
-offset_right = 623.0
-offset_bottom = 1881.0
-texture = ExtResource("4_bri73")
-
-[node name="money" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_3"]
-layout_mode = 0
-offset_left = 55.0
-offset_top = 38.0
-offset_right = 522.0
-offset_bottom = 382.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="desc_4" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 37.0
-offset_top = 1891.0
-offset_right = 1096.0
-offset_bottom = 2133.0
-texture = ExtResource("20_qrmy7")
-
-[node name="kitchen" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_4"]
-layout_mode = 0
-offset_left = 66.0
-offset_top = 38.0
-offset_right = 988.0
-offset_bottom = 209.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="desc_5" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 38.0
-offset_top = 2391.0
-offset_right = 600.0
-offset_bottom = 2769.0
-texture = ExtResource("4_bri73")
-
-[node name="stats" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_5"]
-layout_mode = 0
-offset_left = 59.0
-offset_top = 38.0
-offset_right = 505.0
-offset_bottom = 340.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="desc_6" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 26.0
-offset_top = 2790.0
-offset_right = 1117.0
-offset_bottom = 2971.0
-texture = ExtResource("20_qrmy7")
-
-[node name="album" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_6"]
-layout_mode = 0
-offset_left = 63.0
-offset_top = 27.0
-offset_right = 1028.0
-offset_bottom = 151.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="desc_7" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-layout_mode = 0
-offset_left = 58.0
-offset_top = 3276.0
-offset_right = 1117.0
-offset_bottom = 3518.0
-texture = ExtResource("20_qrmy7")
-
-[node name="resort" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/desc_7"]
-layout_mode = 0
-offset_left = 66.0
-offset_top = 38.0
-offset_right = 988.0
-offset_bottom = 209.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
+offset_left = 50.0
+offset_top = 16.0
+offset_right = 1103.0
+offset_bottom = 103.0
+theme_override_font_sizes/font_size = 50
+text = "help_title"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="panel_bg" type="TextureRect" parent="pause_menu"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)

@@ -6,7 +6,7 @@
 
 [node name="aphid_egg" instance=ExtResource("1_oa13c")]
 script = ExtResource("2_wgpq8")
-colors = PackedColorArray(0.768627, 0.556863, 0.109804, 1, 1, 0.870588, 0.564706, 1, 0.988235, 0.705882, 0, 1, 0.85098, 0.552941, 0, 1)
+colors = PackedColorArray(0.768627, 0.556863, 0.109804, 1, 0.821868, 0.143785, 1.92523e-07, 1, 0.988235, 0.705882, 0, 1, 0.85098, 0.552941, 0, 1)
 metadata/cost = 0
 
 [node name="Sprite2D" parent="." index="0"]

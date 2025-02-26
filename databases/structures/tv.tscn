@@ -109,8 +109,9 @@ bus = &"Sounds"
 
 [node name="light" type="Sprite2D" parent="."]
 visible = false
-self_modulate = Color(0.4, 0.501961, 0.239216, 1)
-top_level = true
+self_modulate = Color(1, 1, 1, 0.329412)
+light_mask = 0
 material = SubResource("CanvasItemMaterial_ktp47")
-position = Vector2(2.8353, -5.94643)
+position = Vector2(0.716373, -30.3141)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("8_uml7d")

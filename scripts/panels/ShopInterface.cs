@@ -71,7 +71,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		if (currentItem != _itemName)
 			SetItem(_itemName);
 		else // but if is already displayed, then buy it
-			Purchase();
+			TryPurchase();
 	}
 	protected virtual void SetItem(string _itemName)
 	{
@@ -85,23 +85,37 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		itemIcon.Texture = GlobalManager.GetIcon(_itemName);
 		SoundManager.CreateSound(CanvasManager.AudioStore);
 	}
+	/// <summary>
+	/// Function that returns whether or not an item can be purchased.
+	/// Must include a if (base.CanPurchase()) to correctly handle a purchase.
+	/// </summary>
+	/// <returns></returns>
 	protected virtual bool CanPurchase()
 	{
 		if (string.IsNullOrEmpty(currentItem))
 			return false;
-		if (Player.Data.Currency - currentCost < 0)
+		if ((Player.Data.Currency - currentCost) < 0)
 			return false;
 		return true;
 	}
-	protected virtual void Purchase()
+	/// <summary>
+	/// Method used when a purchase needs to be verified before proceeding.
+	/// </summary>
+	protected virtual void TryPurchase()
 	{
 		if (CanPurchase())
-		{
-			Player.Data.SetCurrency(-currentCost);
-			SoundManager.CreateSound(CanvasManager.AudioSell, true);
-		}
+			Purchase();
 		else
 			SoundManager.CreateSound(errorSound);
+	}
+	/// <summary>
+	/// Override for what it should give/set for buying this shop's items.
+	/// Must include a base.Purchase() to correctly handle a purchase.
+	/// </summary>
+	protected virtual void Purchase()
+	{
+		Player.Data.AddCurrency(-currentCost);
+		SoundManager.CreateSound(CanvasManager.AudioSell);
 	}
 
 	public void SetMenu()

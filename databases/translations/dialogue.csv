@@ -1,28 +1,35 @@
 ,en,es
-intro_welcome,">Welcome to the alpha version of Aphid Festival Resort
->Press Escape to access Help and Controls information panels!
-You can check updates at the Itch.io page of the game!
->Any feedback is appreciated.",">Bienvenido a la alfa de Aphid Festival Resort
->Presiona Escape para acceder a paneles de informacion sobre Ayuda y Controles! Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
->Cualquier feedback es agradecido."
+intro_welcome,">Welcome (name), to Aphid Festival Resort!
+This is an early version and does not reflect future ones.
+>Press Escape to access the [color=red]Help and Controls[/color] information panels!
+Otherwise, talk to some of the characters to know more!
+>You can check updates at the Itch.io page of the game!
+Any feedback is appreciated.",">Bienvenido (name), a Aphid Festival Resort!
+Esta es una version temprana y no refleja actualizaciones futuras.
+>Presiona Escape para acceder a paneles de informacion sobre [color=red]Ayuda y Controles[/color]!
+O conversa con los personjes para saber más!
+>Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
+Cualquier feedback es agradecido."
 welcome_1,,
 joy_welcome_0,">Hello!(...) You are (name), right? Come on in!(...)
 I'll give you a quick tour around!",">Hola!(...) Tu tienes que ser (name), ¿no? Adelante!(...)
-Tenemos el complejo preparado para ti. Te dare un paseo!"
+Te dare un paseo!"
 joy_welcome_1,">Here it is. The aphid resort!(...)
 So,(...) what do you think?
->Things are shaping up as we grow so please bear with me, [wave amp=25.0 freq=5.0 connected=1]we will get there[/wave].","Y aqui esta, el complejo de áfidos!"
+>Things are shaping up as we grow so please bear with me, [wave amp=25.0 freq=5.0 connected=1]we will get there[/wave].",">Y aqui esta, el complejo de áfidos!
+Agradable, ¿no?
+>Las cosas se estan haciendo."
 joy_flavor_0,">Quite a cozy place, isn’t it (name)?(...)
 It’s such a joy to work as a keeper for the lil buddies. (...)
 [wave amp=50.0 freq=5.0 connected=1]They even let me have my own one![/wave]
->Her name is Crystal. Isn't she a cutie? 
+>Her name is Crystal.(...) Isn't she a cutie? 
 >Just wished more bugs came along to visit...(...)
 Apart from festival times, it gets pretty quiet around here.(...)
 >Speaking of, I think that is coming pretty soon!(...[0.5])
 hopefully...",">Un lugar agradable, no es así (name)?(...)
 Me encanta trabajar de cuidadora para los pequeñines.(...)
 [wave amp=50.0 freq=5.0 connected=1]Incluso me dejan tener el mió propio! [/wave]
->Su nombre es Cristal, a que es una ternura!
+>Su nombre es Cristal(...), a que es una ternura!
 >Solo desearia que más bichos se pasasen por aquí...(...)
 Aparte de en tiempos de festival, este lugar es bastante silencioso.
 >Hablando de aquello, creo que esta por llegar!(...[0.5])
@@ -49,15 +56,20 @@ Necesitaran de todo el cuidado del mundo si quieres verlos crecer
 grandes y fuertes."
 joy_flavor_4,">Did you know how much personality can a single Aphid have?
 (...)Well now you'll do!
->Surely, you have saw each one act different than others?(...)
+>Surely, you have seen each one act different than others?(...)
 Aphids have all sorts of little unique traits that make them so unique!
->I spent so much time just watching them interact with one another...(...)
+>[wave amp=25.0 freq=5.0 connected=1]I spend so much time just watching them go...[/wave](...)
 I wonder what they are saying?",">¿Sabes cuanta personalidad puede un áfido tener?
 (...)Bueno, ¡ahora lo sabras!
 >De seguro, ¿No habras visto como cada uno actua diferente que los otros?(...)
 ¡Los áfidos tienen todo tipo de rasgos que los hacen tan unicos!
->Solia verlos por horas como interactuaban el uno al otro...(...)
+>[wave amp=25.0 freq=5.0 connected=1]Paso mucho tiempo verlos ir y venir...[/wave](...)
 ¿Me pregunto de que hablaran?"
+joy_flavor_5,">Mmh...(...)
+Oh, sorry, didn't see you there!
+>I tune out a little too much, too often.",">Mmh...(...)
+Oh perdona, no te vi llegar!
+>A veces se me va mucho el pensamiento."
 azzy_flavor_0,">(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
@@ -84,8 +96,8 @@ What'cha need, (name)?",">Me pregunto que estaran haciendo las Avispas en el nor
 Deje ese lugar hace [wave amp=25.0 freq=5.0 connected=1]baaastante[/wave] rato, pero he oido cosas recientemente.
 >Creo que fue lo mejor. Disfruto la vida aquí en el asentamiento.
 Incluso conoci a mi pareja aqui. Así que, gracias a Venus y demas charla.
->Oops, perdona, se me ha ido el hilo otra vez...(...)
-¿Que necesitabas, (name)?"
+>Oops, perdona, se me ha ido el hilo otra vez....(...)
+¿Que necesitas, (name)?"
 kut_flavor_0,">No one in this town has proved more expert taste than the aphids.
 The best customers I ever had.
 >They even gather around to see my craft.
@@ -96,9 +108,9 @@ Un ambiente asi me inspira."
 kut_flavor_1,">Mmpfh...
 Should I try spice it up(...) or(...) should I make it sickly sweet.
 >Oh, you're(...), (name)?
-Did you came to see a culinary master in action?",">(char(kut))Mmpfh...
+Did you came to see a culinary master in action?",">Mmpfh...
 ¿Deberia intentar añadirle picor(...) o hacerlo amargamente dulce?.
->Oh, tu eres(...(0.5)), (name)?
+>Oh, tu eres(...), (name)?
 ¿Has venido a ver a un maestro culinario en acción?"
 kut_flavor_2,">...What would I recommend? (...)
 That is up to your little one.
@@ -113,16 +125,25 @@ Algunos más...(...) diferentes que otros.
 Y todo depende de los ingredientes que uses."
 crystal_flavor_0,>Fi,>Fi
 crystal_flavor_1,>Fi Fi,>Fi Fi
-crystal_flavor_2,>[wave amp=25.0 freq=5.0 connected=1][color='grey']squeak,>[wave amp=25.0 freq=5.0 connected=1][color='grey']squeak
+crystal_flavor_2,>[wave amp=25.0 freq=5.0 connected=1][color='grey']squeak,>[wave amp=25.0 freq=5.0 connected=1][color='grey']chi chi
 echo_flavor_0,">...(...)What do you want?(...)
-Don't I look busy to you?",">...(...)¿Que es lo que buscas?(...)
-¿No te parezco ocupade?"
-echo_flavor_1,">Not in the mood to talk...(...)
-I'm never in the mood though, so tough luck.",">No estoy para hablar...(...)
-Nunca estoy para nada, así que, suerte."
-echo_flavor_2,">Pfft [font_size=20]Did I really have to join her for this...[/font_size]...(...)
+Don't I look busy to you?
+>You look lost, I am pretty sure they gave you a [color=red]Help[/color] guide(...)
+It would be a good idea if you read it, don't you think.",">...(...)¿Que es lo que buscas?(...)
+¿No te parezco ocupade?
+>Pareces perdid(o/a), estoy segure que te dieron una guía de [color=red]ayuda[/color](...)
+No te parece que sería una buena idea leerlo ahora."
+echo_flavor_1,">Where is the bridge?(...)
+Bridge's gone.(...) Not fixing that now.(...)
+I am busy standing here.",">¿Donde esta el puente?(...)
+Desaparecio.(...) No puedo arreglarlo ahorra.(...)
+Estoy ocupade parandome aquí."
+echo_flavor_2,">...[font_size=20]Did I really have to join her for this...[/font_size]...(...)
 Erhm, hello?
->Could you mind your own business?",">Pfft [font_size=20]De verdad tenia que formar parte de esto por ella...[/font_size]...(...)
+>Could you mind your own business?",">...[font_size=20]De verdad tenia que formar parte de esto por ella...[/font_size]...(...)
 Huh, ¿hola?
 >¿Te importa?"
 echo_flavor_3,>...(...[1.0]) Get lost.,>...(...[1.0]) Pierdete.
+echo_flavor_4,">Don't cause trouble. I am watching you.(...)
+All four of my eyes are.",">No causes problemas, te estare vigilando.(...)
+Mis cuatro ojos lo hacen."

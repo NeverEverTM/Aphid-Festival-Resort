@@ -1,18 +1,16 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public class AphidData
 {
 	public enum FoodType { Sweet, Sour, Salty, Bitter, Vile, Bland, Neutral }
 	private readonly static float[] flavor_weights = new float[]{
-		0.2f,
-		0.2f,
-		0.2f,
-		0.2f,
-		0.05f,
-		0.15f
+		25,
+		25,
+		30,
+		15,
+		5
 	};
 	public readonly static string[] NameArchive = new string[]
 	{
@@ -30,12 +28,13 @@ public class AphidData
 		"Arial", "Aphid", "Amor",
 		"Ariel", "Armando", "Omega",
 		"Afty", "Buggy", "Toffee",
-		"Axel", "Lea", "Sky",
+		"Axel", "Lea", "Sky", "April",
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	};
-	public const int adulthoodAge = 1200, breedTimer = 1200, deathAge = 7200, productionCooldown = 120,
-		HarvestValue_Baby = 4, HarvestValue_Adult = 8;
-	public const float PET_DURATION = 1;
+	internal static int Age_Adulthood = 1200, Age_Death = 7200,
+		Breed_Cooldown = 1200, Harvest_Cooldown = 120, Food_Drain_Time = 16, Water_Drain_Time = 10;
+
+	internal const int HARVEST_VALUE_BABY = 5, HARVEST_VALUE_ADULT = 9, PET_DURATION = 1;
 
 	/// <summary>
 	/// Current living status of the aphid and its needs
@@ -51,10 +50,7 @@ public class AphidData
 
 		// Production & Breeding
 		public float BreedBuildup { get; set; }
-		/// <summary>
-		/// -1 : None, 0 : With Itself, 1 : With Partner
-		/// </summary>
-		public int BreedMode { get; set; }
+		public AphidActions.BreedState.BreedEnum BreedMode { get; set; }
 		public float MilkBuildup { get; set; }
 
 		// Lifetime
@@ -75,7 +71,7 @@ public class AphidData
 			Thirst = 50;
 			Tiredness = 50;
 			Affection = 50;
-			BreedMode = -1;
+			BreedMode = AphidActions.BreedState.BreedEnum.Inactive;
 		}
 
 		public virtual void AddHunger(float _amount) =>
@@ -117,7 +113,7 @@ public class AphidData
 
 		/// <summary>
 		/// This function generates new info completely from scratch without taking inheritance into account.
-		/// Used exclusively for new aphids.
+		/// Used exclusively for new aphids. Does not change their color and skin.
 		/// </summary>
 		public void GenerateNewAphid()
 		{
@@ -132,8 +128,15 @@ public class AphidData
 		public void BreedNewAphid(AphidInstance _father, AphidInstance _mother)
 		{
 			AphidInstance[] _parents = new AphidInstance[] { _mother, _father };
+			Name = NameArchive[GlobalManager.RNG.RandiRange(0, NameArchive.Length - 1)];
 			Father = _father.Genes.Name;
 			Mother = _mother.Genes.Name;
+			Owner = Player.Data?.Name;
+			GenerateSkills(); // should inherit skills
+			GenerateFoodPreferences();
+			GenerateTraits(2);
+			Traits.Add(_father.Genes.Traits[GlobalManager.RNG.RandiRange(0, _father.Genes.Traits.Count - 1)]);
+			Traits.Add(_mother.Genes.Traits[GlobalManager.RNG.RandiRange(0, _mother.Genes.Traits.Count - 1)]);
 
 			AntennaType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.AntennaType;
 			EyeType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.EyeType;
@@ -154,43 +157,41 @@ public class AphidData
 				new Aphid.Skill("speed"),
 			};
 		}
-		public virtual void GenerateTraits()
+		public virtual void GenerateTraits(int _amount = 3)
 		{
 			Traits = new();
-			List<string> registered_traits = AphidTraits.TRAITS.Keys.ToList();
-			int TIMEOUT = 0;
 
-			while (Traits.Count < 3)
+			for (int timeout = 0; timeout < 500; timeout++)
 			{
-				if (TIMEOUT > 500)
-					break;
-				TIMEOUT++;
-				// we draw a trait from the global pool using a local list
-				var _trait = registered_traits[GlobalManager.RNG.RandiRange(0, registered_traits.Count - 1)];
+				Aphid.ITrait _trait = AphidTraits.GetRandomTrait(out string _trait_name);
 
-				// check if this trait is compatible with all others
-				// otherwise ignore it now and in all follwing checks by removing it from the list 
-				Aphid.ITrait _traitToCheck = AphidTraits.TRAITS[_trait];
-				bool _isIncompatible = false;
-
+				if (Traits.Contains(_trait_name))
+					continue;
+				
 				for (int i = 0; i < Traits.Count; i++)
 				{
-					if (_traitToCheck.IsIncompatibleWith(_trait))
+					Aphid.ITrait _existingTrait = AphidTraits.GetTraitByName(Traits[i]);
+					// reject traits incompatible with our current ones
+					if (_trait.IsIncompatibleWith(Traits[i]) || _existingTrait.IsIncompatibleWith(_trait_name))
 					{
-						registered_traits.Remove(_trait);
-						_isIncompatible = true;
+						_trait = null;
 						break;
 					}
 				}
-				if (_isIncompatible)
+				
+				if (_trait == null)
 					continue;
 				else
-					Traits.Add(_trait);
+					Traits.Add(_trait_name);
+
+				if (Traits.Count == _amount)
+					break;
 			}
+			Logger.Print(Logger.LogPriority.Debug, "AphidTraits: Selected the following traits: ", string.Join(", ", Traits));
 		}
 		public virtual void GenerateFoodPreferences()
 		{
-			FoodPreference = (FoodType)GlobalManager.GetRandomByWeight(flavor_weights);
+			FoodPreference = (FoodType)GlobalManager.Utils.GetRandomByWeight(flavor_weights);
 			FoodMultipliers = new float[]{
 				GetMultiplier(FoodType.Sweet),
 				GetMultiplier(FoodType.Sour),
@@ -201,13 +202,13 @@ public class AphidData
 				1
 			};
 		}
-		public float GetMultiplier(FoodType _type) =>
+		public virtual float GetMultiplier(FoodType _type) =>
 			0.5f + (_type == FoodPreference ? 0.5f : 0) + GlobalManager.RNG.Randf();
 
 		/// <summary>
 		/// FOR DEBUG PURPOSES
 		/// </summary>
-		public void DEBUG_Randomize()
+		public void DEBUG_Randomize(bool _generateGenes = true)
 		{
 			RandomNumberGenerator _gen = new();
 			AntennaColor = GlobalManager.Utils.GetRandomColor();
@@ -218,7 +219,13 @@ public class AphidData
 			EyeType = _gen.RandiRange(0, 1);
 			BodyType = _gen.RandiRange(0, 1);
 			LegType = _gen.RandiRange(0, 1);
-			GenerateNewAphid();
+			if (_generateGenes)
+				GenerateNewAphid();
+			else
+			{
+				Skills = new();
+				Traits = new();
+			}
 		}
 	}
 

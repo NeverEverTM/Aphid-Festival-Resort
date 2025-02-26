@@ -41,7 +41,14 @@ public partial class LoadGameMenu : Control
 		{
 			// Get the metdata of a savefile
 			string _profile = fileNames[i];
+			
 			GameManager.ProfileSaveModule.RootPath = Path.Combine(SaveSystem.PROFILES_DIR, fileNames[i]);
+			// patch for 0.1.3v files
+			if (!Godot.FileAccess.FileExists(GameManager.ProfileSaveModule.GetPath()))
+			{
+				string _path_old = GameManager.ProfileSaveModule.GetPath(true).Replace("main.data", "game_savedata.json");
+				File.Move(_path_old, GameManager.ProfileSaveModule.GetPath(true));
+			}
 			GameManager.GameData _data = GameManager.ProfileSaveModule.Load(false);
 
 			Control _slot = savefile_slot.Instantiate() as Control;

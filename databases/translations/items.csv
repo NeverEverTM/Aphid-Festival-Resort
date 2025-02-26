@@ -7,8 +7,6 @@ shroom_name,Mushroom,Hongo
 shroom_desc,"A sour, chewwy shroom that is better cooked.","Un hongo agrio y gomoso, cocinado es preferible."
 berry_name,Fruity Berry ,Baya Frutal
 berry_desc,"A type of berry commonly cultivated in the Settlement, unlike the ones used as currency, this one tastes sweet.","Un tipo de baya comunmente cultivada en la region, a diferencia de las monetarias, esta es dulce."
-spicy_berry_name,Spicy Berry,Baya Picante
-spicy_berry_desc,"A blazing hot berry, increases strength, at a stamina cost.","Una baya ardiente de sabor, aumenta la fuerza, pero reduce el aguante."
 water_name,Clear Water,Agua Fresca
 water_desc,"A drop of fresh rain water, for when you feel thirsty.","Una gota de lluvia fresca, para cuando te encuentras sediento."
 shaved_ice_name,Shaved Ice,Hielo Granizado
@@ -26,7 +24,7 @@ cooked_shroom_desc,"Now that is cooked, it aint that bad, decent if one can say 
 cold_salad_name,Cold Salad,Ensalada Gélida
 cold_salad_desc,Effectively a frozen leaf salad. Edible despite all.,Effectivamente una ensalada de hojas congelada. Comestible ante todo pronostico.
 mushroom_gummies_name,Mushroom Gummies,Gomitas de Hongo
-mushroom_gummies_desc,A candy made of mushroom that tastes surprisingly well.,Un dulce hecho de hongo que sorprendentemente tiene buen sabor.
+mushroom_gummies_desc,A candy made of mushroom that tastes surprisingly well.,Un dulce hecho con hongos que es sorprendentemente agradable al paladar.
 glazed_honey_name,Glazed Honey,Miel Glaseada
 glazed_honey_desc,A common delicacy in the Bee Kingdom.,Una delicadez comun en el Reino de las Abejas.
 roasted_berries_name,Roasted Berries,Bayas Asadas
@@ -36,13 +34,13 @@ mistake_desc,"Perfectly good ingredients, gone to waste. Who would want this?!",
 big_mistake_name,Big Mistake,Mega Decepción
 big_mistake_desc,"Please, stop.","Porfavor, para."
 flour_bag_name,Bag of Flour,Saco de Harina
-flour_bag_desc,"Used for many recipes, and preferably, not consumed raw.","Principalmente, su uso es para recetas. No es recomendable que sea consumido."
+flour_bag_desc,"Used for many recipes, and preferably, not consumed raw.",Principalmente usado en recetas. No se recomienda consumirlo crudo.
 dry_bread_name,Dry Bread,Pan Seco
-dry_bread_desc,"A fine piece of bread that will leave you thirsty, for more! ... well, both.","Una deliciosa barra de pan que te dejara sediento, por más! ... bueno, ambas."
+dry_bread_desc,"A fine piece of bread that will leave you thirsty, for more! ... well, both.","Una deliciosa barra de pan que te dejara sediento, por más! ... bueno, ambos."
 icecream_name,Ice Cream,Helado
-icecream_desc,"A dessert best served cold, it does not have any particular flavour at the moment.","Un maravilloso postre, mejor servido frio, actualmente sin un sabor en particular."
+icecream_desc,"A dessert best served cold, in a sunny day under the shade.","Un postre mejor servido frio, en un dia de verano, bajo la sombra."
 honey_icecream_name,Honey Ice Cream,Helado de Miel
-honey_icecream_desc,"A honey-flavoured icecream, so sweet and refresing!","Un helado de sabor miel, super delicioso y refrescante!"
+honey_icecream_desc,"A honey-flavoured icecream, so sweet and refresing!","Un helado con sabor a miel, super delicioso y refrescante!"
 abomihoney_name,Abomihoney,Abomimiel
 abomihoney_desc,The result of applying way too much heat to hone- Ow! it bit me!,El resultado de calentar miel por demasiad- Ay! Pero que me ha mordido!
 aphid_egg_name,Aphid Egg,Huevo de Afido
@@ -56,8 +54,20 @@ aphid_egg_green_desc,"A green aphid egg, they soon after grow into a tiny lil Ap
 aphid_egg_yellow_name,Yellow Aphid Egg,Huevo Amarillo de Afido
 aphid_egg_yellow_desc,"A yellow aphid egg, they soon after grow into a tiny lil Aphid.",Un huevo amarillo de Áfido. De aquí crece un pequeñin.
 applesauce_name,Applesauce,Pure de Manzana
-applesauce_desc,"An alternative to eggs, much more sweeter too!","Una alternativa a los huevos, mucho más dulce tambien!"
+applesauce_desc,"An alternative to eggs in recipes, much more sweeter too!","Una alternativa a los huevos en recetas, mucho más dulce tambien!"
 berry_icecream_name,Berry Ice Cream,Helado de Baya
 berry_icecream_desc,"For a hot summer day! Or any other season really, can't go wrong with it.","Para un caluroso día de verano! U cualquier otra estación, no puedes fallar con esto."
 honey_pancakes_name,Honey Pancakes,Panqueques de Miel
 honey_pancakes_desc,"Heaven turned breakfast. A plate of delicious, warm and fluffy pancakes covered in honey.","Cielo hecho desayuno. Un plato de deliciosos, calientitos y esponjados panqueques cubiertos en miel."
+nutty_cake_name,Nutty Cake,Pastelito de Nuez
+nutty_cake_desc,"A rather bitter but enjoyable pastry. Your aphid is not nut-allergic, right?","Un pastelillo amargo, pero incredible. No eres alergico a la nuez, verdad?"
+cake_name,Baked Cake,Pastel Horneado
+cake_desc,"As basic as a cake gets, made of applesauce, flour and maybe a lil bit of love.","Lo màs basico que un pastel puede ser, hecho con pure, harina, y puede que un poquito de amor."
+danger_spud_name,Danger Spud,Batata Toxica
+danger_spud_desc,"A toxin filled yam, seen as a some as a sweet delicacy.","Una batata llena de toxinas, visto por muchos como una dulce delicadeza."
+plain_tea_name,Plain Tea,Tè Simple
+plain_tea_desc,Nothing beats a simple tea to accompany the noon.,Nada supera un simple tè para acompañar la tarde.
+tangy_berry_name,Tangy Berry,Baya Acida
+tangy_berry_desc,"A strange berry, non-native of these lands. It's rarity makes it a luxurious ingredient.","Una baya extraña, no nativa de estos lares. Su rareza la hace un manjar lujurioso."
+leaf_croissant_name,Leaf Croissant,Croissant en Hoja
+leaf_croissant_desc,"A freshly baked croissant, wrapped in leaves to make it extra crunchy.","Un croissant recien horneado, envuelto en hojas para hacerlo extra crujiente."

@@ -7,7 +7,7 @@ public partial class OptionsMenu : Control
 	[Export] private Slider masterSlider, musicSlider, soundSlider, ambienceSlider, uiSlider;
 	[Export] private TextureButton saveFolderButton;
 	[Export] private OptionButton windowMode, language;
-	[Export] private CheckBox autoRun;
+	[Export] private BaseButton autoRun;
 
 	public readonly Dictionary<string, int> locales = new()
 	{

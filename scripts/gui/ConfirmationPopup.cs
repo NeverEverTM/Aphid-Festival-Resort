@@ -110,11 +110,7 @@ public partial class ConfirmationPopup : CanvasLayer
 	private void CheckConfirm()
 	{
 		if (confirmation_edit.Text == Tr("confirmation_yes"))
-		{
-			try { confirmationAction(); }
-			catch (Exception e) { GlobalManager.CreatePopup(e.ToString(), GlobalManager.Instance); GD.PrintErr(e); Cancel(); }
 			Accept();
-		}
 		else
 		{
 			confirmation_edit.Text = "";
@@ -139,6 +135,12 @@ public partial class ConfirmationPopup : CanvasLayer
 	}
 	public static void Accept()
 	{
+		try { currentPopup.confirmationAction?.Invoke(); }
+		catch (Exception e)
+		{
+			GlobalManager.CreatePopup(e.ToString(), GlobalManager.Instance);
+			Logger.Print(Logger.LogPriority.Error, "ConfirmationPopup: Error on confirm:\n", e); Cancel();
+		}
 		currentPopup.GetTree().Root.ProcessMode = ProcessModeEnum.Pausable;
 		currentPopup.CallDeferred(Node.MethodName.QueueFree);
 		IsConfirming = false;

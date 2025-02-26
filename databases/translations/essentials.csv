@@ -2,9 +2,10 @@
 BOOT_0,Visualizing Icons...,Visualizando Iconos...
 BOOT_1,Loading Skins...,Cargando Skins...
 BOOT_2,Mixing SFX...,Mezclando SFX...
+BOOT_3,Spraying Particles...,Esparciendo Particulas...
 BOOT_ITEMS,Creating Items...,Creando Objectos...
 BOOT_FOOD,Tagging Food...,Etiquetando Comida...
-BOOT_RECIPES,Building Recipes,Escribiendo Recetas...
+BOOT_RECIPES,Building Recipes...,Escribiendo Recetas...
 warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. ¿Puede que no exista?
 warning_invalid_name,"This resort name is not valid, be sure to exclude special characters.","Este nombre de complejo no es valido, asegurate de remover caracteres especiales."
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
@@ -75,6 +76,7 @@ controls_interactions_name,Interactions,Interacciones
 controls_mode_name,Camera & Build Mode,Camara y Construcción
 controls_menus_name,Menu Access,Acceso de Menus
 controls_reset,Hold F1 to reset binds,Sosten F1 para resetar los controles
+help_title,Aphid Basics and You 101,Primeros Pasos
 help_desc_0,"Welcome to the Resort! Start by hatching your first Aphid.
 Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
 Use the same button to pickup stuff as well!","¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
@@ -90,17 +92,17 @@ help_desc_3,"Money grows from Aphids, literally!
 Interact with [color=#e33d00]outlined[/color] aphids to harvest them for berries.","El dinero crece de los Áfidos, ¡literalmente!
 Interactua con áfidos [color=#e33d00]delineados[/color] para cultivarlos por bayas."
 help_desc_4,"You can make better snacks at the kitchen, mix and match ingredients to find a worthy meal.
-Remember that your aphids have a unique preference for certain food types!","Puedes hacer mejores snacks en la cocina, mezcla y combina para encontrar una cena apropaiada.
+Remember that your aphids have a unique preference for certain food types!","Puedes hacer mejores snacks en la cocina, mezcla y combina para encontrar una cena apropiada.
 ¡Recuerda que tus áfidos tendran una preferencia unica por ciertos tipos de comida!"
 help_desc_5,"Want to see your progress? Open the generational album with {0} and admire all of
 your current and past aphids under your care.","¿Quieres ver tu progreso? Abre el album generacional con {0} y admira todos
 los áfidos presentes y pasados bajo tu cuidado."
 help_desc_6,"You can rename an Aphid by picking it up and pressing its name on the top left.
-It also shows its current stats, skills and status.","Puedes renombrar un Áfido recogiendolo y presionando su nombre en la parte izquierda arriba.
-Aquí tambien muestra sus estadisticas, habilidades y estatus."
+It also shows its current status and skills.","Puedes renombrar un Áfido recogiendolo y presionando su nombre en la parte izquierda arriba.
+Aquí tambien muestra su estado actual y habilidades."
 help_desc_7,"Get a better view of your resort by pressing {0} from where you can access the furniture mode!
-You can also take screenshots with F1 and see them from the album.","¡Consigue una mejor vision del complejo presionando {0} donde puedes acceder al modo construcción!
-Tambien puedes tomar capturas de pantalla usando F1 y verlas en el album."
+You can also take screenshots with F1.","¡Consigue una mejor vision del complejo presionando {0} donde puedes acceder al modo construcción!
+Tambien puedes tomar capturas de pantalla usando F1."
 pause_resume,Resume,Reanudar
 pause_options,Options,Opciones
 pause_controls,Controls,Controles
@@ -112,15 +114,12 @@ Created in the Godot 4 Engine
 
 SOUND ASSETS
 
-“Rustling leaves” by Pixabay (Pixabay)
-“Camera Flash” by irinairinafomicheva (Pixabay)
-
-MISC ASSETS
-
-3D Aphid Model by Leo
+Stock sound effects from Pixabay
+16-bit SFX created with JSFXR
 
 SPECIAL THANKS
 
+Thanks to Leo for the funny 3D Aphid Model
 To tatetrox, for helping with betatesting and quality control!
 To the fan game Chao Resort Island by Nefault1st for being an inspiration for this!
 
@@ -128,25 +127,22 @@ To the fan game Chao Resort Island by Nefault1st for being an inspiration for th
 Unless stated otherwise, all other components had been created, programmed and designed by me, Summer
 Characters and places are from Bug Fables: The Everlasting Sapling by Moonsprout Games
 ------------------------[/center]","[center]-------------------------------
-Hecho con Godot 4
+Hecho en Godot 4
 
 ARCHIVOS DE SONIDO
 
-“Rustling leaves” por Pixabay (Pixabay)
-“Camera Flash” por irinairinafomicheva (Pixabay)
-
-ARCHIVOS MISCELANEOS
-
-3D Aphid Model por Leo
+Efectos de sonido de stock de parte de Pixabay
+16-bit SFX creado con JSFXR
 
 GRACIAS ESPECIALES
 
+A Leo por el modelo 3D del Afido
 A Josefina(tatetrox) por ayudar con testeo y control de calidad!
 Al juego fan Chao Resort Island por Nefault1st por ser una inspiracion para esto!
 
 ---------------------------------
-A menos dicho lo contrario, todo los demas componentes han sido creados, programados y deiseñados por mi Summer
-Caracteres y lugares vienen de Bug Fables: The Everlasting Sapling por Moonsprout Games
+A menos dicho lo contrario, todo los demas componentes han sido creados, programados y diseñados por mi Summer
+Caracteres y lugares vienen de Bug Fables: El Retoño Eterno de Moonsprout Games
 ------------------------[/center]"
 generations_description,"Here you can see all the aphids you have raised through your time in the resort.
 Double click on an aphid to mark its location in the map.","Aquí podras ver a todas los áfidos que has criado en tu tiempo en el complejo.
@@ -159,14 +155,15 @@ store_item_phrase,Hi!,Hola!
 store_furniture_name,Furniture Cabinet,Cabina de muebles
 store_furniture_desc,The resort's stock for land decoration. Members are allowed to decorate at their heart's content.,El stock del complejo para decoracion. Los miembros tienen permiso de decorar a su gusto.
 store_furniture_phrase,On Sale,En venta
-kitchen_name,Kut's Cooking Table,NOT_IMPLEMENTED
-kitchen_desc,Hand me some ingredients and let a master take the wheel.,NOT_IMPLEMENTED
-kitchen_success,Aha! A dish of the upmost quality like you've never seen before.,NOT_IMPLEMENTED
-kitchen_fail,...I could only do so much with such a poorly thought combo.,NOT_IMPLEMENTED
+kitchen_name,Kut's Cooking Table,Cocina de Kut
+kitchen_desc,Hand me some ingredients and see master cuisine for yourself.,Dame un par de ingredientes y observa a un maestro en su campo.
+kitchen_success,"Here it is! A meal through and done, quality like you never seen before.",¡Dicho y hecho!  Un platillo de un calibre que te deslumbrara.
+kitchen_fail,...I could only do so much with such a poorly thought combo.,"...No puedo hacer milagros, mucho menos con esto."
 kitchen_lockrecipe,Repeat Recipe,Repetir Receta
+unknown_name,???,???
 resort_golden_name,Golden Plains,Planicies Doradas
-resort_golden_desc,"Situated at the Golden Settlement, Its this first accomodation of many.","Situada en el Asentamiento Dorado, es la primer acomodacion de muchas."
-bio_name_placeholder,Aphid Name,Nombre del Áfido
+resort_golden_desc,"Situated at the Golden Settlement, It's the first accomodation of many.","Situada en el Asentamiento Dorado, es la primer acomodacion de muchas."
+bio_name_placeholder,Aphid's Name,Nombre del Áfido
 prompt_pickup,Pickup,Recoger
 prompt_drop,Drop,Soltar
 prompt_interact,Interact,Interactuar

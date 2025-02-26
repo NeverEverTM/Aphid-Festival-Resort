@@ -1,12 +1,16 @@
-[gd_scene load_steps=14 format=3 uid="uid://ba1ev1heaa3s6"]
+[gd_scene load_steps=15 format=3 uid="uid://ba1ev1heaa3s6"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_fjlrd"]
 [ext_resource type="Script" path="res://scripts/panels/OptionsMenu.cs" id="2_eio0f"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_d5s5m"]
-[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="4_5c30j"]
+[ext_resource type="Texture2D" uid="uid://ohodui0w0ouh" path="res://sprites/ui/checkboxes.png" id="4_2e3pp"]
 [ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="6_jwgu8"]
 [ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/gui_icons/icon_folder.png" id="6_qdykg"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="7_msete"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bmjtx"]
+atlas = ExtResource("4_2e3pp")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_b3a4x"]
 atlas = ExtResource("7_msete")
@@ -58,7 +62,7 @@ windowMode = NodePath("windowMode")
 language = NodePath("language")
 autoRun = NodePath("autorun")
 
-[node name="master" type="TextureRect" parent="."]
+[node name="master" type="NinePatchRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -67,6 +71,10 @@ offset_top = 18.0
 offset_right = 371.0
 offset_bottom = 120.0
 texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="Label" type="Label" parent="master"]
 light_mask = 0
@@ -91,7 +99,7 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="music" type="TextureRect" parent="."]
+[node name="music" type="NinePatchRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -100,6 +108,10 @@ offset_top = 145.0
 offset_right = 371.0
 offset_bottom = 247.0
 texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="Label" type="Label" parent="music"]
 light_mask = 0
@@ -124,7 +136,7 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="sound" type="TextureRect" parent="."]
+[node name="sound" type="NinePatchRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -132,6 +144,10 @@ offset_top = 279.0
 offset_right = 371.0
 offset_bottom = 382.0
 texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="Label" type="Label" parent="sound"]
 light_mask = 0
@@ -156,7 +172,7 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="ambience" type="TextureRect" parent="."]
+[node name="ambience" type="NinePatchRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -164,6 +180,10 @@ offset_top = 408.0
 offset_right = 371.0
 offset_bottom = 511.0
 texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="Label" type="Label" parent="ambience"]
 light_mask = 0
@@ -188,7 +208,7 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="ui" type="TextureRect" parent="."]
+[node name="ui" type="NinePatchRect" parent="."]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -196,6 +216,10 @@ offset_top = 530.0
 offset_right = 371.0
 offset_bottom = 633.0
 texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="Label" type="Label" parent="ui"]
 light_mask = 0
@@ -221,14 +245,15 @@ value = 0.4
 scrollable = false
 
 [node name="savefolder_button" type="TextureButton" parent="."]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+self_modulate = Color(0.898096, 0.140423, 0.365346, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 941.0
-offset_top = 19.0
-offset_right = 1153.0
-offset_bottom = 231.0
-texture_normal = ExtResource("4_5c30j")
+offset_left = 1079.0
+offset_top = -14.0
+offset_right = 1291.0
+offset_bottom = 198.0
+scale = Vector2(0.5, 0.5)
+texture_normal = SubResource("AtlasTexture_bmjtx")
 stretch_mode = 4
 script = ExtResource("6_jwgu8")
 PressedColor = Color(0.533333, 0.533333, 0.533333, 1)
@@ -245,39 +270,138 @@ offset_bottom = 185.0
 texture = ExtResource("6_qdykg")
 stretch_mode = 4
 
+[node name="autorun" type="CheckButton" parent="."]
+layout_mode = 0
+offset_left = 832.0
+offset_top = 112.0
+offset_right = 1191.0
+offset_bottom = 202.0
+text = "options_autorun"
+
+[node name="NinePatchRect" type="NinePatchRect" parent="autorun"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+show_behind_parent = true
+light_mask = 0
+layout_mode = 0
+offset_left = -18.0
+offset_top = 6.0
+offset_right = 370.0
+offset_bottom = 83.0
+texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="camerasmooth" type="CheckButton" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 832.0
+offset_top = 200.0
+offset_right = 1191.0
+offset_bottom = 290.0
+text = "options_camerasmooth"
+
+[node name="NinePatchRect" type="NinePatchRect" parent="camerasmooth"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+show_behind_parent = true
+light_mask = 0
+layout_mode = 0
+offset_left = -18.0
+offset_top = 6.0
+offset_right = 370.0
+offset_bottom = 83.0
+texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="autorun3" type="CheckButton" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 832.0
+offset_top = 288.0
+offset_right = 1191.0
+offset_bottom = 378.0
+text = "options_autorun"
+
+[node name="NinePatchRect" type="NinePatchRect" parent="autorun3"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+show_behind_parent = true
+light_mask = 0
+layout_mode = 0
+offset_left = -18.0
+offset_top = 6.0
+offset_right = 370.0
+offset_bottom = 83.0
+texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
 [node name="windowMode" type="OptionButton" parent="."]
 light_mask = 0
 layout_mode = 0
-offset_left = 791.0
-offset_top = 259.0
-offset_right = 1144.0
-offset_bottom = 335.0
+offset_left = 831.0
+offset_top = 419.0
+offset_right = 1184.0
+offset_bottom = 495.0
 expand_icon = true
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "options_windowed"
 popup/item_0/icon = SubResource("AtlasTexture_b3a4x")
-popup/item_0/id = 0
 popup/item_1/text = "options_fullscreen"
 popup/item_1/icon = SubResource("AtlasTexture_acmck")
 popup/item_1/id = 1
 
+[node name="NinePatchRect" type="NinePatchRect" parent="windowMode"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+show_behind_parent = true
+light_mask = 0
+layout_mode = 0
+offset_left = -17.0
+offset_top = -5.0
+offset_right = 371.0
+offset_bottom = 85.0
+texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
 [node name="language" type="OptionButton" parent="."]
 light_mask = 0
 layout_mode = 0
-offset_left = 794.0
-offset_top = 365.0
-offset_right = 1147.0
-offset_bottom = 441.0
+offset_left = 834.0
+offset_top = 525.0
+offset_right = 1187.0
+offset_bottom = 601.0
 expand_icon = true
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "English"
 popup/item_0/icon = SubResource("AtlasTexture_xa7jr")
-popup/item_0/id = 0
 popup/item_1/text = "Español"
 popup/item_1/icon = SubResource("AtlasTexture_ym452")
 popup/item_1/id = 1
+
+[node name="NinePatchRect" type="NinePatchRect" parent="language"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+show_behind_parent = true
+light_mask = 0
+layout_mode = 0
+offset_left = -18.0
+offset_top = -6.0
+offset_right = 370.0
+offset_bottom = 84.0
+texture = ExtResource("3_d5s5m")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="screen" type="OptionButton" parent="."]
 visible = false
@@ -288,19 +412,11 @@ offset_top = -153.0
 offset_right = 512.0
 offset_bottom = -77.0
 expand_icon = true
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "options_windowed"
 popup/item_0/icon = SubResource("AtlasTexture_5sprh")
 popup/item_0/id = 1
 popup/item_1/text = "options_fullscreen"
 popup/item_1/icon = SubResource("AtlasTexture_kl4mf")
-popup/item_1/id = 0
-
-[node name="autorun" type="CheckBox" parent="."]
-layout_mode = 0
-offset_left = 794.0
-offset_top = 471.0
-offset_right = 1153.0
-offset_bottom = 561.0
-text = "Auto Run"
+popup/item_1/id = 1

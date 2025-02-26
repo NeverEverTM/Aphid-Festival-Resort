@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wel4xh4hnwm4"
-path="res://.godot/imported/ref_kitchen.png-9d5ac197e047bdd172656eac185b3bba.ctex"
+uid="uid://doll68sgg6dvl"
+path="res://.godot/imported/kut_portrait.png-e2839386c6489d9be8a289ab62e57735.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ref_kitchen.png"
-dest_files=["res://.godot/imported/ref_kitchen.png-9d5ac197e047bdd172656eac185b3bba.ctex"]
+source_file="res://sprites/ui/portraits/kut_portrait.png"
+dest_files=["res://.godot/imported/kut_portrait.png-e2839386c6489d9be8a289ab62e57735.ctex"]
 
 [params]
 

@@ -15,7 +15,7 @@ _data = [Vector2(0, 0), 0.0, 0.0627683, 0, 0, Vector2(0.449405, 0.456604), 2.852
 point_count = 3
 
 [sub_resource type="LabelSettings" id="LabelSettings_be8mp"]
-font_size = 50
+font_size = 45
 
 [node name="controls_panel" type="Control" node_paths=PackedStringArray("controls", "reset_bar")]
 layout_mode = 3
@@ -283,9 +283,9 @@ texture_progress = ExtResource("9_ru27g")
 [node name="Label" type="Label" parent="ScrollContainer/Container/Panel"]
 layout_mode = 0
 offset_left = 164.0
-offset_top = 22.0
+offset_top = 20.0
 offset_right = 468.0
-offset_bottom = 170.0
+offset_bottom = 168.0
 text = "controls_reset"
 label_settings = SubResource("LabelSettings_be8mp")
 horizontal_alignment = 1

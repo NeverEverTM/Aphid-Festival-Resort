@@ -56,7 +56,8 @@ internal static class OptionsManager
 
         public Savefile()
         {
-            VolumeMaster = VolumeMusic = VolumeSound = VolumeUI = VolumeAmbience = 0.4f;
+            VolumeMaster = 0.6f;
+            VolumeMusic = VolumeSound = VolumeUI = VolumeAmbience = 0.4f;
             DisplayMode = DisplayServer.WindowMode.Maximized;
             Locale = "en_US";
             ResetBinds = false;

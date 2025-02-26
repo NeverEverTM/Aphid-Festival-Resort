@@ -1030,9 +1030,9 @@ self_modulate = Color(0.545098, 0.168627, 0.0392157, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 101.0
-offset_top = 222.0
+offset_top = 166.0
 offset_right = 528.0
-offset_bottom = 302.0
+offset_bottom = 246.0
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath("../resort_name_input")
 focus_neighbor_right = NodePath(".")
@@ -1116,7 +1116,8 @@ sliders_visible = false
 hex_visible = false
 presets_visible = false
 
-[node name="CheckBox" type="CheckBox" parent="CanvasLayer/newgame_panel/resort_params"]
+[node name="creative" type="CheckButton" parent="CanvasLayer/newgame_panel/resort_params"]
+visible = false
 light_mask = 0
 layout_mode = 0
 offset_left = 44.0
@@ -1124,10 +1125,10 @@ offset_top = 164.0
 offset_right = 245.0
 offset_bottom = 212.0
 theme_override_font_sizes/font_size = 20
-disabled = true
 text = "new_game_creative"
 
-[node name="CheckBox2" type="CheckBox" parent="CanvasLayer/newgame_panel/resort_params"]
+[node name="nodeath" type="CheckButton" parent="CanvasLayer/newgame_panel/resort_params"]
+visible = false
 light_mask = 0
 layout_mode = 0
 offset_left = 300.0
@@ -1135,7 +1136,6 @@ offset_top = 164.0
 offset_right = 489.0
 offset_bottom = 212.0
 theme_override_font_sizes/font_size = 20
-disabled = true
 text = "new_game_nodeath"
 
 [node name="player_params" type="NinePatchRect" parent="CanvasLayer/newgame_panel"]
@@ -1547,14 +1547,15 @@ libraries = {
 
 [node name="godot_logo" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 light_mask = 0
+texture_filter = 3
 layout_mode = 0
-offset_left = -186.0
-offset_top = -83.0
-offset_right = 273.0
-offset_bottom = 102.0
+offset_left = -231.0
+offset_top = -131.0
+offset_right = 322.0
+offset_bottom = 139.0
 texture = ExtResource("27_a546m")
 expand_mode = 1
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="bg" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 visible = false
@@ -1570,6 +1571,7 @@ stretch_mode = 1
 
 [node name="logo_project" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 light_mask = 0
+texture_filter = 3
 layout_mode = 0
 offset_left = -1500.0
 offset_top = -140.0
@@ -1581,6 +1583,7 @@ stretch_mode = 4
 
 [node name="logo_color" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 light_mask = 0
+texture_filter = 3
 layout_mode = 0
 offset_left = 873.0
 offset_top = -80.0
@@ -1593,6 +1596,7 @@ stretch_mode = 4
 [node name="logo_full" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 self_modulate = Color(1, 1, 1, 0)
 light_mask = 0
+texture_filter = 3
 use_parent_material = true
 layout_mode = 0
 offset_left = -267.0

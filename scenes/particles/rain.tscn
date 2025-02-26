@@ -6,7 +6,7 @@
 light_mode = 1
 
 [sub_resource type="Curve" id="Curve_qasph"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.54717), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_apq25"]
@@ -28,7 +28,7 @@ point_count = 2
 curve = SubResource("Curve_emthf")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_41uej"]
-lifetime_randomness = 0.44
+lifetime_randomness = 0.79
 particle_flag_disable_z = true
 emission_shape_offset = Vector3(0, -500, 0)
 emission_shape_scale = Vector3(100, 1, 1)
@@ -38,7 +38,7 @@ direction = Vector3(0, 100, 0)
 spread = 0.0
 initial_velocity_min = 196.97
 initial_velocity_max = 196.97
-gravity = Vector3(-500, 980, 0)
+gravity = Vector3(-800, 1000, 0)
 scale_min = 0.25
 scale_curve = SubResource("CurveTexture_lm3wu")
 scale_over_velocity_min = 1.55
@@ -46,18 +46,16 @@ scale_over_velocity_max = 1.85
 scale_over_velocity_curve = SubResource("CurveTexture_k5735")
 color = Color(0.756863, 0.909804, 1, 1)
 alpha_curve = SubResource("CurveTexture_apq25")
-turbulence_noise_strength = 0.0
-turbulence_noise_scale = 10.0
-turbulence_noise_speed_random = 0.0
-turbulence_influence_min = 1.0
-turbulence_influence_max = 1.0
+turbulence_influence_min = 0.039
+turbulence_influence_max = 0.039
 
 [node name="GPU_HeartParticles" type="GPUParticles2D"]
 z_index = 1000
 material = SubResource("CanvasItemMaterial_1mep3")
-position = Vector2(564, 312)
-amount = 3000
+position = Vector2(898, -10)
+amount = 5000
 process_material = SubResource("ParticleProcessMaterial_41uej")
 texture = ExtResource("1_w8vya")
-lifetime = 2.0
+lifetime = 8.0
 randomness = 0.95
+visibility_rect = Rect2(-20916.3, -516.881, 22931.5, 46590.8)

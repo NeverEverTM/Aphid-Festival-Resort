@@ -23,7 +23,11 @@ public partial class AphidHatch : RigidBody2D
 					AntennaColor = colors[0],
 					EyeColor = colors[1],
 					BodyColor = colors[2],
-					LegColor = colors[3]
+					LegColor = colors[3],
+					AntennaType = parts_ids[0],
+					EyeType = parts_ids[1],
+					BodyType = parts_ids[2],
+					LegType = parts_ids[3]
 				};
 				given_genes.GenerateNewAphid();
 			}

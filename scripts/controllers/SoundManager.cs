@@ -99,6 +99,13 @@ public partial class SoundManager : Node
 		transitionTween.Finished += () => MusicPlayer.StreamPaused = true;
 	}
 
+	public static AudioStream GetAudioStream(string _name)
+	{
+		if (GlobalManager.G_AUDIO.ContainsKey(_name))
+			return GlobalManager.G_AUDIO[_name];
+		else
+			return GlobalManager.G_AUDIO["button_fail"];
+	}
 	/// <summary>
 	/// Creates a global sound to be heard, duplicating the given audioplayer and handed back for further manipulation.
 	/// To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.
@@ -106,10 +113,10 @@ public partial class SoundManager : Node
 	/// <param name="_audioplayer">The base audio player from which duplicate</param>
 	public static AudioStreamPlayer CreateSound(AudioStream _stream, AudioStreamPlayer _audioplayer, bool _pitchRand = true)
 	{
-		AudioStreamPlayer _player = _audioplayer.Duplicate() as AudioStreamPlayer;
+		AudioStreamPlayer _player = _audioplayer.GetParent() != null ? _audioplayer.Duplicate() as AudioStreamPlayer : _audioplayer;
 		GlobalManager.Instance.AddChild(_player);
 		if (_pitchRand)
-			_player.PitchScale = GlobalManager.RNG.RandfRange(0.81f, 1.27f);
+			_player.PitchScale += GlobalManager.RNG.RandfRange(-0.15f, 0.15f);
 		_player.Stream = _stream;
 		_player.Play();
 		sound_entities.Add(_player);
@@ -127,6 +134,18 @@ public partial class SoundManager : Node
         };
         return CreateSound(_stream, _player, _pitchRand);
 	}
+	/// <summary>
+	/// Creates a global sound to be heard, handed back for further manipulation.
+	/// To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.
+	/// </summary>
+	public static AudioStreamPlayer CreateSound(string _name, bool _pitchRand = true, string _bus = "UI")
+	{
+        AudioStreamPlayer _player = new()
+        {
+            Bus = _bus
+        };
+        return CreateSound(GetAudioStream(_name), _player, _pitchRand);
+	}
 
 	/// <summary>
 	/// Creates a sound at a given location that can be heard positionally. Duplicating the given audioplayer as a base.
@@ -134,10 +153,10 @@ public partial class SoundManager : Node
 	/// </summary>
 	public static AudioStreamPlayer2D CreateSound2D(AudioStream _stream, AudioStreamPlayer2D _audioplayer, Vector2 _position, bool _pitchRand = true)
 	{
-		AudioStreamPlayer2D _player = _audioplayer.Duplicate() as AudioStreamPlayer2D;
+		AudioStreamPlayer2D _player = _audioplayer.GetParent() != null ? _audioplayer.Duplicate() as AudioStreamPlayer2D : _audioplayer;
 		GlobalManager.Instance.AddChild(_player);
 		if (_pitchRand)
-			_player.PitchScale = GlobalManager.RNG.RandfRange(0.81f, 1.27f);
+			_player.PitchScale += GlobalManager.RNG.RandfRange(-0.15f,0.15f);
 		_player.Attenuation = 0.5f;
 		_player.MaxDistance = 500;
 		_player.Stream = _stream;
@@ -157,5 +176,17 @@ public partial class SoundManager : Node
 			Bus = _bus
 		};
 		return CreateSound2D(_stream, _player, _position, _pitchRand);
+	}
+	/// <summary>
+	/// Creates a sound at a given location that can be heard positionally.
+	/// For audio that needs to be heard globally, use CreateSound instead.
+	/// </summary>
+	public static AudioStreamPlayer2D CreateSound2D(string _name, Vector2 _position, bool _pitchRand = true, string _bus = "Sounds")
+	{
+		AudioStreamPlayer2D _player = new()
+		{
+			Bus = _bus
+		};
+		return CreateSound2D(GetAudioStream(_name), _player, _position, _pitchRand);
 	}
 }

@@ -57,7 +57,7 @@ public partial class PlayerInventory : Control
 			{
 				if (Instance.IsDisabled)
 					return;
-				if (Instance.PickupItem != null)
+				if (Instance.HeldPickup.Item != null)
 					StoreCurrentItem();
 				PullItem(_item_name);
 				SetTo(false);
@@ -73,11 +73,12 @@ public partial class PlayerInventory : Control
 		if (Data.Inventory.Count == 0 || !Data.Inventory.Contains(_item_name) || Instance.IsDisabled)
 			return;
 
-		if (Instance.PickupItem != null)
+		if (Instance.HeldPickup.Item != null)
 			await Instance.Drop();
 		Node2D _item = ResortManager.CreateItem(_item_name, GlobalPosition);
 		await Instance.Pickup(_item, _item.GetMeta("tag").ToString(), false);
 		Data.Inventory.Remove(_item_name);
+		SoundManager.CreateSound("ui/backpack_close");
 	}
 	public void PullItem(int _index)
 	{
@@ -88,6 +89,12 @@ public partial class PlayerInventory : Control
 	}
 	public static bool StoreItem(string _item)
 	{
+		if (string.IsNullOrEmpty(_item))
+		{
+			Logger.Print(Logger.LogPriority.Error, "PlayerInventory: This object is empty/null and cannot be stored.");
+			return false;
+		}
+
 		if (!CanStoreItem())
 			return false;
 		Data.Inventory.Add(_item);
@@ -101,13 +108,13 @@ public partial class PlayerInventory : Control
 		Data.Inventory.Count < Data.InventoryMaxCapacity;
 	public static void StoreCurrentItem()
 	{
-		if (Instance.PickupItem.GetMeta("tag").ToString() == Aphid.Tag)
+		if (Instance.HeldPickup.Item.GetMeta("tag").ToString() == Aphid.Tag)
 			return;
 
-		if (!StoreItem(Instance.PickupItem.GetMeta("id").ToString()))
+		if (!StoreItem(Instance.HeldPickup.Item.GetMeta("id").ToString()))
 			return;
 
-		Instance.PickupItem.QueueFree();
-		Instance.PickupItem = null;
+		Instance.HeldPickup.Item.QueueFree();
+		Instance.HeldPickup = new();
 	}
 }

@@ -40,3 +40,4 @@ texture = ExtResource("1_dt6u5")
 one_shot = true
 explosiveness = 0.5
 randomness = 0.95
+interpolate = false

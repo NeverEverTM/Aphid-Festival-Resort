@@ -5,14 +5,13 @@ public partial class AphidInfo : Control
 	[Export] private AnimationPlayer menu_player;
 	[ExportCategory("Bio")]
 	[Export] private TextEdit name_label;
-	[Export] private TextureProgressBar bondship;
 	[Export] private TextureRect ageDisplay;
 	[Export] private Texture2D[] age = new Texture2D[2];
-	[ExportCategory("Stats Knobs")]
-	[Export] private Control hungerK;
-	[Export] private Control thirstK, affectionK;
+	[ExportGroup("Status Bars")]
+	[Export] private TextureProgressBar foodBar, waterBar, affectionBar, sleepBar, bondshipBar;
+	[ExportGroup("Skill Bars")]
+	[Export] private TextureProgressBar staminaBar, strengthBar, speedBar, intelligenceBar;
 
-	private const int offsetY = -9, lengthSize = 240;
 	private Aphid aphid;
 
 	public override void _Ready()
@@ -25,9 +24,6 @@ public partial class AphidInfo : Control
 	}
 	public override void _Input(InputEvent _event)
 	{
-		if (!Visible)
-			return;
-
 		if (!CanvasManager.IsFocus(name_label))
 			return;
 
@@ -36,7 +32,7 @@ public partial class AphidInfo : Control
 			InputEventKey _input = _event as InputEventKey;
 
 			// unfocus
-			if (_input.KeyLabel == Key.Enter)
+			if (_input.KeyLabel == Key.Enter || _input.KeyLabel == Key.Escape)
 			{
 				GetViewport().SetInputAsHandled();
 				CanvasManager.RemoveFocus();
@@ -66,30 +62,37 @@ public partial class AphidInfo : Control
 
 		aphid.Instance.Genes.Name = name_label.Text;
 	}
-
 	private void OnAphidPickup(string _tag)
 	{
 		if (_tag != "aphid")
 			return;
 
-		menu_player.Play("swipe_right");
-		aphid = Player.Instance.PickupItem as Aphid;
+		menu_player.Play("open");
+		aphid = Player.Instance.HeldPickup.aphid;
 		UpdateAphidInfo();
 	}
 	private void OnAphidDrop()
 	{
+		if (aphid == null)
+			return;
 		aphid = null;
-		menu_player.Play("swipe_left");
+		menu_player.Play("close");
 	}
 	private void UpdateAphidInfo()
 	{
 		name_label.Text = aphid.Instance.Genes.Name;
 
-		hungerK.SetPosition(new(aphid.Instance.Status.Hunger * 0.01f * lengthSize, offsetY));
-		thirstK.SetPosition(new(aphid.Instance.Status.Thirst * 0.01f * lengthSize, offsetY));
-		affectionK.SetPosition(new(aphid.Instance.Status.Affection * 0.01f * lengthSize, offsetY));
+		foodBar.Value = aphid.Instance.Status.Hunger;
+		waterBar.Value = aphid.Instance.Status.Thirst;
+		affectionBar.Value = aphid.Instance.Status.Affection;
+		sleepBar.Value = 100 - aphid.Instance.Status.Tiredness;
+		bondshipBar.Value = aphid.Instance.Status.Bondship;
+
+		staminaBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "stamina").Points;
+		strengthBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "strength").Points;
+		speedBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "speed").Points;
+		intelligenceBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "intelligence").Points;
 
 		ageDisplay.Texture = age[aphid.Instance.Status.IsAdult ? 1 : 0];
-		bondship.Value = aphid.Instance.Status.Bondship;
 	}
 }

@@ -26,7 +26,8 @@ public partial class DialogManager : Control
 	{
 		{ "...", new DotCommand() },
 		{ "name", new PlayerNameCommand() },
-		{ "char", new VoiceCommand() }
+		{ "char", new VoiceCommand() },
+		{ "o/a", new PronounsPossesiveES() }
 	};
 
 	public override void _Ready()
@@ -139,7 +140,10 @@ public partial class DialogManager : Control
 		{
 			// dialog commands start with '(', they are triggered and then redacted out of dialog 
 			if (dialogText.Text[i] == '(')
+			{
 				RegisterDialogCommand(i);
+				continue; // we skip to check for dialog length
+			}
 			
 			// bbc isnt accounted for in visiblecharacters but it is in length
 			// so we need to get how much we need to skip forward, then set visiblecharacters to index minus skipped bbc characters
@@ -152,6 +156,7 @@ public partial class DialogManager : Control
 				}
 				i++;
 				_bbcSkipped++;
+				continue; // we skip to check for dialog length
 			}
 
 			// Pre setup
@@ -279,15 +284,23 @@ public partial class DialogManager : Control
 			return string.Empty;
 		}
 	}
-    public class PronounsPossesive : IDialogCommand
+    public class PronounsPossesiveES : IDialogCommand
     {
         public string Execute(string[] _args)
         {
-           if (OptionsManager.Settings.Locale == "es_ES")
-		   {
-				return "w";
-		   }
-		   return "e";
+			if (Player.Data.Pronouns[0].ToLower() == "el")
+				return "o";
+			if (Player.Data.Pronouns[0].ToLower() == "ella")
+		   		return "a";
+			else
+				return "e";
+        }
+    }
+	public class PronounsPossesiveEN : IDialogCommand
+    {
+        public string Execute(string[] _args)
+        {
+			return Player.Data.Pronouns[0].ToLower();
         }
     }
 }

@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://cf4r7ihqeab31"]
+
+[ext_resource type="Texture2D" uid="uid://6k020yb1sqfu" path="res://sprites/atlases/particle_sprites.png" id="1_kl0ef"]
+
+[sub_resource type="Curve" id="Curve_sylc5"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.62442, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_b0e3k"]
+curve = SubResource("Curve_sylc5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bk0at"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 56.887
+initial_velocity_min = 76.89
+initial_velocity_max = 108.85
+angular_velocity_min = -46.03
+angular_velocity_max = 105.7
+gravity = Vector3(0, 98, 0)
+damping_min = 63.413
+damping_max = 63.825
+scale_min = 0.5
+scale_max = 0.5
+alpha_curve = SubResource("CurveTexture_b0e3k")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sg3y4"]
+atlas = ExtResource("1_kl0ef")
+region = Rect2(48, 16, 16, 16)
+
+[node name="leaves_bush" type="GPUParticles2D"]
+emitting = false
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_bk0at")
+texture = SubResource("AtlasTexture_sg3y4")
+lifetime = 1.5
+one_shot = true
+explosiveness = 0.74
+fixed_fps = 20
+interpolate = false

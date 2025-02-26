@@ -9,26 +9,72 @@ public partial class DebugConsole : CanvasLayer
 	public static bool IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt,
 	LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair,
 	DidntSayIDidntWarnYouBeforeHand;
-	private static bool IsEnabled, lastPauseState;
+	private static bool IsEnabled;
 	private static string[] lastCommand;
+	private static Aphid validAphid;
 
 	[Export] public TextEdit command_line_input;
 	[Export] public RichTextLabel log_print_text;
+	[Export] public Label debug_status;
 
 	public override void _Ready()
 	{
 		Instance = this;
 #if DEBUG
 		IsEnabled = true;
+		Print($"Debug Console Command - {GlobalManager.GAME_VERSION}v\n");
 #endif
 	}
-
+    public override void _Process(double delta)
+    {
+        if (IsInstanceValid(validAphid))
+		{
+			debug_status.Text = "Name: " + validAphid.Instance.Genes.Name;
+			debug_status.Text += "\nState: " + validAphid.State.Type.ToString();
+			debug_status.Text += "\nFood: " + validAphid.Instance.Status.Hunger;
+			debug_status.Text += "\nWater: " + validAphid.Instance.Status.Thirst;
+			debug_status.Text += "\nBondship: " + validAphid.Instance.Status.Bondship;
+			debug_status.Text += "\nHealth: " + validAphid.Instance.Status.Health;
+			debug_status.Text += "\nAge/s: " + (int)validAphid.Instance.Status.Age + "/" + AphidData.Age_Death;
+			debug_status.Text += $"\nBreedBuildup: {(int)validAphid.Instance.Status.BreedBuildup}/{AphidData.Breed_Cooldown}";
+			debug_status.Text += "\nBreedMode: " + validAphid.Instance.Status.BreedMode;
+			debug_status.Text += $"\nHarvestBuildup: {(int)validAphid.Instance.Status.MilkBuildup}/{AphidData.Harvest_Cooldown}";
+			debug_status.Text += "\nFoodPreference: " + validAphid.Instance.Genes.FoodPreference.ToString();
+			debug_status.Text += "\nTraits: \n";
+			for(int i = 0; i < validAphid.Instance.Genes.Traits.Count; i++)
+				debug_status.Text += $"{validAphid.Instance.Genes.Traits[i]}\n";
+		}
+		else
+			validAphid = null;
+    }
 	public override void _Input(InputEvent @event)
 	{
 		if (IsEnabled)
 		{
-			if (command_line_input.HasFocus() && @event is InputEventKey && (@event as InputEventKey).KeyLabel == Key.Enter)
-				TriggerCommand(command_line_input.Text.Split(" "));
+			if (@event.IsActionPressed("debug_0"))
+			{
+				if (Visible)
+					Hide();
+				else
+					Show();
+			}
+
+			if (@event.IsActionPressed("debug_1") && lastCommand != null)
+				TriggerCommand(lastCommand);
+
+			if (@event.IsActionPressed("debug_2"))
+			{
+				Logger.Print(Logger.LogPriority.Debug, "Buggy");
+			}
+
+			if (command_line_input.HasFocus() && @event is InputEventKey &&
+				(@event as InputEventKey).KeyLabel == Key.Enter)
+			{
+				if (!string.IsNullOrEmpty(command_line_input.Text))
+					TriggerCommand(command_line_input.Text.Split(" "));
+				command_line_input.ReleaseFocus();
+				GetViewport().SetInputAsHandled();
+			}
 		}
 		else
 		{
@@ -40,35 +86,6 @@ public partial class DebugConsole : CanvasLayer
 		}
 	}
 
-	public override void _Process(double delta)
-	{
-		if (IsEnabled)
-			if (Input.IsActionJustPressed("debug_0"))
-			{
-				if (Visible)
-				{
-					Hide();
-					GetTree().Paused = lastPauseState;
-				}
-				else
-				{
-					Show();
-					lastPauseState = GetTree().Paused;
-					GetTree().Paused = true;
-				}
-			}
-
-		if (Input.IsActionJustPressed("debug_1"))
-		{
-			if (lastCommand != null)
-				TriggerCommand(lastCommand);
-		}
-
-		if (Input.IsActionJustPressed("debug_2"))
-		{
-			Logger.Print(Logger.LogPriority.Log, "Buggy");
-		}
-	}
 	private static void CheckForUnlock(InputEvent @event)
 	{
 		if (@event.IsActionPressed("debug_0"))
@@ -92,19 +109,22 @@ public partial class DebugConsole : CanvasLayer
 	{
 		if (!IsEnabled)
 			return false;
-		Instance.command_line_input.Text = "";
 
 		if (commands.ContainsKey(_commandLines[0]))
 		{
+			// store last command as raw string
 			lastCommand = _commandLines;
 
 			// parse args and execut command
-			string[] _args = new string[_commandLines.Length];
-			if (_commandLines.Length > 1)
-				Array.Copy(_commandLines, 1, _args, 0, _args.Length - 1);
+			string[] _args = new string[_commandLines.Length - 1];
+			if (_args.Length > 0)
+				Array.Copy(_commandLines, 1, _args, 0, _args.Length);
+
 			commands[_commandLines[0]].Execute(_args);
+			Instance.command_line_input.Text = string.Empty;
 			return true;
 		}
+		Logger.Print(Logger.LogPriority.Debug, $"Command '{_commandLines[0]}' does not exist. Type help for a complete list.");
 		return false;
 	}
 
@@ -116,85 +136,99 @@ public partial class DebugConsole : CanvasLayer
 	public readonly static Dictionary<string, IConsoleCommand> commands = new()
 	{
 		{ "help", new Help() },
-		{ "spawn", new Spawner() },
 		{ "motherload", new Motherload() },
-		{ "time", new DeLorean() }
+		{ "time", new DeLorean() },
+		{ "gamerule", new GameRules() },
+		{ "aphid", new AphidDebug() },
+		{ "give", new GiveItem() }
 	};
-	
+
 	public static void Print(string _message) =>
 		Instance?.log_print_text.AppendText(_message + "\n");
-	public static bool CheckArgLength(int argLength, int _validLength)
+
+	public static string GetArg(int _index, string[] _argList)
 	{
-		if (argLength != _validLength)
+		if (_index >= _argList.Length)
+			return string.Empty;
+
+		return _argList[_index];
+	}
+	public static bool GetArg(int _index, string[] _argList, out string _arg)
+	{
+		if (_index >= _argList.Length)
+		{
+			_arg = string.Empty;
 			return false;
+		}
+		_arg = _argList[_index];
 		return true;
 	}
-	public static bool CheckValidType(string _value, out int _validValue)
+	public static int GetInt(int _index, string[] _argList, int _default)
 	{
-		if (!int.TryParse(_value, out _validValue))
-			return false;
-		return true;
+		string _arg = GetArg(_index, _argList);
+
+		if (!int.TryParse(_arg, out int _argNumber))
+			return _default;
+		else
+			return _argNumber;
 	}
-	public static bool CheckValidType(string _value, out float _validValue)
+	public static float GetFloat(int _index, string[] _argList, float _default)
 	{
-		if (!float.TryParse(_value, out _validValue))
-			return false;
-		return true;
-	}
-	public static bool CheckValidType(string _value, out bool _validValue)
-	{
-		if (!bool.TryParse(_value, out _validValue))
-			return false;
-		return true;
+		string _arg = GetArg(_index, _argList);
+
+		if (!float.TryParse(_arg, out float _argNumber))
+			return _default;
+		else
+			return _argNumber;
 	}
 
-    private class Help : IConsoleCommand
-    {
-        public string HelpText => "Help yourself!";
-
-        public void Execute(string[] args)
-        {
-			if (args.Length > 0)
-			{
-				if (commands.ContainsKey(args[0]))
-            		Print(commands[args[0]].HelpText);
-				else
-					Print("This command does not exist. Type 'help' to find all available commands");
-			}
-			else
-			{
-				Print("Command available are:\n");
-				for(int i = 0; i < commands.Count; i++)
-					Print(commands.ElementAt(i).Key);
-			}
-			
-        }
-    }
-    private class Spawner : IConsoleCommand
+	private class Help : IConsoleCommand
 	{
-		public string HelpText => "Spawns randomized aphids. <spawn>";
+		public string HelpText => "Help yourself!";
 
 		public void Execute(string[] args)
 		{
-			AphidData.Genes _genes = new();
-			_genes.DEBUG_Randomize();
-			_genes.Name += ResortManager.CurrentResort.AphidsOnResort.Count;
-			ResortManager.CreateAphid(GlobalManager.Utils.GetMouseToWorldPosition(), _genes);
+			if (args.Length > 0)
+			{
+				if (commands.ContainsKey(args[0]))
+					Logger.Print(Logger.LogPriority.Log, "HelpCommand: ", commands[args[0]], " = ", commands[args[0]].HelpText);
+				else
+					Logger.Print(Logger.LogPriority.Log, "This command does not exist. Type 'help' to find all available commands");
+			}
+			else
+			{
+				Logger.Print(Logger.LogPriority.Log, "The format for a command is:\n<name of the command> [required parameters] (optional parameters) ('option 1'/'option 2').");
+				Logger.Print(Logger.LogPriority.Log, "The available commands are:");
+				commands.Keys.ToList().ForEach(Print);
+			}
 		}
 	}
 	private class Motherload : IConsoleCommand
 	{
-		public string HelpText => "Gives you loads of money. <motherload> (specific amount)";
+		public string HelpText => "Gives you loads of money. <motherload> (amount) ('debt')";
 
 		public void Execute(string[] args)
 		{
+			if (GlobalManager.Scene != GlobalManager.SceneName.Resort)
+			{
+				Logger.Print(Logger.LogPriority.Log, $"Motherload: No game currently running.");
+				return;
+			}
 			int _amount = 500;
 			if (args.Length > 0)
-				CheckValidType(args[0], out _amount);
+				_amount = int.Parse(args[0]);
 
-			Player.Data.Currency += _amount;
+			if (args.Length > 1 && args[1] == "debt")
+			{
+				Player.Data.Currency += _amount;
+				Logger.Print(Logger.LogPriority.Log, $"Motherload: Removed ${_amount} to your current game.");
+			}
+			else
+			{
+				Player.Data.Currency += _amount;
+				Logger.Print(Logger.LogPriority.Log, $"Motherload: Added ${_amount} to current game.");
+			}
 			CanvasManager.UpdateCurrency();
-			Logger.Print(Logger.LogPriority.Log, $"You have been transfered ${_amount} from the Bank of Bugaria, free of charge!");
 		}
 	}
 	private class DeLorean : IConsoleCommand
@@ -203,6 +237,8 @@ public partial class DebugConsole : CanvasLayer
 
 		public void Execute(string[] args)
 		{
+			if (args.Length < 2)
+				return;
 			var _date = Time.GetDatetimeDictFromSystem();
 			_date["hour"] = args[0];
 			_date["minute"] = args[1];
@@ -211,13 +247,149 @@ public partial class DebugConsole : CanvasLayer
 			Logger.Print(Logger.LogPriority.Log, $"In-Game Time is now {args[0]}:{args[1]}");
 		}
 	}
-    private class AphidDebug : IConsoleCommand
+	private class GameRules : IConsoleCommand
+	{
+		public string HelpText => "Modify game and engine rules. <gamerule> [rule_in_snake_case/list] (some rules require a value)";
+		private readonly Dictionary<string, Action<string[]>> game_rules = new()
+		{
+			{ "time_scale", (args) =>
+				{
+					Engine.TimeScale = GetFloat(1, args, 1);
+					Logger.Print(Logger.LogPriority.Info, $"GameRules: Time scale is now: <{Engine.TimeScale}>");
+				} 
+			},
+			{ "physics_scale", (args) =>
+				{
+					Engine.PhysicsTicksPerSecond = GetInt(1, args, 60);
+				Logger.Print(Logger.LogPriority.Info, $"GameRules: Physics Tics are now: <{Engine.PhysicsTicksPerSecond}/s>");
+				} 
+			},
+			{ "harvest_cooldown", (args) =>
+				{
+					AphidData.Harvest_Cooldown = GetInt(1, args, harvest_default);
+				Logger.Print(Logger.LogPriority.Info, $"GameRules: Harvest Cooldown is now <{AphidData.Harvest_Cooldown}>");
+				}
+			},
+			{ "breed_cooldown", (args) =>
+				{
+					AphidData.Breed_Cooldown = GetInt(1, args, breed_default);
+				Logger.Print(Logger.LogPriority.Info, $"GameRules: Breed Cooldown is now <{AphidData.Breed_Cooldown} seconds>");
+				} 
+			},
+			{ "age_adulthood", (args) =>
+				{
+					AphidData.Age_Adulthood = GetInt(1, args, adult_default);
+				Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for adulthood is now <{AphidData.Age_Adulthood} seconds>");
+				} 
+			},
+			{ "age_death", (args) =>
+				{
+					AphidData.Age_Death = GetInt(1, args, death_default);
+				Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for death is now <{AphidData.Age_Death} seconds>");
+				} 
+			},
+		};
+		private static int harvest_default = AphidData.Harvest_Cooldown, breed_default = AphidData.Breed_Cooldown,
+			adult_default = AphidData.Age_Adulthood, death_default = AphidData.Age_Death;
+
+		public void Execute(string[] args)
+		{
+			if (GetArg(0, args) == "list")
+			{
+				Print("GameRules: The following rules are:");
+				game_rules.Keys.ToList().ForEach(Print);
+				return;
+			}
+
+			if (GetArg(0, args, out string _rule) && game_rules.ContainsKey(_rule))
+			{
+				game_rules[_rule](args);
+			}
+			else
+				Logger.Print(Logger.LogPriority.Info, $"GameRules: This rule does NOT exst.");
+		}
+	}
+	private class AphidDebug : IConsoleCommand
+	{
+		public string HelpText => "Tools for debugging aphids. <aphid (create/select/unload/kill)>";
+		
+		public void Execute(string[] args)
+		{
+			switch (GetArg(0, args))
+			{
+				case "c":
+				case "spawn":
+				case "create":
+					AphidData.Genes _genes = new();
+					_genes.DEBUG_Randomize();
+					_genes.Name += ResortManager.CurrentResort.AphidsOnResort.Count;
+					ResortManager.CreateAphid(GlobalManager.Utils.GetMouseToWorldPosition(), _genes);
+					break;
+				case "s":
+				case "get":
+				case "select":
+					if (!GetArg(1, args, out string _name))
+					{
+						Vector2 _mouseposition = GlobalManager.Utils.GetMouseToWorldPosition();
+						float _shortestDistance = float.PositiveInfinity;
+						validAphid = null;
+
+						foreach (Aphid _aphid in ResortManager.CurrentResort.AphidsOnResort)
+						{
+							float _distance = _mouseposition.DistanceSquaredTo(_aphid.GlobalPosition);
+							if (_distance < _shortestDistance)
+							{
+								validAphid = _aphid;
+								_shortestDistance = _distance;
+							}
+						}
+						if (!IsInstanceValid(validAphid))
+						{
+							Instance.debug_status.Hide();
+							Logger.Print(Logger.LogPriority.Info, $"AphidDebug: No aphid was found.");
+						}
+						else
+						{
+							Instance.debug_status.Show();
+							Logger.Print(Logger.LogPriority.Info, $"AphidDebug: Your current aphid is: <{validAphid.Instance?.Genes.Name ?? "UNKNOWN"}>.");
+						}
+					}
+					else
+					{
+						validAphid = ResortManager.CurrentResort.AphidsOnResort.Find((a) => a.Instance.Genes.Name == _name);
+						if (!IsInstanceValid(validAphid))
+							Logger.Print(Logger.LogPriority.Info, $"AphidDebug: No aphid was found with the name <{_name}>.");
+					}
+				break;
+				case "unload":
+					validAphid?.QueueFree();
+				break;
+				case "kill":
+					if (!IsInstanceValid(validAphid))
+						return;
+					GameManager.RemoveAphid(new Guid(validAphid.Instance.ID));
+					validAphid.QueueFree();
+				break;
+			}
+		}
+	}
+    private class GiveItem : IConsoleCommand
     {
-        public string HelpText => "<aphid (select/create/)>";
+        public string HelpText => "Gives you an item. <give [string_id] (amount)>";
 
         public void Execute(string[] args)
         {
-            throw new System.NotImplementedException();
+            if (!GetArg(0, args, out string _id))
+				return;
+			if (GlobalManager.G_ITEMS.ContainsKey(_id))
+			{
+				int _amount = GetInt(1, args, 1);
+				for (int i = 0; i < _amount; i++)
+					PlayerInventory.StoreItem(_id);
+				Logger.Print(Logger.LogPriority.Log, $"GiveItem: {_id}({_amount}x) was added to your inventory.");
+			}
+			else
+				Logger.Print(Logger.LogPriority.Log, $"GiveItem: {_id} is not a valid item.");
         }
     }
 }
