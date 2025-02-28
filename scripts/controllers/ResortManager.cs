@@ -132,7 +132,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
     public static async void CheckSongToPlay()
 	{
 		await Task.Delay(1000);
-		string[] _raw_files = DirAccess.GetFilesAt(GlobalManager.SFXPath + "/music");
+		string[] _raw_files = DirAccess.GetFilesAt(GlobalManager.RES_SFX_PATH + "music");
 
 		if (FieldManager.TimeOfDay == FieldManager.DayHours.Night)
 			_raw_files = _raw_files.Where(e => e.StartsWith("night")).ToArray();
@@ -143,6 +143,8 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 		// using DirAccess.GetFilesAt(), it will only find "music.mp3.imported" ones and return those
 		// however for some WEIRD reason, if you just reference it anyways by trimming the ".import"
 		// it will find the supposedly non-existent .mp3 file
+		// UPDATE: this is a thing for EVERY GODDAMN IMPORTED ITEM, who the fuck made this engine!
+		// more in global manager's game initalization
 		string _file = _raw_files[GlobalManager.RNG.RandiRange(0, _raw_files.Length - 1)].TrimSuffix(".import");
 		SoundManager.PlaySong($"music/{_file}");
 	}

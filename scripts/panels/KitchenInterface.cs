@@ -110,8 +110,10 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 				return;
 			}
 			PlayAnim("lock");
-			// play sound
+			SoundManager.CreateSound("ui/lock");
 		}
+		else
+			SoundManager.CreateSound("ui/button_select");
 
 		// deactivate buttons on redo mode
 		ingredient1Button.Disabled = _toggle;

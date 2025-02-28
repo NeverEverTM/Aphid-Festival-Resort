@@ -280,7 +280,7 @@ public partial class DialogManager : Control
 		{
 			// Get voice
 			string _voice = _args[0];
-			Instance.dialogAudio.Stream = ResourceLoader.Load<AudioStream>($"{GlobalManager.SFXPath}/dialog/{_voice}_idle.wav");
+			Instance.dialogAudio.Stream = SoundManager.GetAudioStream($"dialog/{_voice}_idle");
 			return string.Empty;
 		}
 	}

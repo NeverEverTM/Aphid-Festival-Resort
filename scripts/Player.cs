@@ -60,9 +60,6 @@ public partial class Player : CharacterBody2D
 	public event PickupEventHandler OnPickup;
 	public event DropEventHandler OnDrop;
 
-	// Audio
-	private AudioStream audio_step;
-
 	// Savedata params
 	internal static SaveData Data;
 	public static string NewName { get; set; }
@@ -154,18 +151,17 @@ public partial class Player : CharacterBody2D
 	}
 	public override void _Ready()
 	{
-		audio_step = ResourceLoader.Load<AudioStream>(GlobalManager.SFXPath + "/player/step.wav");
 		animator.FrameChanged += () =>
 		{
 			if (animator.Animation == "walk")
 			{
 				if (animator.Frame == 0 || animator.Frame == 3)
-					SoundManager.CreateSound2D(audio_step, GlobalPosition, false).VolumeDb = -10;
+					SoundManager.CreateSound2D("player/step", GlobalPosition, false).VolumeDb = -10;
 			}
 			if (animator.Animation == "run")
 			{
 				if (animator.Frame == 0 || animator.Frame == 3)
-					SoundManager.CreateSound2D(audio_step, GlobalPosition);
+					SoundManager.CreateSound2D("player/step", GlobalPosition);
 			}
 		};
 

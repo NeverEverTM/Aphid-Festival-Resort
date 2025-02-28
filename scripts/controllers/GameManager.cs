@@ -17,6 +17,11 @@ public partial class GameManager : Node
 	{
 		Instance = this;
 	}
+    public override async void _Notification(int what)
+    {
+        if (what == NotificationWMCloseRequest && GlobalManager.Scene == GlobalManager.SceneName.Resort)
+			await SaveSystem.SaveProfile();
+    }
 
     public static async void StartGame()
     {

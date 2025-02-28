@@ -115,7 +115,7 @@ public partial class AphidTraits : Aphid
         public class PlayerInteractionTrigger : ITriggerEvent
         {
             public string TriggerID => "player";
-            private const float interaction_cd = 4.35f;
+            private const float interaction_cd = 6.35f;
             private Timer interaction_timer;
 
             public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)

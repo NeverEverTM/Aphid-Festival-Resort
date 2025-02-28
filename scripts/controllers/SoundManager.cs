@@ -84,7 +84,7 @@ public partial class SoundManager : Node
 	/// <param name="_full_name">Must be relative file name path to SFX (ex. "misc/title.wav")</param>
 	public static void PlaySong(string _full_name)
 	{
-		AudioStream _music = ResourceLoader.Load<AudioStream>($"{GlobalManager.SFXPath}/{_full_name}");
+		AudioStream _music = ResourceLoader.Load<AudioStream>(GlobalManager.RES_SFX_PATH + _full_name);
 		MusicPlayer.Stream = _music;
 		MusicPlayer.Play();
 	}

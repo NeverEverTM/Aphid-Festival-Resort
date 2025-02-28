@@ -33,13 +33,13 @@ internal partial class GlobalManager : Node2D
 		ItemEntity = "res://scenes/entities/item.tscn",
 		OutlineShader = "res://scripts/shaders/outline.gdshader";
 	public const string
-		SFXPath = "res://sfx/",
-		IconPath = "res://sprites/icons",
-		ParticlesPath = "res://scenes/particles",
+		RES_SFX_PATH = "res://sfx/",
+		IconPath = "res://sprites/icons/",
+		ParticlesPath = "res://scenes/particles/",
 		ItemPath = "res://databases/items",
-		SkinsPath = "res://databases/skins",
+		RES_SKINS_PATH = "res://databases/skins/",
 		StructuresPath = "res://databases/structures",
-		DatabasesPath = "res://databases";
+		DatabasesPath = "res://databases/";
 
 	// =========| GLOBAL LOADED VALUES |===========
 	public static readonly Dictionary<string, Item> G_ITEMS = new();
@@ -50,6 +50,7 @@ internal partial class GlobalManager : Node2D
 	public static readonly Dictionary<string, Texture2D> G_ICONS = new();
 	public static readonly Dictionary<string, AudioStream> G_AUDIO = new();
 	public static readonly ResourcePreloader G_PARTICLES = new();
+	public static readonly ResourcePreloader G_SKINS = new();
 
 	public readonly struct Item
 	{
@@ -94,6 +95,13 @@ internal partial class GlobalManager : Node2D
 	{
 		if (_key != null && G_ICONS.ContainsKey(_key))
 			return G_ICONS[_key];
+		else
+			return new PlaceholderTexture2D();
+	}
+	public static Texture2D GetSkin(string _id)
+	{
+		if (_id != null && G_SKINS.HasResource(_id))
+			return G_SKINS.GetResource(_id) as Texture2D;
 		else
 			return new PlaceholderTexture2D();
 	}
@@ -198,17 +206,14 @@ internal partial class GlobalManager : Node2D
 
 		for (int i = 0; i < _icons.Length; i++)
 		{
-			if (_icons[i].EndsWith(".import"))
+			string _fileName = _icons[i].Replace(".import", string.Empty), _id = _fileName.Split('.')[0];
+			if (G_ICONS.ContainsKey(_id))
 				continue;
-			string _path = $"{IconPath}/{_icons[i]}";
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (1/2) ({i + 1}/{_icons.Length})";
 
 			// Wait until it yields
-			var _resource = await PRELOAD_RESOURCE(_path);
-			string _iconName = _icons[i].EndsWith(".tres") ?
-					_icons[i][..^5] : // .tres
-					_icons[i][..^4]; // .png
-			G_ICONS.Add(_iconName, _resource as Texture2D);
+			var _resource = await PRELOAD_RESOURCE(IconPath + _fileName);
+			G_ICONS.Add(_id, _resource as Texture2D);
 		}
 	}
 	private static async Task LOAD_STRUCTURE_ICONS()
@@ -221,7 +226,7 @@ internal partial class GlobalManager : Node2D
 				continue;
 
 			// first we check if we loaded a structure icon with the same name before
-			string _structureName = _structures[i].Remove(_structures[i].Length - 5);
+			string _structureName = _structures[i].Replace(".tscn", string.Empty);
 			if (G_ICONS.ContainsKey(_structureName))
 				continue;
 
@@ -229,8 +234,7 @@ internal partial class GlobalManager : Node2D
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (2/2) ({i + 1})";
 
 			// we load and create an icon directly from the resources sprite
-			Node2D _packedScene = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
-			await Task.Delay(1);
+			Node2D _packedScene = (await PRELOAD_RESOURCE(_path) as PackedScene).Instantiate() as Node2D;
 			if (_packedScene is Sprite2D)
 				G_ICONS.Add(_structureName, (_packedScene as Sprite2D).Texture);
 			else if (_packedScene is AnimatedSprite2D)
@@ -240,47 +244,38 @@ internal partial class GlobalManager : Node2D
 	}
 	private static async Task LOAD_SKINS()
 	{
-		string[] _skins = DirAccess.GetFilesAt(SkinsPath);
-		ResourceLoader.ThreadLoadStatus _status;
-
-		for (int i = 0; i < _skins.Length; i++)
+		string[] _directories = DirAccess.GetDirectoriesAt(RES_SKINS_PATH);
+		for (int i = 0; i < _directories.Length; i++)
+			await SEARCH_SKIN_FOLDER(_directories[i]);
+	}
+	private static async Task SEARCH_SKIN_FOLDER(string _directory)
+	{
+		string[] _files = DirAccess.GetFilesAt(RES_SKINS_PATH + _directory);
+		for (int i = 0; i < _files.Length; i++)
 		{
-			if (_skins[i].EndsWith(".import"))
+			// _filename = skin_piece.PNG
+			// _id = 0/skin_piece
+			string _fileName = _directory + "/" + _files[i].Replace(".import", string.Empty),
+					_id = _fileName.Split('.')[0];
+
+			if (G_SKINS.HasResource(_id))
 				continue;
 
-			await Task.Delay(1);
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_skins.Length})";
-
-			// start thread and await for its response
-			string _path = $"{SkinsPath}/{_skins[i]}";
-			ResourceLoader.LoadThreadedRequest(_path, "", true);
-			_status = ResourceLoader.LoadThreadedGetStatus(_path);
-			while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-				_status = ResourceLoader.LoadThreadedGetStatus(_path);
-
-			// action states
-			if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
-			{
-				if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
-					GD.PrintErr($"Item <{_skins[i]}> is not a valid resource or request.");
-				else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-					GD.PrintErr($"Icon <{_skins[i]}> was not able to be loaded.");
-
-				Instance.GetTree().Quit(2);
-			}
-
-			// add a preloader here woops
+			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_files.Length})";
+			var _resource = await PRELOAD_RESOURCE(RES_SKINS_PATH + _fileName);
+			G_SKINS.AddResource(_id, _resource as Texture2D);
 		}
 	}
 	private static async Task LOAD_SFX()
 	{
 		// Get all SFX paths (only checks folders at SFX root folder)
-		string[] _directories = DirAccess.GetDirectoriesAt(SFXPath);
+		string[] _directories = DirAccess.GetDirectoriesAt(RES_SFX_PATH);
 		for (int i = 0; i < _directories.Length; i++)
 			await SEARCH_SFX_FOLDER(_directories[i]);
 
+		/// replace all of this since SoundManager now has direct to the sound cache
 		// Load aphid SFX
-		string aphidPath = $"{SFXPath}aphid/";
+		string aphidPath = $"{RES_SFX_PATH}aphid/";
 		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(aphidPath + "nom.wav");
 		Aphid.Audio_Idle = ResourceLoader.Load<AudioStream>(aphidPath + "idle.wav");
 		Aphid.Audio_Idle_Baby = ResourceLoader.Load<AudioStream>(aphidPath + "baby_idle.wav");
@@ -289,13 +284,13 @@ internal partial class GlobalManager : Node2D
 		Aphid.Audio_Hurt = ResourceLoader.Load<AudioStream>(aphidPath + "hurt.wav");
 		Aphid.Audio_Boing = ResourceLoader.Load<AudioStream>(aphidPath + "boing.wav");
 
-		string uiPath = $"{SFXPath}ui/";
+		string uiPath = $"{RES_SFX_PATH}ui/";
 		CanvasManager.AudioSell = ResourceLoader.Load<AudioStream>(uiPath + "kaching.wav");
 		CanvasManager.AudioStore = ResourceLoader.Load<AudioStream>(uiPath + "button_select.wav");
 	}
 	private static async Task SEARCH_SFX_FOLDER(string _directory)
 	{
-		string[] _files = DirAccess.GetFilesAt(SFXPath + _directory);
+		string[] _files = DirAccess.GetFilesAt(RES_SFX_PATH + _directory);
 		for (int i = 0; i < _files.Length; i++)
 		{
 			// _filename = audio_example.wav
@@ -307,7 +302,7 @@ internal partial class GlobalManager : Node2D
 				continue;
 
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({_directory}[{i}/{_files.Length}])";
-			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(SFXPath + _fileName) as AudioStream);
+			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(RES_SFX_PATH + _fileName) as AudioStream);
 		}
 	}
 	private static async Task LOAD_DATA()
@@ -375,7 +370,7 @@ internal partial class GlobalManager : Node2D
 	}
 	private static async Task LOAD_DATABASE(string _fileName, Action<string[]> _onItem)
 	{
-		FileAccess _file = FileAccess.Open(DatabasesPath + $"/{_fileName}.csv", FileAccess.ModeFlags.Read);
+		FileAccess _file = FileAccess.Open(DatabasesPath + _fileName + ".csv", FileAccess.ModeFlags.Read);
 		string _header = _file.GetCsvLine()[0], _boot = Instance.Tr($"BOOT_{_header}");
 		while (_file.GetPosition() < _file.GetLength())
 		{
@@ -391,9 +386,7 @@ internal partial class GlobalManager : Node2D
 		for (int i = 0; i < _particleList.Length; i++)
 		{
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_3")} ({i}/{_particleList.Length})";
-			string _path = $"{ParticlesPath}/{_particleList[i]}";
-
-			var _resource = await PRELOAD_RESOURCE(_path);
+			var _resource = await PRELOAD_RESOURCE(ParticlesPath + _particleList[i]);
 			var _particle = (_resource as PackedScene).Instantiate() as GpuParticles2D;
 
 			// we instantiate it and then delete it
@@ -452,7 +445,7 @@ internal partial class GlobalManager : Node2D
 		_item.Emitting = true;
 		_item.ProcessMode = ProcessModeEnum.Pausable;
 		_parent.AddChild(_item);
-		
+
 		ACTIVE_PARTICLES_CACHED.Add(_item);
 		return _item;
 	}

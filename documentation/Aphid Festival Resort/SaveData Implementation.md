@@ -28,6 +28,3 @@ Ex. "user://profiles/MyResortName"
 The relative path from within the root. It does not create folders so make sure that it points to a valid location. A filename is not needed since the assigned ID is used for this. Ex. "folder1/folder2"
 ### Extension: Default = [.json]
 A custom extension to use, profile data files tend to use ".data" instead.
-
-## Interfaces
-### IDataModule

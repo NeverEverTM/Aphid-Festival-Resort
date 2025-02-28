@@ -498,6 +498,10 @@ offset_bottom = 297.0
 
 [node name="canvas" parent="." instance=ExtResource("5_t3t74")]
 
+[node name="panel_bg" parent="canvas/pause_menu" index="5"]
+offset_left = 367.0
+offset_right = 730.0
+
 [node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
 process_priority = -1000
 metadata/_edit_lock_ = true

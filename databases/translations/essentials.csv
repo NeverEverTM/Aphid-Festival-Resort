@@ -109,6 +109,7 @@ pause_controls,Controls,Controles
 pause_help,Help,Ayuda
 pause_backtomenu,Back to Menu,Volver al Menu
 pause_exit,Exit to Desktop,Salir al Escritorio
+pause_warning,Progress is saved automatically when leaving!,El juego se guarda automaticamente al salir!
 credits_note,"[center]---------------------------------
 Created in the Godot 4 Engine
 
@@ -180,4 +181,4 @@ food_flavor_2,Salty,Salado
 food_flavor_3,Bitter,Amargo
 food_flavor_4,Vile,Vil
 food_flavor_5,Bland,Soso
-food_flavor_6,Average,Decente
+food_flavor_6,Neutral,Neutral

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Godot;
 
 public partial class LoadGameMenu : Control
@@ -34,6 +36,8 @@ public partial class LoadGameMenu : Control
 		for(int i = 0; i < container.GetChildCount(); i++)
 			container.GetChild(i).QueueFree();
 		MainMenu.Instance.SetMenu(this);
+
+		Dictionary<TimeSpan, Control> _savefiles = new();
 
 		// Create savefiles
 		fileNames = DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories();
@@ -72,7 +76,13 @@ public partial class LoadGameMenu : Control
 			(_slot.FindChild("load_button") as BaseButton).Pressed += () => PlayFile(_profile);
 			(_slot.FindChild("delete_button") as BaseButton).Pressed += () => DeleteFile(_profile, _slot);
 
-			container.AddChild(_slot);
+			_savefiles.Add(_lastPlayedInterval, _slot);
+		}
+
+		var _list = _savefiles.OrderBy(age => age.Key.TotalSeconds).ToList();
+		foreach (var _pair in _list)
+		{
+			container.AddChild(_pair.Value);
 		}
 		
 		menuPlayer.Play("open");

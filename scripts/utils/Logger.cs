@@ -5,7 +5,7 @@ using Godot;
 public static class Logger
 {
 	public enum LogPriority { Debug, Info, Log, Warning, Error }
-	public enum LogPriorityMode { All, Verbose, Default, Warnings, Exceptions }
+	public enum LogPriorityMode { All, Verbose, Default, Warnings, Exceptions, Essential }
 
 	/// <summary>
 	/// Minor: Execute a custom function to correct yourself (the first argument in the object args)
@@ -30,8 +30,10 @@ public static class Logger
 			GD.PrintRich(_message.Insert(0, $"[{_time}] [Log]: "));
 		else if (priority == LogPriority.Warning)
 			GD.PushWarning(_message.Insert(0, $"[{_time}] |-[WARN]-|: "));
-		else
+		else if (priority == LogPriority.Error)
 			GD.PushError(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
+		else
+			GD.PrintRich(_message.Insert(0, $"[{_time}] ||~~[ESSENTIAL]~~||: "));
 		DebugConsole.Print(_message);
 	}
 	public static void Print(LogPriority priority, GameTermination mode, params object[] args)

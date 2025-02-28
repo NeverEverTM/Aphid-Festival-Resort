@@ -8,14 +8,13 @@ mushroom_salad,leaf,cooked_shroom
 mushroom_salad,leaf_salad,shroom
 mushroom_salad,leaf_salad,cooked_shroom
 berry_juice,berry,water
-berry_juice,berry,shaved_ice
 cooked_shroom,shroom,
 berry_icecream,icecream,berry
 berry_icecream,shaved_ice,berry
 honey_icecream,icecream,honey_drop
 honey_icecream,icecream,glazed_honey
 honey_icecream,shaved_ice,glazed_honey
-icecream,shaved_ice,applesauce
+icecream,shaved_ice,honey_drop
 shaved_ice,water,
 roasted_berries,berry,
 mushroom_gummies,flour_bag,shroom

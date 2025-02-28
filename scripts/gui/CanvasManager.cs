@@ -81,7 +81,7 @@ public partial class CanvasManager : CanvasLayer
 				filename += "(Extra)";
 
 			capture.SavePng(filename);
-			SoundManager.CreateSound(ResourceLoader.Load<AudioStream>(GlobalManager.SFXPath + "/ui/camera-flash.wav"));
+			SoundManager.CreateSound("ui/camera-flash");
 		}
 		catch (Exception _err)
 		{

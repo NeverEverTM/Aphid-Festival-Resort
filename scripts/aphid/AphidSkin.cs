@@ -3,8 +3,6 @@ using Godot;
 
 public partial class AphidSkin : Node2D
 {
-	public const string SkinTextureExtension = "PNG";
-
 	[Export] public Sprite2D eyes, antenna, body, back_legs, front_legs;
 	private AphidInstance Instance;
 	private Aphid MyAphid;
@@ -44,19 +42,10 @@ public partial class AphidSkin : Node2D
 
 	public static Texture2D GetSkinPiece(int _id, string _piece, string _action = "idle", bool _isAdult = true)
 	{
-		string _path = $"{GlobalManager.SkinsPath}/{_id}/";
-
-		if (_isAdult)
-			_path += $"{_piece}_{_action}.{SkinTextureExtension}";
-		else
-			_path += $"{_piece}_baby_{_action}.{SkinTextureExtension}";
-
-		if (!ResourceLoader.Exists(_path))
-		{
-			Logger.Print(Logger.LogPriority.Error, $"AphidSkin: Skin part at <{_path}> does not exist.");
-			return new PlaceholderTexture2D();
-		}
-		return ResourceLoader.Load<Resource>(_path) as Texture2D;
+		string _skinName = _id + "/" + (_isAdult ?
+				$"{_piece}_{_action}" :
+				$"{_piece}_baby_{_action}");
+		return GlobalManager.GetSkin(_skinName);
 	}
 	public void SetEyesSkin(string _action)
 	{

@@ -22,12 +22,12 @@ public partial class DebugConsole : CanvasLayer
 		Instance = this;
 #if DEBUG
 		IsEnabled = true;
-		Print($"Debug Console Command - {GlobalManager.GAME_VERSION}v\n");
 #endif
+		Print($"Debug Console Command - {GlobalManager.GAME_VERSION}v\n");
 	}
-    public override void _Process(double delta)
-    {
-        if (IsInstanceValid(validAphid))
+	public override void _Process(double delta)
+	{
+		if (IsInstanceValid(validAphid))
 		{
 			debug_status.Text = "Name: " + validAphid.Instance.Genes.Name;
 			debug_status.Text += "\nState: " + validAphid.State.Type.ToString();
@@ -41,12 +41,12 @@ public partial class DebugConsole : CanvasLayer
 			debug_status.Text += $"\nHarvestBuildup: {(int)validAphid.Instance.Status.MilkBuildup}/{AphidData.Harvest_Cooldown}";
 			debug_status.Text += "\nFoodPreference: " + validAphid.Instance.Genes.FoodPreference.ToString();
 			debug_status.Text += "\nTraits: \n";
-			for(int i = 0; i < validAphid.Instance.Genes.Traits.Count; i++)
+			for (int i = 0; i < validAphid.Instance.Genes.Traits.Count; i++)
 				debug_status.Text += $"{validAphid.Instance.Genes.Traits[i]}\n";
 		}
 		else
 			validAphid = null;
-    }
+	}
 	public override void _Input(InputEvent @event)
 	{
 		if (IsEnabled)
@@ -88,22 +88,24 @@ public partial class DebugConsole : CanvasLayer
 
 	private static void CheckForUnlock(InputEvent @event)
 	{
-		if (@event.IsActionPressed("debug_0"))
+		if (!DidntSayIDidntWarnYouBeforeHand)
 		{
-			if (!DidntSayIDidntWarnYouBeforeHand)
-			{
+			if (@event.IsActionPressed("debug_0"))
 				DidntSayIDidntWarnYouBeforeHand = true;
-				GD.Print("DEBUG MODE ENGAGED: PRESS DEBUG KEY AGAIN TO CONFIRM");
-
-			}
-			else if (!IsEnabled)
+		}
+		else if (!IsEnabled)
+		{
+			if (@event.IsActionPressed("debug_2"))
 			{
 				IsEnabled = true;
-				GlobalManager.CreatePopup("Welcome to the next level", GlobalManager.Instance);
+				SoundManager.CreateSound(SoundManager.GetAudioStream("ui/kitchen_success"));
+				GlobalManager.CreatePopup("Welcome to the next level", Instance);
 			}
+			else
+				DidntSayIDidntWarnYouBeforeHand = false;
 		}
-		else if (DidntSayIDidntWarnYouBeforeHand && @event is InputEventKey)
-			DidntSayIDidntWarnYouBeforeHand = false;
+
+
 	}
 	public static bool TriggerCommand(string[] _commandLines)
 	{
@@ -256,37 +258,43 @@ public partial class DebugConsole : CanvasLayer
 				{
 					Engine.TimeScale = GetFloat(1, args, 1);
 					Logger.Print(Logger.LogPriority.Info, $"GameRules: Time scale is now: <{Engine.TimeScale}>");
-				} 
+				}
 			},
 			{ "physics_scale", (args) =>
 				{
 					Engine.PhysicsTicksPerSecond = GetInt(1, args, 60);
-				Logger.Print(Logger.LogPriority.Info, $"GameRules: Physics Tics are now: <{Engine.PhysicsTicksPerSecond}/s>");
-				} 
+					Logger.Print(Logger.LogPriority.Info, $"GameRules: Physics Tics are now: <{Engine.PhysicsTicksPerSecond}/s>");
+				}
 			},
 			{ "harvest_cooldown", (args) =>
 				{
 					AphidData.Harvest_Cooldown = GetInt(1, args, harvest_default);
-				Logger.Print(Logger.LogPriority.Info, $"GameRules: Harvest Cooldown is now <{AphidData.Harvest_Cooldown}>");
+					Logger.Print(Logger.LogPriority.Info, $"GameRules: Harvest Cooldown is now <{AphidData.Harvest_Cooldown}>");
 				}
 			},
 			{ "breed_cooldown", (args) =>
 				{
 					AphidData.Breed_Cooldown = GetInt(1, args, breed_default);
-				Logger.Print(Logger.LogPriority.Info, $"GameRules: Breed Cooldown is now <{AphidData.Breed_Cooldown} seconds>");
-				} 
+					Logger.Print(Logger.LogPriority.Info, $"GameRules: Breed Cooldown is now <{AphidData.Breed_Cooldown} seconds>");
+				}
 			},
 			{ "age_adulthood", (args) =>
 				{
 					AphidData.Age_Adulthood = GetInt(1, args, adult_default);
-				Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for adulthood is now <{AphidData.Age_Adulthood} seconds>");
-				} 
+					Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for adulthood is now <{AphidData.Age_Adulthood} seconds>");
+				}
 			},
 			{ "age_death", (args) =>
 				{
 					AphidData.Age_Death = GetInt(1, args, death_default);
-				Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for death is now <{AphidData.Age_Death} seconds>");
-				} 
+					Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for death is now <{AphidData.Age_Death} seconds>");
+				}
+			},
+			{ "log_mode", (args) =>
+				{
+					Logger.LogMode = (Logger.LogPriorityMode)GetInt(1, args, 2);
+					Logger.Print(Logger.LogPriority.Error, $"GameRules: Log mode is now <{Logger.LogMode}>");
+				}
 			},
 		};
 		private static int harvest_default = AphidData.Harvest_Cooldown, breed_default = AphidData.Breed_Cooldown,
@@ -312,7 +320,7 @@ public partial class DebugConsole : CanvasLayer
 	private class AphidDebug : IConsoleCommand
 	{
 		public string HelpText => "Tools for debugging aphids. <aphid (create/select/unload/kill)>";
-		
+
 		public void Execute(string[] args)
 		{
 			switch (GetArg(0, args))
@@ -360,26 +368,26 @@ public partial class DebugConsole : CanvasLayer
 						if (!IsInstanceValid(validAphid))
 							Logger.Print(Logger.LogPriority.Info, $"AphidDebug: No aphid was found with the name <{_name}>.");
 					}
-				break;
+					break;
 				case "unload":
 					validAphid?.QueueFree();
-				break;
+					break;
 				case "kill":
 					if (!IsInstanceValid(validAphid))
 						return;
 					GameManager.RemoveAphid(new Guid(validAphid.Instance.ID));
 					validAphid.QueueFree();
-				break;
+					break;
 			}
 		}
 	}
-    private class GiveItem : IConsoleCommand
-    {
-        public string HelpText => "Gives you an item. <give [string_id] (amount)>";
+	private class GiveItem : IConsoleCommand
+	{
+		public string HelpText => "Gives you an item. <give [string_id] (amount)>";
 
-        public void Execute(string[] args)
-        {
-            if (!GetArg(0, args, out string _id))
+		public void Execute(string[] args)
+		{
+			if (!GetArg(0, args, out string _id))
 				return;
 			if (GlobalManager.G_ITEMS.ContainsKey(_id))
 			{
@@ -390,6 +398,6 @@ public partial class DebugConsole : CanvasLayer
 			}
 			else
 				Logger.Print(Logger.LogPriority.Log, $"GiveItem: {_id} is not a valid item.");
-        }
-    }
+		}
+	}
 }

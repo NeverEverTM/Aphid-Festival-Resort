@@ -114,6 +114,7 @@ public partial class PlayerInventory : Control
 		if (!StoreItem(Instance.HeldPickup.Item.GetMeta("id").ToString()))
 			return;
 
+		SoundManager.CreateSound("ui/backpack_close");
 		Instance.HeldPickup.Item.QueueFree();
 		Instance.HeldPickup = new();
 	}

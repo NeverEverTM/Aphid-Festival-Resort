@@ -6,24 +6,13 @@ public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, 
 	[Export] private Node2D interactionArea;
 	[Export] private AnimationPlayer player;
 	[Export] private GpuParticles2D particles;
-	private Timer berry_timer;
+	private float berry_timer;
 	private bool isfinished;
 	private const int TIMER_BASE = 60 * 4;
 
     public override void _Ready()
     {
-        berry_timer = new()
-        {
-            OneShot = true
-        };
-        AddChild(berry_timer);
-		berry_timer.Timeout += () => {
-			Texture = berryTextures[1];
-			isfinished = true;
-			interactionArea.SetMeta("tag", Player.InteractableTag);
-			player.Play("grow");
-		};
-		berry_timer.Start(TIMER_BASE);
+		berry_timer = TIMER_BASE;
     }
 
 	public void Interact()
@@ -42,17 +31,28 @@ public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, 
 				PitchScale = 3
 			}, GlobalPosition);
 			interactionArea.RemoveMeta("tag");
-			berry_timer.Start(TIMER_BASE);
+			berry_timer = TIMER_BASE;
 		}
 	}
-	public void SetData(string _data)
+    public override void _Process(double delta)
+    {
+		if (berry_timer > 0)
+        	berry_timer -= (float)delta;
+		else if (!isfinished)
+		{
+			isfinished = true;
+			Texture = berryTextures[1];
+			interactionArea.SetMeta("tag", Player.InteractableTag);
+			player.Play("grow");
+		}
+    }
+    public void SetData(string _data)
 	{
-		berry_timer.Stop();
-		berry_timer.Start(float.Parse(_data));
+		berry_timer = float.Parse(_data);
 	}
 
 	public string GetData()
 	{
-		return berry_timer.TimeLeft.ToString();
+		return berry_timer.ToString();
 	}
 }

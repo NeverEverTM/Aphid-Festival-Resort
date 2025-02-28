@@ -40,7 +40,7 @@ public partial class NPCPhysicsBody : CharacterBody2D, Player.IPlayerInteractabl
 				
 			// we check if we are straying away from our origin, if so, steer towards the center
 			if (target_position.DistanceTo(origin) > maxWanderRange)
-				target_position = origin - GlobalPosition;
+				target_position = GlobalPosition + (origin - GlobalPosition);
 
 			idle_time_left = rng.RandfRange(TIMER_RANGE, TIMER_RANGE * 2);
 			timeout = 0;
