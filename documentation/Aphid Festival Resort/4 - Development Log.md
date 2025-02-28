@@ -2,6 +2,8 @@
 ## Bug Tracker:
 - Music randomly stops when reloading a game, comes back after you pause and unpause [SOLVED?]
 - Furniture clips below cliff floor, not a big deal but it annoys me big time
+- Spanish User interface tr does not position itself correctly
+- leaving build or furniture menu turns back back fixed camera UI during free camera mode
 ## Technical
 - Refactor OptionsManager to work with easily adjustable config slot modules
 - add event handlers for save modules
