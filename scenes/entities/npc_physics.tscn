@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://fe2rj3qknw8t"]
 
 [ext_resource type="Texture2D" uid="uid://cwecy5ses13x5" path="res://sprites/characters/joy_sheet.png" id="1_wsvv6"]
-[ext_resource type="Script" path="res://scripts/props/NPCPhysicsBody.cs" id="2_6q5kb"]
-[ext_resource type="Script" path="res://scripts/props/NPCBehaviour.cs" id="2_w1x8r"]
+[ext_resource type="Script" uid="uid://dee25qf2sown0" path="res://scripts/props/NPCPhysicsBody.cs" id="2_6q5kb"]
+[ext_resource type="Script" uid="uid://ddxsastrcw16s" path="res://scripts/props/NPCBehaviour.cs" id="2_w1x8r"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1fifj"]
 atlas = ExtResource("1_wsvv6")

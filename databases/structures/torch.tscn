@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dbeu087woc2bk" path="res://sprites/props/stick_torch.png" id="1_anu0x"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="2_o66eh"]
-[ext_resource type="Script" path="res://scripts/props/TorchBehaviour.cs" id="2_pkvx2"]
+[ext_resource type="Script" uid="uid://3ayy4rweexow" path="res://scripts/props/TorchBehaviour.cs" id="2_pkvx2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_syt6f"]
 atlas = ExtResource("1_anu0x")

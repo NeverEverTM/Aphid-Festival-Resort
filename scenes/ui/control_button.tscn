@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_daim0"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_ue53w"]
-[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="2_jd18f"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="2_jd18f"]
 
 [node name="up" type="Panel"]
 self_modulate = Color(0.639216, 0.0784314, 0.729412, 1)

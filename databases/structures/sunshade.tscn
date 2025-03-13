@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://ivsdkqkfm0gq"]
 
 [ext_resource type="Texture2D" uid="uid://bbhsivn2j17xp" path="res://sprites/props/umbrella.png" id="1_snp0w"]
-[ext_resource type="Script" path="res://scripts/props/SunshadeBehaviour.cs" id="2_pmqt8"]
+[ext_resource type="Script" uid="uid://b00wm4jpnq20c" path="res://scripts/props/SunshadeBehaviour.cs" id="2_pmqt8"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="2_tt6m2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r6kvg"]

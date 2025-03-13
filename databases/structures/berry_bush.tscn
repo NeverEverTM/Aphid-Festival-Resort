@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://bj8hvpt1kjaiw"]
 
 [ext_resource type="Texture2D" uid="uid://vu7nfemnhodu" path="res://sprites/props/berry_bush_empty.png" id="1_q1h30"]
-[ext_resource type="Script" path="res://scripts/props/BerryBushBehaviour.cs" id="2_ied3s"]
+[ext_resource type="Script" uid="uid://j02qpj8iycok" path="res://scripts/props/BerryBushBehaviour.cs" id="2_ied3s"]
 [ext_resource type="Texture2D" uid="uid://44vmfjus0as2" path="res://sprites/props/berry_bush.png" id="3_8l5nk"]
 [ext_resource type="PackedScene" uid="uid://cf4r7ihqeab31" path="res://scenes/particles/leaves_bush.tscn" id="4_snfrp"]
 
@@ -68,9 +68,9 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mxgww"]
 _data = {
-"RESET": SubResource("Animation_8bajn"),
-"grow": SubResource("Animation_06ta1"),
-"harvest": SubResource("Animation_pldhh")
+&"RESET": SubResource("Animation_8bajn"),
+&"grow": SubResource("Animation_06ta1"),
+&"harvest": SubResource("Animation_pldhh")
 }
 
 [node name="berry_bush" type="Sprite2D" node_paths=PackedStringArray("interactionArea", "player", "particles")]

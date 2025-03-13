@@ -1,0 +1,22 @@
+New aphid skins can be drawn and implemented rather easily.
+
+- First, one needs to open the default template for aphid skins (aphid_skin.kra) using Krita (you can copy the template's structure in another program too) and save the file as a brand new file.
+- The structure comes to a group called "skin" containing another two for adult aphids and baby aphids. The layers inside this can be modified at yours heart's content with some ruling:
+	- Layers [cannot be bigger than 64x64] px due to limitations.
+	- [You cannot create more skin piece layers] than there is. Any temp layer you use should be hidden/removed before export.
+	- Use whites and light greys to allow for aphid coloring to work correctly.
+	- Respect positioning of the skin pieces, as too much of an offset will look awkward on the final render.
+	- The "color overlay" and "background" layers can be modified however you want, as long as you also hide/remove them before export.
+- To export the skin, simply [hide] the before mentioned ["color_overlay"] and ["background"] layers, as well as any other extra layer. [You will need to rename the "skin" group to a number ID, this can be any number as long as is not a duplicate.]
+- Now for the import, each layer must be its own individual image, an equivalent in your program must be found, the process goes as follows:
+	- Go to "Tools > Scripts > Export Layers"
+	- Select in "Documents" the template you were working on
+	- Set "Initial Directory" to where you want to save the export.
+	- Set "Ignore Invisible layers" to true
+	- Set "Images extensions" to PNG
+	- [(FOR EVERY OTHER PROGRAM)] It's important that you find the equivalents to the above when exporting your layers, such as setting to PNG and removing hidden layers.
+- After this, you should have a folder with the name of the file you were working on. We will be using the folder inside of that instead, the one that [has the ID as its name].
+- Enter the godot project, and go to "Project > Tools > Select Image Folder...", if it does not appear, go instead to "Project > Project Settings > Plugins" and make sure "Export Image Folders" is on.
+- A popup will apear asking you to select a folder, they can only be selected one by one due to limitations, but after this they do not need to be re-selected unless you exit the editor. Make sure to select all skin folders, including yours.
+- Now with all skin folders selected, instead of selecting a folder, you will press the "Generate Atlas & Textures..." button located in the same tab. Red error text means something went wrong, check the debugger for more information. Otherwise, the green text in the debugger should tell you what to do next.
+- After all this, you can now export layers, run the generate atlas command again, and instantly see the results. In order to see them during run-time, make sure to run the command "reload" in the debug console.

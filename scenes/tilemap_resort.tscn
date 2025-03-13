@@ -1,6 +1,6 @@
 [gd_scene load_steps=17 format=4 uid="uid://cxjsuahuuuonu"]
 
-[ext_resource type="Script" path="res://scripts/controllers/FieldManager.cs" id="1_a4k14"]
+[ext_resource type="Script" uid="uid://pohaec3n3ypy" path="res://scripts/controllers/FieldManager.cs" id="1_a4k14"]
 [ext_resource type="TileSet" uid="uid://c8bp7321wr03y" path="res://sprites/tilesets/resort_ground.tres" id="2_cvlx1"]
 [ext_resource type="PackedScene" uid="uid://bj8hvpt1kjaiw" path="res://databases/structures/berry_bush.tscn" id="3_2pjug"]
 [ext_resource type="PackedScene" uid="uid://1tjx226ob00c" path="res://databases/structures/sign_wanted.tscn" id="3_bapst"]
@@ -21,12 +21,24 @@ font_size = 40
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
-[node name="tilemap_resort" type="Node2D" node_paths=PackedStringArray("globalFilter")]
+[node name="tilemap_resort" type="Node2D" node_paths=PackedStringArray("globalFilter", "TopLeft", "BottomRight")]
 y_sort_enabled = true
 script = ExtResource("1_a4k14")
 globalFilter = NodePath("globalFilter")
+TopLeft = NodePath("topleft")
+BottomRight = NodePath("bottomright")
 
 [node name="globalFilter" type="CanvasModulate" parent="."]
+
+[node name="topleft" type="Marker2D" parent="."]
+top_level = true
+position = Vector2(-2334, -839)
+gizmo_extents = 460.0
+
+[node name="bottomright" type="Marker2D" parent="."]
+top_level = true
+position = Vector2(2215, 1454)
+gizmo_extents = 567.4
 
 [node name="mesa" type="TileMapLayer" parent="."]
 use_parent_material = true

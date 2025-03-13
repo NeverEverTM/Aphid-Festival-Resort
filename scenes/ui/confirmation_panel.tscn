@@ -1,13 +1,13 @@
 [gd_scene load_steps=15 format=3 uid="uid://blrpv4ys07erj"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_2yndv"]
-[ext_resource type="Script" path="res://scripts/gui/ConfirmationPopup.cs" id="2_8dn0h"]
-[ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="2_87n6b"]
+[ext_resource type="Script" uid="uid://co0e1gb8uuuxb" path="res://scripts/gui/ConfirmationPopup.cs" id="2_8dn0h"]
+[ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="2_87n6b"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="3_5mj36"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="5_55ynw"]
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="6_i5hp4"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="7_bpalb"]
-[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_wa0ti"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_wa0ti"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="9_fmhb2"]
 
 [sub_resource type="Curve" id="Curve_nsmtd"]
@@ -70,8 +70,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xsq78"]
 _data = {
-"RESET": SubResource("Animation_f8pk4"),
-"open": SubResource("Animation_p0jdc")
+&"RESET": SubResource("Animation_f8pk4"),
+&"open": SubResource("Animation_p0jdc")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ftv1n"]

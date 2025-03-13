@@ -1,23 +1,30 @@
 [gd_scene load_steps=9 format=3 uid="uid://7oo48cet73pb"]
 
-[ext_resource type="Script" path="res://scripts/aphid/Aphid.cs" id="1_acxg7"]
-[ext_resource type="Script" path="res://scripts/aphid/AphidSkin.cs" id="2_xeinf"]
-[ext_resource type="Texture2D" uid="uid://u3pou85pb7is" path="res://databases/skins/0/legs_idle.png" id="12_kek4f"]
-[ext_resource type="Texture2D" uid="uid://hnyudgy17eqv" path="res://databases/skins/0/body_idle.png" id="13_7fxmg"]
-[ext_resource type="Texture2D" uid="uid://2e856swkfn11" path="res://databases/skins/0/eyes_idle.png" id="14_7wf6h"]
-[ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://databases/skins/0/antenna_idle.png" id="15_tax8g"]
+[ext_resource type="Script" uid="uid://doi3mfn603vc7" path="res://scripts/aphid/Aphid.cs" id="1_acxg7"]
+[ext_resource type="Script" uid="uid://iy6e0bhh0det" path="res://scripts/aphid/AphidSkin.cs" id="2_xeinf"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_aeaon"]
+load_path = "res://.godot/imported/legs_idle.png-d9cdd6c74f01dbb3076c7f959a753f9c.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8peo8"]
+load_path = "res://.godot/imported/body_idle.png-9110ce617dd54d177c4fd4b975b66872.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_d51lm"]
+load_path = "res://.godot/imported/eyes_idle.png-0a2df93b13bd78a8b78ac77a5908e762.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_daav4"]
+load_path = "res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9f87e.ctex"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
-size = Vector2(34, 12)
+size = Vector2(35, 10)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7a8x1"]
-radius = 99.0
+radius = 77.0584
 
 [node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea", "audioPlayer")]
-position = Vector2(-1, 0)
 motion_mode = 1
 script = ExtResource("1_acxg7")
-skin = NodePath("anchor/CanvasGroup")
+skin = NodePath("anchor")
 triggerArea = NodePath("TriggerArea")
 audioPlayer = NodePath("audioPlayer")
 metadata/pickup = true
@@ -30,12 +37,7 @@ attenuation = 0.5
 max_polyphony = 20
 bus = &"Sounds"
 
-[node name="anchor" type="Node2D" parent="."]
-editor_description = "This anchor is used to offset the sprite body, since animations can affect the position of the latter."
-position = Vector2(0, -8)
-
-[node name="CanvasGroup" type="CanvasGroup" parent="anchor" node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
-use_parent_material = true
+[node name="anchor" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
 script = ExtResource("2_xeinf")
 eyes = NodePath("eyes")
 antenna = NodePath("antenna")
@@ -43,36 +45,34 @@ body = NodePath("body")
 back_legs = NodePath("back_legs")
 front_legs = NodePath("front_legs")
 
-[node name="back_legs" type="Sprite2D" parent="anchor/CanvasGroup"]
-use_parent_material = true
-position = Vector2(-5.5, -9.5)
-texture = ExtResource("12_kek4f")
+[node name="back_legs" type="Sprite2D" parent="anchor"]
+position = Vector2(0, 1)
+texture = SubResource("CompressedTexture2D_aeaon")
+offset = Vector2(-6, -18)
 
-[node name="body" type="Sprite2D" parent="anchor/CanvasGroup"]
-use_parent_material = true
-texture = ExtResource("13_7fxmg")
-offset = Vector2(0.5, -8.5)
+[node name="body" type="Sprite2D" parent="anchor"]
+texture = SubResource("CompressedTexture2D_8peo8")
+offset = Vector2(0, -16)
 
-[node name="eyes" type="Sprite2D" parent="anchor/CanvasGroup"]
-texture = ExtResource("14_7wf6h")
-offset = Vector2(0.5, -8.5)
+[node name="eyes" type="Sprite2D" parent="anchor"]
+texture = SubResource("CompressedTexture2D_d51lm")
+offset = Vector2(0, -16)
 
-[node name="front_legs" type="Sprite2D" parent="anchor/CanvasGroup"]
-use_parent_material = true
-texture = ExtResource("12_kek4f")
-offset = Vector2(0.5, -8.5)
+[node name="front_legs" type="Sprite2D" parent="anchor"]
+texture = SubResource("CompressedTexture2D_aeaon")
+offset = Vector2(0, -16)
 
-[node name="antenna" type="Sprite2D" parent="anchor/CanvasGroup"]
-use_parent_material = true
-texture = ExtResource("15_tax8g")
-offset = Vector2(0.5, -8.5)
+[node name="antenna" type="Sprite2D" parent="anchor"]
+texture = SubResource("CompressedTexture2D_daav4")
+offset = Vector2(0, -16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, -6)
+position = Vector2(0.5, -3)
 shape = SubResource("RectangleShape2D_5soec")
-debug_color = Color(0.890196, 0.207843, 0.627451, 0)
+debug_color = Color(0.572549, 0.054902, 0.392157, 0.403922)
 
 [node name="TriggerArea" type="Area2D" parent="."]
+position = Vector2(0, -8)
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerArea"]

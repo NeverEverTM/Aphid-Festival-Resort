@@ -1,6 +1,6 @@
 [gd_scene load_steps=57 format=3 uid="uid://by6u0617yy7oe"]
 
-[ext_resource type="Script" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
+[ext_resource type="Script" uid="uid://cesdis2vfhjmp" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
 [ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="2_ihlud"]
 [ext_resource type="Texture2D" uid="uid://daup0e4jm5ln" path="res://sprites/ui/AphidFestivalResort.png" id="2_r26xg"]
@@ -9,26 +9,26 @@
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="3_7vjbo"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="4_fk8eh"]
 [ext_resource type="PackedScene" uid="uid://cy6ba6twhk3o3" path="res://scenes/particles/leaves_overlay.tscn" id="5_xpw47"]
-[ext_resource type="Script" path="res://scripts/main_menu/StartMenu.cs" id="6_8loy6"]
+[ext_resource type="Script" uid="uid://y1wi3v5g1rvv" path="res://scripts/main_menu/StartMenu.cs" id="6_8loy6"]
 [ext_resource type="Texture2D" uid="uid://v4b2uxe72p3y" path="res://sprites/ui/github-mark-white.png" id="8_ao5k5"]
 [ext_resource type="Texture2D" uid="uid://cyp5ykw0lep0c" path="res://sprites/ui/itchio-logo-textless-white.png" id="9_8g0pq"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="9_76l0k"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="10_8uix6"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="11_1iujn"]
-[ext_resource type="Script" path="res://scripts/main_menu/LoadGameMenu.cs" id="11_6of5g"]
-[ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="11_wl7ma"]
+[ext_resource type="Script" uid="uid://c8dsjkf1tu1p6" path="res://scripts/main_menu/LoadGameMenu.cs" id="11_6of5g"]
+[ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="11_wl7ma"]
 [ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/mosaic_menu_bg.png" id="12_gxjbm"]
 [ext_resource type="PackedScene" uid="uid://cifp27quamefu" path="res://scenes/ui/savefile_slot.tscn" id="12_tjjf3"]
-[ext_resource type="Script" path="res://scripts/main_menu/NewGameMenu.cs" id="13_51p2j"]
+[ext_resource type="Script" uid="uid://cvyggc1iie7r7" path="res://scripts/main_menu/NewGameMenu.cs" id="13_51p2j"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="14_vlxys"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="15_x38s1"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/ui/controls_panel.tscn" id="16_rnb0o"]
-[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="17_w4wev"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="17_w4wev"]
 [ext_resource type="PackedScene" uid="uid://ttn1ivy2gfhv" path="res://scenes/ui/player_ui_display.tscn" id="17_w6vnm"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="18_r8j8b"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="21_5jg8l"]
 [ext_resource type="Texture2D" uid="uid://ct4h858npiyg6" path="res://sprites/aphibu.png" id="23_rt0qn"]
-[ext_resource type="Shader" path="res://scripts/shaders/shine_highlight.gdshader" id="26_ukngl"]
+[ext_resource type="Shader" uid="uid://c1trbf56kaou1" path="res://scripts/shaders/shine_highlight.gdshader" id="26_ukngl"]
 [ext_resource type="Texture2D" uid="uid://co1btvdxhud6s" path="res://sprites/ui/logo_large_color_dark.png" id="27_a546m"]
 [ext_resource type="Texture2D" uid="uid://dwt5dtn13i3r2" path="res://sprites/ui/pc_project.png" id="28_i03ks"]
 [ext_resource type="Texture2D" uid="uid://pgscnb8dl5jr" path="res://sprites/title.png" id="30_1xe6g"]
@@ -91,8 +91,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_77pfv"]
 _data = {
-"RESET": SubResource("Animation_ahjwp"),
-"slide_down": SubResource("Animation_2twnp")
+&"RESET": SubResource("Animation_ahjwp"),
+&"slide_down": SubResource("Animation_2twnp")
 }
 
 [sub_resource type="Animation" id="Animation_12l31"]
@@ -248,8 +248,8 @@ tracks/5/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_p4bau"]
 _data = {
-"RESET": SubResource("Animation_12l31"),
-"open": SubResource("Animation_semxk")
+&"RESET": SubResource("Animation_12l31"),
+&"open": SubResource("Animation_semxk")
 }
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wea0d"]
@@ -391,8 +391,8 @@ tracks/4/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wcxo3"]
 _data = {
-"RESET": SubResource("Animation_0ys5g"),
-"open": SubResource("Animation_uq7ju")
+&"RESET": SubResource("Animation_0ys5g"),
+&"open": SubResource("Animation_uq7ju")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eqi5b"]
@@ -465,8 +465,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7l8ub"]
 _data = {
-"RESET": SubResource("Animation_i25o6"),
-"slide_up": SubResource("Animation_iebcr")
+&"RESET": SubResource("Animation_i25o6"),
+&"slide_up": SubResource("Animation_iebcr")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_immw2"]
@@ -773,8 +773,8 @@ tracks/11/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bahfq"]
 _data = {
-"RESET": SubResource("Animation_r0sfp"),
-"start": SubResource("Animation_hobux")
+&"RESET": SubResource("Animation_r0sfp"),
+&"start": SubResource("Animation_hobux")
 }
 
 [node name="menu" type="Node2D" node_paths=PackedStringArray("canvas", "BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "hover_start", "sweep_animator", "logo_animator", "title_animator", "entityRoot", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "controls_panel")]

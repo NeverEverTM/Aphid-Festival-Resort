@@ -240,7 +240,7 @@ public static class SaveSystem
 		}
 
 		// Scary!
-		System.IO.Directory.Delete(_path, true);
+		System.IO.Directory.Delete(_path, true); // DirAccess.Remove does not have an option to be recursive
 		Logger.Print(Logger.LogPriority.Info, $"ProfileDelete: Succesfully deleted profile <{_profile}>.");
 		return Task.CompletedTask;
 	}

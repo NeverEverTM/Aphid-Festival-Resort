@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=3 uid="uid://d0yn37lf538vo"]
+
+[ext_resource type="Script" uid="uid://7tuds0dv1fbo" path="res://scripts/controllers/ResortManager.cs" id="1_rh1j6"]
+[ext_resource type="Script" uid="uid://co6jq3ny35gqg" path="res://scripts/debug/test_camera.cs" id="2_gpa5i"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_gpa5i"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_lrt1v"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_ogd1s"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_vb6xh"]
+normal = Vector2(-1, 0)
+
+[node name="test" type="Node2D" node_paths=PackedStringArray("EntityRoot", "StructureRoot", "SpawnPoint")]
+editor_description = "50 100 24
+50 100 27"
+script = ExtResource("1_rh1j6")
+Resort = "test"
+EntityRoot = NodePath("entity_root")
+StructureRoot = NodePath("structure_root")
+SpawnPoint = NodePath("spawnpoint")
+
+[node name="structure_root" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="entity_root" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="spawnpoint" type="Marker2D" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(1, 179)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("WorldBoundaryShape2D_gpa5i")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="."]
+position = Vector2(-3, -344)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4"]
+position = Vector2(5, 180)
+shape = SubResource("WorldBoundaryShape2D_lrt1v")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(-326, -182)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(5, 180)
+shape = SubResource("WorldBoundaryShape2D_ogd1s")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2(315, -182)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
+position = Vector2(5, 180)
+shape = SubResource("WorldBoundaryShape2D_vb6xh")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+script = ExtResource("2_gpa5i")

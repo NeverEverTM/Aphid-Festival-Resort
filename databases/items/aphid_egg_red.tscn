@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bxw3ptsviauui"]
 
 [ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_yxvfm"]
-[ext_resource type="Script" path="res://scripts/aphid/AphidHatch.cs" id="2_5qpkw"]
+[ext_resource type="Script" uid="uid://c8no56u10k0k7" path="res://scripts/aphid/AphidHatch.cs" id="2_5qpkw"]
 [ext_resource type="Texture2D" uid="uid://ooi5olkm8eom" path="res://sprites/icons/aphid_egg_red.tres" id="3_8rnru"]
 
 [node name="aphid_egg" instance=ExtResource("1_yxvfm")]

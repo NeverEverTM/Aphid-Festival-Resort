@@ -47,7 +47,7 @@ public partial class PlayerInventory : Control
 	{
 		if (_item_name != "none")
 		{
-			_item_slot.SetMeta("id", _item_name);
+			_item_slot.SetMeta(GlobalManager.StringNames.IdMeta, _item_name);
 			_item_slot.TooltipText = $"{Tr(_item_name + "_name")}\n"
 				+ $"{Tr(_item_name + "_desc")}";
 

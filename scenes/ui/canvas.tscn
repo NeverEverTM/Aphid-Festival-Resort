@@ -1,6 +1,6 @@
-[gd_scene load_steps=60 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=62 format=3 uid="uid://bufmc14xek8uk"]
 
-[ext_resource type="Script" path="res://scripts/gui/CanvasManager.cs" id="1_vek4n"]
+[ext_resource type="Script" uid="uid://du1wf6ua7yxdx" path="res://scripts/gui/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
 [ext_resource type="Texture2D" uid="uid://sgkiuo2x4mba" path="res://sprites/ui/weather_night.png" id="3_7sasc"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="4_bri73"]
@@ -9,26 +9,26 @@
 [ext_resource type="PackedScene" uid="uid://uk8rbyvf7hlf" path="res://scenes/ui/control_prompt.tscn" id="6_2mjwi"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="6_pcakw"]
 [ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/gui_icons/icon_camera.png" id="7_pfkc3"]
-[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_y632t"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_y632t"]
 [ext_resource type="Texture2D" uid="uid://3wk8a5raqbq4" path="res://sprites/ui/gui_icons/icon_menu.png" id="9_b5qdd"]
 [ext_resource type="Texture2D" uid="uid://cbd6a8ft3xjb6" path="res://sprites/ui/gui_icons/icon_inventory_open.png" id="9_smev1"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="10_svke5"]
-[ext_resource type="Script" path="res://scripts/gui/PlayerInventory.cs" id="10_wibaw"]
-[ext_resource type="Script" path="res://scripts/gui/DialogManager.cs" id="11_4ktwe"]
+[ext_resource type="Script" uid="uid://6ilnixcy7c8v" path="res://scripts/gui/PlayerInventory.cs" id="10_wibaw"]
+[ext_resource type="Script" uid="uid://b1ay6knt75a4t" path="res://scripts/gui/DialogManager.cs" id="11_4ktwe"]
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="11_u4uj5"]
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="12_fyjyg"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="13_7k46k"]
-[ext_resource type="Script" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
+[ext_resource type="Script" uid="uid://c1bew1k35gsxj" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="15_4n2d7"]
 [ext_resource type="AudioStream" uid="uid://biqb5tx1cjmwl" path="res://sfx/ui/backpack_open.wav" id="15_jpkck"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="16_crekn"]
 [ext_resource type="AudioStream" uid="uid://bsk5hdjfe6fiy" path="res://sfx/ui/backpack_close.wav" id="16_wn1tp"]
-[ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
+[ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="19_h41ts"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="20_qrmy7"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/ui/controls_panel.tscn" id="23_au4eg"]
-[ext_resource type="Script" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
+[ext_resource type="Script" uid="uid://c56otv2uv2d50" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="25_8tdi4"]
 [ext_resource type="Texture2D" uid="uid://dknqeho1jsf5o" path="res://sprites/help_examples/aphid_egg.PNG" id="26_6gm3y"]
 [ext_resource type="Texture2D" uid="uid://eym7ebbf50iv" path="res://sprites/help_examples/aphid_leave.PNG" id="27_hp0ii"]
@@ -40,6 +40,16 @@
 [ext_resource type="Texture2D" uid="uid://b76u5f8hbpncc" path="res://sprites/help_examples/stats.PNG" id="31_x27oh"]
 [ext_resource type="Texture2D" uid="uid://drtx08aejoe38" path="res://sprites/help_examples/album.PNG" id="32_o4x4n"]
 [ext_resource type="Texture2D" uid="uid://6mmehkh5ph1d" path="res://sprites/help_examples/storage.PNG" id="33_mlkyv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8junb"]
+font_size = 40
+shadow_color = Color(0.550133, 0, 0.0841187, 1)
+shadow_offset = Vector2(3.095, 3.18)
+
+[sub_resource type="LabelSettings" id="LabelSettings_6pa5s"]
+font_size = 40
+outline_size = 10
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_kugfj"]
 font_size = 75
@@ -227,9 +237,9 @@ tracks/5/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_4mtcm"]
 _data = {
-"RESET": SubResource("Animation_prhwt"),
-"close": SubResource("Animation_f24s7"),
-"open": SubResource("Animation_vdyy6")
+&"RESET": SubResource("Animation_prhwt"),
+&"close": SubResource("Animation_f24s7"),
+&"open": SubResource("Animation_vdyy6")
 }
 
 [sub_resource type="Animation" id="Animation_5upln"]
@@ -355,9 +365,9 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tekbc"]
 _data = {
-"RESET": SubResource("Animation_5upln"),
-"close": SubResource("Animation_sfayx"),
-"open": SubResource("Animation_7dphq")
+&"RESET": SubResource("Animation_5upln"),
+&"close": SubResource("Animation_sfayx"),
+&"open": SubResource("Animation_7dphq")
 }
 
 [sub_resource type="Animation" id="Animation_vqegb"]
@@ -418,8 +428,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7mn38"]
 _data = {
-"RESET": SubResource("Animation_vqegb"),
-"squiggly": SubResource("Animation_yyexv")
+&"RESET": SubResource("Animation_vqegb"),
+&"squiggly": SubResource("Animation_yyexv")
 }
 
 [sub_resource type="Animation" id="Animation_blls4"]
@@ -543,9 +553,9 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_evbs3"]
 _data = {
-"RESET": SubResource("Animation_blls4"),
-"close": SubResource("Animation_ew6dt"),
-"open": SubResource("Animation_beomf")
+&"RESET": SubResource("Animation_blls4"),
+&"close": SubResource("Animation_ew6dt"),
+&"open": SubResource("Animation_beomf")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6fndo"]
@@ -576,11 +586,12 @@ menu_button = NodePath("hud/menuButton")
 inventoryButton = NodePath("hud/inventoryButton")
 inventory_button_sprites = [ExtResource("4_s23ya"), ExtResource("9_smev1")]
 inventory_control_label = NodePath("hud/inventoryButton/control_icon")
-prompt_grid = NodePath("DO NOT REMOVE/prompt_grid")
+prompt_grid = NodePath("control_prompt_anchor/control_prompt_grid")
 prompt_element = ExtResource("6_2mjwi")
 
 [node name="berries_bar" type="NinePatchRect" parent="."]
 self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
+light_mask = 0
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -595,6 +606,7 @@ patch_margin_right = 5
 patch_margin_bottom = 5
 
 [node name="icon" type="TextureRect" parent="berries_bar"]
+light_mask = 0
 layout_mode = 0
 offset_left = -15.0
 offset_top = -1.0
@@ -611,10 +623,11 @@ offset_right = 125.0
 offset_bottom = 55.0
 theme = ExtResource("6_pcakw")
 text = "086"
+label_settings = SubResource("LabelSettings_8junb")
 horizontal_alignment = 1
 
-[node name="DO NOT REMOVE" type="Control" parent="."]
-editor_description = "This control is so the grid doesnt reposition itself back into the top left, it doesnt show in the editor but in-game it will be broken"
+[node name="control_prompt_anchor" type="Control" parent="."]
+editor_description = "This control is so the grid doesnt reposition itself back into the top left, it doesnt show in the editor but in-game it will be broken otherwise"
 layout_mode = 3
 anchors_preset = 6
 anchor_left = 1.0
@@ -628,7 +641,7 @@ offset_bottom = 49.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="prompt_grid" type="VBoxContainer" parent="DO NOT REMOVE"]
+[node name="control_prompt_grid" type="VBoxContainer" parent="control_prompt_anchor"]
 light_mask = 0
 layout_mode = 0
 offset_bottom = 200.0
@@ -637,12 +650,14 @@ mouse_filter = 2
 alignment = 2
 
 [node name="hud" type="Control" parent="."]
+light_mask = 0
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="screenshotButton" type="TextureButton" parent="hud"]
+light_mask = 0
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -662,6 +677,17 @@ stretch_mode = 5
 script = ExtResource("8_y632t")
 PressedColor = Color(0.282353, 0.294118, 0.286275, 1)
 HoverColor = Color(0.670588, 0.670588, 0.65098, 1)
+
+[node name="control_text" type="Label" parent="hud/screenshotButton"]
+layout_mode = 0
+offset_left = -43.0
+offset_top = 17.0
+offset_right = 8.0
+offset_bottom = 65.0
+text = "F1"
+label_settings = SubResource("LabelSettings_6pa5s")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="inventoryButton" type="TextureButton" parent="hud"]
 layout_mode = 1
@@ -746,7 +772,7 @@ label_settings = SubResource("LabelSettings_kugfj")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="datetime"]
 libraries = {
-"": SubResource("AnimationLibrary_4mtcm")
+&"": SubResource("AnimationLibrary_4mtcm")
 }
 
 [node name="inventory" type="Control" parent="." node_paths=PackedStringArray("inventory_player", "inventoryGrid", "inventoryCount")]
@@ -774,7 +800,7 @@ audio_inventory_close = ExtResource("16_wn1tp")
 
 [node name="animator" type="AnimationPlayer" parent="inventory"]
 libraries = {
-"": SubResource("AnimationLibrary_tekbc")
+&"": SubResource("AnimationLibrary_tekbc")
 }
 
 [node name="anchor" type="Control" parent="inventory"]
@@ -884,7 +910,7 @@ expand_mode = 1
 
 [node name="advance_cusor_player" type="AnimationPlayer" parent="dialog_box/dialog_advance_cursor"]
 libraries = {
-"": SubResource("AnimationLibrary_7mn38")
+&"": SubResource("AnimationLibrary_7mn38")
 }
 
 [node name="pause_menu" type="Control" parent="." node_paths=PackedStringArray("menu_player", "panel", "options_panel", "controls_panel", "help_panel", "buttons")]
@@ -915,7 +941,7 @@ buttons = [NodePath("panel_bg/VBoxContainer/resume"), NodePath("panel_bg/VBoxCon
 
 [node name="pause_player" type="AnimationPlayer" parent="pause_menu"]
 libraries = {
-"": SubResource("AnimationLibrary_evbs3")
+&"": SubResource("AnimationLibrary_evbs3")
 }
 
 [node name="background" type="TextureRect" parent="pause_menu"]
@@ -1329,9 +1355,9 @@ vertical_alignment = 1
 [node name="panel_bg" type="TextureRect" parent="pause_menu"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
-offset_left = 450.0
+offset_left = 367.0
 offset_top = 132.0
-offset_right = 813.0
+offset_right = 730.0
 offset_bottom = 525.0
 texture = ExtResource("4_bri73")
 

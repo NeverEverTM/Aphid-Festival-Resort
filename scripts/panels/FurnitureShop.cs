@@ -15,12 +15,12 @@ public partial class FurnitureShop : ShopInterface
 	{
 		menu.Open = () =>
 		{
-			ResortGUI.SetFreeCameraHud(false);
+			FreeCameraManager.SetFreeCameraHud(false);
 			ResetShop();
 		};
 		menu.Close = (MenuUtil.MenuInstance _) =>
 		{
-			ResortGUI.SetFreeCameraHud(true);
+			FreeCameraManager.SetFreeCameraHud(true);
 			CleanShelf();
 		};
 		open_button.Pressed += SetMenu;

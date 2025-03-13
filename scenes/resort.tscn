@@ -1,7 +1,6 @@
-[gd_scene load_steps=80 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=79 format=3 uid="uid://dsw70b8747xh8"]
 
-[ext_resource type="Script" path="res://scripts/controllers/ResortManager.cs" id="1_ay1ca"]
-[ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/entities/aphid.tscn" id="3_d14m5"]
+[ext_resource type="Script" uid="uid://7tuds0dv1fbo" path="res://scripts/controllers/ResortManager.cs" id="1_ay1ca"]
 [ext_resource type="AudioStream" uid="uid://snn7cy1t6bia" path="res://sfx/ambience/wind_ambience.mp3" id="3_u23vr"]
 [ext_resource type="PackedScene" uid="uid://dd1kgkvs8hkc6" path="res://scenes/ui/resort_canvas.tscn" id="4_2px7i"]
 [ext_resource type="PackedScene" uid="uid://bufmc14xek8uk" path="res://scenes/ui/canvas.tscn" id="5_t3t74"]
@@ -475,42 +474,17 @@ Resort = "golden"
 EntityRoot = NodePath("entityPit")
 StructureRoot = NodePath("tilemap_resort/structurePit")
 SpawnPoint = NodePath("spawnpoint")
-aphidPrefab = ExtResource("3_d14m5")
 
 [node name="spawnpoint" type="Node2D" parent="."]
 position = Vector2(-2142, 80)
 
-[node name="resort_canvas" parent="." node_paths=PackedStringArray("TopLeft", "BottomRight") instance=ExtResource("4_2px7i")]
-TopLeft = NodePath("../topleft")
-BottomRight = NodePath("../bottomright")
-
-[node name="dialog" parent="resort_canvas/kitchen_menu" index="3"]
-offset_left = -485.0
-offset_right = 102.0
-
-[node name="recipe_interface" parent="resort_canvas/kitchen_menu" index="4"]
-offset_top = -304.0
-offset_bottom = -264.0
-
-[node name="inventory_bg" parent="resort_canvas/kitchen_menu" index="5"]
-offset_top = -11.0
-offset_bottom = 297.0
+[node name="resort_canvas" parent="." instance=ExtResource("4_2px7i")]
 
 [node name="canvas" parent="." instance=ExtResource("5_t3t74")]
-
-[node name="panel_bg" parent="canvas/pause_menu" index="5"]
-offset_left = 367.0
-offset_right = 730.0
 
 [node name="tilemap_resort" parent="." instance=ExtResource("19_l0dmi")]
 process_priority = -1000
 metadata/_edit_lock_ = true
-
-[node name="topleft" type="Node2D" parent="."]
-position = Vector2(-2334, -839)
-
-[node name="bottomright" type="Node2D" parent="."]
-position = Vector2(2287, 1454)
 
 [node name="entityPit" type="Node2D" parent="."]
 y_sort_enabled = true

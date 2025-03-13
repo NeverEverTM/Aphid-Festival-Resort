@@ -14,8 +14,7 @@ point_count = 2
 curve = SubResource("Curve_qasph")
 
 [sub_resource type="Curve" id="Curve_ruyml"]
-min_value = -360.0
-max_value = 360.0
+_limits = [-360.0, 360.0, 0.0, 1.0]
 _data = [Vector2(0.0181159, -9.50946), 0.0, 0.0, 0, 0, Vector2(0.98913, 66.566), 0.0, 0.0, 0, 0]
 point_count = 2
 
@@ -70,11 +69,11 @@ turbulence_noise_scale = 6.28
 turbulence_influence_min = 0.359
 turbulence_influence_max = 0.969
 
-[node name="GPU_HeartParticles" type="GPUParticles2D"]
+[node name="harvest_particles" type="GPUParticles2D"]
 light_mask = 0
 z_index = 1000
 material = SubResource("CanvasItemMaterial_6x8fq")
 amount = 20
 amount_ratio = 0.7407
-process_material = SubResource("ParticleProcessMaterial_41uej")
 texture = ExtResource("1_jjsms")
+process_material = SubResource("ParticleProcessMaterial_41uej")

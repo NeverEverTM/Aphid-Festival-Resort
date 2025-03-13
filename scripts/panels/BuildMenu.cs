@@ -8,15 +8,15 @@ public partial class BuildMenu : Control
 	[Export] private GridContainer storage_container;
 	[Export] public AnimationPlayer menu_player;
 
-	// Variables
+	public bool IsStorageOpen;
 	private readonly List<Building> active_buildings = new();
-	public enum RemoveMode { Sell, Store }
+	private enum RemoveMode { Sell, Store }
 
 	private Building selected_building;
 	private CollisionShape2D current_shape;
 	private Vector2 mouse_offset, last_valid_position = new();
 	private int previous_light_mask;
-	private bool isHoveringBuilding, isMovingBuilding, isStorageOpen;
+	private bool is_hovering_building, is_moving_building;
 
 	public record class Building
 	{
@@ -34,8 +34,8 @@ public partial class BuildMenu : Control
 
 	public void OnOpenMenu()
 	{
-		isStorageOpen = false;
-		ResortGUI.SetFreeCameraHud(false);
+		IsStorageOpen = false;
+		FreeCameraManager.SetFreeCameraHud(false);
 
 		// Sets all building rects
 		if (active_buildings.Count == 0)
@@ -49,7 +49,7 @@ public partial class BuildMenu : Control
 	public async void OnCloseMenu(MenuUtil.MenuInstance _)
 	{
 		active_buildings.Clear();
-		ResortGUI.SetFreeCameraHud(true);
+		FreeCameraManager.SetFreeCameraHud(true);
 
 		while (menu_player.CurrentAnimation == "close")
 			await Task.Delay(1);
@@ -104,15 +104,15 @@ public partial class BuildMenu : Control
 
 	private void ProcessBuildingInteraction()
 	{
-		isHoveringBuilding = selected_building.Collider.HasPoint(GlobalManager.Utils.GetMouseToWorldPosition());
+		is_hovering_building = selected_building.Collider.HasPoint(GlobalManager.Utils.GetMouseToWorldPosition());
 		bool _isSelectPressed = Input.IsActionPressed("select");
-		if (!isMovingBuilding)
+		if (!is_moving_building)
 		{
 			// if selecting while hovering the structure, start Move function
 			// otherwise, selecting out of the bounds of it tries selecting a new one
 			if (Input.IsActionJustPressed("select"))
 			{
-				if (isHoveringBuilding)
+				if (is_hovering_building)
 					StartMoveBuilding();
 				else if (!SelectBuilding())
 					UnassignBuilding();
@@ -158,8 +158,8 @@ public partial class BuildMenu : Control
 	}
 	private void StartMoveBuilding()
 	{
-		ResortGUI.Instance.EnableMouseCameraControl = true;
-		isMovingBuilding = true;
+		FreeCameraManager.Instance.EnableMouseFollow = true;
+		is_moving_building = true;
 		mouse_offset = selected_building.Self.GlobalPosition - GlobalManager.Utils.GetMouseToWorldPosition();
 		last_valid_position = selected_building.Self.GlobalPosition;
 
@@ -180,8 +180,8 @@ public partial class BuildMenu : Control
 	}
 	private void StopMoveBuilding()
 	{
-		ResortGUI.Instance.EnableMouseCameraControl = false;
-		isMovingBuilding = false;
+		FreeCameraManager.Instance.EnableMouseFollow = false;
+		is_moving_building = false;
 
 		CanvasManager.RemoveControlPrompt(InputNames.Sell);
 		CanvasManager.RemoveControlPrompt(InputNames.Store);
@@ -221,7 +221,7 @@ public partial class BuildMenu : Control
 	}
 	private void UnassignBuilding()
 	{
-		ResortGUI.Instance.EnableMouseCameraControl = false;
+		FreeCameraManager.Instance.EnableMouseFollow = false;
 		StopMoveBuilding();
 
 		if (selected_building != null)
@@ -232,7 +232,7 @@ public partial class BuildMenu : Control
 				selected_building.Self.Material = null;
 				selected_building.Self.LightMask = previous_light_mask;
 			}
-			isHoveringBuilding = false;
+			is_hovering_building = false;
 		}
 
 		selected_building = null;
@@ -278,16 +278,16 @@ public partial class BuildMenu : Control
 	}
 	public void SetStorage(bool _state)
 	{
-		if (_state == isStorageOpen)
+		if (_state == IsStorageOpen)
 			return;
-		isStorageOpen = _state;
-		if (isStorageOpen)
+		IsStorageOpen = _state;
+		if (IsStorageOpen)
 			menu_player.Play("open_bar");
 		else
 			menu_player.Play("close_bar");
 	}
 	public void SetStorage() => 
-		SetStorage(!isStorageOpen);
+		SetStorage(!IsStorageOpen);
 
 	private Building CreateBuilding(Node2D _self)
 	{
@@ -327,12 +327,12 @@ public partial class BuildMenu : Control
 		if (_mode == RemoveMode.Sell)
 		{
 			Player.Data.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta("id").ToString()].cost / 2);
-			SoundManager.CreateSound(CanvasManager.AudioSell);
+			SoundManager.CreateSound("ui/kaching");
 		}
 		if (_mode == RemoveMode.Store)
 		{
 			Player.Data.Storage.Add(selected_building.Self.GetMeta("id").ToString());
-			SoundManager.CreateSound(CanvasManager.AudioStore);
+			SoundManager.CreateSound("ui/backpack_close");
 			UpdateStorage(Player.Data.Storage.Count - 1);
 		}
 		selected_building.Self.QueueFree();

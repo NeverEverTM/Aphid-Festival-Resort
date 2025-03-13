@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
 using Godot;
 
 public partial class FieldManager : Node2D
 {
 	public static FieldManager Instance { get; set; }
 	[Export] private CanvasModulate globalFilter;
+	[Export] public Node2D TopLeft, BottomRight;
 
 	public enum DayHours { Morning, Noon, Sunset, Night }
 	public static DayHours TimeOfDay { get; set; }
@@ -31,7 +33,7 @@ public partial class FieldManager : Node2D
 		SetTime(null, true);
 	}
 
-	public override void _Ready()
+	public override async void _Ready()
 	{
 		Timer _timeloop = new()
 		{
@@ -49,6 +51,14 @@ public partial class FieldManager : Node2D
 		};
 		AddChild(_timeloop);
 		_timeloop.Start();
+
+		while (!IsInstanceValid(GlobalManager.GlobalCamera))
+			await Task.Delay(1);
+
+		GlobalManager.GlobalCamera.LimitTop = (int)TopLeft.GlobalPosition.Y;
+		GlobalManager.GlobalCamera.LimitBottom = (int)BottomRight.GlobalPosition.Y;
+		GlobalManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
+		GlobalManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
 	}
 
 	// opens weather overlay and creates timer to hide it automatically

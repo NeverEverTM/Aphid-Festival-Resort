@@ -29,16 +29,17 @@ public partial class Player : CharacterBody2D
 	private float idle_timer = LONG_IDLE_BASE;
 	private bool flip_direction = true, is_running;
 	protected Timer LockPositionCooldown;
+	private AudioStream stepAudio;
 
 	// Interaction Params
 	public const string InteractableTag = "interactable";
-	private string[] ValidInteractionTags = new string[]
-	{
-		Aphid.Tag, NPCBehaviour.Tag, "menu", InteractableTag
-	};
-	private readonly List<Node2D> interactables_nearby = new();
-	private readonly List<Node2D> pickups_nearby = new();
-	private readonly List<string> current_prompts = new();
+	private string[] ValidInteractionTags =
+    [
+        Aphid.Tag, NPCBehaviour.Tag, "menu", InteractableTag
+	];
+	private readonly List<Node2D> interactables_nearby = [];
+	private readonly List<Node2D> pickups_nearby = [];
+	private readonly List<string> current_prompts = [];
 	private Timer overlapping_monitoring = new();
 	private int interact_hold_cycles;
 	private bool interact_is_being_held;
@@ -84,9 +85,9 @@ public partial class Player : CharacterBody2D
 		public SaveData()
 		{
 			Room = "resort_golden_grounds";
-			Inventory = new();
-			Storage = new();
-			RecipesDiscovered = new();
+			Inventory = [];
+			Storage = [];
+			RecipesDiscovered = [];
 			Currency = 30;
 			Name = NewName;
 			Pronouns = NewPronouns;
@@ -140,7 +141,7 @@ public partial class Player : CharacterBody2D
 		LockPositionCooldown.Timeout += () =>
 		{
 			SetDisabled(false);
-			SetPlayerAnim("idle");
+			SetPlayerAnim(StringNames.IdleAnim);
 		};
 		AddChild(LockPositionCooldown);
 
@@ -151,17 +152,18 @@ public partial class Player : CharacterBody2D
 	}
 	public override void _Ready()
 	{
+		stepAudio = SoundManager.GetAudioStream("player/step");
 		animator.FrameChanged += () =>
 		{
-			if (animator.Animation == "walk")
+			if (animator.Animation == StringNames.WalkAnim)
 			{
 				if (animator.Frame == 0 || animator.Frame == 3)
-					SoundManager.CreateSound2D("player/step", GlobalPosition, false).VolumeDb = -10;
+					SoundManager.CreateSound2D(stepAudio, GlobalPosition, false).VolumeDb = -10;
 			}
-			if (animator.Animation == "run")
+			if (animator.Animation == StringNames.RunAnim)
 			{
 				if (animator.Frame == 0 || animator.Frame == 3)
-					SoundManager.CreateSound2D("player/step", GlobalPosition);
+					SoundManager.CreateSound2D(stepAudio, GlobalPosition);
 			}
 		};
 
@@ -176,15 +178,15 @@ public partial class Player : CharacterBody2D
 		};
 		overlapping_monitoring.Start(0.15f);
 
-		CanvasManager.Menus.OnSwitch += (MenuUtil.MenuInstance _lastMenu, MenuUtil.MenuInstance _menu) =>
+		CanvasManager.Menus.OnSwitch += (_lastMenu, _menu) =>
 		{
 			if (_menu != null && _menu.ID != "pause")
 			{
 				if (HeldPickup.Item != null)
 					_ = Drop();
 				inventory?.SetTo(false);
-				if (animator.Animation != "idle")
-					SetPlayerAnim("idle");
+				if (animator.Animation != StringNames.IdleAnim)
+					SetPlayerAnim(StringNames.IdleAnim);
 			}
 		};
 	}
@@ -195,7 +197,7 @@ public partial class Player : CharacterBody2D
 		MovementDirection = Vector2.Zero;
 		if (!IsDisabled)
 		{
-			is_running = OptionsManager.Settings.SettingAutoRun ? !Input.IsActionPressed("run") : Input.IsActionPressed("run");
+			is_running = OptionsManager.Settings.SettingAutoRun ? !Input.IsActionPressed(InputNames.Run) : Input.IsActionPressed(InputNames.Run);
 			ReadMovementDirection();
 			ReadHeldInput();
 		}
@@ -212,31 +214,33 @@ public partial class Player : CharacterBody2D
 	{
 		if (IsDisabled)
 		{
-			if (@event.IsActionPressed("open_generations") && CanvasManager.Menus.CurrentMenu != null && CanvasManager.Menus.CurrentMenu.Equals(GenerationsTracker.Menu))
+			// move this to generationstracker menu instead
+			if (@event.IsActionPressed(InputNames.OpenGenerations) && CanvasManager.Menus.CurrentMenu != null
+					 && CanvasManager.Menus.CurrentMenu.Equals(GenerationsTracker.Menu))
 				CanvasManager.Menus.OpenMenu(GenerationsTracker.Menu);
 			return;
 		}
 
 		//TODO: SET INPUT SYSTEM FOR THIS
-		if (@event.IsActionPressed("open_generations"))
+		if (@event.IsActionPressed(InputNames.OpenGenerations))
 		{
 			CanvasManager.Menus.OpenMenu(GenerationsTracker.Menu);
 			return;
 		}
 
-		if (@event.IsActionPressed("open_inventory"))
+		if (@event.IsActionPressed(InputNames.OpenInventory))
 		{
 			inventory?.SetTo(!inventory.Visible);
 			return;
 		}
 
-		if (@event.IsActionPressed("interact"))
+		if (@event.IsActionPressed(InputNames.Interact))
 		{
 			TryInteract();
 			return;
 		}
 
-		if (@event.IsActionPressed("pickup"))
+		if (@event.IsActionPressed(InputNames.Pickup))
 		{
 			if (HeldPickup.Item == null)
 				TryPickup();
@@ -245,7 +249,7 @@ public partial class Player : CharacterBody2D
 			return;
 		}
 
-		if (@event.IsActionPressed("pull"))
+		if (@event.IsActionPressed(InputNames.Pull))
 		{
 			// either pull the first item or store it in inventory
 			if (HeldPickup.Item != null)
@@ -276,8 +280,8 @@ public partial class Player : CharacterBody2D
 			if (HeldPickup.Item != null)
 				_ = Drop();
 			inventory?.SetTo(false);
-			if (animator.Animation != "idle")
-				SetPlayerAnim("idle");
+			if (animator.Animation != StringNames.IdleAnim)
+				SetPlayerAnim(StringNames.IdleAnim);
 			MovementDirection = Vector2.Zero;
 		}
 	}
@@ -291,7 +295,7 @@ public partial class Player : CharacterBody2D
 		if (LockPositionCooldown.TimeLeft > 0) // end early
 		{
 			SetDisabled(false);
-			SetPlayerAnim("idle");
+			SetPlayerAnim(StringNames.IdleAnim);
 		}
 
 		LockPositionCooldown.Start(_secondsDuration);
@@ -315,11 +319,12 @@ public partial class Player : CharacterBody2D
 				_node = interactables_nearby[i];
 			}
 		}
-
-		if (_node.HasMethod("Interact")) // Within CollisionObject
-			_node.CallDeferred("Interact");
-		else if (_node.GetParent().HasMethod("Interact")) // Parent of CollisionObject
-			_node.GetParent().CallDeferred("Interact");
+		// Attempts interacting with the CollisionObject itself
+		if (_node.HasMethod(GlobalManager.StringNames.InteractFunc)) 
+			_node.CallDeferred(GlobalManager.StringNames.InteractFunc);
+		// Otherwise, attempts to interact with its parent instead
+		else if (_node.GetParent().HasMethod(GlobalManager.StringNames.InteractFunc)) 
+			_node.GetParent().CallDeferred(GlobalManager.StringNames.InteractFunc);
 	}
 	private void ProcessMovementAnimations(float _delta)
 	{
@@ -327,9 +332,9 @@ public partial class Player : CharacterBody2D
 		{
 			idle_timer = LONG_IDLE_BASE;
 			if (is_running)
-				SetPlayerAnim("run");
+				SetPlayerAnim(StringNames.RunAnim);
 			else
-				SetPlayerAnim("walk");
+				SetPlayerAnim(StringNames.WalkAnim);
 			SetFlipDirection(MovementDirection);
 		}
 		else if (!IsDisabled)
@@ -337,27 +342,27 @@ public partial class Player : CharacterBody2D
 			if (idle_timer > 0)
 			{
 				idle_timer -= _delta;
-				SetPlayerAnim("idle");
+				SetPlayerAnim(StringNames.IdleAnim);
 			}
 			else
-				SetPlayerAnim("sit");
+				SetPlayerAnim(StringNames.SitAnim);
 		}
 		else
 		{
 			if (CanvasManager.Instance.IsInFocus)
-				SetPlayerAnim("idle");
+				SetPlayerAnim(StringNames.IdleAnim);
 			idle_timer = LONG_IDLE_BASE;
 		}
 	}
 	private void ReadMovementDirection()
 	{
-		Vector2 _direction = Input.GetVector("left", "right", "up", "down");
+		Vector2 _direction = Input.GetVector(InputNames.Left, InputNames.Right, InputNames.Up, InputNames.Down);
 
 		SetMovementDirection(_direction);
 	}
 	private void ReadHeldInput()
 	{
-		interact_is_being_held = Input.IsActionPressed("interact");
+		interact_is_being_held = Input.IsActionPressed(InputNames.Interact);
 
 		if (interact_is_being_held)
 		{
@@ -374,7 +379,7 @@ public partial class Player : CharacterBody2D
 			return;
 
 		SetDisabled(true);
-		SetPlayerAnim("whistle");
+		SetPlayerAnim(StringNames.WhistleAnim);
 		await Task.Delay(500);
 		SoundManager.CreateSound2D(Audio_Whistle, Instance.GlobalPosition, true);
 		for (int i = 0; i < ResortManager.CurrentResort.AphidsOnResort.Count; i++)
@@ -391,15 +396,15 @@ public partial class Player : CharacterBody2D
 	private void CheckForInteractables()
 	{
 		Godot.Collections.Array<Node2D> _collisionList = interactionArea.GetOverlappingBodies();
-		List<string> _last_prompts = current_prompts.ToList();
+		List<string> _last_prompts = [.. current_prompts];
 		current_prompts.Clear();
 		interactables_nearby.Clear();
 
 		for (int i = 0; i < _collisionList.Count; i++)
 		{
-			if (!_collisionList[i].HasMeta("tag"))
+			if (!_collisionList[i].HasMeta(GlobalManager.StringNames.TagMeta))
 				continue;
-			string _tag = (string)_collisionList[i].GetMeta("tag");
+			string _tag = (string)_collisionList[i].GetMeta(GlobalManager.StringNames.TagMeta);
 			if (ValidInteractionTags.Contains(_tag))
 			{
 				interactables_nearby.Add(_collisionList[i]);
@@ -430,10 +435,10 @@ public partial class Player : CharacterBody2D
 		for (int i = 0; i < _collisionList.Count; i++)
 		{
 			var _item = _collisionList[i];
-			if (!_item.HasMeta("pickup")) // is it a pickup
+			if (!_item.HasMeta(GlobalManager.StringNames.PickupMeta)) // is it a pickup
 				continue;
 
-			if (!(bool)_item.GetMeta("pickup")) // can it be picked up
+			if (!(bool)_item.GetMeta(GlobalManager.StringNames.PickupMeta)) // can it be picked up
 				return;
 
 			pickups_nearby.Add(_item);
@@ -474,7 +479,7 @@ public partial class Player : CharacterBody2D
 			return;
 
 		var _node = pickups_nearby[0];
-		var _tag = _node.HasMeta("tag") ? (string)_node.GetMeta("tag") : "item";
+		var _tag = _node.HasMeta(GlobalManager.StringNames.TagMeta) ? (string)_node.GetMeta(GlobalManager.StringNames.TagMeta) : "item";
 		// If is an aphid, do a bunch of extra shit
 		if (_tag == Aphid.Tag)
 		{
@@ -491,13 +496,13 @@ public partial class Player : CharacterBody2D
 		if (LockPositionCooldown.TimeLeft > 0)
 			return;
 
-		_node.SetMeta("pickup", false);
+		_node.SetMeta(GlobalManager.StringNames.PickupMeta, false);
 		_node.ProcessMode = ProcessModeEnum.Disabled;
 
 		if (_playAnim)
 		{
 			SetDisabled(true);
-			SetPlayerAnim("pickup");
+			SetPlayerAnim(StringNames.PickupAnim);
 			SetFlipDirection(_node.GlobalPosition - GlobalPosition);
 			RunDisabledTimer(0.5f);
 			await Task.Delay((int)(0.5f * 1000) - 100);
@@ -544,7 +549,7 @@ public partial class Player : CharacterBody2D
 			return;
 		CanvasManager.RemoveControlPrompt(InputNames.Pickup);
 		SetDisabled(true);
-		SetPlayerAnim("pickup", true);
+		SetPlayerAnim(StringNames.PickupAnim, true);
 		RunDisabledTimer(0.5f);
 		await Task.Delay((int)(0.4f * 1000));
 
@@ -557,7 +562,7 @@ public partial class Player : CharacterBody2D
 		if (_setPosition)
 			HeldPickup.Item.GlobalPosition = GlobalPosition + (flip_direction ? pickup_ground_position : -pickup_ground_position);
 		HeldPickup.Item.ProcessMode = ProcessModeEnum.Inherit;
-		HeldPickup.Item.SetMeta("pickup", true);
+		HeldPickup.Item.SetMeta(GlobalManager.StringNames.PickupMeta, true);
 		HeldPickup = new();
 	}
 	private void ProcessPickupBehaviour()
@@ -567,7 +572,7 @@ public partial class Player : CharacterBody2D
 			HeldPickup = new();
 			return;
 		}
-		bool _isSat = animator.Animation == "sit";
+		bool _isSat = animator.Animation == StringNames.SitAnim;
 
 		HeldPickup.Item.GlobalPosition = GlobalPosition;
 
@@ -607,7 +612,7 @@ public partial class Player : CharacterBody2D
 		else
 			spriteBody.Scale = new(Mathf.Lerp(spriteBody.Scale.X, 1, _delta * 6), spriteBody.Scale.Y);
 	}
-	public void SetPlayerAnim(string _name, bool _playBackwards = false)
+	public void SetPlayerAnim(StringName _name, bool _playBackwards = false)
 	{
 		if (_name.Equals(animator.Animation))
 			return;
@@ -617,6 +622,15 @@ public partial class Player : CharacterBody2D
 			animator.PlayBackwards(_name);
 	}
 
+	public static class StringNames
+	{
+		public readonly static StringName IdleAnim = new("idle");
+		public readonly static StringName SitAnim = new("sit");
+		public readonly static StringName WalkAnim = new("walk");
+		public readonly static StringName RunAnim = new("run");
+		public readonly static StringName WhistleAnim = new("whistle");
+		public readonly static StringName PickupAnim = new("pickup");
+	}
 	public interface IPlayerInteractable
 	{
 		/// <summary>

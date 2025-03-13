@@ -30,7 +30,7 @@ public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, 
 				Bus = "Sounds",
 				PitchScale = 3
 			}, GlobalPosition);
-			interactionArea.RemoveMeta("tag");
+			interactionArea.RemoveMeta(GlobalManager.StringNames.TagMeta);
 			berry_timer = TIMER_BASE;
 		}
 	}
@@ -42,7 +42,7 @@ public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, 
 		{
 			isfinished = true;
 			Texture = berryTextures[1];
-			interactionArea.SetMeta("tag", Player.InteractableTag);
+			interactionArea.SetMeta(GlobalManager.StringNames.TagMeta, Player.InteractableTag);
 			player.Play("grow");
 		}
     }

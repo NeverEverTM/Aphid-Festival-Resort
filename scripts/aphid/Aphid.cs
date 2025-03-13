@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
@@ -8,7 +9,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 {
 	public AphidInstance Instance;
 	/// <summary>
-	/// For aphids that do not belong to the player, acting as NPCs.
+	/// For aphids that do not belong to the player, acting as NPCs. TODO: Implement proper fake aphid
 	/// </summary>
 	public bool IS_FAKE = false;
 	public const string Tag = "aphid";
@@ -16,23 +17,6 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	[Export] public AphidSkin skin;
 	[Export] private Area2D triggerArea;
 	[Export] private AudioStreamPlayer2D audioPlayer;
-
-	public static AudioStream Audio_Nom, Audio_Idle, Audio_Idle_Baby, Audio_Step, Audio_Jump, Audio_Hurt,
-			Audio_Boing;
-	public AudioStream AudioDynamic_Idle
-	{
-		get
-		{
-			if (Instance.Status.IsAdult)
-				return Audio_Idle;
-			else
-				return Audio_Idle_Baby;
-		}
-		set
-		{
-			Audio_Idle = value;
-		}
-	}
 
 	// Aphid state
 	public enum StateEnum { Busy, Idle, Hungry, Eat, Sleep, Play, Pet, Breed, Train }
@@ -47,28 +31,41 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	};
 	public IState State = new AphidActions.IdleState();
 	public EventArgs StateArgs = new();
-	public readonly List<IDecayEvent> DecayActions = new()
-	{
-		new AphidActions.HungerDecay(),
+	public readonly List<IDecayEvent> DecayActions =
+    [
+        new AphidActions.HungerDecay(),
 		new AphidActions.ThirstDecay(),
 		new AphidActions.RestDecay(),
 		new AphidActions.AffectionDecay(),
 		new AphidActions.BondshipDecay(),
 		new AphidActions.LifetimeDecay(),
-	};
-	public readonly List<ITriggerEvent> TriggerActions = new();
+	];
+	public readonly List<ITriggerEvent> TriggerActions = [];
 	/// <summary>
 	/// This is the list for active traits during runtime, to add/remove a trait permanently use the Genes.Traits list instead
 	/// </summary>
-	public readonly List<ITrait> Traits = new();
+	public readonly List<ITrait> Traits = [];
 
-	public bool IsReadyForHarvest, IsDisabled;
-	private GpuParticles2D harvest_effect;
-
-	// Movement Params
 	public Vector2 MovementDirection;
 	public float MovementSpeed;
+	public bool IsReadyForHarvest;
+	public bool IsDisabled;
+	private GpuParticles2D harvest_effect;
 	public RandomNumberGenerator rng = new();
+
+	// replace these with proper stored vars or single sound calls
+	public static AudioStream Audio_Nom, Audio_Idle, Audio_Idle_Baby, Audio_Step, Audio_Jump, Audio_Hurt,
+			Audio_Boing;
+	public AudioStream AudioDynamic_Idle
+	{
+		get
+		{
+			if (Instance.Status.IsAdult)
+				return Audio_Idle;
+			else
+				return Audio_Idle_Baby;
+		}
+	}
 
 	public override void _Ready()
 	{
@@ -98,6 +95,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		{
 			SetTraits();
 			triggerArea.BodyEntered += OnTriggerEnter;
+			triggerArea.AreaEntered += OnTriggerEnter;
 			TriggerActions.Add(ActiveStates[StateEnum.Hungry] as ITriggerEvent);
 			DecayActions.Add(ActiveStates[StateEnum.Breed] as IDecayEvent);
 		}
@@ -175,7 +173,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	public override void _PhysicsProcess(double delta)
 	{
 		float _delta = (float)delta;
-
+		
 		// Set default movement state
 		Velocity = MovementDirection * MovementSpeed;
 		if (!MovementDirection.IsEqualApprox(Vector2.Zero))
@@ -189,15 +187,11 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			MoveAndSlide();
 			return;
 		}
-
-		// Register triggers areas
-		var _collisionList = triggerArea.GetOverlappingBodies();
-		for (int i = 0; i < _collisionList.Count; i++)
-			OnTriggerEnter(_collisionList[i]);
-
+		
 		// trait update process
 		for (int i = 0; i < Traits.Count; i++)
 			Traits[i].OnProcess(this, StateArgs, _delta);
+
 		// State update processes
 		State.Process(this, StateArgs, _delta);
 		MoveAndSlide();
@@ -314,21 +308,23 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			_outline.SetShaderParameter("line_thickness", 2);
 			skin.Material = _outline;
 			harvest_effect = GlobalManager.EmitParticles("harvest", new(), this, false);
+			skin.LightMask = 0;
 		}
 	}
 	public virtual void Harvest()
 	{
 		IsReadyForHarvest = false;
+		// result
+		Instance.Status.MilkBuildup = 0;
+		Player.Data.AddCurrency(Instance.Status.IsAdult ? AphidData.HARVEST_VALUE_ADULT : AphidData.HARVEST_VALUE_BABY);
+		CanvasManager.RemoveControlPrompt(Tag);
 		// visuals
 		skin.DoSquishAnim();
 		skin.Material = null;
 		if (harvest_effect != null)
 			harvest_effect.OneShot = true;
 		harvest_effect = null;
-		// result
-		Instance.Status.MilkBuildup = 0;
-		Player.Data.AddCurrency(Instance.Status.IsAdult ? AphidData.HARVEST_VALUE_ADULT : AphidData.HARVEST_VALUE_BABY);
-		CanvasManager.RemoveControlPrompt(Tag);
+		skin.LightMask = 1;
 	}
 
 	// The actual breed that causes an egg to spawn, also sets aphids back to normal
@@ -357,9 +353,9 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	// =======| Collision Behaviours |========
 	public void OnTriggerEnter(Node2D _node)
 	{
-		if (!_node.HasMeta("tag"))
+		if (!_node.HasMeta(GlobalManager.StringNames.TagMeta))
 			return;
-		var _tag = (string)_node.GetMeta("tag");
+		var _tag = (string)_node.GetMeta(GlobalManager.StringNames.TagMeta);
 
 		var _action = TriggerActions.Find((e) => e.TriggerID == _tag);
 		_action?.OnTrigger(this, _node, StateArgs);

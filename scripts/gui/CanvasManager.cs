@@ -27,9 +27,6 @@ public partial class CanvasManager : CanvasLayer
 	public static CanvasManager Instance { get; private set; }
 	public static MenuUtil Menus { get; private set; }
 
-	public static AudioStream AudioSell { get; set; }
-	public static AudioStream AudioStore { get; set; }
-
 	// Focus
 	public Control CurrentFocus { get; private set; }
 	public bool IsInFocus { get; private set; }
@@ -52,7 +49,8 @@ public partial class CanvasManager : CanvasLayer
 				SetHudElements(false);
 				ClearControlPrompts();
 			}
-			else if (!IsInstanceValid(ResortGUI.Instance) || !ResortGUI.Instance.IsFreeCamera)
+			// dont set them back in if we are in free camera mode
+			else if (!IsInstanceValid(FreeCameraManager.Instance) || !FreeCameraManager.Instance.Enabled)
 				SetHudElements(true);
 		};
 	}
@@ -70,12 +68,15 @@ public partial class CanvasManager : CanvasLayer
 	public static async void TakeScreenshot()
 	{
 		Instance.Hide();
+		if (IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Instance.Enabled)
+			FreeCameraManager.SetFreeCameraHud(false, true);
+
 		await Task.Delay(1);
 		try
 		{
 			var capture = Instance.GetViewport().GetTexture().GetImage();
 			var _time = Time.GetDatetimeStringFromSystem().Replace(":", "-");
-			var filename = SaveSystem.ProfilePath + SaveSystem.ProfileAlbumDir + $"/Screenshot-{_time}.png";
+			var filename = SaveSystem.ProfilePath + SaveSystem.ProfileAlbumDir + $"Screenshot-{_time}.png";
 
 			if (FileAccess.FileExists(filename))
 				filename += "(Extra)";
@@ -86,11 +87,13 @@ public partial class CanvasManager : CanvasLayer
 		catch (Exception _err)
 		{
 			Logger.Print(Logger.LogPriority.Warning, _err, "Failed to take screenshot");
+			SoundManager.CreateSound("ui/button-fail");
 		}
 
+		if (IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Instance.Enabled)
+			FreeCameraManager.SetFreeCameraHud(true, true);
 		Instance.Show();
 	}
-
 	public static void SetHudElements(bool _state)
 	{
 		if (_state == Instance.hud_element.Visible)

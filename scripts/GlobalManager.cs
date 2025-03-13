@@ -31,7 +31,8 @@ internal partial class GlobalManager : Node2D
 		PopupWindowPath = "res://scenes/ui/popup.tscn",
 		CanvasGroupOutlineShader = "res://scripts/shaders/outline-canvas-group.gdshader",
 		ItemEntity = "res://scenes/entities/item.tscn",
-		OutlineShader = "res://scripts/shaders/outline.gdshader";
+		OutlineShader = "res://scripts/shaders/outline.gdshader",
+		APHID_ENTITY_PATH = "res://scenes/entities/aphid.tscn";
 	public const string
 		RES_SFX_PATH = "res://sfx/",
 		IconPath = "res://sprites/icons/",
@@ -52,49 +53,41 @@ internal partial class GlobalManager : Node2D
 	public static readonly ResourcePreloader G_PARTICLES = new();
 	public static readonly ResourcePreloader G_SKINS = new();
 
-	public readonly struct Item
-	{
-		public readonly int cost;
-		public readonly int unlockableLevel;
-		public readonly string tag;
-		public readonly string shopTag;
-		public Item(int cost, int unlockableLevel, string tag, string shopTag)
-		{
-			this.cost = cost;
-			this.unlockableLevel = unlockableLevel;
-			this.tag = tag;
-			this.shopTag = shopTag;
-		}
-	}
-	public readonly struct Food
-	{
-		public readonly AphidData.FoodType type;
-		public readonly float food_value;
-		public readonly float drink_value;
-		public Food(AphidData.FoodType type, float food_value, float drink_value)
-		{
-			this.type = type;
-			this.food_value = food_value;
-			this.drink_value = drink_value;
-		}
-	}
-	public readonly struct Recipe
-	{
-		public readonly string Result;
-		public readonly string Ingredient1;
-		public readonly string Ingredient2;
-		public Recipe(string result, string ingredient1, string ingredient2)
-		{
-			Result = result;
-			Ingredient1 = ingredient1;
-			Ingredient2 = ingredient2;
-		}
-	}
+	public readonly struct Item(int cost, int unlockableLevel, string tag, string shopTag)
+    {
+		public readonly int cost = cost;
+		/// <summary>
+		/// Currently unusued.
+		/// </summary>
+		public readonly int unlockableLevel = unlockableLevel;
+		/// <summary>
+		/// General functionality meta tag.
+		/// </summary>
+		public readonly string tag = tag;
+		/// <summary>
+		/// Shop it belongs to.
+		/// </summary>
+		public readonly string shopTag = shopTag;
+    }
+    public readonly struct Food(AphidData.FoodType type, float food_value, float drink_value, string[] skill_list, int[] skill_values)
+    {
+		public readonly AphidData.FoodType type = type;
+		public readonly float food_value = food_value;
+		public readonly float drink_value = drink_value;
+		public readonly string[] skill_list = skill_list;
+		public readonly int[] skill_values = skill_values;
+    }
+    public readonly struct Recipe(string result, string ingredient1, string ingredient2)
+    {
+		public readonly string Result = result;
+		public readonly string Ingredient1 = ingredient1;
+		public readonly string Ingredient2 = ingredient2;
+    }
 
-	public static Texture2D GetIcon(string _key)
+    public static Texture2D GetIcon(string _key)
 	{
-		if (_key != null && G_ICONS.ContainsKey(_key))
-			return G_ICONS[_key];
+		if (_key != null && G_ICONS.TryGetValue(_key, out Texture2D value))
+			return value;
 		else
 			return new PlaceholderTexture2D();
 	}
@@ -103,13 +96,24 @@ internal partial class GlobalManager : Node2D
 		if (_id != null && G_SKINS.HasResource(_id))
 			return G_SKINS.GetResource(_id) as Texture2D;
 		else
-			return new PlaceholderTexture2D();
+			return new PlaceholderTexture2D()
+			{
+				Size = new(32, 32)
+			};
 	}
 
-	// Variables
-	public static Vector2 ScreenCenter { get; private set; }
-	public static Vector2 ScreenSize { get; private set; }
-	public static Vector2 QuarterScreen { get; private set; }
+	/// <summary>
+	/// The size of the current viewport
+	/// </summary>
+	public static Vector2 SCREEN_SIZE_CANVAS { get; private set; }
+	/// <summary>
+	/// The center of the viweport, offset starting from the top-left.
+	/// </summary>
+	public static Vector2 SCREEN_CENTER_CANVAS { get; private set; }
+	/// <summary>
+	/// Same as the CANVAS version, but translated to global position measure. 
+	/// </summary>
+	public static Vector2 SCREEN_CENTER_GLOBAL { get; private set; }
 	private PhysicsDirectSpaceState2D spaceState;
 	private readonly static List<GpuParticles2D> ACTIVE_PARTICLES_CACHED = new();
 
@@ -126,8 +130,8 @@ internal partial class GlobalManager : Node2D
 #else
 		Logger.LogMode = Logger.LogPriorityMode.Default;
 #endif
-		GetViewport().SizeChanged += OnSizeChange;
-		OnSizeChange();
+		GetViewport().SizeChanged += UpdateViewportSizeTracking;
+		UpdateViewportSizeTracking();
 		GameManager.ProfileSaveModule = new(GameManager.ID, new GameManager.SaveModule(), int.MaxValue)
 		{
 			Extension = SaveSystem.SAVEFILE_EXTENSION
@@ -154,23 +158,37 @@ internal partial class GlobalManager : Node2D
 			ACTIVE_PARTICLES_CACHED.RemoveAt(i);
 		}
 	}
-	private void OnSizeChange()
+	private async void UpdateViewportSizeTracking()
 	{
-		ScreenSize = GetViewport().GetVisibleRect().Size;
-		ScreenCenter = ScreenSize / 2;
-		QuarterScreen = ScreenCenter / 2;
+		while (!IsInstanceValid(GlobalCamera))
+			await Task.Delay(1);
+		
+		SCREEN_SIZE_CANVAS = GetViewport().GetVisibleRect().Size;
+		SCREEN_CENTER_CANVAS = SCREEN_SIZE_CANVAS / 2;
+		SCREEN_CENTER_GLOBAL = SCREEN_CENTER_CANVAS / GlobalCamera.Zoom;
 	}
 	// MARK: Game Initialization
 	/// <summary>
 	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
 	/// In order to be called again, BOOT_LOADING_LABEL must be set to a valid text display node.
 	/// </summary>
-	public async static Task INTIALIZE_GAME_PROCESS()
+	public async static Task INTIALIZE_GAME_PROCESS(bool _playIntro = true)
 	{
+		Control _node = new();
 		// show loading screen animation
-		Control _node = BOOT_LOADING_LABEL.GetParent() as Control;
-		_node.Visible = true;
-		(_node.GetChild(1) as AnimatedSprite2D).Play("default");
+		if (_playIntro)
+		{
+			_node = BOOT_LOADING_LABEL.GetParent() as Control;
+			_node.Visible = true;
+			(_node.GetChild(1) as AnimatedSprite2D).Play("default");
+		}
+		else
+		{
+            BOOT_LOADING_LABEL = new()
+            {
+                Visible = false
+            };
+        }
 
 		try
 		{
@@ -253,14 +271,13 @@ internal partial class GlobalManager : Node2D
 		string[] _files = DirAccess.GetFilesAt(RES_SKINS_PATH + _directory);
 		for (int i = 0; i < _files.Length; i++)
 		{
-			// _filename = skin_piece.PNG
+			// _filename = 0/skin_piece.res
 			// _id = 0/skin_piece
 			string _fileName = _directory + "/" + _files[i].Replace(".import", string.Empty),
 					_id = _fileName.Split('.')[0];
 
 			if (G_SKINS.HasResource(_id))
 				continue;
-
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_files.Length})";
 			var _resource = await PRELOAD_RESOURCE(RES_SKINS_PATH + _fileName);
 			G_SKINS.AddResource(_id, _resource as Texture2D);
@@ -273,7 +290,7 @@ internal partial class GlobalManager : Node2D
 		for (int i = 0; i < _directories.Length; i++)
 			await SEARCH_SFX_FOLDER(_directories[i]);
 
-		/// replace all of this since SoundManager now has direct to the sound cache
+		/// replace all of this since SoundManager now has direct access to the sound cache
 		// Load aphid SFX
 		string aphidPath = $"{RES_SFX_PATH}aphid/";
 		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(aphidPath + "nom.wav");
@@ -283,10 +300,6 @@ internal partial class GlobalManager : Node2D
 		Aphid.Audio_Jump = ResourceLoader.Load<AudioStream>(aphidPath + "jump.wav");
 		Aphid.Audio_Hurt = ResourceLoader.Load<AudioStream>(aphidPath + "hurt.wav");
 		Aphid.Audio_Boing = ResourceLoader.Load<AudioStream>(aphidPath + "boing.wav");
-
-		string uiPath = $"{RES_SFX_PATH}ui/";
-		CanvasManager.AudioSell = ResourceLoader.Load<AudioStream>(uiPath + "kaching.wav");
-		CanvasManager.AudioStore = ResourceLoader.Load<AudioStream>(uiPath + "button_select.wav");
 	}
 	private static async Task SEARCH_SFX_FOLDER(string _directory)
 	{
@@ -346,7 +359,10 @@ internal partial class GlobalManager : Node2D
 			G_FOOD.Add(_info[0], new(
 				type: (AphidData.FoodType)int.Parse(_info[1]),
 				food_value: float.Parse(_info[2]),
-				drink_value: float.Parse(_info[3])
+				drink_value: float.Parse(_info[3]),
+				skill_list: _info[4].Split(','),
+				skill_values: string.IsNullOrWhiteSpace(_info[5]) ? null 
+						: Array.ConvertAll(_info[5].Split(','), s => int.Parse(s))
 			));
 		});
 		await LOAD_DATABASE("recipes", _info =>
@@ -513,7 +529,7 @@ internal partial class GlobalManager : Node2D
 	public static void CreatePopup(string _translation_key, Node _parent)
 	{
 		Control _popup = ResourceLoader.Load<PackedScene>(PopupWindowPath).Instantiate() as Control;
-		_popup.Position = ScreenCenter - _popup.Size / 2;
+		_popup.Position = SCREEN_CENTER_CANVAS - _popup.Size / 2;
 		(_popup.GetChild(0) as Label).Text = Instance.Tr(_translation_key);
 		_parent.AddChild(_popup);
 		Timer _timer = new()
@@ -538,6 +554,18 @@ internal partial class GlobalManager : Node2D
 
 		_vanish.Start(1.5f);
 		_timer.Start(2);
+	}
+	public static void SetCameraZoom(float _amount, bool _addInstead = false)
+	{
+		float _total = GlobalCamera.Zoom.X;
+		if (_addInstead)
+			_total += _amount;
+		else
+			_total = _amount;
+
+		_total = Math.Clamp(_total, 1, 5f);
+		GlobalCamera.Zoom = new(_total, _total);
+		Instance.UpdateViewportSizeTracking();
 	}
 
 	public static class Utils
@@ -582,13 +610,13 @@ internal partial class GlobalManager : Node2D
 		}
 
 		/// <returns>The mouse position translated to global position/returns>
-		public static Vector2 GetMouseToWorldPosition() => GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() - ScreenCenter) * 0.5f;
-		public static Vector2 GetMouseToCanvasCenter() => Instance.GetViewport().GetMousePosition() - ScreenCenter;
+		public static Vector2 GetMouseToWorldPosition() => GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() - SCREEN_CENTER_CANVAS) * 1 / GlobalCamera.Zoom;
+		public static Vector2 GetMouseToCanvasCenter() => Instance.GetViewport().GetMousePosition() - SCREEN_CENTER_CANVAS;
 		/// <summary>
 		/// Translates world position to canvas coordinates.
 		/// </summary>
 		/// <returns>A 2D Vector of an objects position translated to canvas coordinates</returns>
-		public static Vector2 GetWorldToCanvasPosition(Vector2 _position) => ScreenCenter + (_position - GlobalCamera.GlobalPosition) * 2;
+		public static Vector2 GetWorldToCanvasPosition(Vector2 _position) => SCREEN_CENTER_CANVAS + (_position - GlobalCamera.GlobalPosition) * GlobalCamera.Zoom;
 		public static Color GetRandomColor(bool _randomizeAlpha = false)
 		{
 			byte[] _rgba = new byte[] { (byte)RNG.RandiRange(0,255), (byte)RNG.RandiRange(0,255),
@@ -610,5 +638,12 @@ internal partial class GlobalManager : Node2D
 			DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 			return dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
 		}
+	}
+	public static class StringNames
+	{
+		public readonly static StringName InteractFunc = new("Interact");
+		public readonly static StringName TagMeta = new("tag");
+		public readonly static StringName PickupMeta = new("pickup");
+		public readonly static StringName IdMeta = new("id");
 	}
 }
