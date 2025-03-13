@@ -20,7 +20,7 @@ point_count = 2
 curve = SubResource("Curve_iqxmv")
 
 [sub_resource type="Curve" id="Curve_emthf"]
-max_value = 3.0
+_limits = [0.0, 3.0, 0.0, 1.0]
 _data = [Vector2(0.00362319, 0.283019), 0.0, 0.0, 0, 0, Vector2(0.974638, 3), 0.0, 0.0, 0, 0]
 point_count = 2
 

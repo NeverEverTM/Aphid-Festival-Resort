@@ -207,7 +207,7 @@ public partial class AphidTraits : Aphid
 
         public void Activate(Aphid aphid, EventArgs args)
         {
-            (aphid.ActiveStates[StateEnum.Hungry] as HungryState).is_picky_eater = true;
+            (aphid.ActiveStates[StateEnum.Hungry] as HungryState).only_favorites = true;
         }
 
         public void Deactivate(Aphid aphid, EventArgs args)
@@ -221,7 +221,7 @@ public partial class AphidTraits : Aphid
 
         public void Activate(Aphid aphid, EventArgs args)
         {
-            (aphid.ActiveStates[StateEnum.Hungry] as HungryState).is_glutton = true;
+            (aphid.ActiveStates[StateEnum.Hungry] as HungryState).allow_overconsume = true;
         }
 
         public void Deactivate(Aphid aphid, EventArgs args)

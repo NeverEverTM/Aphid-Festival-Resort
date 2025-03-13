@@ -83,7 +83,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		itemDescription.Text = Tr(_itemName + "_desc");
 
 		itemIcon.Texture = GlobalManager.GetIcon(_itemName);
-		SoundManager.CreateSound(CanvasManager.AudioStore);
+		SoundManager.CreateSound("ui/button_select");
 	}
 	/// <summary>
 	/// Function that returns whether or not an item can be purchased.
@@ -115,7 +115,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	protected virtual void Purchase()
 	{
 		Player.Data.AddCurrency(-currentCost);
-		SoundManager.CreateSound(CanvasManager.AudioSell);
+		SoundManager.CreateSound("ui/kaching");
 	}
 
 	public void SetMenu()

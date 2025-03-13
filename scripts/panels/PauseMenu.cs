@@ -50,7 +50,7 @@ public partial class PauseMenu : Control
 	{
 		if (_state)
 		{
-			if (ResortGUI.Instance.WasFreeCamera || CanvasManager.Instance.IsInFocus 
+			if (FreeCameraManager.Instance.FreeCameraWasActive || CanvasManager.Instance.IsInFocus 
 					|| CanvasManager.Menus.IsBusy || DialogManager.IsActive)
 				return;
 				

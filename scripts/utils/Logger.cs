@@ -4,8 +4,8 @@ using Godot;
 
 public static class Logger
 {
-	public enum LogPriority { Debug, Info, Log, Warning, Error }
-	public enum LogPriorityMode { All, Verbose, Default, Warnings, Exceptions, Essential }
+	public enum LogPriority { Debug, Info, Log, Warning, Error, IgnorePriority }
+	public enum LogPriorityMode { All, Verbose, Default, Warnings, Exceptions }
 
 	/// <summary>
 	/// Minor: Execute a custom function to correct yourself (the first argument in the object args)
@@ -33,7 +33,7 @@ public static class Logger
 		else if (priority == LogPriority.Error)
 			GD.PushError(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
 		else
-			GD.PrintRich(_message.Insert(0, $"[{_time}] ||~~[ESSENTIAL]~~||: "));
+			GD.PrintRich(_message.Insert(0, $"[{_time}] [Log]: "));
 		DebugConsole.Print(_message);
 	}
 	public static void Print(LogPriority priority, GameTermination mode, params object[] args)

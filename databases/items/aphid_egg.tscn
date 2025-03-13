@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_dlinr"]
 [ext_resource type="Texture2D" uid="uid://buj5f0umi5cal" path="res://sprites/icons/aphid_egg.tres" id="2_4cs5i"]
-[ext_resource type="Script" path="res://scripts/aphid/AphidHatch.cs" id="2_415gn"]
+[ext_resource type="Script" uid="uid://c8no56u10k0k7" path="res://scripts/aphid/AphidHatch.cs" id="2_415gn"]
 
 [node name="aphid_egg" instance=ExtResource("1_dlinr")]
 script = ExtResource("2_415gn")

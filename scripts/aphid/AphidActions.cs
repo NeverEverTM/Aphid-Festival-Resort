@@ -231,7 +231,7 @@ public partial class AphidActions : Aphid
 	public class HungryState : IState, ITriggerEvent
 	{
 		public StateEnum Type => StateEnum.Hungry;
-		public StateEnum[] TransitionList => new StateEnum[] { StateEnum.Idle, StateEnum.Hungry, StateEnum.Eat, StateEnum.Pet };
+		public StateEnum[] TransitionList => [StateEnum.Idle, StateEnum.Hungry, StateEnum.Eat, StateEnum.Pet];
 		public bool Locked { get; set; }
 		public string TriggerID => "food";
 
@@ -239,7 +239,7 @@ public partial class AphidActions : Aphid
 		private const float food_pursue_duration = 5f;
 		private Timer food_pursue_timer, food_gc_timer;
 		public readonly List<Node2D> food_ignore_list = new();
-		public bool is_picky_eater, is_glutton;
+		public bool only_favorites, allow_overconsume;
 
 		public class HungryArgs : EventArgs
 		{
@@ -270,7 +270,7 @@ public partial class AphidActions : Aphid
 
 			// if is not valid, too far away, or claimed by someone, let go
 			if (!IsInstanceValid(_food_item) || aphid.GlobalPosition.DistanceTo(_food_item.GlobalPosition) > 200
-				|| !(bool)_food_item.GetMeta("pickup") || !_food_item.HasMeta("tag"))
+				|| !(bool)_food_item.GetMeta(GlobalManager.StringNames.PickupMeta) || !_food_item.HasMeta(GlobalManager.StringNames.TagMeta))
 			{
 				aphid.SetState(StateEnum.Idle);
 				return;
@@ -280,8 +280,8 @@ public partial class AphidActions : Aphid
 			if (aphid.GlobalPosition.DistanceTo(_food_item.GlobalPosition) < 40)
 			{
 				aphid.SetMovementDirection(Vector2.Zero);
-				_food_item.RemoveMeta("tag"); // Stops others from eating it
-				_food_item.SetMeta("pickup", false);
+				_food_item.RemoveMeta(GlobalManager.StringNames.TagMeta); // Stops others from eating it
+				_food_item.SetMeta(GlobalManager.StringNames.PickupMeta, false);
 				_food_item.GlobalPosition = aphid.GlobalPosition + (aphid.skin.IsFlipped ? new Vector2(-25, -10) : new Vector2(25, -10));
 
 				for (int i = 0; i < _food_item.GetChildCount(); i++)
@@ -308,14 +308,25 @@ public partial class AphidActions : Aphid
 			// its already pursuing this item
 			// its marked to not be picked up
 			// or its marked for ignore
-			if (aphid.State.Is(StateEnum.Eat) ||
-					!aphid.State.CanTransitionInto(StateEnum.Hungry) ||
-					(_args != null && _args.food_item.Equals(_node)) ||
-					!(bool)_node.GetMeta("pickup") ||
-					food_ignore_list.Exists((Node2D _item) => _node.Equals(_item)))
+			if (aphid.State.Is(StateEnum.Eat))
 				return;
 
-			var _current_food = GlobalManager.G_FOOD[_node.GetMeta("id").ToString()];
+			if (!aphid.State.CanTransitionInto(StateEnum.Hungry))
+				return;
+
+			if (_args?.food_item != null && _node.Equals(_args.food_item))
+				return;
+
+			if (!(bool)_node.GetMeta(GlobalManager.StringNames.PickupMeta))
+				return;
+
+			if (food_ignore_list.Exists(_node.Equals))
+				return;
+
+			// TODO: food item should simply be able to be replaced by another once the food chase timeouts
+			// also do a quick raycast check to see if the food item is in direct path
+
+			var _current_food = GlobalManager.G_FOOD[_node.GetMeta(GlobalManager.StringNames.IdMeta).ToString()];
 			var _flavor = _current_food.type;
 			// if Vile, reject it cause yucky, unless you like it for some reason
 			if (_flavor == AphidData.FoodType.Vile && _flavor != aphid.Instance.Genes.FoodPreference)
@@ -324,7 +335,7 @@ public partial class AphidActions : Aphid
 			// If not hungy/thirsty, cancel, items that give both, wait until you are full to return
 			// favorites and certain traits ignore how full you are
 			var _isfavorite = aphid.Instance.Genes.FoodPreference == _flavor;
-			if (!_isfavorite && !is_glutton)
+			if (!_isfavorite && !allow_overconsume)
 			{
 				bool _givesFood = _current_food.food_value > 0, _givesDrink = _current_food.drink_value > 0;
 
@@ -348,7 +359,8 @@ public partial class AphidActions : Aphid
 				else if (!_isfavorite) // otherwise, if the new one isnt favorite, ignore it
 					return;
 			}
-			else if (is_picky_eater && !_isfavorite) // if we dont have one, and we are picky, and this isnt a favorite, ignore it
+			// if we dont have one, and we are picky, and this isnt a favorite(or a neutral food), ignore it
+			else if (only_favorites && !_isfavorite && _flavor != AphidData.FoodType.Neutral)
 			{
 				food_ignore_list.Add(_node);
 				return;

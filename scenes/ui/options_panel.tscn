@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=3 uid="uid://ba1ev1heaa3s6"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_fjlrd"]
-[ext_resource type="Script" path="res://scripts/panels/OptionsMenu.cs" id="2_eio0f"]
+[ext_resource type="Script" uid="uid://ywkbskbfbf7w" path="res://scripts/panels/OptionsMenu.cs" id="2_eio0f"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_d5s5m"]
 [ext_resource type="Texture2D" uid="uid://ohodui0w0ouh" path="res://sprites/ui/checkboxes.png" id="4_2e3pp"]
-[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="6_jwgu8"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="6_jwgu8"]
 [ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/gui_icons/icon_folder.png" id="6_qdykg"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="7_msete"]
 
@@ -224,12 +224,13 @@ patch_margin_bottom = 20
 [node name="Label" type="Label" parent="ui"]
 light_mask = 0
 layout_mode = 0
-offset_left = 71.0
-offset_top = 12.0
-offset_right = 302.0
-offset_bottom = 61.0
+offset_left = 33.0
+offset_top = 8.0
+offset_right = 336.0
+offset_bottom = 57.0
 text = "options_ui"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ui_slider" type="HSlider" parent="ui"]
 light_mask = 0

@@ -92,11 +92,11 @@ public partial class GenerationsTracker : Control, SaveSystem.IDataModule<Genera
             Vector2 _aphidPos = GlobalManager.Utils.GetWorldToCanvasPosition(currentAphid.GlobalPosition);
 
             // if is on screen, point at it
-            if (_aphidPos.X > 0 && _aphidPos.X < GlobalManager.ScreenSize.X
-                    && _aphidPos.Y > 0 && _aphidPos.Y < GlobalManager.ScreenSize.Y)
+            if (_aphidPos.X > 0 && _aphidPos.X < GlobalManager.SCREEN_SIZE_CANVAS.X
+                    && _aphidPos.Y > 0 && _aphidPos.Y < GlobalManager.SCREEN_SIZE_CANVAS.Y)
                 currentTracker.GlobalPosition = _aphidPos + new Vector2(-16, -36);
             else // if is far away, point at its direction
-                currentTracker.GlobalPosition = GlobalManager.ScreenCenter + GlobalManager.ScreenCenter.DirectionTo(_aphidPos) * 100;
+                currentTracker.GlobalPosition = GlobalManager.SCREEN_CENTER_CANVAS + GlobalManager.SCREEN_CENTER_CANVAS.DirectionTo(_aphidPos) * 100;
         }
     }
 

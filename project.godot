@@ -15,7 +15,7 @@ config/description="Aphid Festival Demo"
 config/version="0.2.0.4"
 run/main_scene="res://scenes/menu.tscn"
 config/project_settings_override="user://settings.godot"
-config/features=PackedStringArray("4.3", "C#", "Forward Plus")
+config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://sprites/ui/leaf_cover.png"
@@ -32,7 +32,7 @@ GameManager="*res://scripts/controllers/GameManager.cs"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/size/mode=4
+window/size/mode=2
 window/energy_saving/keep_screen_on=false
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_width"
@@ -47,7 +47,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/glowbutton/plugin.cfg")
+enabled=PackedStringArray("res://addons/exportskin/plugin.cfg", "res://addons/glowbutton/plugin.cfg")
 
 [file_customization]
 
@@ -226,4 +226,3 @@ locale/test="en"
 
 textures/canvas_textures/default_texture_filter=0
 anti_aliasing/screen_space_roughness_limiter/enabled=false
-environment/defaults/default_clear_color=Color(0, 0, 0, 1)

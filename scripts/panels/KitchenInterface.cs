@@ -52,7 +52,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		{
 			TextureButton _item = invItemContainer.Instantiate() as TextureButton;
 			var _item_name = Player.Data.Inventory[i];
-			_item.SetMeta("id", _item_name);
+			_item.SetMeta(GlobalManager.StringNames.IdMeta, _item_name);
 
 			// check for available icon
 			(_item.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);

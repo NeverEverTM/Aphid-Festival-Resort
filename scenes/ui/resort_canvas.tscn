@@ -1,16 +1,17 @@
-[gd_scene load_steps=93 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=97 format=3 uid="uid://dd1kgkvs8hkc6"]
 
-[ext_resource type="Script" path="res://scripts/gui/ResortGUI.cs" id="1_i0o2h"]
+[ext_resource type="Script" uid="uid://5lbbq4ta7i38" path="res://scripts/gui/FreeCameraManager.cs" id="1_i0o2h"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_yrmm3"]
 [ext_resource type="Texture2D" uid="uid://cv3cq1quo8mf6" path="res://sprites/ui/gui_icons/icon_build.png" id="4_iu7p2"]
-[ext_resource type="Script" path="res://addons/glowbutton/ButtonBehaviour.cs" id="5_i34va"]
-[ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="6_iw7vy"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="5_i34va"]
+[ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/gui_icons/icon_camera.png" id="6_hswat"]
+[ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="7_fjjb6"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="7_uocqb"]
-[ext_resource type="Script" path="res://scripts/panels/GenerationsTracker.cs" id="8_pnptv"]
+[ext_resource type="Script" uid="uid://dr06mcglllliv" path="res://scripts/panels/GenerationsTracker.cs" id="8_pnptv"]
 [ext_resource type="PackedScene" uid="uid://d7m5e6tlxyve" path="res://scenes/ui/aphid_slot.tscn" id="9_0hi6w"]
-[ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="10_i403g"]
+[ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="10_i403g"]
 [ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/mosaic_menu_bg.png" id="11_62duh"]
-[ext_resource type="Script" path="res://scripts/aphid/AphidInfo.cs" id="12_j87mf"]
+[ext_resource type="Script" uid="uid://dy5rc4rnylpi1" path="res://scripts/aphid/AphidInfo.cs" id="12_j87mf"]
 [ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/icons/aphid_child.tres" id="13_g2nlu"]
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="14_d577d"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="15_ghqbq"]
@@ -19,14 +20,14 @@
 [ext_resource type="Texture2D" uid="uid://c5r0qq64uwen0" path="res://sprites/ui/aphid_info_hud.png" id="18_wc2dv"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="20_tekx7"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="23_0ppya"]
-[ext_resource type="Script" path="res://scripts/panels/ItemShop.cs" id="28_xm5ie"]
+[ext_resource type="Script" uid="uid://yysr1t6oifa0" path="res://scripts/panels/ItemShop.cs" id="28_xm5ie"]
 [ext_resource type="PackedScene" uid="uid://cn7d8wjyx78a3" path="res://scenes/ui/item_container.tscn" id="29_mvok5"]
 [ext_resource type="Texture2D" uid="uid://c1fmd5yqanbuy" path="res://sprites/ui/portraits/kut_dissapointed_portrait.png" id="31_gxjv5"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="32_iw5ng"]
 [ext_resource type="Texture2D" uid="uid://c272xi11ewypl" path="res://sprites/ui/portraits/kut_proud_portrait.png" id="32_l72np"]
 [ext_resource type="AudioStream" uid="uid://c2i25l6w3yeqq" path="res://sfx/ui/button_fail.wav" id="32_p352r"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="33_gn48s"]
-[ext_resource type="Script" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
+[ext_resource type="Script" uid="uid://dlo86l8h7c6q2" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="35_dvpl5"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="36_g3t8v"]
 [ext_resource type="Texture2D" uid="uid://g1s4ngp035a8" path="res://sprites/ui/portraits/wasp_portrait.png" id="36_m6tkj"]
@@ -34,12 +35,12 @@
 [ext_resource type="Texture2D" uid="uid://cs2foh4c6do3o" path="res://sprites/props/sign_no_aphid.png" id="37_160i8"]
 [ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="37_eiku4"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="38_aw538"]
-[ext_resource type="Script" path="res://scripts/panels/BuildMenu.cs" id="38_k0d1x"]
+[ext_resource type="Script" uid="uid://b50sg56hey2o4" path="res://scripts/panels/BuildMenu.cs" id="38_k0d1x"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="39_ysf7p"]
 [ext_resource type="Texture2D" uid="uid://ohodui0w0ouh" path="res://sprites/ui/checkboxes.png" id="40_caowx"]
 [ext_resource type="Texture2D" uid="uid://d0mn4yli60w2k" path="res://sprites/ui/gui_icons/icon_furniture.png" id="40_iuxyn"]
-[ext_resource type="Shader" path="res://scripts/shaders/pulse.gdshader" id="41_74vi1"]
-[ext_resource type="Script" path="res://scripts/panels/FurnitureShop.cs" id="41_t8bbk"]
+[ext_resource type="Shader" uid="uid://bhxvuy8s0oq6t" path="res://scripts/shaders/pulse.gdshader" id="41_74vi1"]
+[ext_resource type="Script" uid="uid://mn34i1ogcv2v" path="res://scripts/panels/FurnitureShop.cs" id="41_t8bbk"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="42_3hjo3"]
 [ext_resource type="Texture2D" uid="uid://clbrld5tb6c4y" path="res://sprites/icons/mushroom_gummies.tres" id="43_7kk4s"]
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="44_wa54d"]
@@ -61,14 +62,14 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("HBoxContainer:position")
+tracks/1/path = NodePath("hud_grid:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(58, 8)]
+"values": [Vector2(44, 4)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -77,6 +78,42 @@ tracks/2/path = NodePath("..:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("camera_bg:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(13, 10)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("camera_bg:size")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(315, 40)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("camera_bg:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -93,22 +130,22 @@ tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.4),
+"transitions": PackedFloat32Array(0.5, 2, 1),
 "update": 0,
-"values": [Vector2(-148, -51), Vector2(-148, 200)]
+"values": [Vector2(-148, -51), Vector2(-148, -60), Vector2(-148, 200)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("HBoxContainer:position")
+tracks/1/path = NodePath("hud_grid:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.233333, 0.4),
+"transitions": PackedFloat32Array(0.5, 2, 1),
 "update": 0,
-"values": [Vector2(44, 8), Vector2(44, 8)]
+"values": [Vector2(44, 4), Vector2(44, -30), Vector2(44, 24)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -123,9 +160,49 @@ tracks/2/keys = {
 "values": [true, false]
 }
 
+[sub_resource type="Animation" id="Animation_86kpo"]
+resource_name = "close_submenu"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("camera_bg:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 0.5),
+"update": 0,
+"values": [Vector2(13, -74.205), Vector2(13, 10)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("camera_bg:size")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(315, 130), Vector2(315, 40)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("camera_bg:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
 [sub_resource type="Animation" id="Animation_v7sb2"]
 resource_name = "open"
-length = 0.6
+length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -134,14 +211,14 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(-10.9283, 1),
+"transitions": PackedFloat32Array(-10.9283, 0.5),
 "update": 0,
 "values": [Vector2(-148, 200), Vector2(-148, -51)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("HBoxContainer:position")
+tracks/1/path = NodePath("hud_grid:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -162,13 +239,97 @@ tracks/2/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("camera_bg:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(13, 10)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("camera_bg:size")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(315, 40)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("camera_bg:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_eb8uf"]
+resource_name = "open_submenu"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("camera_bg:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 0.5),
+"update": 0,
+"values": [Vector2(13, 10), Vector2(13, -74.205)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("camera_bg:size")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.133333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(315, 40), Vector2(315, 130)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("camera_bg:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ebyno"]
 _data = {
-"RESET": SubResource("Animation_he8jw"),
-"close": SubResource("Animation_xhs32"),
-"open": SubResource("Animation_v7sb2")
+&"RESET": SubResource("Animation_he8jw"),
+&"close": SubResource("Animation_xhs32"),
+&"close_submenu": SubResource("Animation_86kpo"),
+&"open": SubResource("Animation_v7sb2"),
+&"open_submenu": SubResource("Animation_eb8uf")
 }
+
+[sub_resource type="LabelSettings" id="LabelSettings_bhg5p"]
+font_size = 30
+font_color = Color(1, 0.55321, 0.471712, 1)
+shadow_color = Color(0.311861, 1.6214e-06, 8.30255e-07, 1)
+shadow_offset = Vector2(1.435, 1.725)
 
 [sub_resource type="Animation" id="Animation_iv61d"]
 length = 0.001
@@ -327,9 +488,9 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_egrm7"]
 _data = {
-"RESET": SubResource("Animation_iv61d"),
-"close": SubResource("Animation_x8v33"),
-"open": SubResource("Animation_iuh1e")
+&"RESET": SubResource("Animation_iv61d"),
+&"close": SubResource("Animation_x8v33"),
+&"open": SubResource("Animation_iuh1e")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flcd2"]
@@ -424,9 +585,9 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5ekd7"]
 _data = {
-"RESET": SubResource("Animation_lw7og"),
-"close": SubResource("Animation_ob28a"),
-"open": SubResource("Animation_kickw")
+&"RESET": SubResource("Animation_lw7og"),
+&"close": SubResource("Animation_ob28a"),
+&"open": SubResource("Animation_kickw")
 }
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gcxx1"]
@@ -738,9 +899,9 @@ tracks/7/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0prst"]
 _data = {
-"RESET": SubResource("Animation_ei7ps"),
-"close": SubResource("Animation_5lpko"),
-"open": SubResource("Animation_3dg7i")
+&"RESET": SubResource("Animation_ei7ps"),
+&"close": SubResource("Animation_5lpko"),
+&"open": SubResource("Animation_3dg7i")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3qn4g"]
@@ -1120,11 +1281,11 @@ tracks/8/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mo613"]
 _data = {
-"RESET": SubResource("Animation_qi47v"),
-"close": SubResource("Animation_w3b3j"),
-"cook": SubResource("Animation_ldq0v"),
-"lock": SubResource("Animation_fkm35"),
-"open": SubResource("Animation_jp3uy")
+&"RESET": SubResource("Animation_qi47v"),
+&"close": SubResource("Animation_w3b3j"),
+&"cook": SubResource("Animation_ldq0v"),
+&"lock": SubResource("Animation_fkm35"),
+&"open": SubResource("Animation_jp3uy")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rn78v"]
@@ -1367,11 +1528,11 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_cjoi7"]
 _data = {
-"RESET": SubResource("Animation_c0vld"),
-"close": SubResource("Animation_vwn3b"),
-"close_bar": SubResource("Animation_bygo5"),
-"open": SubResource("Animation_xw37u"),
-"open_bar": SubResource("Animation_c01e7")
+&"RESET": SubResource("Animation_c0vld"),
+&"close": SubResource("Animation_vwn3b"),
+&"close_bar": SubResource("Animation_bygo5"),
+&"open": SubResource("Animation_xw37u"),
+&"open_bar": SubResource("Animation_c01e7")
 }
 
 [sub_resource type="Animation" id="Animation_6as3h"]
@@ -1617,9 +1778,9 @@ tracks/6/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tubgn"]
 _data = {
-"RESET": SubResource("Animation_6as3h"),
-"close": SubResource("Animation_i7mp2"),
-"open": SubResource("Animation_5k0sq")
+&"RESET": SubResource("Animation_6as3h"),
+&"close": SubResource("Animation_i7mp2"),
+&"open": SubResource("Animation_5k0sq")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jeial"]
@@ -1631,15 +1792,10 @@ shader_parameter/color = Color(0.917246, 0.0969195, 0.650233, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_qmsyr"]
 font_size = 30
 
-[node name="resort_canvas" type="CanvasLayer" node_paths=PackedStringArray("freeCameraHUD", "build_button", "show_storage_button", "build_menu")]
+[node name="resort_canvas" type="CanvasLayer"]
 layer = 0
-script = ExtResource("1_i0o2h")
-freeCameraHUD = NodePath("freeCameraHUD/hud_animation")
-build_button = NodePath("freeCameraHUD/bg/HBoxContainer/buildButton")
-show_storage_button = NodePath("build_menu/sliding_panel/sliding_popup/show_storage")
-build_menu = NodePath("build_menu")
 
-[node name="freeCameraHUD" type="Control" parent="."]
+[node name="freeCameraHUD" type="Control" parent="." node_paths=PackedStringArray("animator", "buildButton", "storageButton", "cameraMenuButton", "focusedAphidButton", "zoomLevelSlider", "build_menu", "cameraBg")]
 visible = false
 layout_mode = 3
 anchors_preset = 7
@@ -1652,14 +1808,23 @@ offset_top = -40.0
 offset_right = 10.0
 grow_horizontal = 2
 grow_vertical = 0
+script = ExtResource("1_i0o2h")
+animator = NodePath("hud_animation")
+buildButton = NodePath("hud_bg/hud_grid/buildButton")
+storageButton = NodePath("../build_menu/sliding_panel/sliding_popup/show_storage")
+cameraMenuButton = NodePath("hud_bg/hud_grid/camera_mode_button")
+focusedAphidButton = NodePath("hud_bg/camera_bg/camera_grid/select_aphid")
+zoomLevelSlider = NodePath("hud_bg/camera_bg/camera_grid/zoom_level")
+build_menu = NodePath("../build_menu")
+cameraBg = NodePath("hud_bg/camera_bg")
 
 [node name="hud_animation" type="AnimationPlayer" parent="freeCameraHUD"]
-root_node = NodePath("../bg")
+root_node = NodePath("../hud_bg")
 libraries = {
-"": SubResource("AnimationLibrary_ebyno")
+&"": SubResource("AnimationLibrary_ebyno")
 }
 
-[node name="bg" type="NinePatchRect" parent="freeCameraHUD"]
+[node name="hud_bg" type="NinePatchRect" parent="freeCameraHUD"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -1667,26 +1832,102 @@ offset_left = -148.0
 offset_top = -51.0
 offset_right = 195.0
 offset_bottom = 39.0
+mouse_filter = 0
 texture = ExtResource("3_yrmm3")
 patch_margin_left = 10
 patch_margin_top = 10
 patch_margin_right = 10
 patch_margin_bottom = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="freeCameraHUD/bg"]
+[node name="camera_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg"]
+visible = false
+self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
+show_behind_parent = true
 light_mask = 0
 layout_mode = 0
-offset_left = 58.0
-offset_top = 8.0
-offset_right = 323.0
-offset_bottom = 92.0001
+offset_left = 13.0
+offset_top = 10.0
+offset_right = 328.0
+offset_bottom = 50.0
+mouse_filter = 0
+texture = ExtResource("3_yrmm3")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="camera_grid" type="HBoxContainer" parent="freeCameraHUD/hud_bg/camera_bg"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 12.0
+offset_right = 293.0
+offset_bottom = 72.0
+
+[node name="zoom_level" type="HSlider" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
+light_mask = 0
+custom_minimum_size = Vector2(175, 60)
+layout_mode = 2
+focus_mode = 0
+min_value = 1.25
+max_value = 5.0
+step = 0.25
+value = 2.0
+exp_edit = true
+
+[node name="-" type="Label" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid/zoom_level"]
+light_mask = 0
+layout_mode = 0
+offset_top = 33.2048
+offset_right = 35.0
+offset_bottom = 69.2048
+text = "-"
+label_settings = SubResource("LabelSettings_bhg5p")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="+" type="Label" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid/zoom_level"]
+light_mask = 0
+layout_mode = 0
+offset_left = 136.0
+offset_top = 37.2048
+offset_right = 171.0
+offset_bottom = 73.2048
+text = "+"
+label_settings = SubResource("LabelSettings_bhg5p")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="select_aphid" type="TextureButton" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
+light_mask = 0
+custom_minimum_size = Vector2(80, 60)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 0
+focus_mode = 1
+texture_normal = ExtResource("7_fjjb6")
+stretch_mode = 5
+script = ExtResource("5_i34va")
+PressedColor = Color(0.507972, 0.507972, 0.507972, 1)
+FocusColor = Color(0.837469, 0.837469, 0.837469, 1)
+HoverColor = Color(0.786347, 0.786347, 0.786347, 1)
+
+[node name="hud_grid" type="HBoxContainer" parent="freeCameraHUD/hud_bg"]
+light_mask = 0
+layout_mode = 0
+offset_left = 44.0
+offset_top = 4.0
+offset_right = 309.0
+offset_bottom = 88.0001
 theme_override_constants/separation = 20
 
-[node name="buildButton" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
+[node name="buildButton" type="TextureButton" parent="freeCameraHUD/hud_bg/hud_grid"]
 light_mask = 0
 custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
 size_flags_vertical = 4
+focus_mode = 1
 texture_normal = ExtResource("4_iu7p2")
 stretch_mode = 0
 script = ExtResource("5_i34va")
@@ -1694,27 +1935,29 @@ PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
 FocusColor = Color(0.345098, 0.603922, 0.917647, 1)
 HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
-[node name="furnitureButton" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
+[node name="furnitureButton" type="TextureButton" parent="freeCameraHUD/hud_bg/hud_grid"]
 light_mask = 0
 custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
 size_flags_vertical = 4
+focus_mode = 1
 texture_normal = ExtResource("40_iuxyn")
 stretch_mode = 4
 script = ExtResource("5_i34va")
 PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
 HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
-[node name="TextureButton2" type="TextureButton" parent="freeCameraHUD/bg/HBoxContainer"]
-modulate = Color(0.462745, 0.462745, 0.462745, 1)
+[node name="camera_mode_button" type="TextureButton" parent="freeCameraHUD/hud_bg/hud_grid"]
 light_mask = 0
 custom_minimum_size = Vector2(75, 75)
 layout_mode = 2
 size_flags_vertical = 4
-disabled = true
-texture_normal = ExtResource("40_iuxyn")
-texture_disabled = ExtResource("6_iw7vy")
-stretch_mode = 0
+focus_mode = 1
+texture_normal = ExtResource("6_hswat")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
+HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
 [node name="generations_panel" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "descriptionLabel", "iconNode", "aphidContainer")]
 visible = false
@@ -1741,7 +1984,7 @@ aphidContainer = NodePath("aphid_display_bg/aphid_display_scroll/aphid_display_g
 
 [node name="generations_player" type="AnimationPlayer" parent="generations_panel"]
 libraries = {
-"": SubResource("AnimationLibrary_egrm7")
+&"": SubResource("AnimationLibrary_egrm7")
 }
 
 [node name="background" type="TextureRect" parent="generations_panel"]
@@ -1858,7 +2101,7 @@ intelligenceBar = NodePath("intelligence")
 
 [node name="aphid_info_player" type="AnimationPlayer" parent="aphid_info"]
 libraries = {
-"": SubResource("AnimationLibrary_5ekd7")
+&"": SubResource("AnimationLibrary_5ekd7")
 }
 
 [node name="bio" type="NinePatchRect" parent="aphid_info"]
@@ -2187,7 +2430,7 @@ errorSound = ExtResource("32_p352r")
 
 [node name="store_animator" type="AnimationPlayer" parent="item_shop_panel"]
 libraries = {
-"": SubResource("AnimationLibrary_0prst")
+&"": SubResource("AnimationLibrary_0prst")
 }
 
 [node name="background" type="TextureRect" parent="item_shop_panel"]
@@ -2449,7 +2692,7 @@ inventoryGrid = NodePath("inventory_bg/inventory_container")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="kitchen_menu"]
 libraries = {
-"": SubResource("AnimationLibrary_mo613")
+&"": SubResource("AnimationLibrary_mo613")
 }
 
 [node name="background" type="TextureRect" parent="kitchen_menu"]
@@ -2508,9 +2751,9 @@ self_modulate = Color(0.4, 0.0705882, 0.196078, 1)
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
-offset_left = -1500.0
+offset_left = -485.0
 offset_top = 124.0
-offset_right = -913.0
+offset_right = 102.0
 offset_bottom = 329.0
 texture = ExtResource("15_ghqbq")
 patch_margin_left = 20
@@ -2568,9 +2811,9 @@ Warning. You are in range of enemy artillery."
 [node name="recipe_interface" type="Control" parent="kitchen_menu"]
 anchors_preset = 0
 offset_left = -98.0
-offset_top = -700.0
+offset_top = -304.0
 offset_right = -58.0
-offset_bottom = -660.0
+offset_bottom = -264.0
 
 [node name="menu_bg" type="NinePatchRect" parent="kitchen_menu/recipe_interface"]
 self_modulate = Color(0.4, 0.0705882, 0.196078, 1)
@@ -2775,9 +3018,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = 135.0
-offset_top = 405.0
+offset_top = -11.0
 offset_right = 596.0
-offset_bottom = 713.0
+offset_bottom = 297.0
 grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("3_yrmm3")
@@ -2880,7 +3123,7 @@ menu_player = NodePath("build_player")
 [node name="build_player" type="AnimationPlayer" parent="build_menu"]
 process_mode = 1
 libraries = {
-"": SubResource("AnimationLibrary_cjoi7")
+&"": SubResource("AnimationLibrary_cjoi7")
 }
 
 [node name="sliding_panel" type="Control" parent="build_menu"]
@@ -3001,7 +3244,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("7_uocqb")
 script = ExtResource("41_t8bbk")
-open_button = NodePath("../freeCameraHUD/bg/HBoxContainer/furnitureButton")
+open_button = NodePath("../freeCameraHUD/hud_bg/hud_grid/furnitureButton")
 shopTag = "furniture"
 storePlayer = NodePath("furniture_player")
 itemGrid = NodePath("window/ScrollContainer/GridContainer")
@@ -3016,7 +3259,7 @@ errorSound = ExtResource("32_p352r")
 
 [node name="furniture_player" type="AnimationPlayer" parent="furniture_menu"]
 libraries = {
-"": SubResource("AnimationLibrary_tubgn")
+&"": SubResource("AnimationLibrary_tubgn")
 }
 
 [node name="background" type="TextureRect" parent="furniture_menu"]

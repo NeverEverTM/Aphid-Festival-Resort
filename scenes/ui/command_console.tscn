@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://xhg54cgj8fbp"]
 
 [ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="1_3k45m"]
-[ext_resource type="Script" path="res://scripts/utils/DebugConsole.cs" id="1_qd4sp"]
+[ext_resource type="Script" uid="uid://vtrta7n0ro7y" path="res://scripts/utils/DebugConsole.cs" id="1_qd4sp"]
 
 [sub_resource type="FontFile" id="FontFile_6itwx"]
 cache/0/16/0/ascent = 0.0

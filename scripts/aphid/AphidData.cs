@@ -208,17 +208,32 @@ public class AphidData
 		/// <summary>
 		/// FOR DEBUG PURPOSES
 		/// </summary>
-		public void DEBUG_Randomize(bool _generateGenes = true)
+		public void DEBUG_Randomize(bool _generateGenes = true, bool _generateSkinTypes = true, bool _generateColors = true)
 		{
 			RandomNumberGenerator _gen = new();
-			AntennaColor = GlobalManager.Utils.GetRandomColor();
-			BodyColor = GlobalManager.Utils.GetRandomColor();
-			LegColor = GlobalManager.Utils.GetRandomColor();
-			EyeColor = GlobalManager.Utils.GetRandomColor();
-			AntennaType = _gen.RandiRange(0, 1);
-			EyeType = _gen.RandiRange(0, 1);
-			BodyType = _gen.RandiRange(0, 1);
-			LegType = _gen.RandiRange(0, 1);
+			if (_generateColors)
+			{
+				AntennaColor = GlobalManager.Utils.GetRandomColor();
+				BodyColor = GlobalManager.Utils.GetRandomColor();
+				LegColor = GlobalManager.Utils.GetRandomColor();
+				EyeColor = GlobalManager.Utils.GetRandomColor();
+			}
+			else
+			{
+				AntennaColor = new Color("green");
+				BodyColor = new Color("green");
+				LegColor = new Color("green");
+				EyeColor = new Color("green");
+			}
+
+			if (_generateSkinTypes)
+			{
+				AntennaType = _gen.RandiRange(0, 1);
+				EyeType = _gen.RandiRange(0, 1);
+				BodyType = _gen.RandiRange(0, 1);
+				LegType = _gen.RandiRange(0, 1);
+			}
+
 			if (_generateGenes)
 				GenerateNewAphid();
 			else

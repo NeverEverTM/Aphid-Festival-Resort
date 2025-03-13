@@ -142,7 +142,8 @@ public partial class DebugConsole : CanvasLayer
 		{ "time", new DeLorean() },
 		{ "gamerule", new GameRules() },
 		{ "aphid", new AphidDebug() },
-		{ "give", new GiveItem() }
+		{ "give", new GiveItem() },
+		{ "dialog", new DialogSim() }
 	};
 
 	public static void Print(string _message) =>
@@ -167,7 +168,8 @@ public partial class DebugConsole : CanvasLayer
 	}
 	public static int GetInt(int _index, string[] _argList, int _default)
 	{
-		string _arg = GetArg(_index, _argList);
+		if (!GetArg(_index, _argList, out string _arg))
+			return _default;
 
 		if (!int.TryParse(_arg, out int _argNumber))
 			return _default;
@@ -176,12 +178,30 @@ public partial class DebugConsole : CanvasLayer
 	}
 	public static float GetFloat(int _index, string[] _argList, float _default)
 	{
-		string _arg = GetArg(_index, _argList);
+		if (!GetArg(_index, _argList, out string _arg))
+			return _default;
 
 		if (!float.TryParse(_arg, out float _argNumber))
 			return _default;
 		else
 			return _argNumber;
+	}
+	public static bool GetBool(int _index, string[] _argList, bool _default)
+	{
+		if (!GetArg(_index, _argList, out string _arg))
+			return _default;
+
+		if (_arg.Equals("0"))
+			return false;
+		else if (_arg.Equals("1"))
+			return true;
+		else if (_arg.Equals("*"))
+			return _default;
+
+		if (!bool.TryParse(_arg, out bool _argBool))
+			return _default;
+		else
+			return _argBool;
 	}
 
 	private class Help : IConsoleCommand
@@ -319,21 +339,21 @@ public partial class DebugConsole : CanvasLayer
 	}
 	private class AphidDebug : IConsoleCommand
 	{
-		public string HelpText => "Tools for debugging aphids. <aphid (create/select/unload/kill)>";
+		public string HelpText => "Tools for debugging aphids. <aphid (new[generateGenes,generateSkin,generateColor]/get/despawn/kill/remove)>";
 
 		public void Execute(string[] args)
 		{
 			switch (GetArg(0, args))
 			{
-				case "c":
+				case "new":
+				case "mew":
 				case "spawn":
 				case "create":
 					AphidData.Genes _genes = new();
-					_genes.DEBUG_Randomize();
+					_genes.DEBUG_Randomize(GetBool(1, args, true), GetBool(2, args, true), GetBool(3, args, true));
 					_genes.Name += ResortManager.CurrentResort.AphidsOnResort.Count;
 					ResortManager.CreateAphid(GlobalManager.Utils.GetMouseToWorldPosition(), _genes);
 					break;
-				case "s":
 				case "get":
 				case "select":
 					if (!GetArg(1, args, out string _name))
@@ -370,14 +390,20 @@ public partial class DebugConsole : CanvasLayer
 					}
 					break;
 				case "unload":
+				case "despawn":
 					validAphid?.QueueFree();
 					break;
 				case "kill":
 					if (!IsInstanceValid(validAphid))
 						return;
+					validAphid.Die();
+					break;
+				case "remove":
+					if (!IsInstanceValid(validAphid))
+						return;
 					GameManager.RemoveAphid(new Guid(validAphid.Instance.ID));
 					validAphid.QueueFree();
-					break;
+				break;
 			}
 		}
 	}
@@ -389,7 +415,7 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (!GetArg(0, args, out string _id))
 				return;
-			if (GlobalManager.G_ITEMS.ContainsKey(_id))
+			if (GlobalManager.G_ITEMS.ContainsKey(_id) && GlobalManager.G_ITEMS[_id].shopTag == "furniture")
 			{
 				int _amount = GetInt(1, args, 1);
 				for (int i = 0; i < _amount; i++)
@@ -400,4 +426,21 @@ public partial class DebugConsole : CanvasLayer
 				Logger.Print(Logger.LogPriority.Log, $"GiveItem: {_id} is not a valid item.");
 		}
 	}
+    private class DialogSim : IConsoleCommand
+    {
+        public string HelpText => "This is a text";
+
+        public void Execute(string[] args)
+        {
+            if (!GetArg(0, args, out string _id))
+				return;
+			if (_id.Equals(Instance.Tr(_id)))
+			{
+				Logger.Print(Logger.LogPriority.IgnorePriority, $"DialogSim: ID <{_id}> does not exist in the translation files.");
+				return;
+			}
+			Logger.Print(Logger.LogPriority.IgnorePriority, $"DialogSim: Displaying <{_id}>:");
+			Logger.Print(Logger.LogPriority.IgnorePriority, "[color=cyan]", Instance.Tr(_id), "[/color]");
+        }
+    }
 }

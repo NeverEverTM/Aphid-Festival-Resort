@@ -23,7 +23,7 @@ void fragment() {
 	{
 		// get tile texture and pixelize
 		vec2 full_uv = round(vert/tile_size * float(pixelization_strength)) / float(pixelization_strength);
-		
+
 		// create motion and get a sample from the noise with it applied
 		vec2 scroll = vec2(full_uv.x + TIME * scroll_speed, -full_uv.y + -sin(TIME) * scroll_speed);
 		vec4 noise_sample = texture(noise, scroll);

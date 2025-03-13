@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ddfk4hhfrlxpa"]
 
-[ext_resource type="Script" path="res://scripts/gui/LoadScreen.cs" id="1_5cwbq"]
+[ext_resource type="Script" uid="uid://cc6m23of7oisp" path="res://scripts/gui/LoadScreen.cs" id="1_5cwbq"]
 [ext_resource type="PackedScene" uid="uid://cnrce4gppoc5m" path="res://scenes/ui/leaf.tscn" id="2_k54b8"]
 [ext_resource type="AudioStream" uid="uid://dlav4id2wujyo" path="res://sfx/ui/leaves.wav" id="3_baum4"]
 

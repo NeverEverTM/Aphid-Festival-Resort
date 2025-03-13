@@ -1,6 +1,6 @@
 [gd_scene load_steps=53 format=3 uid="uid://b2tg0d8sg4vd0"]
 
-[ext_resource type="Script" path="res://scripts/Player.cs" id="1_02bb8"]
+[ext_resource type="Script" uid="uid://c6r7uhrq81xi1" path="res://scripts/Player.cs" id="1_02bb8"]
 [ext_resource type="AudioStream" uid="uid://cv5a0x5ojrrc2" path="res://sfx/player/whistle.wav" id="2_8g5nl"]
 [ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player_0.png" id="2_muo8i"]
 [ext_resource type="PackedScene" uid="uid://cy6ba6twhk3o3" path="res://scenes/particles/leaves_overlay.tscn" id="4_fhurh"]

@@ -8,7 +8,6 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	// Default Parameters
 	[Export] public string Resort;
 	[Export] public Node2D EntityRoot, StructureRoot, SpawnPoint;
-	[Export] private PackedScene aphidPrefab;
 
 	public static ResortManager CurrentResort { get; private set; }
 
@@ -106,6 +105,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	{
 		CurrentResort = this;
 		
+		// save data setup
 		ResortSaveModule = new(Resort + "-resort", this)
 		{
 			Extension = SaveSystem.SAVEFILE_EXTENSION,
@@ -113,17 +113,19 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 		};
 		SaveSystem.ProfileClassData.Add(ResortSaveModule);
 
-		// Set Resort music loop
-		if (IsInstanceValid(SoundManager.MusicPlayer)) // this check is just for when you load directly into the scene
-			SoundManager.MusicPlayer.Finished += CheckSongToPlay;
+		// music loop handling
 		static void FinishedSignal(GlobalManager.SceneName _)
 		{
 			SoundManager.MusicPlayer.Finished -= CheckSongToPlay;
 			GlobalManager.OnPreLoadScene -= FinishedSignal;
 		};
-
 		GlobalManager.OnPreLoadScene += FinishedSignal;
-		CheckSongToPlay();
+
+		if (IsInstanceValid(SoundManager.MusicPlayer))
+		{
+			SoundManager.MusicPlayer.Finished += CheckSongToPlay;
+			CheckSongToPlay();
+		}
 	}
     public override void _Ready()
     {
@@ -152,7 +154,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	// =========| Object Creation |===============
 	public static Aphid SpawnAphid(AphidInstance _instance)
 	{
-		Aphid _aphid = CurrentResort.aphidPrefab.Instantiate() as Aphid;
+		Aphid _aphid = (ResourceLoader.Load(GlobalManager.APHID_ENTITY_PATH) as PackedScene).Instantiate() as Aphid;
 
 		_aphid.Instance = _instance;
 		_aphid.GlobalPosition = new(_instance.Status.PositionX, _instance.Status.PositionY);
@@ -168,7 +170,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	/// <returns>The newly created aphid.</returns>
 	public static Aphid CreateAphid(Vector2 _position, AphidData.Genes _genes)
 	{
-		var _aphid = CurrentResort.aphidPrefab.Instantiate() as Aphid;
+		Aphid _aphid = (ResourceLoader.Load(GlobalManager.APHID_ENTITY_PATH) as PackedScene).Instantiate() as Aphid;
 
 		_aphid.Instance = new()
 		{
@@ -200,9 +202,9 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 			(_item.GetChild(0) as Sprite2D).Texture = GlobalManager.GetIcon(_item_name);
 		}
 
-		_item.SetMeta("pickup", true);
-		_item.SetMeta("id", _item_name);
-		_item.SetMeta("tag", GlobalManager.G_ITEMS[_item_name].tag);
+		_item.SetMeta(GlobalManager.StringNames.PickupMeta, true);
+		_item.SetMeta(GlobalManager.StringNames.IdMeta, _item_name);
+		_item.SetMeta(GlobalManager.StringNames.TagMeta, GlobalManager.G_ITEMS[_item_name].tag);
 		_item.GlobalPosition = _position;
 
 		CurrentResort.EntityRoot.AddChild(_item);

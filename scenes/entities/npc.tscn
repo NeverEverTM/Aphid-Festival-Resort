@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bl2n8sc5rwjyy"]
 
 [ext_resource type="Texture2D" uid="uid://cwecy5ses13x5" path="res://sprites/characters/joy_sheet.png" id="1_fmi13"]
-[ext_resource type="Script" path="res://scripts/props/NPCBehaviour.cs" id="1_to8yc"]
+[ext_resource type="Script" uid="uid://ddxsastrcw16s" path="res://scripts/props/NPCBehaviour.cs" id="1_to8yc"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1fifj"]
 atlas = ExtResource("1_fmi13")

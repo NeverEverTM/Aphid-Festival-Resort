@@ -16,11 +16,11 @@ public partial class HelpPanel : Control
 
 	private void UpdateHelpDescriptions()
 	{
-		helpDescriptions[0].Text = string.Format(Tr("help_desc_0"), new string[]
-		{
-			ControlsManager.GetActionName(InputNames.OpenInventory),
+		helpDescriptions[0].Text = string.Format(Tr("help_desc_0"),
+        [
+            ControlsManager.GetActionName(InputNames.OpenInventory),
 			ControlsManager.GetActionName(InputNames.Pickup),
-		});
+		]);
 		helpDescriptions[1].Text = string.Format(Tr("help_desc_1"),
 			ControlsManager.GetActionName(InputNames.Interact));
 		helpDescriptions[2].Text = Tr("help_desc_2");
@@ -29,10 +29,10 @@ public partial class HelpPanel : Control
 		helpDescriptions[5].Text = string.Format(Tr("help_desc_5"),
 			ControlsManager.GetActionName(InputNames.OpenGenerations));
 		helpDescriptions[6].Text = Tr("help_desc_6");
-		helpDescriptions[7].Text = string.Format(Tr("help_desc_7"), new string[]
-		{
-			ControlsManager.GetActionName(InputNames.ChangeCamera),
+		helpDescriptions[7].Text = string.Format(Tr("help_desc_7"),
+        [
+            ControlsManager.GetActionName(InputNames.ChangeCamera),
 			ControlsManager.GetActionName(InputNames.TakeScreenshot),
-		});
+		]);
 	}
 }

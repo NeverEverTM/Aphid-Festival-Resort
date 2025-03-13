@@ -87,24 +87,17 @@ public static class ControlsManager
 		if (_action.Contains(" (Physical)"))
 			_action = _action.Replace(" (Physical)", "");
 
-		switch (_action)
-		{
-			case "Space":
-				return $"[img]{GUI_ICONS_PATH}icon_space.png[/img]";
-			case "Left Mouse Button":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_left.png[/img]";
-			case "Right Mouse Button":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_right.png[/img]";
-			case "Middle Mouse Button":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_middle.png[/img]";
-			case "Mouse Thumb Button 1":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_extra1.png[/img]";
-			case "Mouse Thumb Button 2":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_extra2.png[/img]";
-		}
-
-		return _action;
-	}
+        return _action switch
+        {
+            "Space" => $"[img]{GUI_ICONS_PATH}icon_space.png[/img]",
+            "Left Mouse Button" => $"[img]{GUI_ICONS_PATH}icon_mouse_left.png[/img]",
+            "Right Mouse Button" => $"[img]{GUI_ICONS_PATH}icon_mouse_right.png[/img]",
+            "Middle Mouse Button" => $"[img]{GUI_ICONS_PATH}icon_mouse_middle.png[/img]",
+            "Mouse Thumb Button 1" => $"[img]{GUI_ICONS_PATH}icon_mouse_extra1.png[/img]",
+            "Mouse Thumb Button 2" => $"[img]{GUI_ICONS_PATH}icon_mouse_extra2.png[/img]",
+            _ => _action,
+        };
+    }
 	/// <summary>
 	/// Returns the human-friendly name for an action. Intended for UI display.
 	/// </summary>
@@ -127,7 +120,7 @@ public static class ControlsManager
 			}
 		}
 	}
-	public static void BindAction(InputEvent _event, string _action)
+	public static void BindAction(InputEvent _event, StringName _action)
 	{
 		InputMap.ActionEraseEvents(_action);
 		InputMap.ActionAddEvent(_action, _event);
