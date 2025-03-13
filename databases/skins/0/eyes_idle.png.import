@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://2e856swkfn11"
-path="res://.godot/imported/eyes_idle.PNG-8d6040f93035a7aaa4f6149657e81ceb.ctex"
+path="res://.godot/imported/eyes_idle.png-0a2df93b13bd78a8b78ac77a5908e762.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://databases/skins/0/eyes_idle.PNG"
-dest_files=["res://.godot/imported/eyes_idle.PNG-8d6040f93035a7aaa4f6149657e81ceb.ctex"]
+source_file="res://databases/skins/0/eyes_idle.png"
+dest_files=["res://.godot/imported/eyes_idle.png-0a2df93b13bd78a8b78ac77a5908e762.ctex"]
 
 [params]
 

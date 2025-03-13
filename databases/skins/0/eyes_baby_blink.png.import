@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ct0mq14ptg38r"
-path="res://.godot/imported/eyes_baby_blink.PNG-76cc477528114df130e457e797fab420.ctex"
+path="res://.godot/imported/eyes_baby_blink.png-68743c7d8951a9a7444d86f9a0f42832.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://databases/skins/0/eyes_baby_blink.PNG"
-dest_files=["res://.godot/imported/eyes_baby_blink.PNG-76cc477528114df130e457e797fab420.ctex"]
+source_file="res://databases/skins/0/eyes_baby_blink.png"
+dest_files=["res://.godot/imported/eyes_baby_blink.png-68743c7d8951a9a7444d86f9a0f42832.ctex"]
 
 [params]
 

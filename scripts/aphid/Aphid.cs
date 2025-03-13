@@ -273,6 +273,8 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	{
 		IsDisabled = true;
 		SetState(StateEnum.Idle);
+		if (IsInstanceValid(harvest_effect))
+			harvest_effect.QueueFree();
 
 		// Lay down and prepare yourself
 		skin.SetFlipDirection(Vector2.Right, true);
@@ -288,6 +290,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		for (int i = 0; i < 100; i++)
 		{
 			await Task.Delay(80);
+			skin.SetEyesSkin("blink");
 			skin.Modulate -= new Color(0, 0, 0, 0.025f);
 		}
 		GenerationsTracker.Data.Add(Instance);

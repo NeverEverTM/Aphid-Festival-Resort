@@ -52,7 +52,7 @@ public partial class CanvasManager : CanvasLayer
 				SetHudElements(false);
 				ClearControlPrompts();
 			}
-			else
+			else if (!IsInstanceValid(ResortGUI.Instance) || !ResortGUI.Instance.IsFreeCamera)
 				SetHudElements(true);
 		};
 	}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cwhom1s0n5b5c"]
+[gd_scene load_steps=16 format=3 uid="uid://cwhom1s0n5b5c"]
 
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
 [ext_resource type="Script" path="res://scripts/props/TVPropBehaviour.cs" id="2_3qsjy"]
@@ -19,10 +19,7 @@ ambient_light_energy = 16.0
 [sub_resource type="World3D" id="World3D_r6dqu"]
 environment = SubResource("Environment_87q0j")
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ra2af"]
-light_mode = 1
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2nngj"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
 light_mode = 1
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_4hgie"]
@@ -31,8 +28,9 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
 size = Vector2(96, 8.42106)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ktp47"]
-blend_mode = 1
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_opwmt"]
+cull_mode = 1
+polygon = PackedVector2Array(-44.9735, -6.38944, 55.1395, -7.05687, 48.799, -64.7887, -36.6308, -65.7898)
 
 [node name="tv" type="Sprite2D" node_paths=PackedStringArray("viewport_display", "background_display", "light", "stereo")]
 texture = ExtResource("1_dcqxn")
@@ -72,7 +70,8 @@ script = ExtResource("4_axes8")
 
 [node name="background" type="Sprite2D" parent="."]
 show_behind_parent = true
-material = SubResource("CanvasItemMaterial_ra2af")
+light_mask = 0
+material = SubResource("CanvasItemMaterial_qug4s")
 position = Vector2(0.120862, -32.0892)
 scale = Vector2(1.01078, 1.0067)
 texture = ExtResource("5_2b0vm")
@@ -80,8 +79,8 @@ texture = ExtResource("5_2b0vm")
 [node name="viewport_display" type="Sprite2D" parent="."]
 visible = false
 show_behind_parent = true
-material = SubResource("CanvasItemMaterial_2nngj")
-use_parent_material = true
+light_mask = 0
+material = SubResource("CanvasItemMaterial_qug4s")
 position = Vector2(-0.128552, -32.5946)
 scale = Vector2(0.0821664, 0.0786517)
 texture = SubResource("ViewportTexture_4hgie")
@@ -107,11 +106,18 @@ attenuation = 2.82843
 panning_strength = 3.0
 bus = &"Sounds"
 
-[node name="light" type="Sprite2D" parent="."]
-visible = false
-self_modulate = Color(1, 1, 1, 0.329412)
-light_mask = 0
-material = SubResource("CanvasItemMaterial_ktp47")
-position = Vector2(0.716373, -30.3141)
-scale = Vector2(0.3, 0.3)
+[node name="light" type="PointLight2D" parent="."]
+scale = Vector2(0.3, 0.213589)
+enabled = false
+color = Color(0.434652, 0.644625, 0.189987, 1)
+shadow_enabled = true
+shadow_item_cull_mask = 1048575
 texture = ExtResource("8_uml7d")
+offset = Vector2(-12.115, -20)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+light_mask = 0
+position = Vector2(-6.24334, 5.64873)
+occluder = SubResource("OccluderPolygon2D_opwmt")
+sdf_collision = false
+occluder_light_mask = 1048575
