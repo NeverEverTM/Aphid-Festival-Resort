@@ -231,7 +231,6 @@ offset_bottom = 57.0
 text = "options_ui"
 horizontal_alignment = 1
 vertical_alignment = 1
-vertical_alignment = 1
 
 [node name="ui_slider" type="HSlider" parent="ui"]
 light_mask = 0
