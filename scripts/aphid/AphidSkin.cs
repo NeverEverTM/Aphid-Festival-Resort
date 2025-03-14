@@ -6,6 +6,7 @@ public partial class AphidSkin : Node2D
 	[Export] public Sprite2D eyes, antenna, body, back_legs, front_legs;
 	private AphidInstance Instance;
 	private Aphid MyAphid;
+	[Export] public Node3D REAL_APHID_FIDGODEPUTA;
 
 	/// <summary>
 	/// Used to keep track of eye expressions after blink.
@@ -79,16 +80,13 @@ public partial class AphidSkin : Node2D
 			IsFlipped = true;
 		else if (_direction.X > 0)
 			IsFlipped = false;
-
-		if (_setAsCurrent)
-			Scale = new(IsFlipped ? 1 : -1, Scale.Y);
 	}
 	public void TickFlip(float _delta)
 	{
 		if (IsFlipped)
-			Scale = new(Mathf.Lerp(Scale.X, 1, _delta * 3), Scale.Y);
+			REAL_APHID_FIDGODEPUTA.Rotation = new(0, Mathf.Lerp(REAL_APHID_FIDGODEPUTA.Rotation.Y, 3, _delta * 3), 0);
 		else
-			Scale = new(Mathf.Lerp(Scale.X, -1, _delta * 3), Scale.Y);
+			REAL_APHID_FIDGODEPUTA.Rotation = new(0, Mathf.Lerp(REAL_APHID_FIDGODEPUTA.Rotation.Y, 0, _delta * 3), 0);
 	}
 	// ===============| ANIMATIONS |=================
 	public Tween CreateAnimationTween(Tween.EaseType _ease, Tween.TransitionType _trans, string _property, Variant _finalVar, float _duration)

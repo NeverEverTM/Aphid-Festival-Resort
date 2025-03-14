@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=56 format=3 uid="uid://by6u0617yy7oe"]
 
 [ext_resource type="Script" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
@@ -29,10 +29,9 @@
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="21_5jg8l"]
 [ext_resource type="Texture2D" uid="uid://ct4h858npiyg6" path="res://sprites/aphibu.png" id="23_rt0qn"]
 [ext_resource type="Shader" path="res://scripts/shaders/shine_highlight.gdshader" id="26_ukngl"]
-[ext_resource type="Texture2D" uid="uid://co1btvdxhud6s" path="res://sprites/ui/logo_large_color_dark.png" id="27_a546m"]
-[ext_resource type="Texture2D" uid="uid://dwt5dtn13i3r2" path="res://sprites/ui/pc_project.png" id="28_i03ks"]
-[ext_resource type="Texture2D" uid="uid://pgscnb8dl5jr" path="res://sprites/title.png" id="30_1xe6g"]
-[ext_resource type="Texture2D" uid="uid://ddbg4ffu6ihj6" path="res://sprites/ui/pc_color.png" id="30_wl81d"]
+[ext_resource type="Texture2D" uid="uid://c408k8amycw7h" path="res://sprites/aphid.svg" id="30_47y5g"]
+[ext_resource type="Shader" path="res://scripts/shaders/outline.gdshader" id="30_4626u"]
+[ext_resource type="Texture2D" uid="uid://cgy8fdgjf0qo2" path="res://sprites/icons/aphid_icon.png" id="31_adplf"]
 [ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="31_ip2o7"]
 
 [sub_resource type="Animation" id="Animation_ahjwp"]
@@ -404,11 +403,6 @@ shader_parameter/color = Color(0.85098, 0.568627, 1, 1)
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0crly"]
 light_mode = 1
 
-[sub_resource type="LabelSettings" id="LabelSettings_6iqyf"]
-font_size = 25
-font_color = Color(0, 0, 0, 1)
-outline_size = 5
-
 [sub_resource type="Animation" id="Animation_i25o6"]
 length = 0.001
 tracks/0/type = "value"
@@ -776,6 +770,16 @@ _data = {
 "RESET": SubResource("Animation_r0sfp"),
 "start": SubResource("Animation_hobux")
 }
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a5hq5"]
+shader = ExtResource("30_4626u")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/ignore_modulate = true
+shader_parameter/width = 8.165
+shader_parameter/pattern = 0
+shader_parameter/inside = false
+shader_parameter/add_margins = true
+shader_parameter/number_of_images = Vector2(1, 1)
 
 [node name="menu" type="Node2D" node_paths=PackedStringArray("canvas", "BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "hover_start", "sweep_animator", "logo_animator", "title_animator", "entityRoot", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "controls_panel")]
 y_sort_enabled = true
@@ -1446,7 +1450,7 @@ expand_mode = 1
 stretch_mode = 4
 flip_h = true
 
-[node name="versioning" type="Label" parent="CanvasLayer"]
+[node name="versioning" type="RichTextLabel" parent="CanvasLayer"]
 light_mask = 0
 anchors_preset = 3
 anchor_left = 1.0
@@ -1454,17 +1458,18 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -185.0
-offset_top = -51.0
+offset_top = -38.0
 offset_right = -19.0
 offset_bottom = -3.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
 theme = ExtResource("9_76l0k")
-text = "alpha v0.2.0.1"
-label_settings = SubResource("LabelSettings_6iqyf")
-horizontal_alignment = 2
-vertical_alignment = 1
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 28
+bbcode_enabled = true
+text = "aphid [img width=25 height=20]res://sprites/aphid.svg[/img]"
 
 [node name="sweep_background" type="TextureRect" parent="CanvasLayer"]
 visible = false
@@ -1550,12 +1555,13 @@ libraries = {
 [node name="godot_logo" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 light_mask = 0
 texture_filter = 3
+material = SubResource("ShaderMaterial_a5hq5")
 layout_mode = 0
-offset_left = -231.0
-offset_top = -131.0
-offset_right = 322.0
-offset_bottom = 139.0
-texture = ExtResource("27_a546m")
+offset_left = -438.0
+offset_top = -251.0
+offset_right = 413.0
+offset_bottom = 182.0
+texture = ExtResource("23_rt0qn")
 expand_mode = 1
 stretch_mode = 5
 
@@ -1579,7 +1585,7 @@ offset_left = -1500.0
 offset_top = -140.0
 offset_right = -908.0
 offset_bottom = 119.0
-texture = ExtResource("28_i03ks")
+texture = ExtResource("31_adplf")
 expand_mode = 1
 stretch_mode = 4
 
@@ -1591,7 +1597,7 @@ offset_left = 873.0
 offset_top = -80.0
 offset_right = 1250.0
 offset_bottom = 59.0
-texture = ExtResource("30_wl81d")
+texture = ExtResource("31_adplf")
 expand_mode = 1
 stretch_mode = 4
 
@@ -1601,13 +1607,13 @@ light_mask = 0
 texture_filter = 3
 use_parent_material = true
 layout_mode = 0
-offset_left = -267.0
-offset_top = -147.0
-offset_right = 308.0
-offset_bottom = 128.0
-texture = ExtResource("30_1xe6g")
+offset_left = -314.0
+offset_top = -168.0
+offset_right = 376.0
+offset_bottom = 209.0
+texture = ExtResource("30_47y5g")
 expand_mode = 1
-stretch_mode = 4
+stretch_mode = 5
 
 [node name="cover" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]
 visible = false

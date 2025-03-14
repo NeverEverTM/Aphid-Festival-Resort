@@ -90,20 +90,15 @@ public static class ControlsManager
 		switch (_action)
 		{
 			case "Space":
-				return $"[img]{GUI_ICONS_PATH}icon_space.png[/img]";
 			case "Left Mouse Button":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_left.png[/img]";
 			case "Right Mouse Button":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_right.png[/img]";
 			case "Middle Mouse Button":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_middle.png[/img]";
 			case "Mouse Thumb Button 1":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_extra1.png[/img]";
 			case "Mouse Thumb Button 2":
-				return $"[img]{GUI_ICONS_PATH}icon_mouse_extra2.png[/img]";
+				return $"([img width=50 height=40]{GlobalManager.APHID_PATH}[/img])";
 		}
 
-		return _action;
+		return GlobalManager.AphifyText(_action);
 	}
 	/// <summary>
 	/// Returns the human-friendly name for an action. Intended for UI display.

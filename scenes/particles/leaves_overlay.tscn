@@ -1,12 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://cy6ba6twhk3o3"]
+[gd_scene load_steps=9 format=3 uid="uid://cy6ba6twhk3o3"]
 
-[ext_resource type="Texture2D" uid="uid://dq7o8o8lhc215" path="res://sprites/atlases/leaves.png" id="1_j5sep"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ntxys"]
-particles_animation = true
-particles_anim_h_frames = 2
-particles_anim_v_frames = 1
-particles_anim_loop = true
+[ext_resource type="Texture2D" uid="uid://cgy8fdgjf0qo2" path="res://sprites/icons/aphid_icon.png" id="1_ffj37"]
 
 [sub_resource type="Curve" id="Curve_4hxwi"]
 _data = [Vector2(0, 0.728302), 0.0, -0.106219, 0, 0, Vector2(0.681579, 0.698113), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.90083, 0.0, 0, 0]
@@ -72,12 +66,11 @@ turbulence_initial_displacement_max = 1.49012e-06
 light_mask = 0
 z_index = 4096
 z_as_relative = false
-material = SubResource("CanvasItemMaterial_ntxys")
 position = Vector2(5, 4)
 amount = 500
 amount_ratio = 0.7882
 process_material = SubResource("ParticleProcessMaterial_aw8xy")
-texture = ExtResource("1_j5sep")
+texture = ExtResource("1_ffj37")
 lifetime = 40.0
 preprocess = 30.0
 interpolate = false

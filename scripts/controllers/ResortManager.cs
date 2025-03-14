@@ -192,8 +192,11 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 		Node2D _item;
 		string _path = $"{GlobalManager.ItemPath}/{_item_name}.tscn";
 		if (ResourceLoader.Exists(_path))
+		{
 			// this is used if an item has a more complex structure or contains extra data, thus needing an unique node
 			_item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
+			(_item.GetChild(0) as Sprite2D).Texture = GlobalManager.GetIcon(_item_name);
+		}
 		else
 		{
 			_item = ResourceLoader.Load<PackedScene>(GlobalManager.ItemEntity).Instantiate() as Node2D;

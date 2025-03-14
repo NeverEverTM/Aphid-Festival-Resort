@@ -229,7 +229,9 @@ public partial class MainMenu : Node2D
 	public void SetCategory(string _text)
 	{
 		currentCategory = _text;
-		button_wheel.Text = $"[center]<| [tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado] |>[/center]";
+		button_wheel.Text = "[center] [img width=50 height=40]res://sprites/aphid.svg[/img]" +
+			$"[tornado radius=2.0 freq=6.0 connected=1] Aphid" + 
+			"[/tornado]  [img width=50 height=40]res://sprites/aphid.svg[/img][/center]";
 		MenuWheelIndex = MenuCategories.IndexOf(currentCategory);
 	}
 	public void SwitchCategories()

@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://cf4r7ihqeab31"]
+[gd_scene load_steps=5 format=3 uid="uid://cf4r7ihqeab31"]
 
-[ext_resource type="Texture2D" uid="uid://6k020yb1sqfu" path="res://sprites/atlases/particle_sprites.png" id="1_kl0ef"]
+[ext_resource type="Texture2D" uid="uid://cgy8fdgjf0qo2" path="res://sprites/icons/aphid_icon.png" id="1_vrg0a"]
 
 [sub_resource type="Curve" id="Curve_sylc5"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.62442, 0.0, 0, 0]
@@ -24,15 +24,11 @@ scale_min = 0.5
 scale_max = 0.5
 alpha_curve = SubResource("CurveTexture_b0e3k")
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_sg3y4"]
-atlas = ExtResource("1_kl0ef")
-region = Rect2(48, 16, 16, 16)
-
 [node name="leaves_bush" type="GPUParticles2D"]
 emitting = false
 amount = 30
 process_material = SubResource("ParticleProcessMaterial_bk0at")
-texture = SubResource("AtlasTexture_sg3y4")
+texture = ExtResource("1_vrg0a")
 lifetime = 1.5
 one_shot = true
 explosiveness = 0.74

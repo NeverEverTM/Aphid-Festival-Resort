@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cnrce4gppoc5m"]
 
-[ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="1_mf5iy"]
+[ext_resource type="Texture2D" uid="uid://c408k8amycw7h" path="res://sprites/aphid.svg" id="1_1k26s"]
 
 [node name="Control" type="Control"]
 light_mask = 0
@@ -20,7 +20,9 @@ grow_vertical = 2
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
 offset_left = -34.0
-offset_top = -30.0
-offset_right = 30.0
-offset_bottom = 34.0
-texture = ExtResource("1_mf5iy")
+offset_top = -37.0
+offset_right = 35.0
+offset_bottom = 24.0
+texture = ExtResource("1_1k26s")
+expand_mode = 1
+stretch_mode = 4

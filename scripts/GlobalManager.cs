@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Godot;
 
@@ -52,6 +53,16 @@ internal partial class GlobalManager : Node2D
 	public static readonly ResourcePreloader G_PARTICLES = new();
 	public static readonly ResourcePreloader G_SKINS = new();
 
+	public static Regex LOWERCASE_PATTERN = new(@"(?![A-Z][a-z])\w+(?![^\[]*\])+(?![^\(]*\))+"), 
+			UPPERCASE_PATTERN = new("[A-Z][a-z]+");
+	public const string APHID_PATH = "res://sprites/aphid.svg", APHID_ICON_PATH = "res://sprites/icons/aphid_icon.png";
+	public static string AphifyText(string _text)
+	{
+		_text = LOWERCASE_PATTERN.Replace(_text, "aphid");
+		_text = UPPERCASE_PATTERN.Replace(_text, "Aphid");
+		return _text;
+	}
+
 	public readonly struct Item
 	{
 		public readonly int cost;
@@ -93,17 +104,11 @@ internal partial class GlobalManager : Node2D
 
 	public static Texture2D GetIcon(string _key)
 	{
-		if (_key != null && G_ICONS.ContainsKey(_key))
-			return G_ICONS[_key];
-		else
-			return new PlaceholderTexture2D();
+		return ResourceLoader.Load(APHID_ICON_PATH) as Texture2D;
 	}
 	public static Texture2D GetSkin(string _id)
 	{
-		if (_id != null && G_SKINS.HasResource(_id))
-			return G_SKINS.GetResource(_id) as Texture2D;
-		else
-			return new PlaceholderTexture2D();
+		return null;
 	}
 
 	// Variables
@@ -176,7 +181,7 @@ internal partial class GlobalManager : Node2D
 		{
 			await LOAD_ICONS();
 			await LOAD_STRUCTURE_ICONS();
-			await LOAD_SKINS();
+			//await LOAD_SKINS();
 			await LOAD_SFX();
 			await LOAD_DATA();
 			await LOAD_PARTICLES();
@@ -262,8 +267,9 @@ internal partial class GlobalManager : Node2D
 				continue;
 
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_files.Length})";
-			var _resource = await PRELOAD_RESOURCE(RES_SKINS_PATH + _fileName);
-			G_SKINS.AddResource(_id, _resource as Texture2D);
+			Texture2D _resource = await PRELOAD_RESOURCE(APHID_PATH) as Texture2D;
+
+			G_SKINS.AddResource(_id, _resource);
 		}
 	}
 	private static async Task LOAD_SFX()

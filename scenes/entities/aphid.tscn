@@ -1,11 +1,24 @@
-[gd_scene load_steps=9 format=3 uid="uid://7oo48cet73pb"]
+[gd_scene load_steps=13 format=3 uid="uid://7oo48cet73pb"]
 
 [ext_resource type="Script" path="res://scripts/aphid/Aphid.cs" id="1_acxg7"]
 [ext_resource type="Script" path="res://scripts/aphid/AphidSkin.cs" id="2_xeinf"]
+[ext_resource type="PackedScene" uid="uid://mo3upoh5jh1" path="res://scenes/props/aphid_model.glb" id="7_1w7k6"]
 [ext_resource type="Texture2D" uid="uid://u3pou85pb7is" path="res://databases/skins/0/legs_idle.png" id="12_kek4f"]
 [ext_resource type="Texture2D" uid="uid://hnyudgy17eqv" path="res://databases/skins/0/body_idle.png" id="13_7fxmg"]
 [ext_resource type="Texture2D" uid="uid://2e856swkfn11" path="res://databases/skins/0/eyes_idle.png" id="14_7wf6h"]
 [ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://databases/skins/0/antenna_idle.png" id="15_tax8g"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ra8jh"]
+viewport_path = NodePath("anchor/SubViewport")
+
+[sub_resource type="Environment" id="Environment_87q0j"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 16.0
+
+[sub_resource type="World3D" id="World3D_40ed3"]
+environment = SubResource("Environment_87q0j")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
 size = Vector2(34, 12)
@@ -34,7 +47,7 @@ bus = &"Sounds"
 editor_description = "This anchor is used to offset the sprite body, since animations can affect the position of the latter."
 position = Vector2(0, -8)
 
-[node name="CanvasGroup" type="CanvasGroup" parent="anchor" node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
+[node name="CanvasGroup" type="CanvasGroup" parent="anchor" node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs", "REAL_APHID_FIDGODEPUTA")]
 use_parent_material = true
 script = ExtResource("2_xeinf")
 eyes = NodePath("eyes")
@@ -42,6 +55,7 @@ antenna = NodePath("antenna")
 body = NodePath("body")
 back_legs = NodePath("back_legs")
 front_legs = NodePath("front_legs")
+REAL_APHID_FIDGODEPUTA = NodePath("../SubViewport/BF Aphid-Test")
 
 [node name="back_legs" type="Sprite2D" parent="anchor/CanvasGroup"]
 use_parent_material = true
@@ -66,6 +80,26 @@ offset = Vector2(0.5, -8.5)
 use_parent_material = true
 texture = ExtResource("15_tax8g")
 offset = Vector2(0.5, -8.5)
+
+[node name="viewport" type="Sprite2D" parent="anchor/CanvasGroup"]
+position = Vector2(-1.99998, -8.75)
+scale = Vector2(0.0833334, 0.0756944)
+texture = SubResource("ViewportTexture_ra8jh")
+flip_h = true
+
+[node name="SubViewport" type="SubViewport" parent="anchor"]
+own_world_3d = true
+world_3d = SubResource("World3D_40ed3")
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1080, 720)
+
+[node name="Camera3D" type="Camera3D" parent="anchor/SubViewport"]
+cull_mask = 1047553
+fov = 47.7838
+
+[node name="BF Aphid-Test" parent="anchor/SubViewport" instance=ExtResource("7_1w7k6")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.040666, -0.165831, -0.589209)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1, -6)

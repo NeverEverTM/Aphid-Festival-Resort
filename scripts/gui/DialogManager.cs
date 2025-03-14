@@ -83,7 +83,7 @@ public partial class DialogManager : Control
 
 		// Set dialog state
 		IsActive = just_pressed = true;
-		dialogAudio.Stream = _voice ?? defaultAudio;
+		dialogAudio.Stream = _voice ?? SoundManager.GetAudioStream("aphid/baby_idle");
 		Player.Instance.SetDisabled(true, true);
 		if (!Instance.Visible)
 			Instance.Show();
@@ -132,6 +132,7 @@ public partial class DialogManager : Control
 	private async Task WriteDialog()
 	{
 		dialogText.VisibleCharacters = 0;
+		Dialog = GlobalManager.AphifyText(Dialog);
 		dialogText.Text = Dialog;
 		int _bbcSkipped = 0;
 		RandomNumberGenerator _rng = new();

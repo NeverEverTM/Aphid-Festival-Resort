@@ -10,7 +10,7 @@ public partial class NewGameMenu : Control
 	[Export] private Control popup_anchor;
 
 	private const int resort_char_limit = 40, name_char_limit = 15, pronouns_char_limit = 25;
-	private const string defaultName = "Mello";
+	private const string defaultName = "Tangy";
 	
 
 	public override void _Ready()

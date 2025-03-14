@@ -16,23 +16,23 @@ public partial class HelpPanel : Control
 
 	private void UpdateHelpDescriptions()
 	{
-		helpDescriptions[0].Text = string.Format(Tr("help_desc_0"), new string[]
+		helpDescriptions[0].Text = GlobalManager.AphifyText(string.Format(Tr("help_desc_0"), new string[]
 		{
 			ControlsManager.GetActionName(InputNames.OpenInventory),
 			ControlsManager.GetActionName(InputNames.Pickup),
-		});
-		helpDescriptions[1].Text = string.Format(Tr("help_desc_1"),
-			ControlsManager.GetActionName(InputNames.Interact));
-		helpDescriptions[2].Text = Tr("help_desc_2");
-		helpDescriptions[3].Text = Tr("help_desc_3");
-		helpDescriptions[4].Text = Tr("help_desc_4");
-		helpDescriptions[5].Text = string.Format(Tr("help_desc_5"),
-			ControlsManager.GetActionName(InputNames.OpenGenerations));
-		helpDescriptions[6].Text = Tr("help_desc_6");
-		helpDescriptions[7].Text = string.Format(Tr("help_desc_7"), new string[]
+		}));
+		helpDescriptions[1].Text = GlobalManager.AphifyText(string.Format(Tr("help_desc_1"),
+			ControlsManager.GetActionName(InputNames.Interact)));
+		helpDescriptions[2].Text = GlobalManager.AphifyText(GlobalManager.AphifyText(Tr("help_desc_2")));
+		helpDescriptions[3].Text = GlobalManager.AphifyText(Tr("help_desc_3"));
+		helpDescriptions[4].Text = GlobalManager.AphifyText(Tr("help_desc_4"));
+		helpDescriptions[5].Text = GlobalManager.AphifyText(string.Format(Tr("help_desc_5"),
+			ControlsManager.GetActionName(InputNames.OpenGenerations)));
+		helpDescriptions[6].Text = GlobalManager.AphifyText(Tr("help_desc_6"));
+		helpDescriptions[7].Text = GlobalManager.AphifyText(string.Format(Tr("help_desc_7"), new string[]
 		{
 			ControlsManager.GetActionName(InputNames.ChangeCamera),
 			ControlsManager.GetActionName(InputNames.TakeScreenshot),
-		});
+		}));
 	}
 }

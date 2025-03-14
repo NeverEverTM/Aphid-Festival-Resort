@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://d7m5e6tlxyve"]
+[gd_scene load_steps=9 format=3 uid="uid://d7m5e6tlxyve"]
 
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_m4hsb"]
-[ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://databases/skins/0/antenna_idle.PNG" id="2_3dtyu"]
+[ext_resource type="Texture2D" uid="uid://dqqlmjovquo6w" path="res://databases/skins/0/antenna_idle.png" id="2_3dtyu"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="2_hglfq"]
 [ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="3_0fk3s"]
-[ext_resource type="Texture2D" uid="uid://dc343hj4kbhik" path="res://databases/skins/0/legs_baby_idle.PNG" id="5_e18n5"]
-[ext_resource type="Texture2D" uid="uid://bmf6lyn4yqr5u" path="res://databases/skins/0/body_baby_idle.PNG" id="6_0x3ap"]
-[ext_resource type="Texture2D" uid="uid://d37xbgvixol22" path="res://databases/skins/0/eyes_baby_idle.PNG" id="7_6efam"]
+[ext_resource type="Texture2D" uid="uid://dc343hj4kbhik" path="res://databases/skins/0/legs_baby_idle.png" id="5_e18n5"]
+[ext_resource type="Texture2D" uid="uid://bmf6lyn4yqr5u" path="res://databases/skins/0/body_baby_idle.png" id="6_0x3ap"]
+[ext_resource type="Texture2D" uid="uid://d37xbgvixol22" path="res://databases/skins/0/eyes_baby_idle.png" id="7_6efam"]
+[ext_resource type="Texture2D" uid="uid://ct4h858npiyg6" path="res://sprites/aphibu.png" id="8_5q1gr"]
 
 [node name="aphid_slot" type="TextureButton"]
 clip_children = 2
@@ -30,6 +31,7 @@ scale = Vector2(0.75, 0.75)
 mouse_filter = 2
 
 [node name="antenna" type="TextureRect" parent="Control"]
+visible = false
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
@@ -41,6 +43,7 @@ texture = ExtResource("2_3dtyu")
 stretch_mode = 5
 
 [node name="back_legs" type="TextureRect" parent="Control"]
+visible = false
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
@@ -52,6 +55,7 @@ texture = ExtResource("5_e18n5")
 stretch_mode = 5
 
 [node name="body" type="TextureRect" parent="Control"]
+visible = false
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
@@ -63,6 +67,7 @@ texture = ExtResource("6_0x3ap")
 stretch_mode = 5
 
 [node name="eyes" type="TextureRect" parent="Control"]
+visible = false
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
@@ -74,6 +79,7 @@ texture = ExtResource("7_6efam")
 stretch_mode = 5
 
 [node name="legs" type="TextureRect" parent="Control"]
+visible = false
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
@@ -83,3 +89,10 @@ offset_right = 164.0
 offset_bottom = 158.0
 texture = ExtResource("5_e18n5")
 stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 127.0
+offset_bottom = 122.0
+texture = ExtResource("8_5q1gr")
+expand_mode = 1

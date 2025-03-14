@@ -101,10 +101,7 @@ public partial class SoundManager : Node
 
 	public static AudioStream GetAudioStream(string _name)
 	{
-		if (GlobalManager.G_AUDIO.ContainsKey(_name))
-			return GlobalManager.G_AUDIO[_name];
-		else
-			return GlobalManager.G_AUDIO["button_fail"];
+		return GlobalManager.G_AUDIO["aphid/idle"];
 	}
 	/// <summary>
 	/// Creates a global sound to be heard, duplicating the given audioplayer and handed back for further manipulation.
@@ -132,7 +129,7 @@ public partial class SoundManager : Node
         {
             Bus = _bus
         };
-        return CreateSound(_stream, _player, _pitchRand);
+        return CreateSound(GetAudioStream("aphid/idle"), _player, _pitchRand);
 	}
 	/// <summary>
 	/// Creates a global sound to be heard, handed back for further manipulation.
@@ -175,7 +172,7 @@ public partial class SoundManager : Node
 		{
 			Bus = _bus
 		};
-		return CreateSound2D(_stream, _player, _position, _pitchRand);
+		return CreateSound2D(GetAudioStream("aphid/idle"), _player, _position, _pitchRand);
 	}
 	/// <summary>
 	/// Creates a sound at a given location that can be heard positionally.
@@ -187,6 +184,6 @@ public partial class SoundManager : Node
 		{
 			Bus = _bus
 		};
-		return CreateSound2D(GetAudioStream(_name), _player, _position, _pitchRand);
+		return CreateSound2D(GetAudioStream("aphid/idle"), _player, _position, _pitchRand);
 	}
 }
