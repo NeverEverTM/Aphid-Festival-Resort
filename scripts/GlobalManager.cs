@@ -24,34 +24,36 @@ internal partial class GlobalManager : Node2D
 	public static bool IsBusy { get; set; }
 
 	public const string
-		ResortScenePath = "res://scenes/resort.tscn",
-		MenuScenePath = "res://scenes/menu.tscn",
-		LoadingScreenPath = "res://scenes/ui/loading_screen.tscn",
-		ConfirmationWindowPath = "res://scenes/ui/confirmation_panel.tscn",
-		PopupWindowPath = "res://scenes/ui/popup.tscn",
-		CanvasGroupOutlineShader = "res://scripts/shaders/outline-canvas-group.gdshader",
-		ItemEntity = "res://scenes/entities/item.tscn",
-		OutlineShader = "res://scripts/shaders/outline.gdshader",
-		APHID_ENTITY_PATH = "res://scenes/entities/aphid.tscn";
+		RESORT_SCENE = "uid://dsw70b8747xh8",
+		MENU_SCENE = "uid://by6u0617yy7oe",
+		LOADING_SCENE = "uid://ddfk4hhfrlxpa",
+		CONFIRM_WINDOW_SCENE = "uid://blrpv4ys07erj",
+		POPUP_WINDOW_SCENE = "uid://dwp7dadam0k12",
+		CG_OUTLINE_SHADER = "uid://dc60jiy0ptbuc",
+		OUTLINE_SHADER = "uid://dw8sws2xkkyr6",
+		ITEM_ENTITY = "uid://d3miyavfmn4oh",
+		APHID_ENTITY = "uid://7oo48cet73pb";
 	public const string
-		RES_SFX_PATH = "res://sfx/",
-		IconPath = "res://sprites/icons/",
-		ParticlesPath = "res://scenes/particles/",
-		ItemPath = "res://databases/items",
-		RES_SKINS_PATH = "res://databases/skins/",
-		StructuresPath = "res://databases/structures",
-		DatabasesPath = "res://databases/";
+		ABSOLUTE_SFX_PATH = "res://sfx/",
+		ABSOLUTE_SCENES_PATH = "res://scenes/",
+		ABSOLUTE_PARTICLES_PATH = "res://scenes/particles/",
+		ABSOLUTE_SPRITES_PATH = "res://sprites/",
+		ABSOLUTE_ICONS_PATH = "res://sprites/icons/",
+		ABSOLUTE_DATABASES_PATH = "res://databases/",
+		ABSOLUTE_SKINS_PATH = "res://databases/skins/",
+		ABSOLUTE_ITEMS_DB_PATH = "res://databases/items",
+		ABSOLUTE_STRUCTURES_DB_PATH = "res://databases/structures";
 
 	// =========| GLOBAL LOADED VALUES |===========
-	public static readonly Dictionary<string, Item> G_ITEMS = new();
-	public static readonly Dictionary<string, Food> G_FOOD = new();
-	public static readonly List<Recipe> G_RECIPES = new();
+	public static readonly Dictionary<string, Item> G_ITEMS = [];
+	public static readonly Dictionary<string, Food> G_FOOD = [];
+	public static readonly List<Recipe> G_RECIPES = [];
 
 	// todo: replace G_ICONS and G_AUDIO with ResourcePreloaders, add G_SKINS while you are at it
-	public static readonly Dictionary<string, Texture2D> G_ICONS = new();
-	public static readonly Dictionary<string, AudioStream> G_AUDIO = new();
+	public static readonly Dictionary<string, Texture2D> G_ICONS = [];
+	public static readonly Dictionary<string, AudioStream> G_AUDIO = [];
 	public static readonly ResourcePreloader G_PARTICLES = new();
-	public static readonly ResourcePreloader G_SKINS = new();
+	public static readonly Dictionary<string, Texture2D> G_SKINS = [];
 
 	public readonly struct Item(int cost, int unlockableLevel, string tag, string shopTag)
     {
@@ -93,8 +95,8 @@ internal partial class GlobalManager : Node2D
 	}
 	public static Texture2D GetSkin(string _id)
 	{
-		if (_id != null && G_SKINS.HasResource(_id))
-			return G_SKINS.GetResource(_id) as Texture2D;
+		if (_id != null && G_SKINS.TryGetValue(_id, out Texture2D _texture))
+			return _texture;
 		else
 			return new PlaceholderTexture2D()
 			{
@@ -220,7 +222,7 @@ internal partial class GlobalManager : Node2D
 	}
 	private static async Task LOAD_ICONS()
 	{
-		string[] _icons = DirAccess.GetFilesAt(IconPath);
+		string[] _icons = DirAccess.GetFilesAt(ABSOLUTE_ICONS_PATH);
 
 		for (int i = 0; i < _icons.Length; i++)
 		{
@@ -230,13 +232,13 @@ internal partial class GlobalManager : Node2D
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (1/2) ({i + 1}/{_icons.Length})";
 
 			// Wait until it yields
-			var _resource = await PRELOAD_RESOURCE(IconPath + _fileName);
+			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_ICONS_PATH + _fileName);
 			G_ICONS.Add(_id, _resource as Texture2D);
 		}
 	}
 	private static async Task LOAD_STRUCTURE_ICONS()
 	{
-		string[] _structures = DirAccess.GetFilesAt(StructuresPath);
+		string[] _structures = DirAccess.GetFilesAt(ABSOLUTE_STRUCTURES_DB_PATH);
 
 		for (int i = 0; i < _structures.Length; i++)
 		{
@@ -248,7 +250,7 @@ internal partial class GlobalManager : Node2D
 			if (G_ICONS.ContainsKey(_structureName))
 				continue;
 
-			string _path = $"{StructuresPath}/{_structures[i]}";
+			string _path = $"{ABSOLUTE_STRUCTURES_DB_PATH}/{_structures[i]}";
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (2/2) ({i + 1})";
 
 			// we load and create an icon directly from the resources sprite
@@ -262,13 +264,13 @@ internal partial class GlobalManager : Node2D
 	}
 	private static async Task LOAD_SKINS()
 	{
-		string[] _directories = DirAccess.GetDirectoriesAt(RES_SKINS_PATH);
+		string[] _directories = DirAccess.GetDirectoriesAt(ABSOLUTE_SKINS_PATH);
 		for (int i = 0; i < _directories.Length; i++)
 			await SEARCH_SKIN_FOLDER(_directories[i]);
 	}
 	private static async Task SEARCH_SKIN_FOLDER(string _directory)
 	{
-		string[] _files = DirAccess.GetFilesAt(RES_SKINS_PATH + _directory);
+		string[] _files = DirAccess.GetFilesAt(ABSOLUTE_SKINS_PATH + _directory);
 		for (int i = 0; i < _files.Length; i++)
 		{
 			// _filename = 0/skin_piece.res
@@ -276,23 +278,23 @@ internal partial class GlobalManager : Node2D
 			string _fileName = _directory + "/" + _files[i].Replace(".import", string.Empty),
 					_id = _fileName.Split('.')[0];
 
-			if (G_SKINS.HasResource(_id))
+			if (G_SKINS.ContainsKey(_id))
 				continue;
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_files.Length})";
-			var _resource = await PRELOAD_RESOURCE(RES_SKINS_PATH + _fileName);
-			G_SKINS.AddResource(_id, _resource as Texture2D);
+			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_SKINS_PATH + _fileName);
+			G_SKINS.Add(_id, _resource as Texture2D);
 		}
 	}
 	private static async Task LOAD_SFX()
 	{
 		// Get all SFX paths (only checks folders at SFX root folder)
-		string[] _directories = DirAccess.GetDirectoriesAt(RES_SFX_PATH);
+		string[] _directories = DirAccess.GetDirectoriesAt(ABSOLUTE_SFX_PATH);
 		for (int i = 0; i < _directories.Length; i++)
 			await SEARCH_SFX_FOLDER(_directories[i]);
 
 		/// replace all of this since SoundManager now has direct access to the sound cache
 		// Load aphid SFX
-		string aphidPath = $"{RES_SFX_PATH}aphid/";
+		string aphidPath = $"{ABSOLUTE_SFX_PATH}aphid/";
 		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(aphidPath + "nom.wav");
 		Aphid.Audio_Idle = ResourceLoader.Load<AudioStream>(aphidPath + "idle.wav");
 		Aphid.Audio_Idle_Baby = ResourceLoader.Load<AudioStream>(aphidPath + "baby_idle.wav");
@@ -303,7 +305,7 @@ internal partial class GlobalManager : Node2D
 	}
 	private static async Task SEARCH_SFX_FOLDER(string _directory)
 	{
-		string[] _files = DirAccess.GetFilesAt(RES_SFX_PATH + _directory);
+		string[] _files = DirAccess.GetFilesAt(ABSOLUTE_SFX_PATH + _directory);
 		for (int i = 0; i < _files.Length; i++)
 		{
 			// _filename = audio_example.wav
@@ -315,7 +317,7 @@ internal partial class GlobalManager : Node2D
 				continue;
 
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({_directory}[{i}/{_files.Length}])";
-			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(RES_SFX_PATH + _fileName) as AudioStream);
+			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(ABSOLUTE_SFX_PATH + _fileName) as AudioStream);
 		}
 	}
 	private static async Task LOAD_DATA()
@@ -360,7 +362,7 @@ internal partial class GlobalManager : Node2D
 				type: (AphidData.FoodType)int.Parse(_info[1]),
 				food_value: float.Parse(_info[2]),
 				drink_value: float.Parse(_info[3]),
-				skill_list: _info[4].Split(','),
+				skill_list: string.IsNullOrWhiteSpace(_info[4]) ? null : _info[4].Split(','),
 				skill_values: string.IsNullOrWhiteSpace(_info[5]) ? null 
 						: Array.ConvertAll(_info[5].Split(','), s => int.Parse(s))
 			));
@@ -386,7 +388,7 @@ internal partial class GlobalManager : Node2D
 	}
 	private static async Task LOAD_DATABASE(string _fileName, Action<string[]> _onItem)
 	{
-		FileAccess _file = FileAccess.Open(DatabasesPath + _fileName + ".csv", FileAccess.ModeFlags.Read);
+		FileAccess _file = FileAccess.Open(ABSOLUTE_DATABASES_PATH + _fileName + ".csv", FileAccess.ModeFlags.Read);
 		string _header = _file.GetCsvLine()[0], _boot = Instance.Tr($"BOOT_{_header}");
 		while (_file.GetPosition() < _file.GetLength())
 		{
@@ -397,12 +399,12 @@ internal partial class GlobalManager : Node2D
 	}
 	private static async Task LOAD_PARTICLES()
 	{
-		var _particleList = DirAccess.GetFilesAt(ParticlesPath);
+		var _particleList = DirAccess.GetFilesAt(ABSOLUTE_PARTICLES_PATH);
 
 		for (int i = 0; i < _particleList.Length; i++)
 		{
 			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_3")} ({i}/{_particleList.Length})";
-			var _resource = await PRELOAD_RESOURCE(ParticlesPath + _particleList[i]);
+			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_PARTICLES_PATH + _particleList[i]);
 			var _particle = (_resource as PackedScene).Instantiate() as GpuParticles2D;
 
 			// we instantiate it and then delete it
@@ -454,8 +456,6 @@ internal partial class GlobalManager : Node2D
 			=> EmitParticles(_name, _position, Instance, _essential);
 	public static GpuParticles2D EmitParticles(string _name, Vector2 _position, Node2D _parent, bool _essential = true)
 	{
-		if (!_essential && ACTIVE_PARTICLES_CACHED.Count > 50)
-			return null;
 		var _item = (G_PARTICLES.GetResource(_name) as PackedScene).Instantiate() as GpuParticles2D;
 		_item.GlobalPosition = _position;
 		_item.Emitting = true;
@@ -463,6 +463,8 @@ internal partial class GlobalManager : Node2D
 		_parent.AddChild(_item);
 
 		ACTIVE_PARTICLES_CACHED.Add(_item);
+		if (!_essential && ACTIVE_PARTICLES_CACHED.Count > 20)
+			_item.Visible = false;
 		return _item;
 	}
 	public static void CleanAllParticles()
@@ -477,8 +479,8 @@ internal partial class GlobalManager : Node2D
 		await Task.Delay(1);
 		string _path = _scene switch
 		{
-			SceneName.Menu => MenuScenePath,
-			SceneName.Resort => ResortScenePath,
+			SceneName.Menu => MENU_SCENE,
+			SceneName.Resort => RESORT_SCENE,
 			_ => "N/A"
 		};
 		if (_path == "N/A")
@@ -488,7 +490,7 @@ internal partial class GlobalManager : Node2D
 		SoundManager.StopSong();
 
 		// load the load screen
-		LoadScreen _loading = ResourceLoader.Load<PackedScene>(LoadingScreenPath).Instantiate() as LoadScreen;
+		LoadScreen _loading = ResourceLoader.Load<PackedScene>(LOADING_SCENE).Instantiate() as LoadScreen;
 		Instance.GetTree().Root.AddChild(_loading);
 		_ = _loading.CreateLeaves();
 
@@ -528,7 +530,7 @@ internal partial class GlobalManager : Node2D
 	}
 	public static void CreatePopup(string _translation_key, Node _parent)
 	{
-		Control _popup = ResourceLoader.Load<PackedScene>(PopupWindowPath).Instantiate() as Control;
+		Control _popup = ResourceLoader.Load<PackedScene>(POPUP_WINDOW_SCENE).Instantiate() as Control;
 		_popup.Position = SCREEN_CENTER_CANVAS - _popup.Size / 2;
 		(_popup.GetChild(0) as Label).Text = Instance.Tr(_translation_key);
 		_parent.AddChild(_popup);
@@ -563,7 +565,7 @@ internal partial class GlobalManager : Node2D
 		else
 			_total = _amount;
 
-		_total = Math.Clamp(_total, 1, 5f);
+		_total = Math.Clamp(_total, 1.25f, 5f);
 		GlobalCamera.Zoom = new(_total, _total);
 		Instance.UpdateViewportSizeTracking();
 	}
@@ -624,10 +626,6 @@ internal partial class GlobalManager : Node2D
 
 			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
 		}
-		public static Color LerpColor(Color _color1, Color _color2) =>
-			_color1.Lerp(_color2, RNG.RandfRange(0.2f, 0.4f));
-		public static Color LerpColor(Color _color1, Color _color2, float _weight) =>
-			_color1.Lerp(_color2, _weight);
 
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
@@ -638,12 +636,5 @@ internal partial class GlobalManager : Node2D
 			DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 			return dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
 		}
-	}
-	public static class StringNames
-	{
-		public readonly static StringName InteractFunc = new("Interact");
-		public readonly static StringName TagMeta = new("tag");
-		public readonly static StringName PickupMeta = new("pickup");
-		public readonly static StringName IdMeta = new("id");
 	}
 }

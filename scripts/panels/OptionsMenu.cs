@@ -102,8 +102,11 @@ public partial class OptionsMenu : Control
 		DisplayServer.WindowSetMode(display[(int)_index]);
 		OptionsManager.Settings.DisplayMode = display[(int)_index];
 	}
-	private void OnAutoRunToggle(bool _toggledOn) =>
+	private void OnAutoRunToggle(bool _toggledOn)
+	{
 		OptionsManager.Settings.SettingAutoRun = _toggledOn;
+		SoundManager.CreateSound("ui/lock");
+	}
 	private void OnLocaleSelect(long _index)
 	{
 		string _locale = locales.Keys.ToList()[(int)_index];

@@ -7,27 +7,32 @@ public class MenuUtil
 {
 	public MenuInstance CurrentMenu { get; private set; }
 	public bool IsBusy { get; private set; }
-	public readonly List<MenuInstance> MenuList = new();
+	public readonly List<MenuInstance> MenuList = [];
 
-	public delegate void MenuEvent(MenuInstance _lastMenu, MenuInstance _menu);
+	public delegate void MenuEvent(MenuInstance _last, MenuInstance _current);
 	public event MenuEvent OnSwitch;
 
-	public record class MenuInstance
+	public record class MenuInstance(string Name, AnimationPlayer MenuPlayer,
+			Action<MenuInstance> Open, Func<MenuInstance, bool> Close, bool IsASubMenu = false)
 	{
-		public string ID { get; private set; }
-		public AnimationPlayer MenuPlayer { get; set; }
-		public Action Open;
-		public Action<MenuInstance> Close;
-		public bool IsASubMenu { get; set; }
+		/// <summary>
+		/// Identification name for this menu
+		/// </summary>
+		public string Name { get; private set; } = Name;
+		/// <summary>
+		/// Whether or not this menu is a child of the current menu, if so add on-top, otherwise, set this as the parent (one parent alllowed at a time)
+		/// </summary>
+		public bool IsASubMenu { get; set; } = IsASubMenu;
+		public AnimationPlayer MenuPlayer { get; set; } = MenuPlayer;
 
-		public MenuInstance(string ID, AnimationPlayer _menu, Action _openAction, Action<MenuInstance> _closeAction, bool _isASub)
-		{
-			this.ID = ID;
-			MenuPlayer = _menu;
-			Open = _openAction;
-			Close = _closeAction;
-			IsASubMenu = _isASub;
-		}
+		/// <summary>
+		/// Closes the menu, it is given which menu is the next one and indicates whether or not this action can be done
+		/// </summary>
+		public Func<MenuInstance, bool> Close = Close;
+		/// <summary>
+		/// Opens the menu, it is given which menu was the last one
+		/// </summary>
+		public Action<MenuInstance> Open = Open;
 	}
 
 	public bool OpenMenu(MenuInstance _menu)
@@ -35,7 +40,7 @@ public class MenuUtil
 		// if is the same menu we have, close it and go to previous one
 		if (_menu.Equals(CurrentMenu))
 		{
-			GoBackInMenu();
+			GoBack();
 			return false;
 		}
 		// if menu isnt already in the list, open it up
@@ -46,14 +51,20 @@ public class MenuUtil
 		}
 		return false;
 	}
-	private void SwitchTo(MenuInstance _menu)
+	/// <summary>
+	/// Switch to the given menu and updates the state, a value of 'null' just closes the menu without complications
+	/// </summary>
+	/// <param name="_menu">Next menu to display</param>
+	private bool SwitchTo(MenuInstance _menu)
 	{
 		var _lastMenu = _menu;
 		// Close last menu
 		if (CurrentMenu != null)
 		{
-			CurrentMenu.Close?.Invoke(_menu);
-			CurrentMenu.MenuPlayer.Play("close");
+			// cancel close if this menu is currently not allowed to
+			if (CurrentMenu.Close != null && !CurrentMenu.Close.Invoke(_menu))
+				return false;
+			CurrentMenu.MenuPlayer.Play(StringNames.CloseAnim);
 			if (_menu == null || !_menu.IsASubMenu)
 				MenuList.Clear();
 		}
@@ -61,8 +72,8 @@ public class MenuUtil
 		// Open new menu
 		if (_menu != null)
 		{
-			_menu.Open?.Invoke();
-			_menu.MenuPlayer.Play("open");
+			_menu.Open?.Invoke(CurrentMenu);
+			_menu.MenuPlayer.Play(StringNames.OpenAnim);
 			MenuList.Add(_menu);
 		}
 
@@ -70,13 +81,14 @@ public class MenuUtil
 		CurrentMenu = _menu;
 		IsBusy = MenuList.Count > 0;
 		OnSwitch?.Invoke(_lastMenu, CurrentMenu);
+		return true;
 	}
-	public void GoBackInMenu()
+	public void GoBack()
 	{
 		if (MenuList.Count > 1)
 		{
-			MenuList.RemoveAt(MenuList.Count - 1);
-			SwitchTo(MenuList.Last());
+			if (SwitchTo(MenuList[^2]))
+				MenuList.RemoveAt(MenuList.Count - 1);
 		}
 		else if (MenuList.Count == 1)
 			SwitchTo(null);

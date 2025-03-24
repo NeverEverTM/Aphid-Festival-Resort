@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dwp7dadam0k12"]
 
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="1_rdojs"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_rdojs"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="2_ndghr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_r0jn0"]

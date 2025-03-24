@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://edsql54tqgn5"]
+
+[ext_resource type="SystemFont" uid="uid://cvewowxx0aukp" path="res://sprites/fonts/default_font.tres" id="1_d86tp"]
+
+[resource]
+default_font = ExtResource("1_d86tp")
+default_font_size = 13

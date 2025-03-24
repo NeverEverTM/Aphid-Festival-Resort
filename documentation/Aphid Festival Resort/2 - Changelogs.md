@@ -110,3 +110,10 @@
   - the kitchen now needs to learn a recipe before it shows a result, but otherwise has a more ux friendly interface
 - Added a leaves particles overlay
 - Added ambience sounds for the resort
+
+# v0.2.0.1
+## Fixed
+- Mushroom gummies had the wrong display sprite
+- (Spanish) User interface label did not position itself correctly
+- Leaving the build or furniture menu would turn back back the normal HUD while in free camera mode.
+- Aphids left their harvest particles when they died.

@@ -240,7 +240,7 @@ public partial class MainMenu : Node2D
 	
 	// MARK: Cosmetics
 	private bool DirectionForX, DirectionForY;
-	private float MaxWanderDistanceX = 1800, MaxWanderDistanceY = 600;
+	private float MaxWanderDistanceX = 1200, MaxWanderDistanceY = 600;
 	private void DoBounceAnim()
 	{
 		if (cameraMenu.Position.X > MaxWanderDistanceX)
@@ -255,7 +255,7 @@ public partial class MainMenu : Node2D
 
 		cameraMenu.Position += new Vector2(DirectionForX ? -1 : 1, DirectionForY ? -1 : 1);
 	}
-	private float[] babyWeight = new float[] { 70, 30 };
+	private float[] babyWeight = [70, 30];
 	private void SpawnBunchaOfAphidsForTheFunnies()
 	{
 		for (int i = 0; i < 15; i++)

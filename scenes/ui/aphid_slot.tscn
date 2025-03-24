@@ -13,7 +13,7 @@ size_flags_stretch_ratio = 2.0
 texture_normal = ExtResource("1_m4hsb")
 script = ExtResource("4_uqier")
 PressedColor = Color(0.705194, 0.705194, 0.705194, 1)
-FocusColor = Color(0.500095, 0.500095, 0.500095, 1)
+FocusColor = Color(0.563062, 0.602889, 0.815233, 1)
 HoverColor = Color(0.500095, 0.500095, 0.500095, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
@@ -21,10 +21,8 @@ metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 light_mask = 0
 use_parent_material = true
 anchors_preset = 0
-offset_left = 16.2433
-offset_top = 18.773
-offset_right = 138.243
-offset_bottom = 136.773
+offset_right = 122.0
+offset_bottom = 118.0
 scale = Vector2(0.75, 0.75)
 mouse_filter = 2
 
@@ -32,48 +30,48 @@ mouse_filter = 2
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
-offset_left = -36.6811
-offset_top = -42.0677
-offset_right = 163.319
-offset_bottom = 157.932
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
 stretch_mode = 5
 
 [node name="back_legs" type="TextureRect" parent="Control"]
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
-offset_left = -54.0
-offset_top = -46.0
-offset_right = 146.0
-offset_bottom = 154.0
+offset_left = -33.3333
+offset_top = -25.3333
+offset_right = 166.667
+offset_bottom = 174.667
 stretch_mode = 5
 
 [node name="body" type="TextureRect" parent="Control"]
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
-offset_left = -36.0
-offset_top = -42.0
-offset_right = 164.0
-offset_bottom = 158.0
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
 stretch_mode = 5
 
 [node name="eyes" type="TextureRect" parent="Control"]
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
-offset_left = -37.6811
-offset_top = -42.0677
-offset_right = 162.319
-offset_bottom = 157.932
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
 stretch_mode = 5
 
 [node name="legs" type="TextureRect" parent="Control"]
 light_mask = 0
 use_parent_material = true
 layout_mode = 0
-offset_left = -36.0
-offset_top = -42.0
-offset_right = 164.0
-offset_bottom = 158.0
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
 stretch_mode = 5

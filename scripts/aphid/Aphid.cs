@@ -302,7 +302,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			IsReadyForHarvest = true;
 			ShaderMaterial _outline = new()
 			{
-				Shader = ResourceLoader.Load<Shader>(GlobalManager.CanvasGroupOutlineShader)
+				Shader = ResourceLoader.Load<Shader>(GlobalManager.CG_OUTLINE_SHADER)
 			};
 			_outline.SetShaderParameter("line_colour", Color.FromHtml("f25400"));
 			_outline.SetShaderParameter("line_thickness", 2);
@@ -347,15 +347,15 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			_father.Status.AddTiredness(50);
 			_father.Entity.SetState(StateEnum.Idle);
 		}
-		GlobalManager.EmitParticles("heart", GlobalPosition - new Vector2(0, 10));
+		GlobalManager.EmitParticles("heart", GlobalPosition - new Vector2(0, 10), false);
 	}
 
 	// =======| Collision Behaviours |========
 	public void OnTriggerEnter(Node2D _node)
 	{
-		if (!_node.HasMeta(GlobalManager.StringNames.TagMeta))
+		if (!_node.HasMeta(StringNames.TagMeta))
 			return;
-		var _tag = (string)_node.GetMeta(GlobalManager.StringNames.TagMeta);
+		var _tag = (string)_node.GetMeta(StringNames.TagMeta);
 
 		var _action = TriggerActions.Find((e) => e.TriggerID == _tag);
 		_action?.OnTrigger(this, _node, StateArgs);
@@ -472,37 +472,32 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			return IncompatibleTraits.Contains(_ID);
 		}
 	}
-	public class Skill
-	{
-		public string Name { get; set; }
-		public int Points { get { return points; } set { points = Mathf.Clamp(value, 0, 10); } }
+	public class Skill(string Name)
+    {
+        public string Name { get; set; } = Name;
+        public int Points { get { return points; } set { points = Mathf.Clamp(value, 0, 10); } }
 		private int points;
 		public int Level { get; set; }
 
 		public delegate void AphidSkillLevelUp(int _lastLevel, int _currentLevel);
 		public event AphidSkillLevelUp OnLevelUp;
 
-		public Skill(string Name)
+        public virtual void GivePoints(int _points, bool _noSignal = false)
 		{
-			this.Name = Name;
-		}
-
-		public virtual void GivePoints(int _points)
-		{
-			_points = Mathf.Max(0, Points + _points);
-
-			Points += _points;
+			points += _points;
 			int _levelUps = 0;
-			while (Points > 10)
+			while (points > 10)
 			{
-				Points -= 10;
+				points -= 10;
 				_levelUps++;
 			}
-			GiveLevel(_levelUps);
+			Points = Mathf.Max(0, points);
+			GiveLevel(_levelUps, _noSignal);
 		}
-		public virtual void GiveLevel(int _level)
+		public virtual void GiveLevel(int _level, bool _noSignal = false)
 		{
-			OnLevelUp?.Invoke(Level, Level + _level);
+			if (!_noSignal)
+				OnLevelUp?.Invoke(Level, Level + _level);
 			Level += _level;
 		}
 	}

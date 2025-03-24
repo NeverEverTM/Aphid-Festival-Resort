@@ -1,5 +1,6 @@
 
 using Godot;
+// This script is automatically generated from 'res://scripts/debug/tool_inputnamecs_generator.gd'
 public static class InputNames
 {
 	public readonly static StringName Debug0 = new("debug_0");
@@ -19,9 +20,9 @@ public static class InputNames
 	public readonly static StringName ChangeCamera = new("change_camera");
 	public readonly static StringName TakeScreenshot = new("take_screenshot");
 	public readonly static StringName Select = new("select");
-	public readonly static StringName Deselect = new("deselect");
 	public readonly static StringName Sell = new("sell");
 	public readonly static StringName Store = new("store");
 	public readonly static StringName Pull = new("pull");
 	public readonly static StringName AlignToGrid = new("align_to_grid");
+	public readonly static StringName ChangeMode = new("change_mode");
 } 

@@ -1,8 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://bl32rmw6rm32a"]
+[gd_scene load_steps=4 format=3 uid="uid://bl32rmw6rm32a"]
 
 [ext_resource type="Texture2D" uid="uid://h1nya5ne4h1n" path="res://sprites/props/grass_2.png" id="1_uieu5"]
+[ext_resource type="Script" uid="uid://bqocmgjvpnlmx" path="res://scripts/props/Grass.cs" id="2_8rdf3"]
 
-[node name="large_grass" type="Sprite2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g8kp6"]
+size = Vector2(18, 8)
+
+[node name="large_grass" type="Sprite2D" node_paths=PackedStringArray("area")]
 texture = ExtResource("1_uieu5")
 offset = Vector2(0, -46)
+script = ExtResource("2_8rdf3")
+area = NodePath("Area2D")
+second = 0.15
+third = 0.1
 metadata/id = "largegrass_0"
+
+[node name="Area2D" type="Area2D" parent="."]
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_g8kp6")

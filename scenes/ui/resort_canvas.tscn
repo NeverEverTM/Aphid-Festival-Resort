@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=100 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" uid="uid://5lbbq4ta7i38" path="res://scripts/gui/FreeCameraManager.cs" id="1_i0o2h"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_yrmm3"]
@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="5_i34va"]
 [ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/gui_icons/icon_camera.png" id="6_hswat"]
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="7_fjjb6"]
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="7_uocqb"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="7_uocqb"]
 [ext_resource type="Script" uid="uid://dr06mcglllliv" path="res://scripts/panels/GenerationsTracker.cs" id="8_pnptv"]
 [ext_resource type="PackedScene" uid="uid://d7m5e6tlxyve" path="res://scenes/ui/aphid_slot.tscn" id="9_0hi6w"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="10_i403g"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="15_ghqbq"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="16_1fh83"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="17_wvtt5"]
+[ext_resource type="LabelSettings" uid="uid://cpif8qwkwkso5" path="res://resources/skill_label.tres" id="18_lmq7c"]
 [ext_resource type="Texture2D" uid="uid://c5r0qq64uwen0" path="res://sprites/ui/aphid_info_hud.png" id="18_wc2dv"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="20_tekx7"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="23_0ppya"]
@@ -110,14 +111,14 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("camera_bg:visible")
+tracks/5/path = NodePath("zoom_bg/zoom_level:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"update": 0,
+"values": [Vector2(32, 13)]
 }
 
 [sub_resource type="Animation" id="Animation_xhs32"]
@@ -187,18 +188,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(315, 130), Vector2(315, 40)]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("camera_bg:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
 
 [sub_resource type="Animation" id="Animation_v7sb2"]
 resource_name = "open"
@@ -223,7 +212,7 @@ tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.3, 0.5),
-"transitions": PackedFloat32Array(-1.07177, 0.25, -2),
+"transitions": PackedFloat32Array(-1.07177, 0.25, 1),
 "update": 0,
 "values": [Vector2(44, 200), Vector2(44, 0), Vector2(44, 4)]
 }
@@ -266,14 +255,14 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("camera_bg:visible")
+tracks/5/path = NodePath("zoom_bg/zoom_level:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"times": PackedFloat32Array(0, 0.31, 0.5),
+"transitions": PackedFloat32Array(1, 0.25, 1),
+"update": 0,
+"values": [Vector2(32, 200), Vector2(32, 5), Vector2(32, 14)]
 }
 
 [sub_resource type="Animation" id="Animation_eb8uf"]
@@ -303,18 +292,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(315, 40), Vector2(315, 130)]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("camera_bg:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ebyno"]
 _data = {
@@ -330,174 +307,6 @@ font_size = 30
 font_color = Color(1, 0.55321, 0.471712, 1)
 shadow_color = Color(0.311861, 1.6214e-06, 8.30255e-07, 1)
 shadow_offset = Vector2(1.435, 1.725)
-
-[sub_resource type="Animation" id="Animation_iv61d"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("background:self_modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(0.568627, 0.239216, 0.117647, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("description:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-440.571, 480.475)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("aphid_display_bg:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-592, -317)]
-}
-
-[sub_resource type="Animation" id="Animation_x8v33"]
-resource_name = "close"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("background:self_modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(0.568627, 0.239216, 0.117647, 1), Color(0.568627, 0.239216, 0.117647, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("description:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(2, 0.5),
-"update": 0,
-"values": [Vector2(176, 22), Vector2(700, 19)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("aphid_display_bg:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(2, 1),
-"update": 0,
-"values": [Vector2(-592, -317), Vector2(-1500, -317)]
-}
-
-[sub_resource type="Animation" id="Animation_iuh1e"]
-resource_name = "open"
-length = 0.4
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("background:self_modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(0.568627, 0.239216, 0.117647, 0), Color(0.568627, 0.239216, 0.117647, 1)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("description:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(0.5, 2),
-"update": 0,
-"values": [Vector2(700, 19), Vector2(176, 22)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("aphid_display_bg:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(0.5, 1),
-"update": 0,
-"values": [Vector2(-592, 1000), Vector2(-592, -317)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_egrm7"]
-_data = {
-&"RESET": SubResource("Animation_iv61d"),
-&"close": SubResource("Animation_x8v33"),
-&"open": SubResource("Animation_iuh1e")
-}
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_flcd2"]
-shader = ExtResource("10_i403g")
-shader_parameter/speed = -0.125
-shader_parameter/node_size = Vector2(16, 16)
-shader_parameter/color = Color(0.721569, 0.266667, 0.0705882, 1)
 
 [sub_resource type="Animation" id="Animation_lw7og"]
 length = 0.001
@@ -621,6 +430,378 @@ region = Rect2(32, 48, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_i8no1"]
 atlas = ExtResource("20_tekx7")
 region = Rect2(48, 48, 16, 16)
+
+[sub_resource type="Animation" id="Animation_iv61d"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("background:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.568627, 0.239216, 0.117647, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("description:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-440.571, 480.475)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("aphid_display_bg:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-592, -317)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("description:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("aphid_display_bg:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("album_bg:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-577, -298)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("album_bg:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_x8v33"]
+resource_name = "close"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("background:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.568627, 0.239216, 0.117647, 1), Color(0.568627, 0.239216, 0.117647, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("description:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(-2, 0.5),
+"update": 0,
+"values": [Vector2(176, 22), Vector2(700, 19)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("aphid_display_bg:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(2, 1),
+"update": 0,
+"values": [Vector2(-592, -317), Vector2(-1500, -317)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("album_bg:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.298774),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(-577, -298), Vector2(-577, 446)]
+}
+
+[sub_resource type="Animation" id="Animation_lmq7c"]
+resource_name = "close_album"
+length = 0.5
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("description:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.22, 0.5),
+"transitions": PackedFloat32Array(1, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("aphid_display_bg:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.22, 0.5),
+"transitions": PackedFloat32Array(1, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("album_bg:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector2(-577, -298), Vector2(-577, 486)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("album_bg:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_iuh1e"]
+resource_name = "open"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("background:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.568627, 0.239216, 0.117647, 0), Color(0.568627, 0.239216, 0.117647, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("description:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(0.5, 2),
+"update": 0,
+"values": [Vector2(700, 19), Vector2(176, 22)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("aphid_display_bg:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(-592, 1000), Vector2(-592, -317)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("aphid_display_bg:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("description:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("album_bg:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_on0f6"]
+resource_name = "open_album"
+length = 0.7
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("description:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("aphid_display_bg:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("album_bg:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3, 0.7),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(-577, 486), Vector2(-577, -298)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("album_bg:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_egrm7"]
+_data = {
+&"RESET": SubResource("Animation_iv61d"),
+&"close": SubResource("Animation_x8v33"),
+&"close_album": SubResource("Animation_lmq7c"),
+&"open": SubResource("Animation_iuh1e"),
+&"open_album": SubResource("Animation_on0f6")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flcd2"]
+shader = ExtResource("10_i403g")
+shader_parameter/speed = -0.125
+shader_parameter/node_size = Vector2(16, 16)
+shader_parameter/color = Color(0.721569, 0.266667, 0.0705882, 1)
 
 [sub_resource type="Animation" id="Animation_ei7ps"]
 length = 0.001
@@ -1795,7 +1976,7 @@ font_size = 30
 [node name="resort_canvas" type="CanvasLayer"]
 layer = 0
 
-[node name="freeCameraHUD" type="Control" parent="." node_paths=PackedStringArray("animator", "buildButton", "storageButton", "cameraMenuButton", "focusedAphidButton", "zoomLevelSlider", "build_menu", "cameraBg")]
+[node name="freeCameraHUD" type="Control" parent="." node_paths=PackedStringArray("animator", "cameraMenuButton", "focusedAphidButton", "spectatorLabel", "zoomLevelSlider")]
 visible = false
 layout_mode = 3
 anchors_preset = 7
@@ -1810,13 +1991,10 @@ grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("1_i0o2h")
 animator = NodePath("hud_animation")
-buildButton = NodePath("hud_bg/hud_grid/buildButton")
-storageButton = NodePath("../build_menu/sliding_panel/sliding_popup/show_storage")
 cameraMenuButton = NodePath("hud_bg/hud_grid/camera_mode_button")
 focusedAphidButton = NodePath("hud_bg/camera_bg/camera_grid/select_aphid")
-zoomLevelSlider = NodePath("hud_bg/camera_bg/camera_grid/zoom_level")
-build_menu = NodePath("../build_menu")
-cameraBg = NodePath("hud_bg/camera_bg")
+spectatorLabel = NodePath("hud_bg/camera_bg/spectator_label")
+zoomLevelSlider = NodePath("hud_bg/zoom_bg/zoom_level")
 
 [node name="hud_animation" type="AnimationPlayer" parent="freeCameraHUD"]
 root_node = NodePath("../hud_bg")
@@ -1834,13 +2012,12 @@ offset_right = 195.0
 offset_bottom = 39.0
 mouse_filter = 0
 texture = ExtResource("3_yrmm3")
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="camera_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg"]
-visible = false
 self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
 show_behind_parent = true
 light_mask = 0
@@ -1860,48 +2037,14 @@ axis_stretch_vertical = 1
 
 [node name="camera_grid" type="HBoxContainer" parent="freeCameraHUD/hud_bg/camera_bg"]
 layout_mode = 0
-offset_left = 34.0
+offset_left = 31.0
 offset_top = 12.0
-offset_right = 293.0
+offset_right = 290.0
 offset_bottom = 72.0
-
-[node name="zoom_level" type="HSlider" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
-light_mask = 0
-custom_minimum_size = Vector2(175, 60)
-layout_mode = 2
-focus_mode = 0
-min_value = 1.25
-max_value = 5.0
-step = 0.25
-value = 2.0
-exp_edit = true
-
-[node name="-" type="Label" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid/zoom_level"]
-light_mask = 0
-layout_mode = 0
-offset_top = 33.2048
-offset_right = 35.0
-offset_bottom = 69.2048
-text = "-"
-label_settings = SubResource("LabelSettings_bhg5p")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="+" type="Label" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid/zoom_level"]
-light_mask = 0
-layout_mode = 0
-offset_left = 136.0
-offset_top = 37.2048
-offset_right = 171.0
-offset_bottom = 73.2048
-text = "+"
-label_settings = SubResource("LabelSettings_bhg5p")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="select_aphid" type="TextureButton" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
 light_mask = 0
-custom_minimum_size = Vector2(80, 60)
+custom_minimum_size = Vector2(90, 60)
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 0
@@ -1912,6 +2055,20 @@ script = ExtResource("5_i34va")
 PressedColor = Color(0.507972, 0.507972, 0.507972, 1)
 FocusColor = Color(0.837469, 0.837469, 0.837469, 1)
 HoverColor = Color(0.786347, 0.786347, 0.786347, 1)
+
+[node name="spectator_label" type="RichTextLabel" parent="freeCameraHUD/hud_bg/camera_bg"]
+visible = false
+layout_mode = 0
+offset_left = -112.0
+offset_top = -115.0
+offset_right = 425.0
+mouse_filter = 2
+theme_override_constants/outline_size = 8
+bbcode_enabled = true
+text = "Spectating:
+<| Extremely long aphid name |>"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="hud_grid" type="HBoxContainer" parent="freeCameraHUD/hud_bg"]
 light_mask = 0
@@ -1959,115 +2116,66 @@ script = ExtResource("5_i34va")
 PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
 HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
-[node name="generations_panel" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "descriptionLabel", "iconNode", "aphidContainer")]
-visible = false
-light_mask = 0
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = ExtResource("7_uocqb")
-script = ExtResource("8_pnptv")
-animPlayer = NodePath("generations_player")
-descriptionLabel = NodePath("description/generations_desc")
-iconNode = NodePath("description/aphid_ui_anchor")
-aphidSlot = ExtResource("9_0hi6w")
-aphidContainer = NodePath("aphid_display_bg/aphid_display_scroll/aphid_display_grid")
-
-[node name="generations_player" type="AnimationPlayer" parent="generations_panel"]
-libraries = {
-&"": SubResource("AnimationLibrary_egrm7")
-}
-
-[node name="background" type="TextureRect" parent="generations_panel"]
-self_modulate = Color(0.568627, 0.239216, 0.117647, 0)
-light_mask = 0
-material = SubResource("ShaderMaterial_flcd2")
+[node name="zoom_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
-offset_left = -667.0
-offset_top = -379.0
-offset_right = -212.0
-offset_bottom = -112.0
-scale = Vector2(3, 3)
-texture = ExtResource("11_62duh")
-stretch_mode = 1
-
-[node name="aphid_display_bg" type="NinePatchRect" parent="generations_panel"]
-light_mask = 0
-layout_mode = 0
-offset_left = -592.0
-offset_top = -317.0
-offset_right = 162.0
-offset_bottom = 352.0
-texture = ExtResource("38_aw538")
-patch_margin_left = 30
-patch_margin_top = 30
-patch_margin_right = 30
-patch_margin_bottom = 30
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
-
-[node name="aphid_display_scroll" type="ScrollContainer" parent="generations_panel/aphid_display_bg"]
-layout_mode = 0
-offset_left = 39.0
-offset_top = 52.0
-offset_right = 715.0
-offset_bottom = 659.0
-
-[node name="aphid_display_grid" type="GridContainer" parent="generations_panel/aphid_display_bg/aphid_display_scroll"]
-layout_mode = 2
-columns = 5
-
-[node name="aphid_slot3" parent="generations_panel/aphid_display_bg/aphid_display_scroll/aphid_display_grid" instance=ExtResource("9_0hi6w")]
-layout_mode = 2
-
-[node name="description" type="NinePatchRect" parent="generations_panel"]
-self_modulate = Color(0.743247, 0.154148, 0.418508, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = -440.571
-offset_top = 480.475
-offset_right = 25.429
-offset_bottom = 800.475
+offset_left = -451.0
+offset_right = -218.0
+offset_bottom = 90.0
 texture = ExtResource("3_yrmm3")
 patch_margin_left = 20
 patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="aphid_ui_anchor" type="Control" parent="generations_panel/description"]
+[node name="zoom_level" type="HSlider" parent="freeCameraHUD/hud_bg/zoom_bg"]
 light_mask = 0
-anchors_preset = 0
-offset_left = 105.0
-offset_top = -304.0
-offset_right = 227.0
-offset_bottom = -186.0
-scale = Vector2(2, 2)
-mouse_filter = 2
+custom_minimum_size = Vector2(175, 60)
+layout_mode = 2
+offset_left = 32.0
+offset_top = 13.0
+offset_right = 207.0
+offset_bottom = 73.0
+focus_mode = 0
+min_value = 1.25
+max_value = 5.0
+step = 0.25
+value = 2.0
+exp_edit = true
 
-[node name="generations_desc" type="RichTextLabel" parent="generations_panel/description"]
+[node name="-" type="Label" parent="freeCameraHUD/hud_bg/zoom_bg/zoom_level"]
 light_mask = 0
 layout_mode = 0
-offset_left = 20.0
-offset_top = 27.0
-offset_right = 446.0
-offset_bottom = 295.0
-theme_override_colors/default_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/normal_font_size = 30
-bbcode_enabled = true
-text = "Hello Father
-This is a messasge from your son.
-Please recover, God bless your soul. -D"
+offset_top = 33.2048
+offset_right = 35.0
+offset_bottom = 69.2048
+text = "-"
+label_settings = SubResource("LabelSettings_bhg5p")
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="aphid_info" type="Control" parent="." node_paths=PackedStringArray("menu_player", "name_label", "ageDisplay", "foodBar", "waterBar", "affectionBar", "sleepBar", "bondshipBar", "staminaBar", "strengthBar", "speedBar", "intelligenceBar")]
+[node name="+" type="Label" parent="freeCameraHUD/hud_bg/zoom_bg/zoom_level"]
+light_mask = 0
+layout_mode = 0
+offset_left = 140.0
+offset_top = 37.2048
+offset_right = 175.0
+offset_bottom = 73.2048
+text = "+"
+label_settings = SubResource("LabelSettings_bhg5p")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="aphid_info" type="Control" parent="." node_paths=PackedStringArray("menu_player", "name_label", "ageDisplay", "foodBar", "waterBar", "affectionBar", "sleepBar", "bondshipBar", "staminaBar", "strengthBar", "speedBar", "intelligenceBar", "staminaLabel", "strengthLabel", "speedLabel", "intelligenceLabel")]
+editor_description = "stringnames:
+0.002004008016032064
+0.02404809619238477
+0.002004008016032064
+strings:
+0.018036072144288578
+0.002004008016032064
+0.05410821643286573
+"
 visible = false
 light_mask = 2
 layout_mode = 3
@@ -2098,6 +2206,10 @@ staminaBar = NodePath("stamina")
 strengthBar = NodePath("strength")
 speedBar = NodePath("speed")
 intelligenceBar = NodePath("intelligence")
+staminaLabel = NodePath("stamina/stamina_text")
+strengthLabel = NodePath("strength/strength_icon/strength_text")
+speedLabel = NodePath("speed/speed_icon/speed_text")
+intelligenceLabel = NodePath("intelligence/intelligence_icon/intelligence_text")
 
 [node name="aphid_info_player" type="AnimationPlayer" parent="aphid_info"]
 libraries = {
@@ -2111,7 +2223,7 @@ layout_mode = 0
 offset_left = -563.0
 offset_top = -319.0
 offset_right = -142.0
-offset_bottom = 326.0
+offset_bottom = 365.0
 texture = ExtResource("38_aw538")
 patch_margin_left = 30
 patch_margin_top = 30
@@ -2286,10 +2398,10 @@ stretch_mode = 5
 [node name="stamina" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -476.0
-offset_top = 38.0
-offset_right = -178.0
-offset_bottom = 78.0
+offset_left = -508.0
+offset_top = 30.0
+offset_right = -210.0
+offset_bottom = 70.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2305,20 +2417,33 @@ tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 [node name="stamina_icon" type="TextureRect" parent="aphid_info/stamina"]
 light_mask = 0
 layout_mode = 0
-offset_left = -61.0
-offset_top = -8.0
-offset_right = -9.0
-offset_bottom = 48.0
+offset_left = -24.0
+offset_top = -25.0
+offset_right = 28.0
+offset_bottom = 31.0
 texture = SubResource("AtlasTexture_72c4q")
 stretch_mode = 5
+
+[node name="stamina_text" type="Label" parent="aphid_info/stamina"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = -53.0
+offset_right = 298.0
+offset_bottom = 6.0
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 30
+text = "Stamina (lvl 8)"
+label_settings = ExtResource("18_lmq7c")
+vertical_alignment = 1
 
 [node name="strength" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -476.0
-offset_top = 94.0
-offset_right = -178.0
-offset_bottom = 134.0
+offset_left = -508.0
+offset_top = 118.0
+offset_right = -210.0
+offset_bottom = 158.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2334,20 +2459,29 @@ tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 [node name="strength_icon" type="TextureRect" parent="aphid_info/strength"]
 light_mask = 0
 layout_mode = 0
-offset_left = -61.0
-offset_top = -8.0
-offset_right = -9.0
-offset_bottom = 48.0
+offset_left = -32.0
+offset_top = -22.0
+offset_right = 20.0
+offset_bottom = 34.0
 texture = SubResource("AtlasTexture_6e778")
 stretch_mode = 5
+
+[node name="strength_text" type="Label" parent="aphid_info/strength/strength_icon"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = -27.0
+offset_right = 286.0
+offset_bottom = 21.0
+text = "Strength (lvl 8)"
+label_settings = ExtResource("18_lmq7c")
 
 [node name="speed" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -476.0
-offset_top = 150.0
-offset_right = -178.0
-offset_bottom = 190.0
+offset_left = -508.0
+offset_top = 206.0
+offset_right = -210.0
+offset_bottom = 246.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2363,20 +2497,29 @@ tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 [node name="speed_icon" type="TextureRect" parent="aphid_info/speed"]
 light_mask = 0
 layout_mode = 0
-offset_left = -61.0
-offset_top = -8.0
-offset_right = -9.0
-offset_bottom = 48.0
+offset_left = -29.0
+offset_top = -23.0
+offset_right = 23.0
+offset_bottom = 33.0
 texture = SubResource("AtlasTexture_tsrb7")
 stretch_mode = 5
+
+[node name="speed_text" type="Label" parent="aphid_info/speed/speed_icon"]
+layout_mode = 0
+offset_left = 62.0
+offset_top = -25.0
+offset_right = 292.0
+offset_bottom = 23.0
+text = "Speed (lvl 100)"
+label_settings = ExtResource("18_lmq7c")
 
 [node name="intelligence" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -476.0
-offset_top = 206.0
-offset_right = -178.0
-offset_bottom = 246.0
+offset_left = -508.0
+offset_top = 294.0
+offset_right = -210.0
+offset_bottom = 334.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2392,12 +2535,184 @@ tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 [node name="intelligence_icon" type="TextureRect" parent="aphid_info/intelligence"]
 light_mask = 0
 layout_mode = 0
-offset_left = -61.0
-offset_top = -8.0
-offset_right = -9.0
-offset_bottom = 48.0
+offset_left = -24.0
+offset_top = -32.0
+offset_right = 28.0
+offset_bottom = 24.0
 texture = SubResource("AtlasTexture_i8no1")
 stretch_mode = 5
+
+[node name="intelligence_text" type="Label" parent="aphid_info/intelligence/intelligence_icon"]
+layout_mode = 0
+offset_left = 57.0
+offset_top = -16.0
+offset_right = 226.0
+offset_bottom = 32.0
+text = "Intelligence"
+label_settings = ExtResource("18_lmq7c")
+
+[node name="generations_panel" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "descriptionLabel", "iconNode", "aphidContainer", "photoContainer", "albumButton", "aphidAlbumButton")]
+visible = false
+light_mask = 0
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_uocqb")
+script = ExtResource("8_pnptv")
+animPlayer = NodePath("generations_player")
+descriptionLabel = NodePath("description/generations_desc")
+iconNode = NodePath("description/aphid_ui_anchor")
+aphidContainer = NodePath("aphid_display_bg/aphid_display_scroll/aphid_display_grid")
+photoContainer = NodePath("album_bg/album_scroll/photo_grid")
+albumButton = NodePath("aphid_display_bg/album_button")
+aphidAlbumButton = NodePath("description/aphid_album_button2")
+
+[node name="generations_player" type="AnimationPlayer" parent="generations_panel"]
+libraries = {
+&"": SubResource("AnimationLibrary_egrm7")
+}
+
+[node name="background" type="TextureRect" parent="generations_panel"]
+self_modulate = Color(0.568627, 0.239216, 0.117647, 0)
+light_mask = 0
+material = SubResource("ShaderMaterial_flcd2")
+layout_mode = 0
+offset_left = -667.0
+offset_top = -379.0
+offset_right = -212.0
+offset_bottom = -112.0
+scale = Vector2(3, 3)
+texture = ExtResource("11_62duh")
+stretch_mode = 1
+
+[node name="aphid_display_bg" type="NinePatchRect" parent="generations_panel"]
+light_mask = 0
+layout_mode = 0
+offset_left = -592.0
+offset_top = -317.0
+offset_right = 162.0
+offset_bottom = 352.0
+texture = ExtResource("38_aw538")
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="aphid_display_scroll" type="ScrollContainer" parent="generations_panel/aphid_display_bg"]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 52.0
+offset_right = 715.0
+offset_bottom = 659.0
+
+[node name="aphid_display_grid" type="GridContainer" parent="generations_panel/aphid_display_bg/aphid_display_scroll"]
+layout_mode = 2
+columns = 5
+
+[node name="aphid_slot3" parent="generations_panel/aphid_display_bg/aphid_display_scroll/aphid_display_grid" instance=ExtResource("9_0hi6w")]
+layout_mode = 2
+
+[node name="album_button" type="TextureButton" parent="generations_panel/aphid_display_bg"]
+light_mask = 0
+layout_mode = 0
+offset_left = -18.9989
+offset_top = 578.997
+offset_right = 96.0011
+offset_bottom = 688.997
+texture_normal = ExtResource("6_hswat")
+stretch_mode = 5
+script = ExtResource("5_i34va")
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="description" type="NinePatchRect" parent="generations_panel"]
+self_modulate = Color(0.743247, 0.154148, 0.418508, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -440.571
+offset_top = 480.475
+offset_right = 25.429
+offset_bottom = 800.475
+texture = ExtResource("3_yrmm3")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="aphid_ui_anchor" type="Control" parent="generations_panel/description"]
+light_mask = 0
+anchors_preset = 0
+offset_left = 105.0
+offset_top = -304.0
+offset_right = 227.0
+offset_bottom = -186.0
+scale = Vector2(2, 2)
+mouse_filter = 2
+
+[node name="generations_desc" type="RichTextLabel" parent="generations_panel/description"]
+light_mask = 0
+layout_mode = 0
+offset_left = 20.0
+offset_top = 27.0
+offset_right = 446.0
+offset_bottom = 295.0
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "Hello Father
+This is a messasge from your son.
+Please recover, God bless your soul. -D"
+
+[node name="aphid_album_button2" type="TextureButton" parent="generations_panel/description"]
+visible = false
+light_mask = 0
+layout_mode = 0
+offset_left = 290.0
+offset_top = -140.0
+offset_right = 405.0
+offset_bottom = -30.0
+texture_normal = ExtResource("6_hswat")
+stretch_mode = 5
+script = ExtResource("5_i34va")
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="album_bg" type="NinePatchRect" parent="generations_panel"]
+self_modulate = Color(0.743247, 0.154148, 0.418508, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -577.0
+offset_top = -298.0
+offset_right = 648.0
+offset_bottom = 352.0
+texture = ExtResource("36_g3t8v")
+patch_margin_left = 10
+patch_margin_top = 6
+patch_margin_right = 10
+patch_margin_bottom = 6
+
+[node name="album_scroll" type="ScrollContainer" parent="generations_panel/album_bg"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 38.0
+offset_right = 1210.0
+offset_bottom = 609.0
+
+[node name="photo_grid" type="GridContainer" parent="generations_panel/album_bg/album_scroll"]
+custom_minimum_size = Vector2(1100, 2000)
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 60
+columns = 4
 
 [node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon")]
 visible = false
@@ -3101,7 +3416,7 @@ layout_mode = 2
 [node name="inv_item_container16" parent="kitchen_menu/inventory_bg/inventory_container" instance=ExtResource("35_dvpl5")]
 layout_mode = 2
 
-[node name="build_menu" type="Control" parent="." node_paths=PackedStringArray("storage_container", "menu_player")]
+[node name="build_menu" type="Control" parent="." node_paths=PackedStringArray("storageContainer", "menuPlayer", "buildButton", "storageButton")]
 visible = false
 layout_mode = 3
 anchors_preset = 6
@@ -3116,9 +3431,10 @@ offset_bottom = -284.0
 grow_horizontal = 0
 grow_vertical = 2
 script = ExtResource("38_k0d1x")
-item_container = ExtResource("29_mvok5")
-storage_container = NodePath("sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer")
-menu_player = NodePath("build_player")
+storageContainer = NodePath("sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container")
+menuPlayer = NodePath("build_player")
+buildButton = NodePath("../freeCameraHUD/hud_bg/hud_grid/buildButton")
+storageButton = NodePath("sliding_panel/sliding_popup/show_storage")
 
 [node name="build_player" type="AnimationPlayer" parent="build_menu"]
 process_mode = 1
@@ -3165,55 +3481,55 @@ offset_top = 53.0
 offset_right = 447.0
 offset_bottom = 578.0
 
-[node name="GridContainer" type="GridContainer" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer"]
+[node name="storage_container" type="GridContainer" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer"]
 layout_mode = 2
 columns = 3
 
-[node name="item" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item2" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item2" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item3" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item3" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item4" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item4" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item6" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item6" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item7" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item7" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item8" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item8" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item9" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item9" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item10" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item10" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item11" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item11" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item12" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item12" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item5" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+[node name="item5" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 

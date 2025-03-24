@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 // Props to this tutorial video for an easy control binding display, truly lifesaving
@@ -10,12 +11,13 @@ using Godot;
 public partial class ControlsMenu : Control
 {
 	[Export] private Control[] controls;
+	[Export] private ScrollContainer scrollContainer;
 	[Export] private TextureProgressBar reset_bar;
 	[Export] private AudioStream select_sound, fail_sound, reset_sound;
 	[Export] private Curve interaction_curve;
 
 	private double interactionTimer;
-	private readonly List<string> validActions = new();
+	private readonly List<string> validActions = [];
 	private bool is_remapping, was_modified, was_restarted;
 	private Control current_action;
 	private InputEvent current_keybind;
@@ -26,7 +28,10 @@ public partial class ControlsMenu : Control
 		VisibilityChanged += () =>
 		{
 			if (Visible)
+			{
+				scrollContainer.ScrollVertical = 0;
 				return;
+			}
 
 			is_remapping = false;
 
@@ -89,7 +94,9 @@ public partial class ControlsMenu : Control
 	private bool IsKeyDuplicated(InputEvent _keybind)
 	{
 		string _inputedKey = ControlsManager.CleanActionName(_keybind);
-		// it only checks for duplicate values for available binds in the menu
+		bool _isBuildMode = controls.First((c) => c.Name == current_action.Name).GetParent().HasMeta("BuildMode");
+
+		// check for duplicate values within the available binds
 		for (int i = 0; i < validActions.Count; i++)
 		{
 			// make sure to not disallow yourself from just canceling out by setting the same key
@@ -98,11 +105,17 @@ public partial class ControlsMenu : Control
 
 			string _storedKey = ControlsManager.CleanActionName(ControlsManager.Binds[validActions[i]]);
 
+			// this key is duplicated
 			if (_inputedKey == _storedKey)
 			{
-				SoundManager.CreateSound(fail_sound);
-				GlobalManager.CreatePopup("warning_key_duplicated", GetParent());
-				return true;
+				// binds can be duplicated if they arent from the same group
+				// this is cause build mode binds dont affect overworld actions and viceversa
+				if (_isBuildMode == controls.First((c) => c.Name == validActions[i]).GetParent().HasMeta("BuildMode"))
+				{
+					SoundManager.CreateSound(fail_sound);
+					GlobalManager.CreatePopup("warning_key_duplicated", GetParent());
+					return true;
+				}
 			}
 		}
 		// at this point, we assigned a key that wasnt just the same we had, or duplicated in another action 
@@ -114,21 +127,24 @@ public partial class ControlsMenu : Control
 	{
 		if (!is_remapping)
 			return;
-		InputEventMouseButton _mouseEvent = @event is InputEventMouseButton ? @event as InputEventMouseButton : null;
 
-		// Non-valid keybinds
-		if (@event.IsAction("escape") || @event.IsAction("debug_0") || @event.IsAction("debug_1") ||
-			@event.IsAction("debug_2") || @event.IsAction("take_screenshot") ||
-			_mouseEvent?.ButtonIndex == MouseButton.WheelDown || _mouseEvent?.ButtonIndex == MouseButton.WheelUp)
+		// cancel the rebind
+		if (@event.IsActionPressed(InputNames.Escape))
 		{
-			GetViewport().SetInputAsHandled();
+			SetBind(ControlsManager.Binds[current_action.Name], false);
 			AcceptEvent();
 			return;
 		}
 
-		// allow cancel button to rebind
-		if (@event.IsAction("cancel"))
+		InputEventMouseButton _mouseEvent = @event is InputEventMouseButton ? @event as InputEventMouseButton : null;
+		// Non-valid keybinds
+		if (@event.IsAction(InputNames.Debug0) || @event.IsAction(InputNames.Debug1) ||
+			@event.IsAction(InputNames.Debug2) || @event.IsAction(InputNames.TakeScreenshot) ||
+			_mouseEvent?.ButtonIndex == MouseButton.WheelDown || _mouseEvent?.ButtonIndex == MouseButton.WheelUp)
+		{
 			AcceptEvent();
+			return;
+		}
 
 		// disallow double clicks
 		if (_mouseEvent != null && _mouseEvent.DoubleClick)
@@ -140,16 +156,23 @@ public partial class ControlsMenu : Control
 			if (IsKeyDuplicated(@event))
 				return;
 
-			ControlsManager.BindAction(@event, current_action.Name);
-			(current_action.FindChild("action") as RichTextLabel).Text = ControlsManager.GetActionName(@event);
-
-			// reset state
-			is_remapping = false;
-			current_action = null;
-			current_keybind = null;
-			SoundManager.CreateSound(select_sound);
-			AcceptEvent();
+			SetBind(@event);
 		}
+
+		AcceptEvent();
+	}
+	public void SetBind(InputEvent @event, bool _success = true)
+	{
+		is_remapping = false;
+
+		ControlsManager.BindAction(@event, current_action.Name);
+		(current_action.FindChild("action") as RichTextLabel).Text = ControlsManager.GetActionName(@event);
+		current_action = null;
+		current_keybind = null;
+		if (_success)
+			SoundManager.CreateSound(select_sound);
+		else
+			SoundManager.CreateSound(fail_sound);
 	}
 	public override void _Process(double delta)
 	{

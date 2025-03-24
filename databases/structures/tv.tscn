@@ -1,13 +1,13 @@
-[gd_scene load_steps=16 format=3 uid="uid://cwhom1s0n5b5c"]
+[gd_scene load_steps=23 format=3 uid="uid://cwhom1s0n5b5c"]
 
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
 [ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/props/TVPropBehaviour.cs" id="2_3qsjy"]
-[ext_resource type="PackedScene" uid="uid://mo3upoh5jh1" path="res://scenes/props/aphid_model.glb" id="2_bvgcb"]
+[ext_resource type="PackedScene" uid="uid://buq2rosblx438" path="res://scenes/props/aphid_model.glb" id="2_bvgcb"]
 [ext_resource type="Script" uid="uid://dxismvv0c5pp7" path="res://scripts/misc/SpinAphid.cs" id="3_gmdqp"]
-[ext_resource type="Script" uid="uid://c8unj1fm5hnnj" path="res://scripts/misc/ZoomCamera.cs" id="4_axes8"]
 [ext_resource type="Texture2D" uid="uid://c3i6cmitj5cow" path="res://sprites/props/tv_bg_1.png" id="4_dl1sk"]
 [ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="5_2b0vm"]
 [ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/misc/aphidtastic.wav" id="6_uxujw"]
+[ext_resource type="VideoStream" uid="uid://rd7wmdl0s4l1" path="res://mov/Market.ogv" id="7_talqc"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="8_uml7d"]
 
 [sub_resource type="Environment" id="Environment_87q0j"]
@@ -19,11 +19,114 @@ ambient_light_energy = 16.0
 [sub_resource type="World3D" id="World3D_r6dqu"]
 environment = SubResource("Environment_87q0j")
 
+[sub_resource type="Animation" id="Animation_talqc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(9.18631, -1.90318, -1.5901)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.00296061, -0.405072, -0.00160068)]
+}
+
+[sub_resource type="Animation" id="Animation_a8ccj"]
+resource_name = "sneak"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 1.8, 2.23333, 2.76667, 3.56667, 10),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(9.18631, -1.90318, -1.5901), Vector3(2.41449, -1.90318, -2.11207), Vector3(2.41449, -1.90318, -2.11207), Vector3(1.76069, -1.90318, -2.80804), Vector3(1.76069, -1.90318, -2.80804), Vector3(-8.94831, -1.90318, -2.80804), Vector3(-8.94831, -1.90318, -2.80804)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 1.8, 2.23333, 2.76667, 3.56667, 10),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.00296061, -0.405072, -0.00160068), Vector3(-0.00296061, 0.195217, -0.00160068), Vector3(-0.00296061, 0.195217, -0.00160068), Vector3(-0.00296061, 0.599173, -0.00160068), Vector3(-0.00296061, 0.599173, -0.00160068), Vector3(-0.00296061, 0.0303006, -0.00160068), Vector3(-0.00296061, 0.0303006, -0.00160068)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_j4cf7"]
+_data = {
+&"RESET": SubResource("Animation_talqc"),
+&"sneak": SubResource("Animation_a8ccj")
+}
+
+[sub_resource type="Animation" id="Animation_18fqy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 1.51086, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_brmh7"]
+resource_name = "dance"
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5),
+"transitions": PackedFloat32Array(0, 0, 0, 0),
+"update": 0,
+"values": [Vector3(0, 1.51086, 0), Vector3(0, 2.22282, 0), Vector3(0, 1.51086, 0), Vector3(0, 0.938935, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_we5vn"]
+_data = {
+&"RESET": SubResource("Animation_18fqy"),
+&"dance": SubResource("Animation_brmh7")
+}
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
 light_mode = 1
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_4hgie"]
 viewport_path = NodePath("SubViewport")
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_talqc"]
+light_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
 size = Vector2(96, 8.42106)
@@ -32,7 +135,7 @@ size = Vector2(96, 8.42106)
 cull_mode = 1
 polygon = PackedVector2Array(-44.9735, -6.38944, 55.1395, -7.05687, 48.799, -64.7887, -36.6308, -65.7898)
 
-[node name="tv" type="Sprite2D" node_paths=PackedStringArray("viewport_display", "background_display", "light", "stereo")]
+[node name="tv" type="Sprite2D" node_paths=PackedStringArray("viewport_display", "background_display", "light", "stereo", "player")]
 texture = ExtResource("1_dcqxn")
 offset = Vector2(0, -32.08)
 script = ExtResource("2_3qsjy")
@@ -41,6 +144,7 @@ viewport_display = NodePath("viewport_display")
 background_display = NodePath("background")
 light = NodePath("light")
 stereo = NodePath("stereo")
+player = NodePath("VideoStreamPlayer")
 metadata/id = "tv"
 
 [node name="SubViewport" type="SubViewport" parent="."]
@@ -50,23 +154,34 @@ transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1080, 720)
 
-[node name="BF Aphid-Test" parent="SubViewport" instance=ExtResource("2_bvgcb")]
-transform = Transform3D(0.0233329, 0, -0.999727, 0, 1, 0, 0.999728, 0, 0.0233329, 0, 5.94321, -13.5655)
-script = ExtResource("3_gmdqp")
-
 [node name="BF Aphid-Test2" parent="SubViewport" instance=ExtResource("2_bvgcb")]
-transform = Transform3D(0.424228, 0.00336004, -0.905549, -0.00160067, 0.999994, 0.0029606, 0.905554, 0.000193513, 0.424231, 4.65316, -2.73777, -6.0729)
-script = ExtResource("3_gmdqp")
+transform = Transform3D(-0.233934, -0.000927079, 0.972247, -0.00160067, 0.284998, 0.0029606, -0.972251, -0.000246143, -0.233938, -5.35899, -1.90318, -7.42575)
+
+[node name="BF Aphid-Test4" parent="SubViewport" instance=ExtResource("2_bvgcb")]
+transform = Transform3D(0.919071, 0.00263787, -0.394083, -0.00160067, 0.999994, 0.00296061, 0.394089, -0.00209021, 0.91907, 9.18631, -1.90318, -1.5901)
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="SubViewport/BF Aphid-Test4"]
+libraries = {
+&"": SubResource("AnimationLibrary_j4cf7")
+}
+autoplay = "sneak"
+
+[node name="BF Aphid-Test" parent="SubViewport" instance=ExtResource("2_bvgcb")]
+transform = Transform3D(0.0599005, 0, 0.998204, 0, 1, 0, -0.998205, 0, 0.0599005, 0.137221, -1.94989, -7.5758)
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="SubViewport/BF Aphid-Test"]
+libraries = {
+&"": SubResource("AnimationLibrary_we5vn")
+}
+autoplay = "dance"
 
 [node name="BF Aphid-Test3" parent="SubViewport" instance=ExtResource("2_bvgcb")]
-transform = Transform3D(-0.48235, 0, -0.875978, 0, 1, 0, 0.875979, 0, -0.48235, -4.39497, 0.311275, -16.6297)
+transform = Transform3D(0.425953, 0, 0.904745, 0, 1, 0, -0.904746, 0, 0.425953, 5.46968, -2.04524, -6.77875)
 script = ExtResource("3_gmdqp")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
-transform = Transform3D(-0.998244, -0.0303777, 0.0508451, -0.0194048, 0.978816, 0.203822, -0.0559596, 0.202478, -0.977687, 0.294518, 4.00787, -23.4159)
 cull_mask = 1047553
-fov = 47.7838
-script = ExtResource("4_axes8")
+fov = 76.5
 
 [node name="background" type="Sprite2D" parent="."]
 show_behind_parent = true
@@ -84,6 +199,21 @@ material = SubResource("CanvasItemMaterial_qug4s")
 position = Vector2(-0.128552, -32.5946)
 scale = Vector2(0.0821664, 0.0786517)
 texture = SubResource("ViewportTexture_4hgie")
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+show_behind_parent = true
+light_mask = 0
+material = SubResource("CanvasItemMaterial_talqc")
+offset_left = -44.0
+offset_top = -60.0
+offset_right = 45.0
+offset_bottom = -3.0
+mouse_filter = 2
+stream = ExtResource("7_talqc")
+volume_db = -10.93
+expand = true
+loop = true
+bus = &"Sounds"
 
 [node name="StaticBody2D" type="RigidBody2D" parent="."]
 mass = 999.0

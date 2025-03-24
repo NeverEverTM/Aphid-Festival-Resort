@@ -23,7 +23,7 @@ public partial class SoundManager : Node
 		SFXPlayer = new();
 		SFXPlayer2D = new();
 		
-		AudioBus = ResourceLoader.Load<AudioBusLayout>("res://default_bus_layout.tres");
+		AudioBus = ResourceLoader.Load<AudioBusLayout>("uid://lm4k6xpr7uhu");
 		ProcessMode = ProcessModeEnum.Always;
 
 		Instance.AddChild(MusicPlayer);
@@ -84,7 +84,7 @@ public partial class SoundManager : Node
 	/// <param name="_full_name">Must be relative file name path to SFX (ex. "misc/title.wav")</param>
 	public static void PlaySong(string _full_name)
 	{
-		AudioStream _music = ResourceLoader.Load<AudioStream>(GlobalManager.RES_SFX_PATH + _full_name);
+		AudioStream _music = ResourceLoader.Load<AudioStream>(GlobalManager.ABSOLUTE_SFX_PATH + _full_name);
 		MusicPlayer.Stream = _music;
 		MusicPlayer.Play();
 	}
@@ -101,10 +101,10 @@ public partial class SoundManager : Node
 
 	public static AudioStream GetAudioStream(string _name)
 	{
-		if (GlobalManager.G_AUDIO.ContainsKey(_name))
-			return GlobalManager.G_AUDIO[_name];
+		if (GlobalManager.G_AUDIO.TryGetValue(_name, out AudioStream value))
+			return value;
 		else
-			return GlobalManager.G_AUDIO["button_fail"];
+			return GlobalManager.G_AUDIO["ui/button_fail"];
 	}
 	/// <summary>
 	/// Creates a global sound to be heard, duplicating the given audioplayer and handed back for further manipulation.

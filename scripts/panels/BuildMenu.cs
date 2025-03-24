@@ -1,15 +1,18 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Godot;
 
 public partial class BuildMenu : Control
 {
-	[Export] private PackedScene item_container;
-	[Export] private GridContainer storage_container;
-	[Export] public AnimationPlayer menu_player;
+	[Export] private GridContainer storageContainer;
+	[Export] public AnimationPlayer menuPlayer;
+	[Export] private TextureButton buildButton, storageButton;
+	private const string ITEM_CONTAINER_SCENE = "uid://cn7d8wjyx78a3";
+	private PackedScene item_container;
+	private MenuUtil.MenuInstance build_menu;
 
+	// Variables
 	public bool IsStorageOpen;
-	private readonly List<Building> active_buildings = new();
+	private readonly List<Building> active_buildings = [];
 	private enum RemoveMode { Sell, Store }
 
 	private Building selected_building;
@@ -32,10 +35,21 @@ public partial class BuildMenu : Control
 		}
 	}
 
+	public override void _Ready()
+	{
+		item_container = ResourceLoader.Load(ITEM_CONTAINER_SCENE) as PackedScene;
+		build_menu = new MenuUtil.MenuInstance("build", menuPlayer, 
+			_ => OnOpenMenu(), _ => OnCloseMenu(), false);
+
+		buildButton.Pressed += () => CanvasManager.Menus.OpenMenu(build_menu);
+		storageButton.Pressed += SetStorage;
+	}
 	public void OnOpenMenu()
 	{
 		IsStorageOpen = false;
 		FreeCameraManager.SetFreeCameraHud(false);
+		if (FreeCameraManager.Instance.FocusedObject != null)
+			FreeCameraManager.Instance.StopFocus();
 
 		// Sets all building rects
 		if (active_buildings.Count == 0)
@@ -46,26 +60,27 @@ public partial class BuildMenu : Control
 
 		UpdateStorage();
 	}
-	public async void OnCloseMenu(MenuUtil.MenuInstance _)
+	public bool OnCloseMenu()
 	{
+		// close storage if open first
+		if (IsStorageOpen)
+		{
+			SetStorage(false);
+			return false;
+		}
 		active_buildings.Clear();
 		FreeCameraManager.SetFreeCameraHud(true);
 
-		while (menu_player.CurrentAnimation == "close")
-			await Task.Delay(1);
-		// cleans the window
-		if (menu_player.CurrentAnimation != "open")
-		{
-			for (int i = 0; i < storage_container.GetChildCount(); i++)
-				storage_container.GetChild(i).QueueFree();
-		}
+		for (int i = 0; i < storageContainer.GetChildCount(); i++)
+			storageContainer.GetChild(i).QueueFree();
+		return true;
 	}
 
 	private void UpdateStorage(int _startIndex = 0)
 	{
 		// cleans the window
-		for (int i = _startIndex; i < storage_container.GetChildCount(); i++)
-			storage_container.GetChild(i).QueueFree();
+		for (int i = _startIndex; i < storageContainer.GetChildCount(); i++)
+			storageContainer.GetChild(i).QueueFree();
 
 		// Sets the storage inventory
 		for (int i = _startIndex; i < Player.Data.Storage.Count; i++)
@@ -80,7 +95,7 @@ public partial class BuildMenu : Control
 				Player.Data.Storage.Remove(_structure);
 				_item.QueueFree();
 			};
-			storage_container.AddChild(_item);
+			storageContainer.AddChild(_item);
 		}
 	}
 
@@ -105,20 +120,23 @@ public partial class BuildMenu : Control
 	private void ProcessBuildingInteraction()
 	{
 		is_hovering_building = selected_building.Collider.HasPoint(GlobalManager.Utils.GetMouseToWorldPosition());
-		bool _isSelectPressed = Input.IsActionPressed("select");
+		bool _isSelectPressed = Input.IsActionPressed(InputNames.Select);
+
+		// if isnt already moving a building, attempt to do so
 		if (!is_moving_building)
 		{
-			// if selecting while hovering the structure, start Move function
-			// otherwise, selecting out of the bounds of it tries selecting a new one
-			if (Input.IsActionJustPressed("select"))
+			if (Input.IsActionJustPressed(InputNames.Select))
 			{
+				// if is hovering it, then move it
 				if (is_hovering_building)
 					StartMoveBuilding();
+				// otherwise attempt to select a new near one, if fail to do so, unselect our current one
 				else if (!SelectBuilding())
 					UnassignBuilding();
 			}
 		}
-		else if (_isSelectPressed) // if let go, stop moving completly
+		// move for as long as the button is pressed
+		else if (_isSelectPressed)
 		{
 			Vector2 _position = GlobalManager.Utils.GetMouseToWorldPosition() + mouse_offset;
 			if (Input.IsActionPressed(InputNames.AlignToGrid))
@@ -128,23 +146,10 @@ public partial class BuildMenu : Control
 		else
 			StopMoveBuilding();
 
-		if (Input.IsActionJustPressed("deselect"))
-		{
-			UnassignBuilding();
-			return;
-		}
-
-		if (Input.IsActionJustPressed("sell"))
-		{
+		if (Input.IsActionJustPressed(InputNames.Sell))
 			RemoveBuilding(RemoveMode.Sell);
-			return;
-		}
-
-		if (Input.IsActionJustPressed("store"))
-		{
+		else if (Input.IsActionJustPressed(InputNames.Store))
 			RemoveBuilding(RemoveMode.Store);
-			return;
-		}
 	}
 	private bool SelectBuilding()
 	{
@@ -158,16 +163,19 @@ public partial class BuildMenu : Control
 	}
 	private void StartMoveBuilding()
 	{
+		// setup the interface
 		FreeCameraManager.Instance.EnableMouseFollow = true;
 		is_moving_building = true;
 		mouse_offset = selected_building.Self.GlobalPosition - GlobalManager.Utils.GetMouseToWorldPosition();
 		last_valid_position = selected_building.Self.GlobalPosition;
 
+		// add corresponding possible actions
 		CanvasManager.AddControlPrompt("prompt_" + InputNames.Sell, InputNames.Sell, InputNames.Sell);
 		CanvasManager.AddControlPrompt("prompt_" + InputNames.Store, InputNames.Store, InputNames.Store);
 		CanvasManager.AddControlPrompt("prompt_" + InputNames.AlignToGrid, InputNames.AlignToGrid, InputNames.AlignToGrid);
 
-		// Deactivate collision
+		// Deactivate collision of the structure
+		// WARNING: This does not handle multiple collision shapes within the structure
 		for (int i = 0; i < selected_building.Self.GetChildCount(); i++)
 		{
 			if (selected_building.Self.GetChild(i) is PhysicsBody2D && selected_building.Self.GetChild(i).GetChildCount() > 0)
@@ -180,9 +188,11 @@ public partial class BuildMenu : Control
 	}
 	private void StopMoveBuilding()
 	{
+		// set interface back to normal
 		FreeCameraManager.Instance.EnableMouseFollow = false;
 		is_moving_building = false;
 
+		// remove possible action prompts
 		CanvasManager.RemoveControlPrompt(InputNames.Sell);
 		CanvasManager.RemoveControlPrompt(InputNames.Store);
 		CanvasManager.RemoveControlPrompt(InputNames.AlignToGrid);
@@ -194,6 +204,7 @@ public partial class BuildMenu : Control
 			return;
 		}
 
+		// give collision back if any
 		if (IsInstanceValid(current_shape))
 		{
 			current_shape.Disabled = false;
@@ -212,7 +223,7 @@ public partial class BuildMenu : Control
 		selected_building.Self.LightMask = 0;
 		ShaderMaterial _outline = new()
 		{
-			Shader = ResourceLoader.Load<Shader>(GlobalManager.OutlineShader)
+			Shader = ResourceLoader.Load<Shader>(GlobalManager.OUTLINE_SHADER)
 		};
 		_outline.SetShaderParameter("color", new Color(0.15f, 0, 0.8f));
 		_outline.SetShaderParameter("pattern", 1);
@@ -260,7 +271,7 @@ public partial class BuildMenu : Control
 	private void GrabFromStorage(string _structureName)
 	{
 		Node2D _structure = ResourceLoader.Load<PackedScene>
-		(GlobalManager.StructuresPath + $"/{_structureName}.tscn").Instantiate() as Node2D;
+		(GlobalManager.ABSOLUTE_STRUCTURES_DB_PATH + $"/{_structureName}.tscn").Instantiate() as Node2D;
 		if (!IsInstanceValid(_structure))
 		{
 			Logger.Print(Logger.LogPriority.Warning, "BuildMenu: ", $"{_structureName} is not a valid structure");
@@ -282,11 +293,11 @@ public partial class BuildMenu : Control
 			return;
 		IsStorageOpen = _state;
 		if (IsStorageOpen)
-			menu_player.Play("open_bar");
+			menuPlayer.Play("open_bar");
 		else
-			menu_player.Play("close_bar");
+			menuPlayer.Play("close_bar");
 	}
-	public void SetStorage() => 
+	public void SetStorage() =>
 		SetStorage(!IsStorageOpen);
 
 	private Building CreateBuilding(Node2D _self)
@@ -302,12 +313,12 @@ public partial class BuildMenu : Control
 		else if (_self is AnimatedSprite2D)
 		{
 			_offset = (_self as AnimatedSprite2D).Offset;
-			_size = (_self as AnimatedSprite2D).SpriteFrames.GetFrameTexture("default", 0).GetSize();
+			_size = (_self as AnimatedSprite2D).SpriteFrames.GetFrameTexture(StringNames.DefaultAnim, 0).GetSize();
 		}
-		else if (_self.HasMeta("size") && _self.HasMeta("offset"))
+		else if (_self.HasMeta(StringNames.SizeMeta) && _self.HasMeta(StringNames.OffsetMeta))
 		{
-			_offset = (Vector2)_self.GetMeta("offset");
-			_size = (Vector2)_self.GetMeta("size");
+			_offset = (Vector2)_self.GetMeta(StringNames.OffsetMeta);
+			_size = (Vector2)_self.GetMeta(StringNames.SizeMeta);
 		}
 		else
 		{
@@ -326,12 +337,12 @@ public partial class BuildMenu : Control
 
 		if (_mode == RemoveMode.Sell)
 		{
-			Player.Data.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta("id").ToString()].cost / 2);
+			Player.Data.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].cost / 2);
 			SoundManager.CreateSound("ui/kaching");
 		}
 		if (_mode == RemoveMode.Store)
 		{
-			Player.Data.Storage.Add(selected_building.Self.GetMeta("id").ToString());
+			Player.Data.Storage.Add(selected_building.Self.GetMeta(StringNames.IdMeta).ToString());
 			SoundManager.CreateSound("ui/backpack_close");
 			UpdateStorage(Player.Data.Storage.Count - 1);
 		}

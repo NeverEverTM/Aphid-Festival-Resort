@@ -11,6 +11,7 @@ public partial class DebugConsole : CanvasLayer
 	DidntSayIDidntWarnYouBeforeHand;
 	private static bool IsEnabled;
 	private static string[] lastCommand;
+	private static string lastRawCommand;
 	private static Aphid validAphid;
 
 	[Export] public TextEdit command_line_input;
@@ -64,15 +65,19 @@ public partial class DebugConsole : CanvasLayer
 
 			if (@event.IsActionPressed("debug_2"))
 			{
-				Logger.Print(Logger.LogPriority.Debug, "Buggy");
+				command_line_input.GrabFocus();
+				command_line_input.Text = lastRawCommand;
 			}
 
 			if (command_line_input.HasFocus() && @event is InputEventKey &&
-				(@event as InputEventKey).KeyLabel == Key.Enter)
+				(@event as InputEventKey).KeyLabel == Key.Enter && @event.IsPressed())
 			{
 				if (!string.IsNullOrEmpty(command_line_input.Text))
-					TriggerCommand(command_line_input.Text.Split(" "));
-				command_line_input.ReleaseFocus();
+				{
+					lastRawCommand = command_line_input.Text;
+					if (TriggerCommand(command_line_input.Text.Split(" ")))
+						command_line_input.ReleaseFocus();
+				}
 				GetViewport().SetInputAsHandled();
 			}
 		}
@@ -415,7 +420,7 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (!GetArg(0, args, out string _id))
 				return;
-			if (GlobalManager.G_ITEMS.ContainsKey(_id) && GlobalManager.G_ITEMS[_id].shopTag == "furniture")
+			if (GlobalManager.G_ITEMS.ContainsKey(_id) && GlobalManager.G_ITEMS[_id].shopTag != "furniture")
 			{
 				int _amount = GetInt(1, args, 1);
 				for (int i = 0; i < _amount; i++)

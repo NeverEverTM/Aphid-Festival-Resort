@@ -21,9 +21,13 @@ boot_splash/show_image=false
 config/icon="res://sprites/ui/leaf_cover.png"
 config/windows_native_icon="res://sprites/icon.ico"
 
+[audio]
+
+buses/default_bus_layout="res://resources/default_bus_layout.tres"
+
 [autoload]
 
-CommandConsole="*res://scenes/ui/command_console.tscn"
+CommandConsole="*res://scenes/panels/command_console.tscn"
 GlobalManager="*res://scripts/GlobalManager.cs"
 SoundManager="*res://scripts/controllers/SoundManager.cs"
 GameManager="*res://scripts/controllers/GameManager.cs"
@@ -47,7 +51,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/exportskin/plugin.cfg", "res://addons/glowbutton/plugin.cfg")
+enabled=PackedStringArray("res://addons/exportimages/plugin.cfg", "res://addons/glowbutton/plugin.cfg")
 
 [file_customization]
 
@@ -55,6 +59,7 @@ folder_colors={
 "res://databases/": "blue",
 "res://databases/items/": "orange",
 "res://databases/skins/": "teal",
+"res://resources/": "green",
 "res://scenes/": "gray",
 "res://scripts/": "red",
 "res://sfx/": "pink",
@@ -67,8 +72,8 @@ import/blender/enabled=false
 
 [gui]
 
-theme/custom="res://default_theme.tres"
-theme/custom_font="res://sprites/fonts/BubblegumSans-Regular.ttf"
+theme/custom="res://resources/default_theme.tres"
+theme/custom_font="uid://bni8k8sk1r4bd"
 theme/default_font_multichannel_signed_distance_field=true
 theme/default_font_generate_mipmaps=true
 
@@ -191,11 +196,6 @@ select={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(111, 18),"global_position":Vector2(114, 50),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
-deselect={
-"deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(165, 4),"global_position":Vector2(168, 36),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
-]
-}
 sell={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"location":0,"echo":false,"script":null)
@@ -214,6 +214,11 @@ pull={
 align_to_grid={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194326,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+change_mode={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
 ]
 }
 

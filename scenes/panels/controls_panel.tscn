@@ -1,0 +1,321 @@
+[gd_scene load_steps=12 format=3 uid="uid://fvilqaco8u8x"]
+
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_1a8ee"]
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_tc1an"]
+[ext_resource type="Script" uid="uid://d2nu5q2qa6p01" path="res://scripts/panels/ControlsMenu.cs" id="2_vx8d4"]
+[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="3_17ft4"]
+[ext_resource type="PackedScene" uid="uid://gof2jiow0man" path="res://scenes/ui/control_button.tscn" id="3_oryf4"]
+[ext_resource type="AudioStream" uid="uid://c2i25l6w3yeqq" path="res://sfx/ui/button_fail.wav" id="4_tjoj8"]
+[ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="5_5ucel"]
+[ext_resource type="AudioStream" uid="uid://bao78ra8itplt" path="res://sfx/ui/button_reset.wav" id="5_khu8e"]
+[ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="9_ru27g"]
+
+[sub_resource type="Curve" id="Curve_rqcp8"]
+_data = [Vector2(0, 0), 0.0, 0.0627683, 0, 0, Vector2(0.449405, 0.456604), 2.85283, 2.85283, 0, 0, Vector2(1, 1), -0.095692, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="LabelSettings" id="LabelSettings_be8mp"]
+font_size = 45
+
+[node name="controls_panel" type="Control" node_paths=PackedStringArray("controls", "scrollContainer", "reset_bar")]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -15.0
+offset_right = 40.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_1a8ee")
+script = ExtResource("2_vx8d4")
+controls = [NodePath("ScrollContainer/Container/movement/up"), NodePath("ScrollContainer/Container/movement/down"), NodePath("ScrollContainer/Container/movement/left"), NodePath("ScrollContainer/Container/movement/right"), NodePath("ScrollContainer/Container/movement/run"), NodePath("ScrollContainer/Container/interactions/interact"), NodePath("ScrollContainer/Container/interactions/cancel"), NodePath("ScrollContainer/Container/interactions/pickup"), NodePath("ScrollContainer/Container/interactions/pull"), NodePath("ScrollContainer/Container/menus/open_inventory"), NodePath("ScrollContainer/Container/menus/open_generations"), NodePath("ScrollContainer/Container/menus/change_camera"), NodePath("ScrollContainer/Container/buildMode/store"), NodePath("ScrollContainer/Container/buildMode/sell"), NodePath("ScrollContainer/Container/buildMode/align_to_grid")]
+scrollContainer = NodePath("ScrollContainer")
+reset_bar = NodePath("ScrollContainer/Container/reset_bg/reset_progress")
+select_sound = ExtResource("3_17ft4")
+fail_sound = ExtResource("4_tjoj8")
+reset_sound = ExtResource("5_khu8e")
+interaction_curve = SubResource("Curve_rqcp8")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = -633.0
+offset_top = -345.0
+offset_right = 633.0
+offset_bottom = 375.0
+follow_focus = true
+scroll_vertical = 255
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="Container" type="Control" parent="ScrollContainer"]
+custom_minimum_size = Vector2(1100, 975)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="movement" type="Control" parent="ScrollContainer/Container"]
+light_mask = 0
+layout_mode = 1
+anchors_preset = 0
+offset_left = 273.0
+offset_top = 296.0
+offset_right = 313.0
+offset_bottom = 336.0
+mouse_filter = 1
+
+[node name="up" parent="ScrollContainer/Container/movement" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -241.0
+offset_top = -164.0
+offset_right = 129.0
+offset_bottom = -94.0
+
+[node name="down" parent="ScrollContainer/Container/movement" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -241.0
+offset_top = -92.0
+offset_right = 129.0
+offset_bottom = -22.0
+
+[node name="left" parent="ScrollContainer/Container/movement" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -241.0
+offset_top = -20.0
+offset_right = 129.0
+offset_bottom = 50.0
+
+[node name="right" parent="ScrollContainer/Container/movement" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -241.0
+offset_top = 52.0
+offset_right = 129.0
+offset_bottom = 122.0
+
+[node name="run" parent="ScrollContainer/Container/movement" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -241.0
+offset_top = 124.0
+offset_right = 129.0
+offset_bottom = 194.0
+
+[node name="title_movement" type="TextureRect" parent="ScrollContainer/Container/movement"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -221.0
+offset_top = -254.0
+offset_right = 221.0
+offset_bottom = -173.0
+texture = ExtResource("1_tc1an")
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="ScrollContainer/Container/movement/title_movement"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 18.0
+offset_right = 411.0
+offset_bottom = 66.0
+text = "controls_movement_name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="interactions" type="Control" parent="ScrollContainer/Container"]
+light_mask = 0
+layout_mode = 1
+anchors_preset = 0
+offset_left = 845.0
+offset_top = 244.0
+offset_right = 885.0
+offset_bottom = 284.0
+mouse_filter = 1
+
+[node name="interact" parent="ScrollContainer/Container/interactions" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = -110.0
+offset_right = 214.0
+offset_bottom = -40.0
+
+[node name="cancel" parent="ScrollContainer/Container/interactions" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = -38.0
+offset_right = 214.0
+offset_bottom = 32.0
+
+[node name="pickup" parent="ScrollContainer/Container/interactions" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = 34.0
+offset_right = 214.0
+offset_bottom = 104.0
+
+[node name="pull" parent="ScrollContainer/Container/interactions" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = 106.0
+offset_right = 214.0
+offset_bottom = 176.0
+
+[node name="title_interactions" type="TextureRect" parent="ScrollContainer/Container/interactions"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -135.0
+offset_top = -197.0
+offset_right = 307.0
+offset_bottom = -116.0
+texture = ExtResource("1_tc1an")
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="ScrollContainer/Container/interactions/title_interactions"]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 18.0
+offset_right = 419.0
+offset_bottom = 66.0
+text = "controls_interactions_name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="menus" type="Control" parent="ScrollContainer/Container"]
+light_mask = 0
+layout_mode = 1
+anchors_preset = 0
+offset_left = 852.0
+offset_top = 637.0
+offset_right = 892.0
+offset_bottom = 677.0
+mouse_filter = 1
+
+[node name="open_inventory" parent="ScrollContainer/Container/menus" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = -110.0
+offset_right = 214.0
+offset_bottom = -40.0
+
+[node name="open_generations" parent="ScrollContainer/Container/menus" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = -38.0
+offset_right = 214.0
+offset_bottom = 32.0
+
+[node name="change_camera" parent="ScrollContainer/Container/menus" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = 34.0
+offset_right = 214.0
+offset_bottom = 104.0
+
+[node name="title_menus" type="TextureRect" parent="ScrollContainer/Container/menus"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -137.0
+offset_top = -203.0
+offset_right = 305.0
+offset_bottom = -122.0
+texture = ExtResource("1_tc1an")
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="ScrollContainer/Container/menus/title_menus"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 17.0
+offset_right = 387.0
+offset_bottom = 65.0
+text = "controls_menus_name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="buildMode" type="Control" parent="ScrollContainer/Container"]
+light_mask = 0
+layout_mode = 1
+anchors_preset = 0
+offset_left = 191.0
+offset_top = 701.0
+offset_right = 231.0
+offset_bottom = 741.0
+mouse_filter = 1
+metadata/BuildMode = true
+
+[node name="store" parent="ScrollContainer/Container/buildMode" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = -102.0
+offset_right = 214.0
+offset_bottom = -32.0
+
+[node name="sell" parent="ScrollContainer/Container/buildMode" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = -30.0
+offset_right = 214.0
+offset_bottom = 40.0
+
+[node name="align_to_grid" parent="ScrollContainer/Container/buildMode" instance=ExtResource("3_oryf4")]
+layout_mode = 0
+offset_left = -156.0
+offset_top = 42.0
+offset_right = 214.0
+offset_bottom = 112.0
+
+[node name="title_mode" type="TextureRect" parent="ScrollContainer/Container/buildMode"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -134.0
+offset_top = -198.0
+offset_right = 308.0
+offset_bottom = -117.0
+texture = ExtResource("1_tc1an")
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="ScrollContainer/Container/buildMode/title_mode"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 415.0
+offset_bottom = 64.0
+text = "controls_buildmode_name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="reset_bg" type="Panel" parent="ScrollContainer/Container"]
+light_mask = 0
+layout_mode = 0
+offset_left = 697.0
+offset_top = 764.0
+offset_right = 1193.0
+offset_bottom = 961.0
+mouse_filter = 1
+theme = ExtResource("1_1a8ee")
+
+[node name="reset_progress" type="TextureProgressBar" parent="ScrollContainer/Container/reset_bg"]
+light_mask = 0
+layout_mode = 0
+offset_left = -55.0
+offset_top = 20.0
+offset_right = 98.0
+offset_bottom = 169.0
+fill_mode = 4
+nine_patch_stretch = true
+texture_over = ExtResource("5_5ucel")
+texture_progress = ExtResource("9_ru27g")
+
+[node name="reset_text" type="Label" parent="ScrollContainer/Container/reset_bg"]
+light_mask = 0
+layout_mode = 0
+offset_left = 121.0
+offset_top = 20.0
+offset_right = 468.0
+offset_bottom = 168.0
+text = "controls_reset"
+label_settings = SubResource("LabelSettings_be8mp")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

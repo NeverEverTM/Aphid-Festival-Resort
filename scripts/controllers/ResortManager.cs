@@ -134,7 +134,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
     public static async void CheckSongToPlay()
 	{
 		await Task.Delay(1000);
-		string[] _raw_files = DirAccess.GetFilesAt(GlobalManager.RES_SFX_PATH + "music");
+		string[] _raw_files = DirAccess.GetFilesAt(GlobalManager.ABSOLUTE_SFX_PATH + "music");
 
 		if (FieldManager.TimeOfDay == FieldManager.DayHours.Night)
 			_raw_files = _raw_files.Where(e => e.StartsWith("night")).ToArray();
@@ -154,7 +154,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	// =========| Object Creation |===============
 	public static Aphid SpawnAphid(AphidInstance _instance)
 	{
-		Aphid _aphid = (ResourceLoader.Load(GlobalManager.APHID_ENTITY_PATH) as PackedScene).Instantiate() as Aphid;
+		Aphid _aphid = (ResourceLoader.Load(GlobalManager.APHID_ENTITY) as PackedScene).Instantiate() as Aphid;
 
 		_aphid.Instance = _instance;
 		_aphid.GlobalPosition = new(_instance.Status.PositionX, _instance.Status.PositionY);
@@ -170,7 +170,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	/// <returns>The newly created aphid.</returns>
 	public static Aphid CreateAphid(Vector2 _position, AphidData.Genes _genes)
 	{
-		Aphid _aphid = (ResourceLoader.Load(GlobalManager.APHID_ENTITY_PATH) as PackedScene).Instantiate() as Aphid;
+		Aphid _aphid = (ResourceLoader.Load(GlobalManager.APHID_ENTITY) as PackedScene).Instantiate() as Aphid;
 
 		_aphid.Instance = new()
 		{
@@ -192,19 +192,19 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 			return null;
 		}
 		Node2D _item;
-		string _path = $"{GlobalManager.ItemPath}/{_item_name}.tscn";
+		string _path = $"{GlobalManager.ABSOLUTE_ITEMS_DB_PATH}/{_item_name}.tscn";
 		if (ResourceLoader.Exists(_path))
 			// this is used if an item has a more complex structure or contains extra data, thus needing an unique node
 			_item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
 		else
 		{
-			_item = ResourceLoader.Load<PackedScene>(GlobalManager.ItemEntity).Instantiate() as Node2D;
+			_item = ResourceLoader.Load<PackedScene>(GlobalManager.ITEM_ENTITY).Instantiate() as Node2D;
 			(_item.GetChild(0) as Sprite2D).Texture = GlobalManager.GetIcon(_item_name);
 		}
 
-		_item.SetMeta(GlobalManager.StringNames.PickupMeta, true);
-		_item.SetMeta(GlobalManager.StringNames.IdMeta, _item_name);
-		_item.SetMeta(GlobalManager.StringNames.TagMeta, GlobalManager.G_ITEMS[_item_name].tag);
+		_item.SetMeta(StringNames.PickupMeta, true);
+		_item.SetMeta(StringNames.IdMeta, _item_name);
+		_item.SetMeta(StringNames.TagMeta, GlobalManager.G_ITEMS[_item_name].tag);
 		_item.GlobalPosition = _position;
 
 		CurrentResort.EntityRoot.AddChild(_item);
@@ -212,7 +212,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	}
 	public static void CreateStructure(string _id, Vector2 _position, string _data = null)
 	{
-		string _path = GlobalManager.StructuresPath + $"/{_id}.tscn";
+		string _path = GlobalManager.ABSOLUTE_STRUCTURES_DB_PATH + $"/{_id}.tscn";
 		if (!ResourceLoader.Exists(_path))
 		{
 			Logger.Print(Logger.LogPriority.Error, $"ResortManager: {_id} is not a valid id.");

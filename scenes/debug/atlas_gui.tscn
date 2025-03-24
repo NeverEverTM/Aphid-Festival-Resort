@@ -1,0 +1,160 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2x6cpn14j87m"]
+
+[ext_resource type="Theme" uid="uid://edsql54tqgn5" path="res://resources/default_project_theme.tres" id="1_jndti"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jndti"]
+
+[node name="AtlasGui" type="AcceptDialog"]
+disable_3d = true
+title = "Atlas Packager GUI"
+position = Vector2i(0, 36)
+size = Vector2i(500, 500)
+wrap_controls = false
+min_size = Vector2i(500, 500)
+content_scale_mode = 1
+content_scale_aspect = 4
+content_scale_stretch = 1
+theme = ExtResource("1_jndti")
+
+[node name="anchor" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 492.0
+offset_bottom = 463.0
+
+[node name="folders" type="Control" parent="anchor"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 8.0
+offset_top = -8.0
+offset_right = 492.0
+offset_bottom = 268.0
+
+[node name="path_container" type="Panel" parent="anchor/folders"]
+clip_children = 2
+layout_mode = 0
+offset_left = 14.0
+offset_top = 40.0
+offset_right = 457.0
+offset_bottom = 264.0
+
+[node name="path_scroll" type="ScrollContainer" parent="anchor/folders/path_container"]
+layout_mode = 2
+offset_left = 18.0
+offset_top = 19.0
+offset_right = 435.0
+offset_bottom = 201.0
+
+[node name="path_grid" type="VBoxContainer" parent="anchor/folders/path_container/path_scroll"]
+layout_mode = 2
+
+[node name="get_folder" type="Button" parent="anchor/folders"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 8.0
+offset_right = 137.0
+offset_bottom = 29.0
+text = "Add Folder"
+
+[node name="reset" type="Button" parent="anchor/folders"]
+layout_mode = 0
+offset_left = 327.0
+offset_top = 8.0
+offset_right = 447.0
+offset_bottom = 29.0
+text = "Reset"
+
+[node name="atlas_path" type="Control" parent="anchor"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 17.0
+offset_top = 262.0
+offset_right = 457.0
+offset_bottom = 328.0
+
+[node name="get_atlas_path" type="Button" parent="anchor/atlas_path"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 41.0
+offset_right = 440.0
+offset_bottom = 61.0
+text = "Set Atlas Path"
+
+[node name="Panel" type="Panel" parent="anchor/atlas_path"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 2.0
+offset_right = 448.0
+offset_bottom = 36.0
+
+[node name="atlas_text" type="Label" parent="anchor/atlas_path/Panel"]
+layout_mode = 0
+offset_left = 7.0
+offset_right = 430.0
+offset_bottom = 34.0
+text = "E:/GodotProjects/AphidFestival/sprites/asdsadadsaatlases/atlas.resdasdsad"
+label_settings = SubResource("LabelSettings_jndti")
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="output_path" type="Control" parent="anchor"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 17.0
+offset_top = 335.0
+offset_right = 457.0
+offset_bottom = 418.0
+
+[node name="get_output_path" type="Button" parent="anchor/output_path"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 42.0
+offset_right = 440.0
+offset_bottom = 62.0
+text = "Set Output path"
+
+[node name="Panel2" type="Panel" parent="anchor/output_path"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 3.0
+offset_right = 448.0
+offset_bottom = 37.0
+
+[node name="output_text" type="Label" parent="anchor/output_path/Panel2"]
+layout_mode = 0
+offset_left = 7.0
+offset_right = 430.0
+offset_bottom = 34.0
+text = "E:/GodotProjects/AphidFestival/sprites/atlases/atlas.ressadas"
+label_settings = SubResource("LabelSettings_jndti")
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="texture_size" type="Control" parent="anchor"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 10.0
+offset_top = 407.0
+offset_right = 266.0
+offset_bottom = 452.0
+theme = ExtResource("1_jndti")
+
+[node name="text" type="Label" parent="anchor/texture_size"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = -6.0
+offset_right = 351.0
+offset_bottom = 50.0
+text = "Image Size:"
+vertical_alignment = 1
+
+[node name="line_edit" type="LineEdit" parent="anchor/texture_size"]
+layout_mode = 0
+offset_left = 103.0
+offset_top = 6.0
+offset_right = 187.0
+offset_bottom = 39.0
+theme_override_colors/font_placeholder_color = Color(0.531109, 0.304872, 0.451716, 1)
+placeholder_text = "64"

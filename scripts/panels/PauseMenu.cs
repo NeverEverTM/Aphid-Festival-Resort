@@ -17,15 +17,15 @@ public partial class PauseMenu : Control
 	{
 		Instance = this;
 
-		Action[] actions = new Action[]
-		{
-			ResumeButton,
+		Action[] actions =
+        [
+            ResumeButton,
 			OptionsButton,
 			ControlsButton,
 			HelpButton,
 			BackToMenuButton,
 			ExitButton
-		};
+		];
 
 		for (int i = 0; i < actions.Length; i++)
 		{
@@ -64,7 +64,7 @@ public partial class PauseMenu : Control
 		else
 		{
 			SoundManager.ResumeSong();
-			CanvasManager.Menus.GoBackInMenu();
+			CanvasManager.Menus.GoBack();
 			GetTree().Paused = false;
 		}
 	}
@@ -87,7 +87,7 @@ public partial class PauseMenu : Control
 		// closing pause menu or its submenus
 		if (Visible)
 		{
-			if (@event.IsActionPressed("escape") || @event.IsActionPressed("cancel"))
+			if (@event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.Cancel))
 			{
 				if (current_menu != null)
 					ExitSubMenu();
@@ -95,7 +95,7 @@ public partial class PauseMenu : Control
 					SetPauseMenu(false);
 			}
 		} // opening pause menu
-		else if (@event.IsActionPressed("escape") && !CanvasManager.Menus.IsBusy)
+		else if (@event.IsActionPressed(InputNames.Escape) && !CanvasManager.Menus.IsBusy)
 			SetPauseMenu(true);
 	}
 

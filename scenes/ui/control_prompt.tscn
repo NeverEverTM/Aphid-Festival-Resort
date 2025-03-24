@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://uk8rbyvf7hlf"]
 
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_6rl57"]
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="2_qbvih"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="2_qbvih"]
 
 [node name="control_prompt" type="NinePatchRect"]
 self_modulate = Color(0.643238, 0.0482471, 0.261012, 1)

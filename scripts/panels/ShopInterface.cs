@@ -25,8 +25,12 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		CleanShelf();
 		menu = new MenuUtil.MenuInstance(shopTag,
 			storePlayer,
-			ResetShop,
-			(MenuUtil.MenuInstance _) => CleanShelf(),
+			Open: _ => ResetShop(),
+			Close: _ => 
+			{
+				CleanShelf();
+				return true;
+			},
 			true
 		);
 	}

@@ -10,6 +10,7 @@ func _run() -> void:
 	var script_content = \
 """
 using Godot;
+// This script is automatically generated from 'res://scripts/debug/tool_inputnamecs_generator.gd'
 public static class InputNames
 {
 	{inputs}

@@ -6,17 +6,19 @@ using Godot;
 public partial class CanvasManager : CanvasLayer
 {
 	[Export] private Control hud_element;
-	[Export] private Label currency_text, weather_text;
-	[Export] private Texture2D[] weather_sprites;
-	[Export] private TextureRect weather_bg;
-	[Export] private AnimationPlayer weather_player;
-	[Export] private TextureButton screenshot_button, menu_button, inventoryButton;
-	[Export] private Texture2D[] inventory_button_sprites = new Texture2D[2];
-	[Export] private RichTextLabel inventory_control_label;
+	[Export] private TextureRect photo_display;
+	[Export] private AnimationPlayer photo_anim_player;
+	[Export] private Label currency_text;
+	[Export] private TextureButton screenshot_button, menu_button;
 	[Export] private Container prompt_grid;
 	[Export] private PackedScene prompt_element;
+	[ExportGroup("Weather")]
+	[Export] private AnimationPlayer weather_player;
+	[Export] private Label weather_text;
+	[Export] private Texture2D[] weather_sprites;
+	[Export] private TextureRect weather_bg;
 
-	private readonly Dictionary<string, Control> prompt_list = new();
+	private readonly Dictionary<string, Control> prompt_list = [];
 	public const string Prompt_Drop = "prompt_drop";
 	public const string Prompt_Talk = "prompt_talk";
 	public const string Prompt_Pet = "prompt_pet";
@@ -27,21 +29,22 @@ public partial class CanvasManager : CanvasLayer
 	public static CanvasManager Instance { get; private set; }
 	public static MenuUtil Menus { get; private set; }
 
+	private Timer vanish_screenshot_timer;
+
 	// Focus
 	public Control CurrentFocus { get; private set; }
 	public bool IsInFocus { get; private set; }
+
 	public override void _EnterTree()
 	{
 		Instance = this;
 		Menus = new();
 		screenshot_button.Pressed += TakeScreenshot;
 		menu_button.Pressed += () => PauseMenu.Instance.SetPauseMenu(true);
-		inventoryButton.Pressed += () => Player.Instance.inventory.SetTo(!Player.Instance.inventory.Visible);
-		inventory_control_label.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
 
 		Menus.OnSwitch += (_, _currentMenu) =>
 		{
-			if (_currentMenu?.ID == "pause")
+			if (_currentMenu?.Name == "pause")
 				return;
 
 			if (Menus.IsBusy)
@@ -54,35 +57,60 @@ public partial class CanvasManager : CanvasLayer
 				SetHudElements(true);
 		};
 	}
-    public override void _Input(InputEvent @event)
+	public override void _Input(InputEvent @event)
 	{
-		inventory_control_label.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
-
 		if (@event.IsActionPressed(InputNames.TakeScreenshot))
 			TakeScreenshot();
 
-		if (@event.IsActionPressed("cancel") || @event.IsActionPressed("escape"))
-			Menus.GoBackInMenu();
+		if (Menus.IsBusy && @event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape))
+		{
+			Menus.GoBack();
+			GetViewport().SetInputAsHandled();
+		}
 	}
 
 	public static async void TakeScreenshot()
 	{
+		bool _is_free_camera = IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Instance.Enabled;
+
 		Instance.Hide();
-		if (IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Instance.Enabled)
+		Instance.photo_display.Hide();
+		if (_is_free_camera)
 			FreeCameraManager.SetFreeCameraHud(false, true);
 
 		await Task.Delay(1);
 		try
 		{
-			var capture = Instance.GetViewport().GetTexture().GetImage();
-			var _time = Time.GetDatetimeStringFromSystem().Replace(":", "-");
-			var filename = SaveSystem.ProfilePath + SaveSystem.ProfileAlbumDir + $"Screenshot-{_time}.png";
+			Image _capture = Instance.GetViewport().GetTexture().GetImage();
 
-			if (FileAccess.FileExists(filename))
-				filename += "(Extra)";
+			string _filename = SaveSystem.ProfilePath + SaveSystem.ProfileAlbumDir;
+			if (_is_free_camera && FreeCameraManager.Instance.FocusedObject != null)
+			{
+				_filename += $"/{FreeCameraManager.Instance.FocusedObject.Instance.ID}/";
+				if (!DirAccess.DirExistsAbsolute(_filename))
+					DirAccess.MakeDirAbsolute(_filename);
+			}
+			_filename += $"screenshot-{Time.GetDatetimeStringFromSystem().Replace(":", "-")}.png";
+			if (FileAccess.FileExists(_filename))
+				_filename.Replace(".png", Time.GetTicksMsec() + ".png");
 
-			capture.SavePng(filename);
+			_capture.SavePng(_filename);
 			SoundManager.CreateSound("ui/camera-flash");
+			Instance.photo_display.Texture = ImageTexture.CreateFromImage(_capture);
+			Instance.photo_anim_player.Play("popup");
+
+			if (Instance.vanish_screenshot_timer != null)
+			{
+				Instance.vanish_screenshot_timer.Stop();
+				Instance.vanish_screenshot_timer.QueueFree();
+			}
+			Instance.vanish_screenshot_timer = new()
+			{
+				OneShot = true,
+			};
+			Instance.vanish_screenshot_timer.Timeout += () => Instance.photo_anim_player.Play("vanish");
+			Instance.AddChild(Instance.vanish_screenshot_timer);
+			Instance.vanish_screenshot_timer.Start(3);
 		}
 		catch (Exception _err)
 		{
@@ -90,8 +118,9 @@ public partial class CanvasManager : CanvasLayer
 			SoundManager.CreateSound("ui/button-fail");
 		}
 
-		if (IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Instance.Enabled)
+		if (_is_free_camera)
 			FreeCameraManager.SetFreeCameraHud(true, true);
+		Instance.photo_display.Show();
 		Instance.Show();
 	}
 	public static void SetHudElements(bool _state)
@@ -111,8 +140,7 @@ public partial class CanvasManager : CanvasLayer
 		else
 			Instance.currency_text.Text = Player.Data.Currency.ToString("000");
 	}
-	public static void UpdateInventoryIcon(bool _state) =>
-		Instance.inventoryButton.TextureNormal = Instance.inventory_button_sprites[_state ? 0 : 1];
+		
 	/// <summary>
 	/// Adds a control prompt ui element to point out interactables nearby and possible interactions.
 	/// </summary>
@@ -146,7 +174,7 @@ public partial class CanvasManager : CanvasLayer
 	}
 	public static void ClearControlPrompts()
 	{
-		foreach(var _pair in Instance.prompt_list)
+		foreach (var _pair in Instance.prompt_list)
 			_pair.Value.QueueFree();
 
 		Instance.prompt_list.Clear();

@@ -13,15 +13,16 @@ public partial class FurnitureShop : ShopInterface
 
 	public override void _Ready()
 	{
-		menu.Open = () =>
+		menu.Open = _ =>
 		{
 			FreeCameraManager.SetFreeCameraHud(false);
 			ResetShop();
 		};
-		menu.Close = (MenuUtil.MenuInstance _) =>
-		{
+		menu.Close = _ =>
+        {
 			FreeCameraManager.SetFreeCameraHud(true);
 			CleanShelf();
+			return true;
 		};
 		open_button.Pressed += SetMenu;
 	}

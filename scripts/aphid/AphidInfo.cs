@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Godot;
 
 public partial class AphidInfo : Control
@@ -11,6 +13,7 @@ public partial class AphidInfo : Control
 	[Export] private TextureProgressBar foodBar, waterBar, affectionBar, sleepBar, bondshipBar;
 	[ExportGroup("Skill Bars")]
 	[Export] private TextureProgressBar staminaBar, strengthBar, speedBar, intelligenceBar;
+	[Export] private Label staminaLabel, strengthLabel, speedLabel, intelligenceLabel;
 
 	private Aphid aphid;
 
@@ -19,8 +22,28 @@ public partial class AphidInfo : Control
 		name_label.FocusEntered += () => CanvasManager.SetFocus(name_label);
 		name_label.FocusExited += SetAphidName;
 
-		Player.Instance.OnPickup += OnAphidPickup;
-		Player.Instance.OnDrop += OnAphidDrop;
+		Player.Instance.OnFind += (string _tag, Node2D _node) =>
+		{
+			if (aphid != null || _tag != Aphid.Tag || _node.Equals(aphid))
+				return;
+			Display(_node);
+		};
+		Player.Instance.OnLose += (_, _node) =>
+		{
+			// do not drop info if current aphid isnt the one we are dropping or the player has them in their hands
+			if (aphid == null || !aphid.Equals(_node) || _node.Equals(Player.Instance.HeldPickup.aphid))
+				return;
+			Display(null);
+		};
+	}
+	public override void _Process(double delta)
+	{
+		if (aphid != null)
+		{
+			UpdateAphidInfo();
+			if (Player.Instance.IsDisabled)
+				Display(null);
+		}
 	}
 	public override void _Input(InputEvent _event)
 	{
@@ -54,7 +77,7 @@ public partial class AphidInfo : Control
 		if (CanvasManager.IsFocus(name_label))
 			CanvasManager.RemoveFocus();
 
-		if (aphid == null )
+		if (aphid == null)
 			return;
 
 		if (string.IsNullOrWhiteSpace(name_label.Text))
@@ -62,22 +85,23 @@ public partial class AphidInfo : Control
 
 		aphid.Instance.Genes.Name = name_label.Text;
 	}
-	private void OnAphidPickup(string _tag)
+	private void Display(Node2D _node)
 	{
-		if (_tag != "aphid")
-			return;
+		if (_node != null)
+		{
+			aphid = _node as Aphid;
+			menu_player.Play("open");
+		}
+		else
+		{
+			aphid = null;
+			menu_player.Play("close");
+		}
+	}
 
-		menu_player.Play("open");
-		aphid = Player.Instance.HeldPickup.aphid;
-		UpdateAphidInfo();
-	}
-	private void OnAphidDrop()
-	{
-		if (aphid == null)
-			return;
-		aphid = null;
-		menu_player.Play("close");
-	}
+	StringName stamina = new("bio_skill_stamina"), strength = new("bio_skill_strength"),
+			intelligence = new("bio_skill_intelligence"), speed = new("bio_skill_speed");
+
 	private void UpdateAphidInfo()
 	{
 		name_label.Text = aphid.Instance.Genes.Name;
@@ -88,10 +112,19 @@ public partial class AphidInfo : Control
 		sleepBar.Value = 100 - aphid.Instance.Status.Tiredness;
 		bondshipBar.Value = aphid.Instance.Status.Bondship;
 
-		staminaBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "stamina").Points;
-		strengthBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "strength").Points;
-		speedBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "speed").Points;
-		intelligenceBar.Value = aphid.Instance.Genes.Skills.Find((s) => s.Name == "intelligence").Points;
+		List<Aphid.Skill> _skills = [.. aphid.Instance.Genes.Skills];
+
+		staminaBar.Value = _skills[0].Points; // stamina
+		staminaLabel.Text = Tr(stamina) + $" (lvl {_skills[0].Level})";
+
+		strengthBar.Value = _skills[1].Points; // strength
+		strengthLabel.Text = Tr(strength) + $" (lvl {_skills[1].Level})";
+
+		intelligenceBar.Value = _skills[2].Points; // intelligence
+		intelligenceLabel.Text = Tr(intelligence) + $" (lvl {_skills[2].Level})";
+
+		speedBar.Value = _skills[3].Points; // speed
+		speedLabel.Text = Tr(speed) + $" (lvl {_skills[3].Level})";
 
 		ageDisplay.Texture = age[aphid.Instance.Status.IsAdult ? 1 : 0];
 	}

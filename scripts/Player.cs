@@ -34,11 +34,10 @@ public partial class Player : CharacterBody2D
 	// Interaction Params
 	public const string InteractableTag = "interactable";
 	private string[] ValidInteractionTags =
-    [
-        Aphid.Tag, NPCBehaviour.Tag, "menu", InteractableTag
+	[
+		Aphid.Tag, NPCBehaviour.Tag, "menu", InteractableTag
 	];
-	private readonly List<Node2D> interactables_nearby = [];
-	private readonly List<Node2D> pickups_nearby = [];
+	private readonly List<Node2D> interactables_nearby = [], pickups_nearby = [];
 	private readonly List<string> current_prompts = [];
 	private Timer overlapping_monitoring = new();
 	private int interact_hold_cycles;
@@ -50,6 +49,7 @@ public partial class Player : CharacterBody2D
 	public record PickupData
 	{
 		public Node2D Item;
+		public string tag;
 		public bool is_aphid;
 		public Aphid aphid;
 		public Sprite2D sprite;
@@ -57,9 +57,9 @@ public partial class Player : CharacterBody2D
 	}
 
 	public delegate void PickupEventHandler(string _tag);
-	public delegate void DropEventHandler();
-	public event PickupEventHandler OnPickup;
-	public event DropEventHandler OnDrop;
+	public delegate void InteractableEventHandler(string _tag, Node2D _item);
+	public event PickupEventHandler OnPickup, OnDrop;
+	public event InteractableEventHandler OnFind, OnLose;
 
 	// Savedata params
 	internal static SaveData Data;
@@ -180,7 +180,7 @@ public partial class Player : CharacterBody2D
 
 		CanvasManager.Menus.OnSwitch += (_lastMenu, _menu) =>
 		{
-			if (_menu != null && _menu.ID != "pause")
+			if (_menu != null && _menu.Name != "pause")
 			{
 				if (HeldPickup.Item != null)
 					_ = Drop();
@@ -189,6 +189,24 @@ public partial class Player : CharacterBody2D
 					SetPlayerAnim(StringNames.IdleAnim);
 			}
 		};
+		void _OnFind(Node2D _body)
+		{
+			if (!_body.HasMeta(StringNames.TagMeta))
+				return;
+			string _tag = _body.GetMeta(StringNames.TagMeta).ToString();
+			OnFind?.Invoke(_tag, _body);
+		}
+		void _OnLose(Node2D _body)
+		{
+			if (!_body.HasMeta(StringNames.TagMeta))
+				return;
+			string _tag = _body.GetMeta(StringNames.TagMeta).ToString();
+			OnLose?.Invoke(_tag, _body);
+		}
+		interactionArea.AreaEntered += _OnFind;
+		interactionArea.BodyEntered += _OnFind;
+		interactionArea.AreaExited += _OnLose;
+		interactionArea.BodyExited += _OnLose;
 	}
 	public override void _PhysicsProcess(double delta)
 	{
@@ -320,11 +338,11 @@ public partial class Player : CharacterBody2D
 			}
 		}
 		// Attempts interacting with the CollisionObject itself
-		if (_node.HasMethod(GlobalManager.StringNames.InteractFunc)) 
-			_node.CallDeferred(GlobalManager.StringNames.InteractFunc);
+		if (_node.HasMethod(StringNames.InteractFunc))
+			_node.CallDeferred(StringNames.InteractFunc);
 		// Otherwise, attempts to interact with its parent instead
-		else if (_node.GetParent().HasMethod(GlobalManager.StringNames.InteractFunc)) 
-			_node.GetParent().CallDeferred(GlobalManager.StringNames.InteractFunc);
+		else if (_node.GetParent().HasMethod(StringNames.InteractFunc))
+			_node.GetParent().CallDeferred(StringNames.InteractFunc);
 	}
 	private void ProcessMovementAnimations(float _delta)
 	{
@@ -402,9 +420,9 @@ public partial class Player : CharacterBody2D
 
 		for (int i = 0; i < _collisionList.Count; i++)
 		{
-			if (!_collisionList[i].HasMeta(GlobalManager.StringNames.TagMeta))
+			if (!_collisionList[i].HasMeta(StringNames.TagMeta))
 				continue;
-			string _tag = (string)_collisionList[i].GetMeta(GlobalManager.StringNames.TagMeta);
+			string _tag = (string)_collisionList[i].GetMeta(StringNames.TagMeta);
 			if (ValidInteractionTags.Contains(_tag))
 			{
 				interactables_nearby.Add(_collisionList[i]);
@@ -435,10 +453,10 @@ public partial class Player : CharacterBody2D
 		for (int i = 0; i < _collisionList.Count; i++)
 		{
 			var _item = _collisionList[i];
-			if (!_item.HasMeta(GlobalManager.StringNames.PickupMeta)) // is it a pickup
+			if (!_item.HasMeta(StringNames.PickupMeta)) // is it a pickup
 				continue;
 
-			if (!(bool)_item.GetMeta(GlobalManager.StringNames.PickupMeta)) // can it be picked up
+			if (!(bool)_item.GetMeta(StringNames.PickupMeta)) // can it be picked up
 				return;
 
 			pickups_nearby.Add(_item);
@@ -479,7 +497,7 @@ public partial class Player : CharacterBody2D
 			return;
 
 		var _node = pickups_nearby[0];
-		var _tag = _node.HasMeta(GlobalManager.StringNames.TagMeta) ? (string)_node.GetMeta(GlobalManager.StringNames.TagMeta) : "item";
+		var _tag = _node.HasMeta(StringNames.TagMeta) ? (string)_node.GetMeta(StringNames.TagMeta) : "item";
 		// If is an aphid, do a bunch of extra shit
 		if (_tag == Aphid.Tag)
 		{
@@ -496,7 +514,7 @@ public partial class Player : CharacterBody2D
 		if (LockPositionCooldown.TimeLeft > 0)
 			return;
 
-		_node.SetMeta(GlobalManager.StringNames.PickupMeta, false);
+		_node.SetMeta(StringNames.PickupMeta, false);
 		_node.ProcessMode = ProcessModeEnum.Disabled;
 
 		if (_playAnim)
@@ -509,6 +527,7 @@ public partial class Player : CharacterBody2D
 		}
 
 		HeldPickup.Item = _node;
+		HeldPickup.tag = _tag;
 		if (!HeldPickup.is_aphid)
 		{
 			var _children = HeldPickup.Item.FindChildren("*", "Sprite2D");
@@ -553,7 +572,7 @@ public partial class Player : CharacterBody2D
 		RunDisabledTimer(0.5f);
 		await Task.Delay((int)(0.4f * 1000));
 
-		OnDrop?.Invoke();
+		OnDrop?.Invoke(HeldPickup.tag);
 		if (HeldPickup.is_aphid)
 			HeldPickup.aphid.skin.Position = HeldPickup.initial_offset;
 		if (HeldPickup.sprite != null)
@@ -562,7 +581,7 @@ public partial class Player : CharacterBody2D
 		if (_setPosition)
 			HeldPickup.Item.GlobalPosition = GlobalPosition + (flip_direction ? pickup_ground_position : -pickup_ground_position);
 		HeldPickup.Item.ProcessMode = ProcessModeEnum.Inherit;
-		HeldPickup.Item.SetMeta(GlobalManager.StringNames.PickupMeta, true);
+		HeldPickup.Item.SetMeta(StringNames.PickupMeta, true);
 		HeldPickup = new();
 	}
 	private void ProcessPickupBehaviour()
@@ -620,16 +639,6 @@ public partial class Player : CharacterBody2D
 			animator.Play(_name);
 		else
 			animator.PlayBackwards(_name);
-	}
-
-	public static class StringNames
-	{
-		public readonly static StringName IdleAnim = new("idle");
-		public readonly static StringName SitAnim = new("sit");
-		public readonly static StringName WalkAnim = new("walk");
-		public readonly static StringName RunAnim = new("run");
-		public readonly static StringName WhistleAnim = new("whistle");
-		public readonly static StringName PickupAnim = new("pickup");
 	}
 	public interface IPlayerInteractable
 	{

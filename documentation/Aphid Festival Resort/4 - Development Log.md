@@ -2,9 +2,11 @@
 
 ## Work In Progress
 - Photo Album:
-	- Camera Mode with Snippet function
-	- Album menu with photo grid
-	- Store album per aphid Neko-Atsume style
+	- Camera Mode [DONE]
+	- Album menu with photo grid [DONE]
+	- Store album per aphid Neko-Atsume style [DONE]
+	- Allow to select aphids with mouse
+	- frame feature?
 - Kitchen Recipe Display:
 	- Display grid of recipe slots
 	- Maybe a search query?
@@ -13,37 +15,35 @@
 	- Play objects consist of custom classes dictating what aphid and the object should do
 	- Adapt items to automatically find their play behaviour and allow repeats
 - Aphid Training
-	- Food grants skills points
+	- Food grants skills points [DONE]
 	- Train State triggers custom behaviour when nearby training objects
 	- Train objects consist of custom clases dictating what aphid and the structure should do
 	- Train Structures require to find the skill being trained and by how much
 - Aphid Better Breeding
-	- Adjust color lerp to have better looking inherited colors
-	- Inherit skills
-	- New Aphid skin
+	- Inherit skills [DONE]
+	- New Aphid skin [WIP]
 
-- exiting storage mode acts weird, hovering over an ui makes exit storage mode properly but hover over nothing and it instantly exits camera mode
-- icon for aphid spectating
-- spectating should show a label that indicates that you can switch and who you are seeing
-- adjust slider padding to fit end of value better
 - rendering is not adjusted for high zoom out
 - draw bench
 - draw rock
+- add custom video support for tv (later lol)
+- add custom image signs and text signs
+- icon for aphid spectating
+- icon for inv change mode
+- icon for reset controls
+- bg for photo slots
+- book bg for album
+- change harvest particles and outline color
 
 ## Bug Tracker:
 - Furniture clips below cliff floor, not a big deal but it annoys me big time
 ## Technical
 - Refactor OptionsManager to work with easily adjustable config slot modules
 - add event handlers for save modules
-- controls menu layout update to sort out build mode interactions + add "pull" as a rebindable
 - implement cutscene manager, which connects itself to dialog manager to manage custom animation events ([Action]animationFunction , [bool]essential)
 - separate cosmetic loading interface from main resoure load from INTIALIZE_GAME_PROCESS, so MainMenu simply watches its state without being necessary of GlobalManager to showcase
 ## Gameplay
 - freaking aphid throwing, make em spin and bounce like a rubber ball for the funnies
-- allow to sell items of the inventory
-- allow pickyeaters to eat neutral flavor foods
-- View aphid status even if not picked up
-- High bondship reveals hidden aphid personality
 ## Furniture and Food Ideas
 - Cake Mix: Replace cake recipe with this
 - Preztel: Cake Mix + Leaf
@@ -55,21 +55,41 @@
 - Aphid Death jingle
 # [Full Version Changelog]
 
+# v0.2.1
 ## Gameplay
-- Added the photo tab, allows to zoom in and out, and to select an aphid to follow, focused aphids will have the screenshot in their own unique folder.
+- Added the photo camera mode, allows to zoom in and out, and to focus on any aphid in the resort.
+	- Added the album functionality to the generations menu aswell!
+	- Aphids have their own folder and album. Otherwise global ones are stored in the general album.
+	- Taking a photo now shows you the result.
+- [Aphid inheritance of colors has been improved back], and it should be much more interesting and less dull than last version.
+- Aphids now gain(or lose!) skills from food items, mix and match to see which food works best for your own.
+- Aphid stats are now shown live when near an aphid, it also now shows their current skill level
+- New Aphid Skin available in blue eggs.
+- You can now sell items in your inventory by clicking and activating sell mode, just like structures, items are sold for half their price.
+- Aphid traits and preferences are now revelead in the generations album depending on how much bondship you have with them (thats what the big pink circle meter is for!)
 ## Technical
-- Updated to Godot 4.4. With this, comes the new meta reference system, thus, all resources have been given a ".uid"
-- Added the dialog console command to display translation texts
-- Updated several string references to use StringNames when proper
+- Aphid skins have been packed into a spriteatlas. a heavy boost in performance should be noticeable, however, this affects how new aphid skins can be implemented, refer to [[Aphid Skin Implementation]] for more information.
+- Tilemaps have been properly adjusted to not block shadow lights.
+- NPC's no longer repeat the same line of dialog when set to Random, and will in fact not say it again until the entire dialogue tree is exahusted.
+## Graphics & Sound
+- Improved TV Display furniture piece. 
+- Adjusted UI theme elements.
+- Grass now sways when walked over.
+- Updated UI SFX.
+- Hello everyone my name is Markiplier and welcome to Five Nights at Freddys
+## Development
+- Updated to Godot 4.4. With this, comes the new meta reference system, thus, all resources have been automatically given a ".uid".
+- Various improvements to the debug console.
+- Optimized several string references to use cached StringNames when proper.
+- Replaced absolute paths in GlobalManager with their corresponding UID's
 - Updated several instances of sound managing to use the new system and keep in memory frequent ones.
 - Updated the way Screen Size is calculated to allow for modifications to camera and viewport and still retain mouse tracking
 - Renamed ResortGui to FreeCameraManager, as its purpose wasnt as resort general but more free camera mode focused.
-- Aphid skins have been packed into a spriteatlas. a heavy boost in performance should be noticeable, however, this affects how new aphid skins can be implemented, refer to [[Aphid Skin Implementation]] for more information
-## Graphics & Sound
-- Aphids ready for harvest are now unaffected by lighting while highlighted
-
+- New Atlas packager utility, please revise [Atlas Packager Usage] if you want to implement a skin or item.
+- MenuUtil has been revamped to include better control over menu behaviour.
+- Added an event handler for when the game binds a new action control.
 ## Fixed
-- Mushroom gummies had the wrong display sprite
-- (Spanish) User interface label did not position itself correctly
-- Leaving the build or furniture menu would turn back back the normal HUD while in free camera mode
-- Aphids left their harvest particles when they died
+- You can now close the build menu tab without exiting the menu itself.
+- Pickyeaters can now eat neutral-flavoured foods aswell.
+- Particle manager would make other classes throw errors if they attempted to spawn particles over the particle limit. This should no longer happen.
+- Aphids that were breeding would sometimes "T-Pose" towards their breed target, this should be fixed.

@@ -6,26 +6,39 @@ public partial class TVPropBehaviour : Sprite2D
 	[Export] private Sprite2D viewport_display, background_display;
 	[Export] private Light2D light;
 	[Export] private AudioStreamPlayer2D stereo;
+	[Export] private VideoStreamPlayer player;
 
 	private bool is_connected = false;
+	private int channel;
 
 	private void Interact()
 	{
-		if (is_connected)
+		channel++;
+		if (channel == 3)
+			channel = 0;
+
+		if (channel == 0)
 		{
+			player.Stop();
+
 			background_display.Texture = backgrounds[0];
-			viewport_display.Hide();
 			light.Enabled = false;
-			stereo.Stop();
 		}
-		else
+		else if (channel == 1)
 		{
-			RandomNumberGenerator _rng = new();
-			background_display.Texture = backgrounds[_rng.RandiRange(1, backgrounds.Length - 1)];
-			viewport_display.Show();
 			light.Enabled = true;
+			light.Color = new("green");
+			background_display.Texture = backgrounds[1];
+			viewport_display.Show();
 			stereo.Play();
 		}
-		is_connected = !is_connected;
+		else if (channel == 2)
+		{
+			stereo.Stop();
+			viewport_display.Hide();
+
+			player.Play();
+			light.Color = new("darkblue");
+		}
 	}
 }

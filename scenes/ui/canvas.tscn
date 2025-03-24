@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=69 format=3 uid="uid://bufmc14xek8uk"]
 
 [ext_resource type="Script" uid="uid://du1wf6ua7yxdx" path="res://scripts/gui/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bxc35yxy7uvir" path="res://sprites/ui/gui_icons/icon_inventory_close.png" id="4_s23ya"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="5_ea4nc"]
 [ext_resource type="PackedScene" uid="uid://uk8rbyvf7hlf" path="res://scenes/ui/control_prompt.tscn" id="6_2mjwi"]
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="6_pcakw"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="6_pcakw"]
 [ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/gui_icons/icon_camera.png" id="7_pfkc3"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_y632t"]
 [ext_resource type="Texture2D" uid="uid://3wk8a5raqbq4" path="res://sprites/ui/gui_icons/icon_menu.png" id="9_b5qdd"]
@@ -15,19 +15,18 @@
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="10_svke5"]
 [ext_resource type="Script" uid="uid://6ilnixcy7c8v" path="res://scripts/gui/PlayerInventory.cs" id="10_wibaw"]
 [ext_resource type="Script" uid="uid://b1ay6knt75a4t" path="res://scripts/gui/DialogManager.cs" id="11_4ktwe"]
-[ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="11_u4uj5"]
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="12_fyjyg"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="13_7k46k"]
+[ext_resource type="Shader" uid="uid://dw8sws2xkkyr6" path="res://scripts/shaders/outline.gdshader" id="13_8siup"]
 [ext_resource type="Script" uid="uid://c1bew1k35gsxj" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="15_4n2d7"]
-[ext_resource type="AudioStream" uid="uid://biqb5tx1cjmwl" path="res://sfx/ui/backpack_open.wav" id="15_jpkck"]
-[ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="16_crekn"]
-[ext_resource type="AudioStream" uid="uid://bsk5hdjfe6fiy" path="res://sfx/ui/backpack_close.wav" id="16_wn1tp"]
+[ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/button_switch.wav" id="16_crekn"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
-[ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="19_h41ts"]
+[ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/gui_icons/icon_folder.png" id="18_j2rvs"]
+[ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/panels/options_panel.tscn" id="19_h41ts"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="20_qrmy7"]
-[ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/ui/controls_panel.tscn" id="23_au4eg"]
+[ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="23_au4eg"]
 [ext_resource type="Script" uid="uid://c56otv2uv2d50" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="25_8tdi4"]
 [ext_resource type="Texture2D" uid="uid://dknqeho1jsf5o" path="res://sprites/help_examples/aphid_egg.PNG" id="26_6gm3y"]
@@ -45,6 +44,154 @@
 font_size = 40
 shadow_color = Color(0.550133, 0, 0.0841187, 1)
 shadow_offset = Vector2(3.095, 3.18)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8lprv"]
+shader = ExtResource("13_8siup")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/ignore_modulate = true
+shader_parameter/width = 10.0
+shader_parameter/pattern = 2
+shader_parameter/inside = false
+shader_parameter/add_margins = true
+shader_parameter/number_of_images = Vector2(1, 1)
+
+[sub_resource type="Animation" id="Animation_8lprv"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1355, 809)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_8siup"]
+resource_name = "popup"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [Vector2(1566, 1098), Vector2(1251, 602)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(-2, 1),
+"update": 0,
+"values": [-3.81878, -3.36849]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_y86om"]
+resource_name = "vanish"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_n1534"]
+_data = {
+&"RESET": SubResource("Animation_8lprv"),
+&"popup": SubResource("Animation_8siup"),
+&"vanish": SubResource("Animation_y86om")
+}
 
 [sub_resource type="LabelSettings" id="LabelSettings_6pa5s"]
 font_size = 40
@@ -280,6 +427,30 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(-482, 244)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("anchor/bg:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.47451, 0.0235294, 0.184314, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anchor/count_bg:self_modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.32549, 0.0117647, 0.117647, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_sfayx"]
 resource_name = "close"
@@ -362,13 +533,102 @@ tracks/2/keys = {
 "update": 0,
 "values": [Vector2(-482, 292), Vector2(-482, 228), Vector2(-482, 236)]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("anchor/bg:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.47451, 0.0235294, 0.184314, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anchor/count_bg:self_modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.32549, 0.0117647, 0.117647, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_n1534"]
+resource_name = "switch_to_normal"
+length = 0.3
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anchor/count_bg:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.32549, 0.0117647, 0.117647, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("anchor/bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.47451, 0.0235294, 0.184314, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_j2rvs"]
+resource_name = "switch_to_sell"
+length = 0.3
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anchor/bg:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.811531, 0.493954, 0.157469, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("anchor/count_bg:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.623766, 0.411378, 0.164929, 1)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tekbc"]
 _data = {
 &"RESET": SubResource("Animation_5upln"),
 &"close": SubResource("Animation_sfayx"),
-&"open": SubResource("Animation_7dphq")
+&"open": SubResource("Animation_7dphq"),
+&"switch_to_normal": SubResource("Animation_n1534"),
+&"switch_to_sell": SubResource("Animation_j2rvs")
 }
+
+[sub_resource type="LabelSettings" id="LabelSettings_j2rvs"]
+font_size = 40
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(3, 3)
 
 [sub_resource type="Animation" id="Animation_vqegb"]
 length = 0.001
@@ -572,22 +832,21 @@ font_size = 40
 outline_size = 10
 outline_color = Color(0, 0, 0, 1)
 
-[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("hud_element", "currency_text", "weather_text", "weather_bg", "weather_player", "screenshot_button", "menu_button", "inventoryButton", "inventory_control_label", "prompt_grid")]
+[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("hud_element", "photo_display", "photo_anim_player", "currency_text", "screenshot_button", "menu_button", "prompt_grid", "weather_player", "weather_text", "weather_bg")]
 process_mode = 1
 script = ExtResource("1_vek4n")
 hud_element = NodePath("hud")
+photo_display = NodePath("photo")
+photo_anim_player = NodePath("photo/AnimationPlayer")
 currency_text = NodePath("berries_bar/amount")
+screenshot_button = NodePath("hud/screenshotButton")
+menu_button = NodePath("hud/menuButton")
+prompt_grid = NodePath("control_prompt_anchor/control_prompt_grid")
+prompt_element = ExtResource("6_2mjwi")
+weather_player = NodePath("datetime/AnimationPlayer")
 weather_text = NodePath("datetime/CanvasGroup/weater_bg/weather_text")
 weather_sprites = Array[Texture2D]([ExtResource("2_gvumt"), ExtResource("3_7sasc")])
 weather_bg = NodePath("datetime/CanvasGroup/weater_bg")
-weather_player = NodePath("datetime/AnimationPlayer")
-screenshot_button = NodePath("hud/screenshotButton")
-menu_button = NodePath("hud/menuButton")
-inventoryButton = NodePath("hud/inventoryButton")
-inventory_button_sprites = [ExtResource("4_s23ya"), ExtResource("9_smev1")]
-inventory_control_label = NodePath("hud/inventoryButton/control_icon")
-prompt_grid = NodePath("control_prompt_anchor/control_prompt_grid")
-prompt_element = ExtResource("6_2mjwi")
 
 [node name="berries_bar" type="NinePatchRect" parent="."]
 self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
@@ -649,6 +908,25 @@ size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 2
 
+[node name="photo" type="TextureRect" parent="."]
+visible = false
+light_mask = 0
+material = SubResource("ShaderMaterial_8lprv")
+offset_left = 1355.0
+offset_top = 809.0
+offset_right = 1784.0
+offset_bottom = 1107.0
+texture = ExtResource("33_mlkyv")
+expand_mode = 1
+stretch_mode = 5
+flip_h = true
+flip_v = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="photo"]
+libraries = {
+&"": SubResource("AnimationLibrary_n1534")
+}
+
 [node name="hud" type="Control" parent="."]
 light_mask = 0
 layout_mode = 3
@@ -679,17 +957,20 @@ PressedColor = Color(0.282353, 0.294118, 0.286275, 1)
 HoverColor = Color(0.670588, 0.670588, 0.65098, 1)
 
 [node name="control_text" type="Label" parent="hud/screenshotButton"]
+light_mask = 0
 layout_mode = 0
-offset_left = -43.0
-offset_top = 17.0
-offset_right = 8.0
-offset_bottom = 65.0
+offset_left = 30.0
+offset_top = 35.0
+offset_right = 81.0
+offset_bottom = 83.0
+mouse_filter = 1
 text = "F1"
 label_settings = SubResource("LabelSettings_6pa5s")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="inventoryButton" type="TextureButton" parent="hud"]
+light_mask = 0
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -708,20 +989,22 @@ PressedColor = Color(0.282353, 0.294118, 0.286275, 1)
 HoverColor = Color(0.670588, 0.670588, 0.65098, 1)
 
 [node name="control_icon" type="RichTextLabel" parent="hud/inventoryButton"]
+light_mask = 0
 layout_mode = 0
-offset_left = 76.0
-offset_top = 21.0
-offset_right = 210.0
-offset_bottom = 71.0
+offset_left = 40.0
+offset_top = 29.0
+offset_right = 123.0
+offset_bottom = 79.0
 mouse_filter = 1
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 bbcode_enabled = true
-text = " Tab"
+text = "Tab"
 scroll_active = false
 autowrap_mode = 0
 
 [node name="menuButton" type="TextureButton" parent="hud"]
+light_mask = 0
 layout_mode = 0
 offset_right = 75.0
 offset_bottom = 75.0
@@ -775,7 +1058,7 @@ libraries = {
 &"": SubResource("AnimationLibrary_4mtcm")
 }
 
-[node name="inventory" type="Control" parent="." node_paths=PackedStringArray("inventory_player", "inventoryGrid", "inventoryCount")]
+[node name="inventory" type="Control" parent="." node_paths=PackedStringArray("player", "grid", "modeButton", "inventoryButton", "inventoryCountLabel", "modeControlLabel", "inventoryControlLabel")]
 visible = false
 layout_mode = 3
 anchors_preset = 7
@@ -791,12 +1074,14 @@ grow_vertical = 0
 mouse_filter = 1
 theme = ExtResource("6_pcakw")
 script = ExtResource("10_wibaw")
-inventory_player = NodePath("animator")
-inventoryGrid = NodePath("anchor/inventory_container")
-invItemContainer = ExtResource("11_u4uj5")
-inventoryCount = NodePath("anchor/count_bg/inventory_count")
-audio_inventory_open = ExtResource("15_jpkck")
-audio_inventory_close = ExtResource("16_wn1tp")
+player = NodePath("animator")
+grid = NodePath("anchor/inventory_container")
+modeButton = NodePath("anchor/mode_bg")
+inventoryButton = NodePath("../hud/inventoryButton")
+buttonSprites = [ExtResource("9_smev1"), ExtResource("4_s23ya")]
+inventoryCountLabel = NodePath("anchor/count_bg/inventory_count")
+modeControlLabel = NodePath("anchor/mode_bg/control_icon")
+inventoryControlLabel = NodePath("../hud/inventoryButton/control_icon")
 
 [node name="animator" type="AnimationPlayer" parent="inventory"]
 libraries = {
@@ -810,6 +1095,7 @@ offset_bottom = 40.0
 
 [node name="bg" type="NinePatchRect" parent="inventory/anchor"]
 self_modulate = Color(0.47451, 0.0235294, 0.184314, 1)
+light_mask = 0
 layout_mode = 0
 offset_left = -503.0
 offset_top = 284.0
@@ -824,6 +1110,7 @@ patch_margin_bottom = 20
 [node name="count_bg" type="TextureRect" parent="inventory/anchor"]
 self_modulate = Color(0.32549, 0.0117647, 0.117647, 1)
 show_behind_parent = true
+light_mask = 0
 layout_mode = 0
 offset_left = -482.0
 offset_top = 244.0
@@ -833,20 +1120,54 @@ texture = ExtResource("4_bri73")
 
 [node name="inventory_count" type="Label" parent="inventory/anchor/count_bg"]
 layout_mode = 0
-offset_left = 23.0
+offset_left = 16.0
 offset_top = 7.0
-offset_right = 104.0
+offset_right = 111.0
 offset_bottom = 55.0
-text = "0/15"
+text = "10/15"
+label_settings = SubResource("LabelSettings_j2rvs")
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="inventory_container" type="HBoxContainer" parent="inventory/anchor"]
+light_mask = 0
 layout_mode = 0
 offset_left = -470.0
 offset_top = 308.0
 offset_right = 1506.0
 offset_bottom = 436.0
 scale = Vector2(0.5, 0.5)
+
+[node name="mode_bg" type="TextureButton" parent="inventory/anchor"]
+light_mask = 0
+layout_mode = 0
+offset_left = 439.0
+offset_top = 225.0
+offset_right = 530.0
+offset_bottom = 322.0
+focus_mode = 0
+texture_normal = ExtResource("18_j2rvs")
+stretch_mode = 4
+script = ExtResource("8_y632t")
+PressedColor = Color(0.484398, 0.484398, 0.484398, 1)
+FocusColor = Color(0.719012, 0.877187, 0.98421, 1)
+HoverColor = Color(0.789172, 0.789172, 0.789172, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="control_icon" type="RichTextLabel" parent="inventory/anchor/mode_bg"]
+light_mask = 0
+layout_mode = 0
+offset_left = 50.0
+offset_top = 44.0
+offset_right = 147.0
+offset_bottom = 94.0
+mouse_filter = 1
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+bbcode_enabled = true
+text = "E"
+scroll_active = false
+autowrap_mode = 0
 
 [node name="dialog_box" type="Control" parent="." node_paths=PackedStringArray("dialogDoneSign", "dialogText", "dialogAudio")]
 auto_translate_mode = 2

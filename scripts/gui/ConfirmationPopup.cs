@@ -123,7 +123,7 @@ public partial class ConfirmationPopup : CanvasLayer
 		IsConfirming = true;
 		if (IsInstanceValid(currentPopup))
 			currentPopup.QueueFree();
-		currentPopup = ResourceLoader.Load<PackedScene>(GlobalManager.ConfirmationWindowPath).Instantiate() as ConfirmationPopup;
+		currentPopup = ResourceLoader.Load<PackedScene>(GlobalManager.CONFIRM_WINDOW_SCENE).Instantiate() as ConfirmationPopup;
 
 		currentPopup.confirmationType = _type;
 		currentPopup.confirmationAction = _onConfirm;

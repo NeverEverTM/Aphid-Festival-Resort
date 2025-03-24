@@ -37,7 +37,7 @@ public static class ControlsManager
 		}
 		public Variant Get()
 		{
-			Godot.Collections.Dictionary<string, string> _binds = new();
+			Godot.Collections.Dictionary<string, string> _binds = [];
 			foreach (KeyValuePair<string, InputEvent> _pair in Binds)
 			{
 				if (_pair.Key.Contains("ui"))
@@ -57,18 +57,20 @@ public static class ControlsManager
 	}
 
 	public const string GUI_ICONS_PATH = "res://sprites/ui/gui_icons/";
+	public delegate void ControlEventHandler(string _name, StringName _action);
+	public static event ControlEventHandler OnControlChanged;
 
-	internal static Godot.Collections.Dictionary<string, InputEvent> Binds = new();
+	internal static Godot.Collections.Dictionary<string, InputEvent> Binds = [];
 	internal readonly static SaveSystem.SaveModuleGD InputBinds = new("controls", new DataModule())
 	{
 		RelativePath = SaveSystem.CONFIG_DIR,
 		Extension = SaveSystem.CONFIGFILE_EXTENSION
 	};
 
-	/// <summary>
-	/// Cleans action names under specific requirements.
-	/// </summary>
-	public static string CleanActionName(InputEvent _input) =>
+    /// <summary>
+    /// Cleans action names under specific requirements.
+    /// </summary>
+    public static string CleanActionName(InputEvent _input) =>
 		CleanActionName(_input.AsText());
 	public static string CleanActionName(string _raw_action_name)
 	{
@@ -116,14 +118,23 @@ public static class ControlsManager
 			{
 				if (_events[0].AsText().StartsWith("ui"))
 					continue;
+				OnControlChanged?.Invoke(_events[0].AsText(), _action);
 				Binds[_action] = _events[0];
 			}
 		}
 	}
 	public static void BindAction(InputEvent _event, StringName _action)
 	{
+		if (!InputMap.HasAction(_action))
+		{
+			if (Binds.ContainsKey(_action))
+				Binds.Remove(_action);
+			Logger.Print(Logger.LogPriority.Warning, $"ControlsManager: <{_action}> does not exist as an action. Game version is {GlobalManager.GAME_VERSION}");
+			return;
+		}
 		InputMap.ActionEraseEvents(_action);
 		InputMap.ActionAddEvent(_action, _event);
 		Binds[_action] = _event;
+		OnControlChanged?.Invoke(_event.AsText(), _action);
 	}
 }

@@ -1,8 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4tp2on2bbuuo"]
+[gd_scene load_steps=4 format=3 uid="uid://c4tp2on2bbuuo"]
 
 [ext_resource type="Texture2D" uid="uid://dpfehwe1cpfw3" path="res://sprites/props/grass_0.png" id="1_cuq2t"]
+[ext_resource type="Script" uid="uid://bqocmgjvpnlmx" path="res://scripts/props/Grass.cs" id="2_gloa5"]
 
-[node name="grass_0" type="Sprite2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_pyor7"]
+radius = 4.12311
+
+[node name="grass_0" type="Sprite2D" node_paths=PackedStringArray("area")]
 texture = ExtResource("1_cuq2t")
 offset = Vector2(0, -16)
+script = ExtResource("2_gloa5")
+area = NodePath("Area2D")
 metadata/id = "grass_0"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_pyor7")

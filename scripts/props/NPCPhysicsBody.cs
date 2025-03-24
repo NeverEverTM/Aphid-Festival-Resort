@@ -18,7 +18,7 @@ public partial class NPCPhysicsBody : CharacterBody2D, Player.IPlayerInteractabl
 	public override void _PhysicsProcess(double delta)
 	{
 		float _delta = (float)delta;
-		if (npcBody.IsBusy)
+		if (npcBody.isBusy)
 		{
 			npcBody.TickFlip(_delta);
 			return;

@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://cy6ba6twhk3o3"]
 
-[ext_resource type="Material" uid="uid://2gw2tfd70p6m" path="res://scenes/leaves_overlay_material.tres" id="1_ih8cf"]
+[ext_resource type="Material" uid="uid://2gw2tfd70p6m" path="res://resources/leaves_overlay_material.tres" id="1_ih8cf"]
 [ext_resource type="Texture2D" uid="uid://dq7o8o8lhc215" path="res://sprites/atlases/leaves.png" id="1_j5sep"]
-[ext_resource type="Material" uid="uid://bhb1x7stpbix7" path="res://scenes/leaves_overlay_procc.tres" id="3_pms1o"]
+[ext_resource type="Material" uid="uid://bhb1x7stpbix7" path="res://resources/leaves_overlay_procc.tres" id="3_pms1o"]
 
 [node name="leaves_overlay" type="GPUParticles2D"]
 light_mask = 0

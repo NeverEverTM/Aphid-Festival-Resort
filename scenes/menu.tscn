@@ -6,14 +6,14 @@
 [ext_resource type="Texture2D" uid="uid://daup0e4jm5ln" path="res://sprites/ui/AphidFestivalResort.png" id="2_r26xg"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="2_w3mwt"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="3_7aeaj"]
-[ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="3_7vjbo"]
+[ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/button_switch.wav" id="3_7vjbo"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="4_fk8eh"]
 [ext_resource type="PackedScene" uid="uid://cy6ba6twhk3o3" path="res://scenes/particles/leaves_overlay.tscn" id="5_xpw47"]
 [ext_resource type="Script" uid="uid://y1wi3v5g1rvv" path="res://scripts/main_menu/StartMenu.cs" id="6_8loy6"]
 [ext_resource type="Texture2D" uid="uid://v4b2uxe72p3y" path="res://sprites/ui/github-mark-white.png" id="8_ao5k5"]
 [ext_resource type="Texture2D" uid="uid://cyp5ykw0lep0c" path="res://sprites/ui/itchio-logo-textless-white.png" id="9_8g0pq"]
-[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="9_76l0k"]
-[ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="10_8uix6"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="9_76l0k"]
+[ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/panels/options_panel.tscn" id="10_8uix6"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="11_1iujn"]
 [ext_resource type="Script" uid="uid://c8dsjkf1tu1p6" path="res://scripts/main_menu/LoadGameMenu.cs" id="11_6of5g"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="11_wl7ma"]
@@ -22,7 +22,7 @@
 [ext_resource type="Script" uid="uid://cvyggc1iie7r7" path="res://scripts/main_menu/NewGameMenu.cs" id="13_51p2j"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="14_vlxys"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="15_x38s1"]
-[ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/ui/controls_panel.tscn" id="16_rnb0o"]
+[ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="16_rnb0o"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="17_w4wev"]
 [ext_resource type="PackedScene" uid="uid://ttn1ivy2gfhv" path="res://scenes/ui/player_ui_display.tscn" id="17_w6vnm"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="18_r8j8b"]
@@ -861,7 +861,7 @@ texture = ExtResource("2_r26xg")
 
 [node name="title_animator" type="AnimationPlayer" parent="CanvasLayer/start_panel/title"]
 libraries = {
-"": SubResource("AnimationLibrary_77pfv")
+&"": SubResource("AnimationLibrary_77pfv")
 }
 
 [node name="button_wheel" type="RichTextLabel" parent="CanvasLayer/start_panel/title"]
@@ -975,7 +975,7 @@ popup_anchor = NodePath("popup_anchor")
 
 [node name="menu_player" type="AnimationPlayer" parent="CanvasLayer/newgame_panel"]
 libraries = {
-"": SubResource("AnimationLibrary_p4bau")
+&"": SubResource("AnimationLibrary_p4bau")
 }
 
 [node name="warning" type="NinePatchRect" parent="CanvasLayer/newgame_panel"]
@@ -1280,7 +1280,7 @@ savefile_slot = ExtResource("12_tjjf3")
 
 [node name="menu_player" type="AnimationPlayer" parent="CanvasLayer/loadgame_panel"]
 libraries = {
-"": SubResource("AnimationLibrary_wcxo3")
+&"": SubResource("AnimationLibrary_wcxo3")
 }
 
 [node name="load_bg" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
@@ -1433,6 +1433,8 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 bbcode_enabled = true
 text = "credits_note"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="phid" type="TextureRect" parent="CanvasLayer/credits_panel"]
 light_mask = 0
@@ -1461,7 +1463,7 @@ grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
 theme = ExtResource("9_76l0k")
-text = "alpha v0.2.0.1"
+text = "alpha v0.2.1"
 label_settings = SubResource("LabelSettings_6iqyf")
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -1475,7 +1477,7 @@ texture = ExtResource("2_fmpp6")
 
 [node name="sweep_animator" type="AnimationPlayer" parent="CanvasLayer/sweep_background"]
 libraries = {
-"": SubResource("AnimationLibrary_7l8ub")
+&"": SubResource("AnimationLibrary_7l8ub")
 }
 
 [node name="BOOT_CONTROL" type="Control" parent="CanvasLayer"]
@@ -1544,7 +1546,7 @@ offset_bottom = 316.0
 
 [node name="logo_animator" type="AnimationPlayer" parent="CanvasLayer/CUTSCENE_START/node"]
 libraries = {
-"": SubResource("AnimationLibrary_bahfq")
+&"": SubResource("AnimationLibrary_bahfq")
 }
 
 [node name="godot_logo" type="TextureRect" parent="CanvasLayer/CUTSCENE_START/node"]

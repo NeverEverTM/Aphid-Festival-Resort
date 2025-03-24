@@ -3,68 +3,122 @@ using static Player;
 
 public partial class PlayerInventory : Control
 {
-	[Export] private AnimationPlayer inventory_player;
-	[Export] private HBoxContainer inventoryGrid;
-	[Export] private PackedScene invItemContainer;
-	[Export] private Label inventoryCount;
-	[Export] private AudioStream audio_inventory_open, audio_inventory_close;
+	public static PlayerInventory Singleton { get; private set;}
+	private AudioStream audio_inventory_open, audio_inventory_close;
+	private bool is_selling;
+	private PackedScene itemContainer;
 
-	// =======| GUI |========
-	public void SetTo(bool _state)
+	[Export] private AnimationPlayer player;
+	[Export] private HBoxContainer grid;
+	[Export] private TextureButton modeButton, inventoryButton;
+	[Export] private Texture2D[] buttonSprites = new Texture2D[2];
+	[Export] private Label inventoryCountLabel;
+	[Export] private RichTextLabel modeControlLabel, inventoryControlLabel;
+
+    public override void _Ready()
+    {
+        Singleton = this;
+		audio_inventory_open = SoundManager.GetAudioStream("ui/backpack_open");
+		audio_inventory_close = SoundManager.GetAudioStream("ui/backpack_close");
+		itemContainer = ResourceLoader.Load("uid://boxaly7dtxe0r") as PackedScene;
+
+		modeControlLabel.Text = ControlsManager.GetActionName(InputNames.ChangeMode);
+		inventoryControlLabel.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
+		inventoryButton.Pressed += () => Instance.inventory.SetTo(!Visible);
+		modeButton.Pressed += () =>
+		{
+			is_selling = !is_selling;
+			if (is_selling)
+				player.Play("switch_to_sell");
+			else
+				player.Play("switch_to_normal");
+				SoundManager.CreateSound("ui/switch_mode",false);
+			Update();
+		};
+		ControlsManager.OnControlChanged += ChangeControlPrompt;
+	}
+    public override void _ExitTree()
+    {
+        ControlsManager.OnControlChanged -= ChangeControlPrompt;
+    }
+
+    // =======| GUI |========
+    public void SetTo(bool _state)
 	{
 		if (_state == Visible)
 			return;
 
+		is_selling = false;
 		if (_state)
-		{
 			Update();
-			inventory_player.Play("open");
-		}
 		else
 		{
-			for (int i = 0; i < inventoryGrid.GetChildCount(); i++)
-				inventoryGrid.GetChild(i).ProcessMode = ProcessModeEnum.Disabled;
-			inventory_player.Play("close");
+			for (int i = 0; i < grid.GetChildCount(); i++)
+				grid.GetChild(i).ProcessMode = ProcessModeEnum.Disabled;
 		}
 
+		player.Play(_state ? StringNames.OpenAnim : StringNames.CloseAnim);
 		SoundManager.CreateSound(_state ? audio_inventory_open : audio_inventory_close);
-		CanvasManager.UpdateInventoryIcon(_state);
+		inventoryButton.TextureNormal = buttonSprites[_state ? 0 : 1];
 	}
 	public void Update()
 	{
-		for (int i = 0; i < inventoryGrid.GetChildCount(); i++)
-			inventoryGrid.GetChild(i).QueueFree();
+		for (int i = 0; i < grid.GetChildCount(); i++)
+			grid.GetChild(i).QueueFree();
 
 		for (int i = 0; i < Data.InventoryMaxCapacity; i++)
 		{
-			TextureButton _item = invItemContainer.Instantiate() as TextureButton;
+			TextureButton _item = itemContainer.Instantiate() as TextureButton;
 			SetInventorySlot(_item, i < Data.Inventory.Count ? Data.Inventory[i] : "none");
-			inventoryGrid.AddChild(_item);
+			grid.AddChild(_item);
 		}
-		inventoryCount.Text = Data.Inventory.Count + "/" + Data.InventoryMaxCapacity;
+		inventoryCountLabel.Text = is_selling ? 
+				"$$$" : Data.Inventory.Count + "/" + Data.InventoryMaxCapacity;
 	}
 	private void SetInventorySlot(TextureButton _item_slot, string _item_name)
 	{
 		if (_item_name != "none")
 		{
-			_item_slot.SetMeta(GlobalManager.StringNames.IdMeta, _item_name);
+			_item_slot.SetMeta(StringNames.IdMeta, _item_name);
 			_item_slot.TooltipText = $"{Tr(_item_name + "_name")}\n"
 				+ $"{Tr(_item_name + "_desc")}";
 
 			(_item_slot.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
 			// press function
-			_item_slot.Pressed += () =>
+			if (!is_selling)
 			{
-				if (Instance.IsDisabled)
-					return;
-				if (Instance.HeldPickup.Item != null)
-					StoreCurrentItem();
-				PullItem(_item_name);
-				SetTo(false);
-			};
+				_item_slot.Pressed += () =>
+				{
+					if (Instance.IsDisabled)
+						return;
+					if (Instance.HeldPickup.Item != null)
+						StoreCurrentItem();
+					PullItem(_item_name);
+					SetTo(false);
+				};
+			}
+			else
+			{
+				_item_slot.Pressed += () =>
+				{
+					if (Instance.IsDisabled)
+						return;
+					Data.Inventory.Remove(_item_name);
+					Data.AddCurrency(GlobalManager.G_ITEMS[_item_name].cost / 2);
+					Update();
+					SoundManager.CreateSound("ui/kaching");
+				};
+			}
 		}
 		else
 			(_item_slot.GetChild(0) as TextureRect).Texture = null;
+	}
+	private void ChangeControlPrompt(string _, StringName _action)
+	{
+		if (_action == InputNames.OpenInventory)
+			inventoryControlLabel.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
+		else if (_action == InputNames.ChangeMode)
+			modeControlLabel.Text = ControlsManager.GetActionName(InputNames.ChangeMode);
 	}
 
 	// =======| Functional |========
@@ -76,9 +130,10 @@ public partial class PlayerInventory : Control
 		if (Instance.HeldPickup.Item != null)
 			await Instance.Drop();
 		Node2D _item = ResortManager.CreateItem(_item_name, GlobalPosition);
-		await Instance.Pickup(_item, _item.GetMeta("tag").ToString(), false);
+		await Instance.Pickup(_item, _item.GetMeta(StringNames.TagMeta).ToString(), false);
 		Data.Inventory.Remove(_item_name);
-		SoundManager.CreateSound("ui/backpack_close");
+		Update();
+		SoundManager.CreateSound(audio_inventory_close);
 	}
 	public void PullItem(int _index)
 	{
@@ -108,13 +163,13 @@ public partial class PlayerInventory : Control
 		Data.Inventory.Count < Data.InventoryMaxCapacity;
 	public static void StoreCurrentItem()
 	{
-		if (Instance.HeldPickup.Item.GetMeta("tag").ToString() == Aphid.Tag)
+		if (Instance.HeldPickup.Item.GetMeta(StringNames.TagMeta).ToString() == Aphid.Tag)
 			return;
 
-		if (!StoreItem(Instance.HeldPickup.Item.GetMeta("id").ToString()))
+		if (!StoreItem(Instance.HeldPickup.Item.GetMeta(StringNames.IdMeta).ToString()))
 			return;
 
-		SoundManager.CreateSound("ui/backpack_close");
+		SoundManager.CreateSound(Singleton.audio_inventory_close);
 		Instance.HeldPickup.Item.QueueFree();
 		Instance.HeldPickup = new();
 	}

@@ -30,7 +30,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		ingredient2Button.Pressed += () => SetIngredientSlot(null, 1);
 		resultButton.Pressed += OnResultPressed;
 		redoRecipe.Toggled += OnRedoPressed;
-		Menu = new("kitchen", animPlayer, () =>
+		Menu = new("kitchen", animPlayer, _ =>
 		{
 			CreateInventory();
 			SetIngredientSlot(null, 0);
@@ -52,7 +52,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		{
 			TextureButton _item = invItemContainer.Instantiate() as TextureButton;
 			var _item_name = Player.Data.Inventory[i];
-			_item.SetMeta(GlobalManager.StringNames.IdMeta, _item_name);
+			_item.SetMeta(StringNames.IdMeta, _item_name);
 
 			// check for available icon
 			(_item.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
@@ -75,7 +75,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		if (!_isNull)
 			SoundManager.CreateSound("ui/button_select");
 		else if (_ingredient != null)
-			SoundManager.CreateSound("ui/switch");
+			SoundManager.CreateSound("ui/button_switch");
 		_icon.Texture = !_isNull ? GlobalManager.GetIcon(_item_name) : null;
 		_ingredient = _item_name;
 		DisplayResult();

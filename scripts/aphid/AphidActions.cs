@@ -270,7 +270,7 @@ public partial class AphidActions : Aphid
 
 			// if is not valid, too far away, or claimed by someone, let go
 			if (!IsInstanceValid(_food_item) || aphid.GlobalPosition.DistanceTo(_food_item.GlobalPosition) > 200
-				|| !(bool)_food_item.GetMeta(GlobalManager.StringNames.PickupMeta) || !_food_item.HasMeta(GlobalManager.StringNames.TagMeta))
+				|| !(bool)_food_item.GetMeta(StringNames.PickupMeta) || !_food_item.HasMeta(StringNames.TagMeta))
 			{
 				aphid.SetState(StateEnum.Idle);
 				return;
@@ -280,8 +280,8 @@ public partial class AphidActions : Aphid
 			if (aphid.GlobalPosition.DistanceTo(_food_item.GlobalPosition) < 40)
 			{
 				aphid.SetMovementDirection(Vector2.Zero);
-				_food_item.RemoveMeta(GlobalManager.StringNames.TagMeta); // Stops others from eating it
-				_food_item.SetMeta(GlobalManager.StringNames.PickupMeta, false);
+				_food_item.RemoveMeta(StringNames.TagMeta); // Stops others from eating it
+				_food_item.SetMeta(StringNames.PickupMeta, false);
 				_food_item.GlobalPosition = aphid.GlobalPosition + (aphid.skin.IsFlipped ? new Vector2(-25, -10) : new Vector2(25, -10));
 
 				for (int i = 0; i < _food_item.GetChildCount(); i++)
@@ -317,7 +317,7 @@ public partial class AphidActions : Aphid
 			if (_args?.food_item != null && _node.Equals(_args.food_item))
 				return;
 
-			if (!(bool)_node.GetMeta(GlobalManager.StringNames.PickupMeta))
+			if (!(bool)_node.GetMeta(StringNames.PickupMeta))
 				return;
 
 			if (food_ignore_list.Exists(_node.Equals))
@@ -326,7 +326,7 @@ public partial class AphidActions : Aphid
 			// TODO: food item should simply be able to be replaced by another once the food chase timeouts
 			// also do a quick raycast check to see if the food item is in direct path
 
-			var _current_food = GlobalManager.G_FOOD[_node.GetMeta(GlobalManager.StringNames.IdMeta).ToString()];
+			var _current_food = GlobalManager.G_FOOD[_node.GetMeta(StringNames.IdMeta).ToString()];
 			var _flavor = _current_food.type;
 			// if Vile, reject it cause yucky, unless you like it for some reason
 			if (_flavor == AphidData.FoodType.Vile && _flavor != aphid.Instance.Genes.FoodPreference)
@@ -446,16 +446,26 @@ public partial class AphidActions : Aphid
 			// finished meal
 			if (gobble_timer <= 0)
 			{
-				// Dispose of the food item now
-				string _id = _food_item.GetMeta("id").ToString();
-				GlobalManager.Food _food = GlobalManager.G_FOOD[_id];
+				// set food values
+				GlobalManager.Food _food = GlobalManager.G_FOOD[_food_item.GetMeta(StringNames.IdMeta).ToString()];
 				float _multi = aphid.Instance.Genes.FoodMultipliers[(int)_food.type];
 				if (_food.food_value > 0)
 					aphid.Instance.Status.AddHunger(_food.food_value * _multi);
 
 				if (_food.drink_value > 0)
 					aphid.Instance.Status.AddThirst(_food.drink_value * _multi);
+				
+				// set skill values
+				if (_food.skill_list != null && _food.skill_list.Length > 0)
+				{
+					for (int i = 0; i < _food.skill_list.Length; i++)
+					{
+						int _index = aphid.Instance.Genes.Skills.FindIndex((s) => s.Name == _food.skill_list[i]);
+						aphid.Instance.Genes.Skills[_index].GivePoints(_food.skill_values[i]);
+					}
+				}
 
+				// Dispose of the food item now
 				_food_item.QueueFree();
 				Locked = false;
 				aphid.SetState(StateEnum.Idle);
@@ -649,7 +659,7 @@ public partial class AphidActions : Aphid
 			}
 			else // Mate with yourself
 			{
-				breed_effect = GlobalManager.EmitParticles("heart", aphid.GlobalPosition);
+				breed_effect = GlobalManager.EmitParticles("heart", aphid.GlobalPosition, false);
 				breed_effect.OneShot = false;
 				await aphid.skin.DoDanceAnim();
 				aphid.LayAnEgg(aphid.Instance, true);
@@ -669,7 +679,7 @@ public partial class AphidActions : Aphid
 			{
 				breed_partner = _partner;
 				_partner.skin.DoJumpAnim();
-				GlobalManager.EmitParticles("heart", _partner.GlobalPosition);
+				GlobalManager.EmitParticles("heart", _partner.GlobalPosition, false);
 				_partner.SetState(Type, new BreedArgs()
 				{
 					position = _aphid.GlobalPosition + (_aphid.skin.IsFlipped ? new(-28, -5) : new(28, -5)),
@@ -690,6 +700,8 @@ public partial class AphidActions : Aphid
 			// breed routine for non-breeding aphid
 			if (aphid.Instance.Status.BreedMode == BreedEnum.Inactive)
 			{
+				if (aphid.skin.OverrideMovementAnim)
+					aphid.skin.OverrideMovementAnim = false;
 				if (aphid.GlobalPosition.DistanceTo(breed_args.position) > 20)
 					aphid.SetMovementDirection(breed_args.position, true);
 			}

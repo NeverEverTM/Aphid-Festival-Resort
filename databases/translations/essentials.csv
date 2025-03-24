@@ -63,27 +63,29 @@ controls_down,Move Down,Caminar para Arriba
 controls_left,Move Left,Caminar a la Izquiera
 controls_right,Move Right,Caminar a la Derecha
 controls_run,Run,Correr
-controls_change_camera,Camera Mode,Modo de Camara
-controls_store,Store (Build Mode),Almacenar (Construir)
-controls_sell,Sell (Build Mode),Vender (Construir)
+controls_store,Store,Almacenar
+controls_sell,Sell,Vender
+controls_align_to_grid,Align to Grid,Alinear al Cuadro
 controls_open_inventory,Open Inventory,Abrir Inventario
 controls_open_generations,Open Album,Abrir Album
+controls_change_camera,Camera Mode,Modo de Camara
 controls_interact,Interact,Interactuar
 controls_cancel,Cancel/Go Back,Cancelar/Regresar
 controls_pickup,Pickup/Drop,Recoger/Soltar
+controls_pull,Pull Item,Sacar Objeto
 controls_movement_name,Movement,Movimiento
 controls_interactions_name,Interactions,Interacciones
-controls_mode_name,Camera & Build Mode,Camara y Construcción
+controls_buildmode_name,Build Mode,Modo Construcción
 controls_menus_name,Menu Access,Acceso de Menus
 controls_reset,Hold F1 to reset binds,Sosten F1 para resetar los controles
-help_title,Aphid Basics and You 101,Primeros Pasos
+help_title,Aphid Basics and You - 101,Introducción al Cuidado de Áfidos
 help_desc_0,"Welcome to the Resort! Start by hatching your first Aphid.
 Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
-Use the same button to pickup stuff as well!","¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Use the same button to pickup stuff as well!","¡Bienvenido al Complejo! Empieza eclosionando tu primer Áfido.
 Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
 ¡Tambien puedes usar el mismo boton para recoger!"
 help_desc_1,"Aphids need to be taken care of! Interact with them using {0} to pet them.
-Be sure to also give them [color=cyan]food and water[/color]!","Áfidos requieren de cuidado. Interactua presionando {0} para acariciarlos.
+Be sure to also give them [color=cyan]food and water[/color]!","Áfidos requieren de cuidado! Interactua presionando {0} para acariciarlos.
 Asegurate de darles de [color=cyan]comer y beber[/color]!"
 help_desc_2,"You can buy supplies at the [color=cyan]store[/color], simply stand in front of it and interact with it.
 This applies to anything that looks, and is, interactable!","Compra provisiones en la [color=cyan ]tienda[/color], simplemente situate enfrente de ella e interactua.
@@ -101,8 +103,8 @@ help_desc_6,"You can rename an Aphid by picking it up and pressing its name on t
 It also shows its current status and skills.","Puedes renombrar un Áfido recogiendolo y presionando su nombre en la parte izquierda arriba.
 Aquí tambien muestra su estado actual y habilidades."
 help_desc_7,"Get a better view of your resort by pressing {0} from where you can access the furniture mode!
-You can also take screenshots with F1.","¡Consigue una mejor vision del complejo presionando {0} donde puedes acceder al modo construcción!
-Tambien puedes tomar capturas de pantalla usando F1."
+You can also take screenshots with F1 and see them in your album.","¡Consigue una mejor vision del complejo presionando {0} donde puedes acceder al modo construcción!
+Tambien puedes tomar capturas de pantalla usando F1 y verlas en tu album."
 pause_resume,Resume,Reanudar
 pause_options,Options,Opciones
 pause_controls,Controls,Controles
@@ -110,7 +112,7 @@ pause_help,Help,Ayuda
 pause_backtomenu,Back to Menu,Volver al Menu
 pause_exit,Exit to Desktop,Salir al Escritorio
 pause_warning,Progress is saved automatically when leaving!,El juego se guarda automaticamente al salir!
-credits_note,"[center]---------------------------------
+credits_note,"---------------------------------
 Created in the Godot 4 Engine
 
 SOUND ASSETS
@@ -127,7 +129,7 @@ To the fan game Chao Resort Island by Nefault1st for being an inspiration for th
 ---------------------------------
 Unless stated otherwise, all other components had been created, programmed and designed by me, Summer
 Characters and places are from Bug Fables: The Everlasting Sapling by Moonsprout Games
-------------------------[/center]","[center]-------------------------------
+------------------------","-------------------------------
 Hecho en Godot 4
 
 ARCHIVOS DE SONIDO
@@ -144,12 +146,32 @@ Al juego fan Chao Resort Island por Nefault1st por ser una inspiracion para esto
 ---------------------------------
 A menos dicho lo contrario, todo los demas componentes han sido creados, programados y diseñados por mi Summer
 Caracteres y lugares vienen de Bug Fables: El Retoño Eterno de Moonsprout Games
-------------------------[/center]"
+------------------------"
 generations_description,"Here you can see all the aphids you have raised through your time in the resort.
 Double click on an aphid to mark its location in the map.","Aquí podras ver a todas los áfidos que has criado en tu tiempo en el complejo.
 Haz doble click para marcar la ubicacion de una mascota en el mapa."
 generations_owner,Owned By,Criado por
 generations_parent,Children of,Cría de
+generations_favorite,Favorite Food:,Comida Favorita:
+trait_lazy,Lazy,Flojo
+trait_loyal,Loyal,Leal
+trait_pickyeater,Picky Eater,Paladar Quisquilloso
+trait_fertile,Fertile,Fértil
+trait_clumsy,Clumsy,Torpe
+trait_glutton,Glutton,Tragón
+trait_hyperactive,Hyperactive,Hiperactivo
+trait_heavysleeper,Heavy Sleeper,Sueño Profundo
+trait_lightsleeper,Light Sleeper,Sueño Profundo
+trait_affectionate,Affectionate,Afectuoso
+trait_fastlearner,Fast Learner,Aprendiz Rapido
+trait_slowlearner,Slow Learner,Aprendiz Lento
+food_flavor_0,Sweet,Dulce
+food_flavor_1,Sour,Agrio
+food_flavor_2,Salty,Salado
+food_flavor_3,Bitter,Amargo
+food_flavor_4,Vile,Vil
+food_flavor_5,Bland,Soso
+food_flavor_6,Neutral,Neutral
 store_item_name,Azzy’s Bazaar,Bazar de Azzy
 store_item_desc,"Purchase basic items for Aphid caretaking. Food, toys, eggs, and more!","Adquiere objectos basicos para el cuidado de Áfidos. Comida, juegetes, huevos y mucho más!"
 store_item_phrase,Hi!,Hola!
@@ -164,7 +186,12 @@ kitchen_lockrecipe,Repeat Recipe,Repetir Receta
 unknown_name,???,???
 resort_golden_name,Golden Plains,Planicies Doradas
 resort_golden_desc,"Situated at the Golden Settlement, It's the first accomodation of many.","Situada en el Asentamiento Dorado, es la primer acomodacion de muchas."
+camera_spectating,Spectating:,Espectando:
 bio_name_placeholder,Aphid's Name,Nombre del Áfido
+bio_skill_stamina,Endurance,Resistencia
+bio_skill_strength,Strength,Fuerza
+bio_skill_intelligence,Intelligence,Inteligencia
+bio_skill_speed,Agility,Agilidad
 prompt_pickup,Pickup,Recoger
 prompt_drop,Drop,Soltar
 prompt_interact,Interact,Interactuar
@@ -173,12 +200,5 @@ prompt_talk,Talk,Conversar
 prompt_harvest,Harvest,Cosechar
 prompt_sell,Sell,Vender
 prompt_store,Store,Almacenar
-prompt_align_to_grid,Grid Align,Alinear
+prompt_align_to_grid,Align (Hold),Alinear (Mantener)
 prompt_open_menu,Open Menu,Abrir Menu
-food_flavor_0,Sweet,Dulce
-food_flavor_1,Sour,Agrio
-food_flavor_2,Salty,Salado
-food_flavor_3,Bitter,Amargo
-food_flavor_4,Vile,Vil
-food_flavor_5,Bland,Soso
-food_flavor_6,Neutral,Neutral
