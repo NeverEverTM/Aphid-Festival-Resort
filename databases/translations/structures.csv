@@ -1,6 +1,6 @@
 ,en,es
 tv_name,Hi-Tech Display,Display Moderno
-tv_desc,An advanced gadget provided by the termite kingdom. It has one single display option.,Un artilugio proveniente del reino de las termitas. Tiene una solo canal.
+tv_desc,An advanced gadget provided by the termite kingdom. Displays some rather... confusing visuals.,Un artilugio proveniente del reino de las termitas. Lo que enseña es... curioso.
 sign_wanted_name,“WANTED” Poster ,Poster “SE BUSCA” 
 sign_wanted_desc,"Whoever that is, they sure look like they are rooting and tooting.",Un poster de un criminal en fuga. Espero que no sea uno de los mios...
 largebox_0_name,Large Supply Box,Caja Larga de Suministros
@@ -22,10 +22,18 @@ sign_no_aphid_desc,"That sign can't stop me, because I can't read! Wait...",¡Es
 berry_bush_name,Berry Bush,Arbusto de Bayas
 berry_bush_desc,"This bush grows edible berries every so often, and they can be used to feed Aphids.","Este arbusto crece bayas comestibles ocasionalmente, y se pueden usan para alimentar a los Áfidos."
 sunshade_name,Leaf Sunshade,Parasol de Hoja
-sunshade_desc,Keep the sun from touching you by sitting underneath the shade of this unaturally cool leaf.,Manten al sol lejos de ti sentandote debajo de la inexplicadadamente refrescante sombra de esta hoja.
-water_torch_name,Lily Pad Torch,Antorcha de Nenúfar
-water_torch_desc,Make any puddle of water look like the night sky above by placing these beautiful lights around.,Haz que cualquier charco de agua parezca como la bella noche misma colocando estos delicados adornos alreadedor.
+sunshade_desc,Keep the sun from touching you by sitting underneath the shade of this unnaturally cool leaf.,Manten al sol lejos de ti sentandote debajo de la inexplicadadamente refrescante sombra de esta hoja.
+lilypad_torch_name,Lilypad Torch,Antorcha de Nenúfar
+lilypad_torch_desc,Make any puddle of water look like the night sky above by placing these beautiful lights around.,Haz que cualquier charco de agua parezca como la bella noche misma colocando estos delicados adornos alreadedor.
 bee_flag_name,Bee Kingdom Pennant,Estandarte - Abeja
 bee_flag_desc,"A flag that waves the emblem of the Bee Kingdom. For some reason, it is sold as a souvenir.",Una bandera que yergue el emblema del Reino de las Abejas. Por alguna razon lo venden como recuerdo.
 bench_name,Leaf Bench,Banco de Hoja
 bench_desc,"Why don't you just take a minute, and relax? I'm sure you turned off the fire stove.",¿Porque no te tomas un minuto y te relajas? Estoy seguro que no te dejaste el horno de fuego encendido.
+ant_flag_name,Ant Kingdom Pennant,Estandarte - Hormiga
+ant_flag_desc,A flag displaying the symbol of the Ant Kingdom. Included as part of protocol.,Una bandera que despliega el simbolo del Reino de las Hormigas. Incluida como parte del protocolo.
+rock_name,Boulder,Roca
+rock_desc,"A big piece of rock, perfect for overly sized gardens.","Una pieza larga de piedra, perfecta para jardines de tamaños extraordinarios."
+stump_name,Stump Chair,Silla de Tocón
+stump_desc,A simple chair made from the base of a larger twig.,Una simple silla hecha con la base de una rama de gran tamaño.
+lilypad_name,Lilypad,Nenúfar
+lilypad_desc,Adorn the water surface with this rather elegant water leaf.,Adorna la superficie del agua con esta elegante hoja aquatica.

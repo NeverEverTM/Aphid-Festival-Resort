@@ -4,32 +4,32 @@
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="2_o66eh"]
 [ext_resource type="Script" uid="uid://3ayy4rweexow" path="res://scripts/props/TorchBehaviour.cs" id="2_pkvx2"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_syt6f"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_8iklc"]
 atlas = ExtResource("1_anu0x")
-region = Rect2(0, 0, 40, 64)
+region = Rect2(0, 0, 32, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_bwtln"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_2xng5"]
 atlas = ExtResource("1_anu0x")
-region = Rect2(40, 0, 40, 64)
+region = Rect2(32, 0, 32, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_2gioc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_grslp"]
 atlas = ExtResource("1_anu0x")
-region = Rect2(80, 0, 40, 64)
+region = Rect2(64, 0, 32, 64)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_4bf7d"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_syt6f")
+"texture": SubResource("AtlasTexture_8iklc")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_bwtln")
+"texture": SubResource("AtlasTexture_2xng5")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_syt6f")
+"texture": SubResource("AtlasTexture_8iklc")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_2gioc")
+"texture": SubResource("AtlasTexture_grslp")
 }],
 "loop": true,
 "name": &"default",
@@ -81,7 +81,7 @@ radius = 7.0
 [node name="torch" type="AnimatedSprite2D"]
 process_priority = 100
 sprite_frames = SubResource("SpriteFrames_4bf7d")
-frame_progress = 0.921817
+frame_progress = 0.152645
 offset = Vector2(0, -29)
 script = ExtResource("2_pkvx2")
 metadata/id = "torch"
@@ -91,7 +91,7 @@ visible = false
 show_behind_parent = true
 light_mask = 0
 material = SubResource("CanvasItemMaterial_lc44r")
-position = Vector2(-7, -43)
+position = Vector2(-3, -43)
 sprite_frames = SubResource("SpriteFrames_wn218")
 animation = &"lit"
 frame_progress = 0.395285

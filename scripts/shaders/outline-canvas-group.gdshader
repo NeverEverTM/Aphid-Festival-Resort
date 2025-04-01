@@ -15,6 +15,6 @@ void fragment() {
 	}
 	vec4 colour = texture(screen_texture, SCREEN_UV);
 	vec4 outline = vec4(line_colour, min(line_alpha, 1.0));
-			
+
 	COLOR *= mix(outline, colour, colour.a);
 }

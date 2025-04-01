@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://d0yn37lf538vo"]
+[gd_scene load_steps=8 format=3 uid="uid://d0yn37lf538vo"]
 
 [ext_resource type="Script" uid="uid://7tuds0dv1fbo" path="res://scripts/controllers/ResortManager.cs" id="1_rh1j6"]
-[ext_resource type="Script" uid="uid://co6jq3ny35gqg" path="res://scripts/debug/test_camera.cs" id="2_gpa5i"]
+[ext_resource type="PackedScene" uid="uid://cwqplcbrf0lqj" path="res://scenes/entities/camera.tscn" id="2_gpa5i"]
+[ext_resource type="Script" uid="uid://co6jq3ny35gqg" path="res://scripts/debug/test_camera.cs" id="3_lrt1v"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_gpa5i"]
 
@@ -31,6 +32,9 @@ y_sort_enabled = true
 
 [node name="spawnpoint" type="Marker2D" parent="."]
 
+[node name="Camera2D" parent="." instance=ExtResource("2_gpa5i")]
+script = ExtResource("3_lrt1v")
+
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(1, 179)
 
@@ -57,7 +61,3 @@ position = Vector2(315, -182)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
 position = Vector2(5, 180)
 shape = SubResource("WorldBoundaryShape2D_vb6xh")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2, 2)
-script = ExtResource("2_gpa5i")

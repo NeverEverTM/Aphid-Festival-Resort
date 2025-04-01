@@ -1,13 +1,13 @@
 [gd_scene load_steps=3 format=3 uid="uid://b4bya6a01lx1q"]
 
-[ext_resource type="Texture2D" uid="uid://cf0xfvxywoghd" path="res://sprites/props/bee_flag.png" id="1_rw348"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="1_rw348"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ji7j"]
 size = Vector2(15, 13)
 
 [node name="bee_flag" type="Sprite2D"]
 texture = ExtResource("1_rw348")
-offset = Vector2(0, -35.685)
+offset = Vector2(-0.66, -4.78)
 metadata/id = "bee_rug"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]

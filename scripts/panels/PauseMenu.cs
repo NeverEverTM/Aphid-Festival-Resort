@@ -37,6 +37,7 @@ public partial class PauseMenu : Control
 				OnButtonPress(actions[new_index]);
 			};
 			buttons[i].FocusEntered += () => SoundManager.CreateSound(switch_sound);
+			(buttons[i].GetChild(0) as Label).Text = Tr($"pause_{buttons[i].Name}");
 		}
 
 		menu = new("pause", menu_player, null, null, false);
@@ -50,7 +51,7 @@ public partial class PauseMenu : Control
 	{
 		if (_state)
 		{
-			if (FreeCameraManager.Instance.FreeCameraWasActive || CanvasManager.Instance.IsInFocus 
+			if (FreeCameraManager.Instance.Enabled || CanvasManager.Instance.IsInFocus 
 					|| CanvasManager.Menus.IsBusy || DialogManager.IsActive)
 				return;
 				

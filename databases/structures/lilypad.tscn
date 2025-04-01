@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://milwhyvpdumy"]
+
+[ext_resource type="Texture2D" uid="uid://dut6yhfuiahkj" path="res://sprites/props/lilypad.png" id="1_aedr5"]
+
+[node name="lilypad" type="Sprite2D"]
+texture = ExtResource("1_aedr5")
+offset = Vector2(0, -14.04)
+metadata/allow_water = false

@@ -28,7 +28,6 @@
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="20_qrmy7"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="23_au4eg"]
 [ext_resource type="Script" uid="uid://c56otv2uv2d50" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
-[ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="25_8tdi4"]
 [ext_resource type="Texture2D" uid="uid://dknqeho1jsf5o" path="res://sprites/help_examples/aphid_egg.PNG" id="26_6gm3y"]
 [ext_resource type="Texture2D" uid="uid://eym7ebbf50iv" path="res://sprites/help_examples/aphid_leave.PNG" id="27_hp0ii"]
 [ext_resource type="Texture2D" uid="uid://b8fsibtdj5m8p" path="res://sprites/help_examples/food.PNG" id="28_cw4t2"]
@@ -39,6 +38,8 @@
 [ext_resource type="Texture2D" uid="uid://b76u5f8hbpncc" path="res://sprites/help_examples/stats.PNG" id="31_x27oh"]
 [ext_resource type="Texture2D" uid="uid://drtx08aejoe38" path="res://sprites/help_examples/album.PNG" id="32_o4x4n"]
 [ext_resource type="Texture2D" uid="uid://6mmehkh5ph1d" path="res://sprites/help_examples/storage.PNG" id="33_mlkyv"]
+[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="39_j2rvs"]
+[ext_resource type="PackedScene" uid="uid://co34071w6qov6" path="res://scenes/ui/pause_menu_button.tscn" id="40_8siup"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8junb"]
 font_size = 40
@@ -756,7 +757,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Vector2(450, 132), Vector2(450, 800)]
+"values": [Vector2(425, 90), Vector2(425, 800)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -796,7 +797,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Vector2(450, 800), Vector2(450, 132)]
+"values": [Vector2(425, 800), Vector2(425, 90)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -823,9 +824,6 @@ shader = ExtResource("17_g6i7k")
 shader_parameter/speed = 0.1
 shader_parameter/node_size = Vector2(32, 32)
 shader_parameter/color = Color(1, 1, 1, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_gopes"]
-font_size = 30
 
 [sub_resource type="LabelSettings" id="LabelSettings_sc5y1"]
 font_size = 40
@@ -1078,7 +1076,7 @@ player = NodePath("animator")
 grid = NodePath("anchor/inventory_container")
 modeButton = NodePath("anchor/mode_bg")
 inventoryButton = NodePath("../hud/inventoryButton")
-buttonSprites = [ExtResource("9_smev1"), ExtResource("4_s23ya")]
+buttonSprites = [ExtResource("4_s23ya"), ExtResource("9_smev1")]
 inventoryCountLabel = NodePath("anchor/count_bg/inventory_count")
 modeControlLabel = NodePath("anchor/mode_bg/control_icon")
 inventoryControlLabel = NodePath("../hud/inventoryButton/control_icon")
@@ -1207,6 +1205,7 @@ offset_top = 171.0
 offset_right = 491.0
 offset_bottom = 319.0
 theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "qwertyuiopasdfghjklñzxcvbnm QWERTYUIOPASDFGHJKLÑZXCVBNM 1234567890 íÜ,.;:-_{}[]´+¨* 
@@ -1258,7 +1257,7 @@ controls_panel = NodePath("controls_panel")
 help_panel = NodePath("help_panel")
 select_sound = ExtResource("15_4n2d7")
 switch_sound = ExtResource("16_crekn")
-buttons = [NodePath("panel_bg/VBoxContainer/resume"), NodePath("panel_bg/VBoxContainer/options"), NodePath("panel_bg/VBoxContainer/controls"), NodePath("panel_bg/VBoxContainer/help"), NodePath("panel_bg/VBoxContainer/backToMenu"), NodePath("panel_bg/VBoxContainer/exit")]
+buttons = [NodePath("panel_bg/VBoxContainer/resume"), NodePath("panel_bg/VBoxContainer/options"), NodePath("panel_bg/VBoxContainer/controls"), NodePath("panel_bg/VBoxContainer/help"), NodePath("panel_bg/VBoxContainer/backtomenu"), NodePath("panel_bg/VBoxContainer/exit")]
 
 [node name="pause_player" type="AnimationPlayer" parent="pause_menu"]
 libraries = {
@@ -1673,160 +1672,51 @@ text = "help_title"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="panel_bg" type="TextureRect" parent="pause_menu"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+[node name="panel_bg" type="NinePatchRect" parent="pause_menu"]
 layout_mode = 0
-offset_left = 367.0
-offset_top = 132.0
-offset_right = 730.0
-offset_bottom = 525.0
-texture = ExtResource("4_bri73")
+offset_left = 425.0
+offset_top = 90.0001
+offset_right = 846.0
+offset_bottom = 597.0
+texture = ExtResource("39_j2rvs")
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/panel_bg"]
 layout_mode = 2
-offset_left = 53.0
+offset_left = 31.0
 offset_top = 46.0
-offset_right = 309.0
-offset_bottom = 302.0
+offset_right = 391.0
+offset_bottom = 486.0
 
-[node name="resume" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.913725, 0, 0.25098, 1)
+[node name="resume" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("20_qrmy7")
-texture_pressed = ExtResource("25_8tdi4")
-texture_hover = ExtResource("25_8tdi4")
-texture_focused = ExtResource("25_8tdi4")
-script = ExtResource("8_y632t")
-PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
-HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
-[node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/resume"]
-layout_mode = 0
-offset_left = 4.0
-offset_right = 252.0
-offset_bottom = 48.0
-text = "pause_resume"
-label_settings = SubResource("LabelSettings_gopes")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="options" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.913725, 0, 0.25098, 1)
+[node name="options" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("20_qrmy7")
-texture_pressed = ExtResource("25_8tdi4")
-texture_hover = ExtResource("25_8tdi4")
-texture_focused = ExtResource("25_8tdi4")
-script = ExtResource("8_y632t")
-PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
-HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
-[node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/options"]
-layout_mode = 0
-offset_left = 4.0
-offset_right = 252.0
-offset_bottom = 48.0
-text = "pause_options"
-label_settings = SubResource("LabelSettings_gopes")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="controls" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.913725, 0, 0.25098, 1)
+[node name="controls" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("20_qrmy7")
-texture_pressed = ExtResource("25_8tdi4")
-texture_hover = ExtResource("25_8tdi4")
-texture_focused = ExtResource("25_8tdi4")
-script = ExtResource("8_y632t")
-PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
-HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
-[node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/controls"]
-layout_mode = 0
-offset_left = 4.0
-offset_right = 252.0
-offset_bottom = 48.0
-text = "pause_controls"
-label_settings = SubResource("LabelSettings_gopes")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="help" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.913725, 0, 0.25098, 1)
+[node name="help" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("20_qrmy7")
-texture_pressed = ExtResource("25_8tdi4")
-texture_hover = ExtResource("25_8tdi4")
-texture_focused = ExtResource("25_8tdi4")
-script = ExtResource("8_y632t")
-PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
-HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
-[node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/help"]
-layout_mode = 0
-offset_left = 4.0
-offset_right = 252.0
-offset_bottom = 48.0
-text = "pause_help"
-label_settings = SubResource("LabelSettings_gopes")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="backToMenu" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.913725, 0, 0.25098, 1)
+[node name="backtomenu" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("20_qrmy7")
-texture_pressed = ExtResource("25_8tdi4")
-texture_hover = ExtResource("25_8tdi4")
-texture_focused = ExtResource("25_8tdi4")
-script = ExtResource("8_y632t")
-PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
-HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
 
-[node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/backToMenu"]
-layout_mode = 0
-offset_left = 4.0
-offset_right = 252.0
-offset_bottom = 48.0
-text = "pause_backtomenu"
-label_settings = SubResource("LabelSettings_gopes")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="exit" type="TextureButton" parent="pause_menu/panel_bg/VBoxContainer"]
-self_modulate = Color(0.913725, 0, 0.25098, 1)
+[node name="exit" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
-mouse_default_cursor_shape = 2
-texture_normal = ExtResource("20_qrmy7")
-texture_pressed = ExtResource("25_8tdi4")
-texture_hover = ExtResource("25_8tdi4")
-texture_focused = ExtResource("25_8tdi4")
-script = ExtResource("8_y632t")
-PressedColor = Color(0.454902, 0.372549, 0.509804, 1)
-HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
-
-[node name="Label" type="Label" parent="pause_menu/panel_bg/VBoxContainer/exit"]
-layout_mode = 0
-offset_left = 4.0
-offset_right = 252.0
-offset_bottom = 48.0
-text = "pause_exit"
-label_settings = SubResource("LabelSettings_gopes")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="warning" type="Label" parent="pause_menu/panel_bg"]
 layout_mode = 0
-offset_left = -244.0
-offset_top = 463.0
-offset_right = 595.0
-offset_bottom = 511.0
+offset_left = -212.0
+offset_top = 545.0
+offset_right = 627.0
+offset_bottom = 593.0
 text = "pause_warning"
 label_settings = SubResource("LabelSettings_sc5y1")
 horizontal_alignment = 1

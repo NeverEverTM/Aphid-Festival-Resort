@@ -12,7 +12,6 @@ internal partial class GlobalManager : Node2D
 	public const uint GAME_VERSION = 200;
 
 	public static GlobalManager Instance { get; private set; }
-	public static Camera2D GlobalCamera { get; set; }
 	public readonly static RandomNumberGenerator RNG = new();
 
 	public delegate void LoadSceneHandler(SceneName _name);
@@ -56,7 +55,7 @@ internal partial class GlobalManager : Node2D
 	public static readonly Dictionary<string, Texture2D> G_SKINS = [];
 
 	public readonly struct Item(int cost, int unlockableLevel, string tag, string shopTag)
-    {
+	{
 		public readonly int cost = cost;
 		/// <summary>
 		/// Currently unusued.
@@ -70,23 +69,23 @@ internal partial class GlobalManager : Node2D
 		/// Shop it belongs to.
 		/// </summary>
 		public readonly string shopTag = shopTag;
-    }
-    public readonly struct Food(AphidData.FoodType type, float food_value, float drink_value, string[] skill_list, int[] skill_values)
-    {
+	}
+	public readonly struct Food(AphidData.FoodType type, float food_value, float drink_value, string[] skill_list, int[] skill_values)
+	{
 		public readonly AphidData.FoodType type = type;
 		public readonly float food_value = food_value;
 		public readonly float drink_value = drink_value;
 		public readonly string[] skill_list = skill_list;
 		public readonly int[] skill_values = skill_values;
-    }
-    public readonly struct Recipe(string result, string ingredient1, string ingredient2)
-    {
+	}
+	public readonly struct Recipe(string result, string ingredient1, string ingredient2)
+	{
 		public readonly string Result = result;
 		public readonly string Ingredient1 = ingredient1;
 		public readonly string Ingredient2 = ingredient2;
-    }
+	}
 
-    public static Texture2D GetIcon(string _key)
+	public static Texture2D GetIcon(string _key)
 	{
 		if (_key != null && G_ICONS.TryGetValue(_key, out Texture2D value))
 			return value;
@@ -104,20 +103,8 @@ internal partial class GlobalManager : Node2D
 			};
 	}
 
-	/// <summary>
-	/// The size of the current viewport
-	/// </summary>
-	public static Vector2 SCREEN_SIZE_CANVAS { get; private set; }
-	/// <summary>
-	/// The center of the viweport, offset starting from the top-left.
-	/// </summary>
-	public static Vector2 SCREEN_CENTER_CANVAS { get; private set; }
-	/// <summary>
-	/// Same as the CANVAS version, but translated to global position measure. 
-	/// </summary>
-	public static Vector2 SCREEN_CENTER_GLOBAL { get; private set; }
 	private PhysicsDirectSpaceState2D spaceState;
-	private readonly static List<GpuParticles2D> ACTIVE_PARTICLES_CACHED = new();
+	private readonly static List<GpuParticles2D> ACTIVE_PARTICLES_CACHED = [];
 
 	internal static Label BOOT_LOADING_LABEL;
 
@@ -132,8 +119,6 @@ internal partial class GlobalManager : Node2D
 #else
 		Logger.LogMode = Logger.LogPriorityMode.Default;
 #endif
-		GetViewport().SizeChanged += UpdateViewportSizeTracking;
-		UpdateViewportSizeTracking();
 		GameManager.ProfileSaveModule = new(GameManager.ID, new GameManager.SaveModule(), int.MaxValue)
 		{
 			Extension = SaveSystem.SAVEFILE_EXTENSION
@@ -160,15 +145,7 @@ internal partial class GlobalManager : Node2D
 			ACTIVE_PARTICLES_CACHED.RemoveAt(i);
 		}
 	}
-	private async void UpdateViewportSizeTracking()
-	{
-		while (!IsInstanceValid(GlobalCamera))
-			await Task.Delay(1);
-		
-		SCREEN_SIZE_CANVAS = GetViewport().GetVisibleRect().Size;
-		SCREEN_CENTER_CANVAS = SCREEN_SIZE_CANVAS / 2;
-		SCREEN_CENTER_GLOBAL = SCREEN_CENTER_CANVAS / GlobalCamera.Zoom;
-	}
+	
 	// MARK: Game Initialization
 	/// <summary>
 	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
@@ -186,11 +163,11 @@ internal partial class GlobalManager : Node2D
 		}
 		else
 		{
-            BOOT_LOADING_LABEL = new()
-            {
-                Visible = false
-            };
-        }
+			BOOT_LOADING_LABEL = new()
+			{
+				Visible = false
+			};
+		}
 
 		try
 		{
@@ -332,12 +309,16 @@ internal partial class GlobalManager : Node2D
 			if (Instance.Tr(_info[0] + "_name") == _info[0] + "_name")
 			{
 				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> has no name.");
+#if !DEBUG
 				return;
+#endif
 			}
 			if (Instance.Tr(_info[0] + "_desc") == _info[0] + "_desc")
 			{
 				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> has no description.");
+#if !DEBUG
 				return;
+#endif
 			}
 			G_ITEMS.Add(_info[0], new(
 				cost: int.Parse(_info[1]),
@@ -363,7 +344,7 @@ internal partial class GlobalManager : Node2D
 				food_value: float.Parse(_info[2]),
 				drink_value: float.Parse(_info[3]),
 				skill_list: string.IsNullOrWhiteSpace(_info[4]) ? null : _info[4].Split(','),
-				skill_values: string.IsNullOrWhiteSpace(_info[5]) ? null 
+				skill_values: string.IsNullOrWhiteSpace(_info[5]) ? null
 						: Array.ConvertAll(_info[5].Split(','), s => int.Parse(s))
 			));
 		});
@@ -531,7 +512,7 @@ internal partial class GlobalManager : Node2D
 	public static void CreatePopup(string _translation_key, Node _parent)
 	{
 		Control _popup = ResourceLoader.Load<PackedScene>(POPUP_WINDOW_SCENE).Instantiate() as Control;
-		_popup.Position = SCREEN_CENTER_CANVAS - _popup.Size / 2;
+		_popup.Position = CameraManager.SCREEN_CENTER_CANVAS - _popup.Size / 2;
 		(_popup.GetChild(0) as Label).Text = Instance.Tr(_translation_key);
 		_parent.AddChild(_popup);
 		Timer _timer = new()
@@ -557,19 +538,7 @@ internal partial class GlobalManager : Node2D
 		_vanish.Start(1.5f);
 		_timer.Start(2);
 	}
-	public static void SetCameraZoom(float _amount, bool _addInstead = false)
-	{
-		float _total = GlobalCamera.Zoom.X;
-		if (_addInstead)
-			_total += _amount;
-		else
-			_total = _amount;
-
-		_total = Math.Clamp(_total, 1.25f, 5f);
-		GlobalCamera.Zoom = new(_total, _total);
-		Instance.UpdateViewportSizeTracking();
-	}
-
+	
 	public static class Utils
 	{
 		public static Godot.Collections.Dictionary Raycast(Vector2 _position, Vector2 _direction, Godot.Collections.Array<Rid> _excludeList)
@@ -591,8 +560,8 @@ internal partial class GlobalManager : Node2D
 		{
 			// We take a sum of all weights
 			float _total = 0;
-			Array.ForEach(weights, (float _weight) =>
-			{
+			Array.ForEach(weights, _weight =>
+            {
 				_total += _weight;
 			});
 
@@ -611,18 +580,10 @@ internal partial class GlobalManager : Node2D
 			return 0; // Should in theory, never happen
 		}
 
-		/// <returns>The mouse position translated to global position/returns>
-		public static Vector2 GetMouseToWorldPosition() => GlobalCamera.GlobalPosition + (Instance.GetViewport().GetMousePosition() - SCREEN_CENTER_CANVAS) * 1 / GlobalCamera.Zoom;
-		public static Vector2 GetMouseToCanvasCenter() => Instance.GetViewport().GetMousePosition() - SCREEN_CENTER_CANVAS;
-		/// <summary>
-		/// Translates world position to canvas coordinates.
-		/// </summary>
-		/// <returns>A 2D Vector of an objects position translated to canvas coordinates</returns>
-		public static Vector2 GetWorldToCanvasPosition(Vector2 _position) => SCREEN_CENTER_CANVAS + (_position - GlobalCamera.GlobalPosition) * GlobalCamera.Zoom;
 		public static Color GetRandomColor(bool _randomizeAlpha = false)
 		{
-			byte[] _rgba = new byte[] { (byte)RNG.RandiRange(0,255), (byte)RNG.RandiRange(0,255),
-				(byte)RNG.RandiRange(0,255), _randomizeAlpha ? (byte)(RNG.RandiRange(0,205) + 50) : (byte)255 };
+			byte[] _rgba = [ (byte)RNG.RandiRange(0,255), (byte)RNG.RandiRange(0,255),
+				(byte)RNG.RandiRange(0,255), _randomizeAlpha ? (byte)(RNG.RandiRange(0,205) + 50) : (byte)255 ];
 
 			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
 		}

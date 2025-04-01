@@ -15,11 +15,14 @@ public partial class FurnitureShop : ShopInterface
 	{
 		menu.Open = _ =>
 		{
+			CameraManager.Instance.EnableFreeRoam = false;
 			FreeCameraManager.SetFreeCameraHud(false);
 			ResetShop();
+			SoundManager.CreateSound("ui/store_bell");
 		};
 		menu.Close = _ =>
-        {
+		{
+			CameraManager.Instance.EnableFreeRoam = true;
 			FreeCameraManager.SetFreeCameraHud(true);
 			CleanShelf();
 			return true;

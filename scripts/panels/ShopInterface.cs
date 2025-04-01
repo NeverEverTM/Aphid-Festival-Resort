@@ -11,10 +11,10 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	[Export] protected Label itemCost;
 	[Export] protected TextureRect itemIcon;
 	[Export] protected PackedScene itemContainer;
+	[Export] protected TextureButton itemBuyButton;
 	[ExportCategory("Customizables")]
 	[Export] protected Color bgColorSlot = new("cyan");
-	[Export] protected Texture2D default_item_icon;
-	[Export] protected AudioStream errorSound;
+	[Export] protected Texture2D defaultIcon;
 	protected MenuUtil.MenuInstance menu;
 	protected string currentItem;
 	protected int currentCost;
@@ -25,7 +25,11 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		CleanShelf();
 		menu = new MenuUtil.MenuInstance(shopTag,
 			storePlayer,
-			Open: _ => ResetShop(),
+			Open: _ => 
+			{
+				ResetShop();
+				SoundManager.CreateSound("ui/store_bell");
+			},
 			Close: _ => 
 			{
 				CleanShelf();
@@ -33,6 +37,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 			},
 			true
 		);
+		itemBuyButton.Pressed += () => SelectItem(currentItem);
 	}
 	protected virtual void ResetShop()
 	{
@@ -40,7 +45,8 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		itemName.Text = Tr($"store_{shopTag}_name");
 		itemDescription.Text = Tr($"store_{shopTag}_desc");
 		itemCost.Text = Tr($"store_{shopTag}_phrase");
-		itemIcon.Texture = default_item_icon;
+		itemIcon.Texture = defaultIcon;
+		itemBuyButton.Hide();
 		CreateShelf();
 	}
 	protected virtual void CreateShelf()
@@ -88,6 +94,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 
 		itemIcon.Texture = GlobalManager.GetIcon(_itemName);
 		SoundManager.CreateSound("ui/button_select");
+		itemBuyButton.Show();
 	}
 	/// <summary>
 	/// Function that returns whether or not an item can be purchased.
@@ -110,7 +117,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		if (CanPurchase())
 			Purchase();
 		else
-			SoundManager.CreateSound(errorSound);
+			SoundManager.CreateSound("ui/button_fail");
 	}
 	/// <summary>
 	/// Override for what it should give/set for buying this shop's items.

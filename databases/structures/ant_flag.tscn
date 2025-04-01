@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqi58qx2vdjdh"]
+
+[ext_resource type="Texture2D" uid="uid://h2bo3qodvax6" path="res://sprites/props/ant_flag.png" id="1_apv0g"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ji7j"]
+size = Vector2(15, 13)
+
+[node name="ant_flag" type="Sprite2D"]
+texture = ExtResource("1_apv0g")
+offset = Vector2(0, -35)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -16)
+shape = SubResource("RectangleShape2D_6ji7j")

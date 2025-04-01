@@ -1,27 +1,23 @@
-using System;
 using Godot;
 
 public partial class FreeCameraManager : Control
 {
 	[Export] private AnimationPlayer animator;
 	[Export] private TextureButton cameraMenuButton, focusedAphidButton;
-	[Export] RichTextLabel spectatorLabel;
+	[Export] private Control buttonGrid;
+	[Export] private RichTextLabel spectatorLabel;
 	[Export] private HSlider zoomLevelSlider;
 
 	public static FreeCameraManager Instance { get; private set; }
-	/// <summary>
-	/// A buffered version of EnableFreeCamera
-	/// </summary>
-	public bool FreeCameraWasActive;
 	public bool Enabled { get; private set; }
-	public bool EnableMouseFollow;
-	public Aphid FocusedObject;
 
 	private bool is_focusing_aphids;
 	private int focused_aphid_index;
-	private Tween disable_transition;
-	private Vector2 camera_offset = new(0, -15);
+	private Tween disable_transition, vanish_tween;
 	private bool is_camera_tab_open;
+	private TextureRect current_tracker;
+	private Aphid current_aphid;
+	private static Vector2 APHID_OFFSET = new(-16, -36);
 
 	public override void _Ready()
 	{
@@ -32,17 +28,27 @@ public partial class FreeCameraManager : Control
 
 		cameraMenuButton.Pressed += () =>
 		{
-			if (animator.CurrentAnimation != string.Empty)
+			if (!Enabled || animator.CurrentAnimation != string.Empty)
 				return;
+
 			is_camera_tab_open = !is_camera_tab_open;
 			if (is_camera_tab_open)
 				animator.Play("open_submenu");
 			else
 				animator.Play("close_submenu");
 		};
-		zoomLevelSlider.ValueChanged += _value => GlobalManager.SetCameraZoom((float)_value);
+		zoomLevelSlider.ValueChanged += _value =>
+		{
+			if (!Enabled)
+				return;
+
+			CameraManager.SetCameraZoom((float)_value);
+		};
 		focusedAphidButton.Pressed += () =>
 		{
+			if (!Enabled)
+				return;
+
 			if (!is_focusing_aphids)
 				FocusAphid(focused_aphid_index);
 			else
@@ -55,34 +61,22 @@ public partial class FreeCameraManager : Control
 	}
 	public override void _Process(double delta)
 	{
-		FreeCameraWasActive = Enabled;
-		if (is_focusing_aphids && !IsInstanceValid(FocusedObject))
+		if (Enabled && is_focusing_aphids && !IsInstanceValid(CameraManager.FocusedAphid))
 			StopFocus();
-	}
-	public override void _PhysicsProcess(double delta)
-	{
-		if (FocusedObject == null)
-		{
-			// for moving buildings and stuff (yes, its intentional that it stacks with arrow movement)
-			if (EnableMouseFollow)
-			{
-				Vector2 _movement = GlobalManager.Utils.GetMouseToWorldPosition() - GlobalManager.GlobalCamera.GlobalPosition;
-				if (Math.Abs(_movement.X) > GlobalManager.SCREEN_CENTER_GLOBAL.X * 0.8f || Math.Abs(_movement.Y) > GlobalManager.SCREEN_CENTER_GLOBAL.Y * 0.8f)
-					GlobalManager.GlobalCamera.GlobalPosition += _movement.Normalized() * 8;
-			}
-			GlobalManager.GlobalCamera.GlobalPosition += Input.GetVector(InputNames.Left, InputNames.Right, InputNames.Up, InputNames.Down) * 8;
-		}
-		else
-			GlobalManager.GlobalCamera.GlobalPosition = FocusedObject.GlobalPosition + camera_offset;
 
-		// we still clamp the camera's position cause while the actual camera respects the bounds,
-		//  its actual global position does not
-		GlobalManager.GlobalCamera.GlobalPosition = GlobalManager.GlobalCamera.GlobalPosition.Clamp(FieldManager.Instance.TopLeft.GlobalPosition + GlobalManager.SCREEN_CENTER_GLOBAL,
-				FieldManager.Instance.BottomRight.GlobalPosition - GlobalManager.SCREEN_CENTER_GLOBAL);
+		if (IsInstanceValid(current_tracker))
+			ProcessAphidTrack();
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (!CanvasManager.Menus.IsBusy && @event.IsActionPressed(InputNames.ChangeCamera))
+		if (CanvasManager.Menus.IsBusy)
+		{
+			if (Enabled && CanvasManager.Menus.CurrentMenu.Name.Equals("build"))
+				ProcessZoomScroll(@event);
+			return;
+		}
+
+		if (@event.IsActionPressed(InputNames.ChangeCamera))
 		{
 			SetFreeCameraMode(!Enabled);
 			return;
@@ -90,22 +84,13 @@ public partial class FreeCameraManager : Control
 
 		if (Enabled)
 		{
-			if (!CanvasManager.Menus.IsBusy && (@event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape)))
+			if (@event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape))
 			{
 				SetFreeCameraMode(false);
 				return;
 			}
 
-			// manages zoom scroll
-			if (@event is InputEventMouseButton && (@event as InputEventMouseButton).Pressed)
-			{
-				InputEventMouseButton _mouse = @event as InputEventMouseButton;
-				if (_mouse.ButtonIndex == MouseButton.WheelUp)
-					GlobalManager.SetCameraZoom(0.25f, true);
-				else if (_mouse.ButtonIndex == MouseButton.WheelDown)
-					GlobalManager.SetCameraZoom(-0.25f, true);
-				zoomLevelSlider.SetValueNoSignal(GlobalManager.GlobalCamera.Zoom.X);
-			}
+			ProcessZoomScroll(@event);
 
 			// changes focus mode
 			if (@event.IsActionPressed(InputNames.ChangeMode))
@@ -118,9 +103,20 @@ public partial class FreeCameraManager : Control
 			}
 
 			// processes focus mode inputs
-			if (is_focusing_aphids && IsInstanceValid(FocusedObject))
+			if (is_focusing_aphids && IsInstanceValid(CameraManager.FocusedAphid))
 				ProcessSpectator(@event);
 		}
+	}
+	private void ProcessZoomScroll(InputEvent @event)
+	{
+		if (@event is not InputEventMouseButton || !(@event as InputEventMouseButton).Pressed)
+			return;
+		InputEventMouseButton _mouse = @event as InputEventMouseButton;
+		if (_mouse.ButtonIndex == MouseButton.WheelUp)
+			CameraManager.SetCameraZoom(0.25f, true);
+		else if (_mouse.ButtonIndex == MouseButton.WheelDown)
+			CameraManager.SetCameraZoom(-0.25f, true);
+		zoomLevelSlider.SetValueNoSignal(CameraManager.Instance.Zoom.X);
 	}
 	private void ProcessSpectator(InputEvent @event)
 	{
@@ -139,20 +135,85 @@ public partial class FreeCameraManager : Control
 	}
 	private void FocusAphid(int _index)
 	{
+		if (Instance.disable_transition.IsValid())
+			return;
+
 		is_focusing_aphids = true;
 		spectatorLabel.Show();
 		if (_index >= ResortManager.CurrentResort.AphidsOnResort.Count)
 			_index = 0;
-		FocusedObject = ResortManager.CurrentResort.AphidsOnResort[_index];
-		spectatorLabel.Text = $"{Tr("camera_spectating")}\n<| {FocusedObject.Instance.Genes.Name} |>";
+		CameraManager.Focus(ResortManager.CurrentResort.AphidsOnResort[_index]);
+		spectatorLabel.Text = $"{Tr("camera_spectating")}\n<| {CameraManager.FocusedAphid.Instance.Genes.Name} |>";
 		SoundManager.CreateSound("ui/button_select");
 	}
 	public void StopFocus()
 	{
 		is_focusing_aphids = false;
-		FocusedObject = null;
+		CameraManager.UnFocus();
 		spectatorLabel.Hide();
 	}
+	private void TrackAphid(Aphid _aphid)
+	{
+		// if we already have a tracker delete it
+		if (IsInstanceValid(current_tracker))
+		{
+			vanish_tween.Kill();
+			current_tracker.Free();
+			return;
+		}
+
+		// create tracker
+		current_aphid = _aphid;
+		TextureRect _track = new()
+		{
+			Texture = GlobalManager.GetIcon(_aphid.Instance.Status.IsAdult ?
+					"aphid_adult" : "aphid_child"),
+			Scale = new(2, 2)
+		};
+		current_tracker = _track;
+
+		// set it to vanish after a while
+		Timer _vanishTimer = new();
+		_track.AddChild(_vanishTimer);
+
+		_vanishTimer.Timeout += () =>
+		{
+			vanish_tween = CreateTween();
+			vanish_tween.TweenProperty(_track, "self_modulate", new Color("white"), 5);
+			vanish_tween.Finished += () =>
+			{
+				if (IsInstanceValid(_track))
+					_track.QueueFree();
+			};
+		};
+
+		AddChild(_track);
+		_vanishTimer.Start(30);
+		SoundManager.CreateSound("ui/switch_mode");
+	}
+	private void ProcessAphidTrack()
+	{
+		Vector2 _aphidPos = CameraManager.GetWorldToCanvasPosition(current_aphid.GlobalPosition);
+
+		if (!vanish_tween.IsValid() && current_aphid.GlobalPosition.DistanceTo(Player.Instance.GlobalPosition) < 100)
+		{
+			vanish_tween = current_tracker.CreateTween();
+			vanish_tween.TweenProperty(current_tracker, "self_modulate", new Color(0), 1);
+			vanish_tween.Finished += () =>
+			{
+				if (IsInstanceValid(current_tracker))
+					current_tracker.QueueFree();
+			};
+		}
+		// if is on screen, point at it
+		if (_aphidPos.X > 0 && _aphidPos.X < CameraManager.SCREEN_SIZE_CANVAS.X
+				&& _aphidPos.Y > 0 && _aphidPos.Y < CameraManager.SCREEN_SIZE_CANVAS.Y)
+			current_tracker.GlobalPosition = _aphidPos + APHID_OFFSET;
+		else // if is far away, point at its direction
+			current_tracker.GlobalPosition = CameraManager.SCREEN_CENTER_CANVAS + CameraManager.SCREEN_CENTER_CANVAS.DirectionTo(_aphidPos) * 100;
+
+	}
+
 	public static void SetFreeCameraMode(bool _state)
 	{
 		if (Instance.disable_transition.IsValid())
@@ -162,33 +223,25 @@ public partial class FreeCameraManager : Control
 		{
 			if (CanvasManager.Instance.IsInFocus || CanvasManager.Menus.IsBusy || DialogManager.IsActive)
 				return;
-			Instance.Enabled = true;
 			// Set camera free from player anchor
-			Player.Instance.RemoveChild(GlobalManager.GlobalCamera);
-			Instance.GetTree().Root.AddChild(GlobalManager.GlobalCamera);
-			GlobalManager.GlobalCamera.GlobalPosition = Player.Instance.GlobalPosition;
+			CameraManager.UnFocus();
+			CameraManager.Instance.EnableFreeRoam = true;
 
 			// Show free camera hud and hide other elements
 			SetFreeCameraHud(true);
 			CanvasManager.ClearControlPrompts();
 			CanvasManager.SetHudElements(false);
+			Player.Instance.SetDisabled(true, true);
+			for (int i = 0; i < Instance.buttonGrid.GetChildCount(); i++)
+				(Instance.buttonGrid.GetChild(i) as BaseButton).Disabled = false;
+
+			Instance.Enabled = true;
 		}
 		else
 		{
 			Instance.Enabled = false;
-			Vector2 _prev_g_position = GlobalManager.GlobalCamera.GlobalPosition;
-
-			// Move Camera back to player
-			Instance.GetTree().Root.RemoveChild(GlobalManager.GlobalCamera);
-			Player.Instance.AddChild(GlobalManager.GlobalCamera);
-
-			// sweep back to player
-			GlobalManager.GlobalCamera.GlobalPosition = _prev_g_position;
-			Instance.disable_transition = GlobalManager.GlobalCamera.CreateTween();
-			Instance.disable_transition.SetEase(Tween.EaseType.Out);
-			Instance.disable_transition.SetTrans(Tween.TransitionType.Circ);
-			Instance.disable_transition.TweenProperty(GlobalManager.GlobalCamera, "zoom", new Vector2(2, 2), 0.2f);
-			Instance.disable_transition.TweenProperty(GlobalManager.GlobalCamera, "position", new Vector2(0, -20), 0.2f);
+			for (int i = 0; i < Instance.buttonGrid.GetChildCount(); i++)
+				(Instance.buttonGrid.GetChild(i) as BaseButton).Disabled = true;
 
 			// Hide free camera hud
 			SetFreeCameraHud(false);
@@ -196,13 +249,25 @@ public partial class FreeCameraManager : Control
 			CanvasManager.ClearControlPrompts();
 			Instance.is_focusing_aphids = false;
 			Instance.is_camera_tab_open = false;
-			Instance.FocusedObject = null;
 			Instance.spectatorLabel.Hide();
 			Instance.zoomLevelSlider.SetValueNoSignal(2);
-		}
 
-		Player.Instance.SetDisabled(Instance.Enabled, true);
-		Instance.SetPhysicsProcess(Instance.Enabled);
+			// sweep back to player
+			CameraManager.Instance.EnableFreeRoam = false;
+			Instance.disable_transition = CameraManager.Instance.CreateTween();
+			Instance.disable_transition.SetParallel();
+			Instance.disable_transition.SetEase(Tween.EaseType.Out);
+			Instance.disable_transition.SetTrans(Tween.TransitionType.Circ);
+			Instance.disable_transition.TweenProperty(CameraManager.Instance, "zoom",
+					new Vector2(2, 2), 0.2f).FromCurrent();
+			Instance.disable_transition.TweenProperty(CameraManager.Instance, "position",
+					Player.Instance.GlobalPosition, 0.2f).FromCurrent();
+			Instance.disable_transition.Finished += () =>
+			{
+				CameraManager.Focus(Player.Instance);
+				Player.Instance.SetDisabled(false, true);
+			};
+		}
 	}
 	public static void SetFreeCameraHud(bool _state, bool _noTransition = false)
 	{
@@ -214,6 +279,6 @@ public partial class FreeCameraManager : Control
 				Instance.Hide();
 		}
 		else
-			Instance.animator.Play(_state ? "open" : "close");
+			Instance.animator.Play(_state ? StringNames.OpenAnim : StringNames.CloseAnim);
 	}
 }

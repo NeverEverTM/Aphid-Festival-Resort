@@ -5,13 +5,14 @@ public partial class TorchBehaviour : AnimatedSprite2D
 	private AnimatedSprite2D flame;
 	private Light2D light;
 	bool spawnCheck;
-	RandomNumberGenerator _RNG = new();
+
+	private static readonly RandomNumberGenerator _RNG = new();
 	public override void _Ready()
 	{
 		flame = GetChild(0) as AnimatedSprite2D;
 		light = GetChild(1) as Light2D;
 
-		Play("default");
+		Play(StringNames.DefaultAnim);
 		Frame = new RandomNumberGenerator().RandiRange(0, 2);
 		FrameChanged += () =>
 		{
@@ -21,18 +22,18 @@ public partial class TorchBehaviour : AnimatedSprite2D
 		FieldManager.OnTimeChange += SetLight;
 		SetLightInstant();
 	}
-    public override void _Process(double delta)
-    {
-        if (GlobalManager.GlobalCamera != null)
-		{
-			if (light.Visible && GlobalPosition.DistanceTo(GlobalManager.GlobalCamera.GlobalPosition) > 600)
-				light.Visible = false;
-			else if (!light.Visible && GlobalPosition.DistanceTo(GlobalManager.GlobalCamera.GlobalPosition) <= 600)
-				light.Visible = true;
-		}
-    }
-    public void SetLight()
+	// public override void _Process(double delta)
+	// {
+	// 	if (CameraManager.Instance == null)
+	// 		return;
+
+	// 	// apparently not needed, this turns lights off when the player is far away
+	// 	//light.Visible = GlobalPosition.DistanceTo(Player.Instance.GlobalPosition) 
+	// 	//		< CameraManager.SCREEN_SIZE_CANVAS.X / (CameraManager.Instance.Zoom.X + 0.75f);
+	// }
+	public void SetLight()
 	{
+		// dont trigger this function when first spawned
 		if (!spawnCheck)
 		{
 			spawnCheck = true;

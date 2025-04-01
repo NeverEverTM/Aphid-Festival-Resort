@@ -30,7 +30,7 @@ public partial class DialogManager : Control
 		{ "o/a", new PronounsPossesiveES() }
 	};
 
-	public override void _Ready()
+	public override void _EnterTree()
 	{
 		Instance = this;
 		IsActive = IsDialogFinished = false;
@@ -46,7 +46,7 @@ public partial class DialogManager : Control
 			return;
 
 		// End Dialog sooner or pass to next dialog box
-		if (Input.IsActionJustPressed("interact"))
+		if (Input.IsActionJustPressed(InputNames.Interact))
 		{
 			// This is done so it doesnt skip the first text
 			if (just_pressed)
@@ -62,7 +62,7 @@ public partial class DialogManager : Control
 		}
 
 		// ultra fast text skip
-		if (Input.IsActionPressed("cancel"))
+		if (Input.IsActionPressed(InputNames.Cancel))
 		{
 			dialogAudio.Stop();
 			IsDialogFinished = move_to_next = true;

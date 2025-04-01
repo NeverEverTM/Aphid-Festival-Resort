@@ -357,13 +357,13 @@ public partial class DebugConsole : CanvasLayer
 					AphidData.Genes _genes = new();
 					_genes.DEBUG_Randomize(GetBool(1, args, true), GetBool(2, args, true), GetBool(3, args, true));
 					_genes.Name += ResortManager.CurrentResort.AphidsOnResort.Count;
-					ResortManager.CreateAphid(GlobalManager.Utils.GetMouseToWorldPosition(), _genes);
+					ResortManager.CreateAphid(CameraManager.GetMouseToWorldPosition(), _genes);
 					break;
 				case "get":
 				case "select":
 					if (!GetArg(1, args, out string _name))
 					{
-						Vector2 _mouseposition = GlobalManager.Utils.GetMouseToWorldPosition();
+						Vector2 _mouseposition = CameraManager.GetMouseToWorldPosition();
 						float _shortestDistance = float.PositiveInfinity;
 						validAphid = null;
 

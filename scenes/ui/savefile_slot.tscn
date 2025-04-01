@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cifp27quamefu"]
+[gd_scene load_steps=10 format=3 uid="uid://cifp27quamefu"]
 
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_7dg2u"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_aiyqr"]
@@ -9,6 +9,9 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_i2bs8"]
 font_size = 30
+
+[sub_resource type="LabelSettings" id="LabelSettings_mb242"]
+font_size = 40
 
 [sub_resource type="LabelSettings" id="LabelSettings_l8qfe"]
 font_size = 30
@@ -114,6 +117,8 @@ offset_top = 21.0
 offset_right = 511.0
 offset_bottom = 69.0
 text = "100"
+label_settings = SubResource("LabelSettings_mb242")
+vertical_alignment = 1
 
 [node name="aphid_icon" type="TextureRect" parent="aphid_label"]
 light_mask = 0

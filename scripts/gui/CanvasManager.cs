@@ -62,7 +62,7 @@ public partial class CanvasManager : CanvasLayer
 		if (@event.IsActionPressed(InputNames.TakeScreenshot))
 			TakeScreenshot();
 
-		if (Menus.IsBusy && @event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape))
+		if (Menus.IsBusy && (@event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape)))
 		{
 			Menus.GoBack();
 			GetViewport().SetInputAsHandled();
@@ -84,9 +84,9 @@ public partial class CanvasManager : CanvasLayer
 			Image _capture = Instance.GetViewport().GetTexture().GetImage();
 
 			string _filename = SaveSystem.ProfilePath + SaveSystem.ProfileAlbumDir;
-			if (_is_free_camera && FreeCameraManager.Instance.FocusedObject != null)
+			if (_is_free_camera && IsInstanceValid(CameraManager.FocusedAphid))
 			{
-				_filename += $"/{FreeCameraManager.Instance.FocusedObject.Instance.ID}/";
+				_filename += $"/{CameraManager.FocusedAphid.Instance.ID}/";
 				if (!DirAccess.DirExistsAbsolute(_filename))
 					DirAccess.MakeDirAbsolute(_filename);
 			}

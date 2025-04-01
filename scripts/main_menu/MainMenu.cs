@@ -12,7 +12,6 @@ public partial class MainMenu : Node2D
 
 	[Export] private CanvasLayer canvas;
 	[Export] private Label BOOT_LOADING_LABEL;
-	[Export] private Camera2D cameraMenu;
 	[Export] private RichTextLabel button_wheel, hover_start;
 	[Export] private AnimationPlayer sweep_animator, logo_animator, title_animator;
 	[Export] private PackedScene aphidPrefab;
@@ -42,13 +41,12 @@ public partial class MainMenu : Node2D
 	public override void _EnterTree()
 	{
 		Instance = this;
-		cameraMenu.Position = GlobalManager.Utils.GetRandomVector(-300, 300);
 		(sweep_animator.GetParent() as Control).Visible = true;
 	}
 	public async override void _Ready()
 	{
 		currentMenu = start_panel;
-		GlobalManager.GlobalCamera = cameraMenu;
+		CameraManager.Instance.Position = GlobalManager.Utils.GetRandomVector(-300, 300);
 
 		// create menu button wheel
 		new_game_panel.AddMenuAction();
@@ -243,17 +241,17 @@ public partial class MainMenu : Node2D
 	private float MaxWanderDistanceX = 1200, MaxWanderDistanceY = 600;
 	private void DoBounceAnim()
 	{
-		if (cameraMenu.Position.X > MaxWanderDistanceX)
+		if (CameraManager.Instance.Position.X > MaxWanderDistanceX)
 			DirectionForX = true;
-		else if (cameraMenu.Position.X < -MaxWanderDistanceX)
+		else if (CameraManager.Instance.Position.X < -MaxWanderDistanceX)
 			DirectionForX = false;
 
-		if (cameraMenu.Position.Y > MaxWanderDistanceY)
+		if (CameraManager.Instance.Position.Y > MaxWanderDistanceY)
 			DirectionForY = true;
-		else if (cameraMenu.Position.Y < -MaxWanderDistanceY)
+		else if (CameraManager.Instance.Position.Y < -MaxWanderDistanceY)
 			DirectionForY = false;
 
-		cameraMenu.Position += new Vector2(DirectionForX ? -1 : 1, DirectionForY ? -1 : 1);
+		CameraManager.Instance.Position += new Vector2(DirectionForX ? -1 : 1, DirectionForY ? -1 : 1);
 	}
 	private float[] babyWeight = [70, 30];
 	private void SpawnBunchaOfAphidsForTheFunnies()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=59 format=3 uid="uid://by6u0617yy7oe"]
 
 [ext_resource type="Script" uid="uid://cesdis2vfhjmp" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="3_7aeaj"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/button_switch.wav" id="3_7vjbo"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="4_fk8eh"]
-[ext_resource type="PackedScene" uid="uid://cy6ba6twhk3o3" path="res://scenes/particles/leaves_overlay.tscn" id="5_xpw47"]
+[ext_resource type="PackedScene" uid="uid://cwqplcbrf0lqj" path="res://scenes/entities/camera.tscn" id="5_0qewb"]
 [ext_resource type="Script" uid="uid://y1wi3v5g1rvv" path="res://scripts/main_menu/StartMenu.cs" id="6_8loy6"]
 [ext_resource type="Texture2D" uid="uid://v4b2uxe72p3y" path="res://sprites/ui/github-mark-white.png" id="8_ao5k5"]
 [ext_resource type="Texture2D" uid="uid://cyp5ykw0lep0c" path="res://sprites/ui/itchio-logo-textless-white.png" id="9_8g0pq"]
@@ -262,6 +262,17 @@ outline_size = 10
 outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xxlsd"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mhjd8"]
+font_size = 40
+shadow_size = 0
+shadow_offset = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_0qewb"]
+font_size = 40
+font_color = Color(0, 0, 0, 1)
+shadow_size = 0
+shadow_offset = Vector2(0, 0)
 
 [sub_resource type="Animation" id="Animation_0ys5g"]
 length = 0.001
@@ -777,12 +788,11 @@ _data = {
 &"start": SubResource("Animation_hobux")
 }
 
-[node name="menu" type="Node2D" node_paths=PackedStringArray("canvas", "BOOT_LOADING_LABEL", "cameraMenu", "button_wheel", "hover_start", "sweep_animator", "logo_animator", "title_animator", "entityRoot", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "controls_panel")]
+[node name="menu" type="Node2D" node_paths=PackedStringArray("canvas", "BOOT_LOADING_LABEL", "button_wheel", "hover_start", "sweep_animator", "logo_animator", "title_animator", "entityRoot", "start_panel", "new_game_panel", "load_game_panel", "credits_panel", "options_panel", "controls_panel")]
 y_sort_enabled = true
 script = ExtResource("1_5e31e")
 canvas = NodePath("CanvasLayer")
 BOOT_LOADING_LABEL = NodePath("CanvasLayer/BOOT_CONTROL/BOOT_LABEL")
-cameraMenu = NodePath("Camera2D")
 button_wheel = NodePath("CanvasLayer/start_panel/title/button_wheel")
 hover_start = NodePath("CanvasLayer/start_panel/title/hover_start")
 sweep_animator = NodePath("CanvasLayer/sweep_background/sweep_animator")
@@ -805,16 +815,7 @@ y_sort_enabled = true
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 volume_db = -20.0
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(309, 191)
-zoom = Vector2(2, 2)
-position_smoothing_enabled = true
-
-[node name="AudioListener2D" type="AudioListener2D" parent="Camera2D"]
-current = true
-
-[node name="GPUParticles2D" parent="Camera2D" instance=ExtResource("5_xpw47")]
-position = Vector2(41, -198)
+[node name="Camera2D" parent="." instance=ExtResource("5_0qewb")]
 
 [node name="tilemap_resort" parent="." instance=ExtResource("3_7aeaj")]
 
@@ -1048,15 +1049,16 @@ HoverColor = Color(0.729412, 0.729412, 0.729412, 1)
 [node name="create_label" type="Label" parent="CanvasLayer/newgame_panel/resort_params/create"]
 light_mask = 0
 layout_mode = 0
-offset_left = 51.0
-offset_top = -5.0
-offset_right = 380.0
-offset_bottom = 80.0
+offset_left = 25.0
+offset_top = 9.0
+offset_right = 394.0
+offset_bottom = 73.0
 focus_neighbor_bottom = NodePath("../../resort_name_input")
 focus_next = NodePath("../../resort_name_input")
 mouse_filter = 1
 theme_override_styles/normal = SubResource("StyleBoxEmpty_xxlsd")
 text = "new_game_begin"
+label_settings = SubResource("LabelSettings_mhjd8")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1069,6 +1071,7 @@ offset_right = 414.0
 offset_bottom = 92.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "new_game_resort_name"
+label_settings = SubResource("LabelSettings_0qewb")
 
 [node name="resort_name_input" type="TextEdit" parent="CanvasLayer/newgame_panel/resort_params"]
 light_mask = 0
@@ -1161,6 +1164,7 @@ offset_right = 286.0
 offset_bottom = 227.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "new_game_pronouns"
+label_settings = SubResource("LabelSettings_0qewb")
 vertical_alignment = 1
 
 [node name="pronouns_input" type="TextEdit" parent="CanvasLayer/newgame_panel/player_params"]
@@ -1199,6 +1203,7 @@ offset_right = 285.0
 offset_bottom = 95.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "new_game_player_name"
+label_settings = SubResource("LabelSettings_0qewb")
 
 [node name="player_name_input" type="TextEdit" parent="CanvasLayer/newgame_panel/player_params"]
 light_mask = 0

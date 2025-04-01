@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
 [ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/props/TVPropBehaviour.cs" id="2_3qsjy"]
 [ext_resource type="PackedScene" uid="uid://buq2rosblx438" path="res://scenes/props/aphid_model.glb" id="2_bvgcb"]
-[ext_resource type="Script" uid="uid://dxismvv0c5pp7" path="res://scripts/misc/SpinAphid.cs" id="3_gmdqp"]
+[ext_resource type="Script" uid="uid://dxismvv0c5pp7" path="res://scripts/props/SpinAphid.cs" id="3_gmdqp"]
 [ext_resource type="Texture2D" uid="uid://c3i6cmitj5cow" path="res://sprites/props/tv_bg_1.png" id="4_dl1sk"]
 [ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="5_2b0vm"]
 [ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/misc/aphidtastic.wav" id="6_uxujw"]

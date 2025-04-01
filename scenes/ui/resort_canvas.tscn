@@ -1,4 +1,4 @@
-[gd_scene load_steps=100 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=98 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" uid="uid://5lbbq4ta7i38" path="res://scripts/gui/FreeCameraManager.cs" id="1_i0o2h"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_yrmm3"]
@@ -26,7 +26,6 @@
 [ext_resource type="Texture2D" uid="uid://c1fmd5yqanbuy" path="res://sprites/ui/portraits/kut_dissapointed_portrait.png" id="31_gxjv5"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="32_iw5ng"]
 [ext_resource type="Texture2D" uid="uid://c272xi11ewypl" path="res://sprites/ui/portraits/kut_proud_portrait.png" id="32_l72np"]
-[ext_resource type="AudioStream" uid="uid://c2i25l6w3yeqq" path="res://sfx/ui/button_fail.wav" id="32_p352r"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="33_gn48s"]
 [ext_resource type="Script" uid="uid://dlo86l8h7c6q2" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="35_dvpl5"]
@@ -1510,34 +1509,10 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(1145, 10)]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("sliding_panel/sliding_popup:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
 
 [sub_resource type="Animation" id="Animation_vwn3b"]
 resource_name = "close"
-length = 0.2
+length = 0.3
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -1545,7 +1520,7 @@ tracks/0/path = NodePath(".:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -1553,26 +1528,14 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("sliding_panel/sliding_popup:position")
+tracks/1/path = NodePath("sliding_panel:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(0.5, 2),
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(1000, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.2),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"values": [Vector2(1118, 70), Vector2(1286, 70)]
 }
 
 [sub_resource type="Animation" id="Animation_bygo5"]
@@ -1586,33 +1549,9 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(0.5, 1),
+"transitions": PackedFloat32Array(-2, 1),
 "update": 0,
-"values": [Vector2(522, 8), Vector2(1022, 8)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("sliding_panel/sliding_popup:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.4),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
+"values": [Vector2(620, 70), Vector2(1118, 70)]
 }
 
 [sub_resource type="Animation" id="Animation_xw37u"]
@@ -1640,31 +1579,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(-2, 1),
 "update": 0,
-"values": [Vector2(1145, 10), Vector2(1022, 8)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("sliding_panel/sliding_popup:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"values": [Vector2(1305, 70), Vector2(1118, 70)]
 }
 
 [sub_resource type="Animation" id="Animation_c01e7"]
@@ -1678,33 +1593,9 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(0.5, 1),
+"transitions": PackedFloat32Array(-2, 1),
 "update": 0,
-"values": [Vector2(1022, 8), Vector2(522, 8)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("sliding_panel/sliding_popup:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("sliding_panel/sliding_popup/show_storage:flip_h")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [false, true]
+"values": [Vector2(1118, 70), Vector2(620, 70)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_cjoi7"]
@@ -1781,22 +1672,10 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("anchor_right:position")
+tracks/5/path = NodePath("window:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1000, -25)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("window:position")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -1834,38 +1713,38 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("window:rotation")
+tracks/2/path = NodePath("window:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(0.5),
 "update": 0,
-"values": [0.0, 1.77675]
+"values": [Vector2(-546, -321)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("anchor_right:position")
+tracks/3/path = NodePath("window:scale")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3),
+"times": PackedFloat32Array(0, 0.225),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(18, -25), Vector2(18, 1000)]
+"values": [Vector2(1, 1), Vector2(1e-05, 1)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("window:position")
+tracks/4/path = NodePath("anchor_right:scale")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0, 0.223524),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(-546, -321), Vector2(-700, -321)]
+"values": [Vector2(1, 1), Vector2(1e-05, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_5k0sq"]
@@ -1935,22 +1814,10 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("anchor_right:position")
+tracks/5/path = NodePath("window:rotation")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(18, -25)]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("window:rotation")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -1970,13 +1837,10 @@ shader_parameter/speed = 0.05
 shader_parameter/node_size = Vector2(128, 128)
 shader_parameter/color = Color(0.917246, 0.0969195, 0.650233, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_qmsyr"]
-font_size = 30
-
 [node name="resort_canvas" type="CanvasLayer"]
 layer = 0
 
-[node name="freeCameraHUD" type="Control" parent="." node_paths=PackedStringArray("animator", "cameraMenuButton", "focusedAphidButton", "spectatorLabel", "zoomLevelSlider")]
+[node name="freeCameraHUD" type="Control" parent="." node_paths=PackedStringArray("animator", "cameraMenuButton", "focusedAphidButton", "buttonGrid", "spectatorLabel", "zoomLevelSlider")]
 visible = false
 layout_mode = 3
 anchors_preset = 7
@@ -1993,6 +1857,7 @@ script = ExtResource("1_i0o2h")
 animator = NodePath("hud_animation")
 cameraMenuButton = NodePath("hud_bg/hud_grid/camera_mode_button")
 focusedAphidButton = NodePath("hud_bg/camera_bg/camera_grid/select_aphid")
+buttonGrid = NodePath("hud_bg/hud_grid")
 spectatorLabel = NodePath("hud_bg/camera_bg/spectator_label")
 zoomLevelSlider = NodePath("hud_bg/zoom_bg/zoom_level")
 
@@ -2714,7 +2579,7 @@ theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 60
 columns = 4
 
-[node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon")]
+[node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -2739,9 +2604,9 @@ itemDescription = NodePath("item_info/desc/desc_text")
 itemCost = NodePath("item_info/cost/cost_text")
 itemIcon = NodePath("item_info/icon/icon_image")
 itemContainer = ExtResource("29_mvok5")
+itemBuyButton = NodePath("buyButton")
 bgColorSlot = Color(0.513726, 0.701961, 0.921569, 1)
-default_item_icon = ExtResource("36_m6tkj")
-errorSound = ExtResource("32_p352r")
+defaultIcon = ExtResource("36_m6tkj")
 
 [node name="store_animator" type="AnimationPlayer" parent="item_shop_panel"]
 libraries = {
@@ -2777,7 +2642,6 @@ patch_margin_right = 20
 patch_margin_bottom = 20
 
 [node name="item_box_scroll" type="ScrollContainer" parent="item_shop_panel/item_box"]
-clip_children = 2
 light_mask = 0
 layout_mode = 0
 offset_left = 37.0
@@ -2869,6 +2733,33 @@ layout_mode = 2
 [node name="item25" parent="item_shop_panel/item_box/item_box_scroll/item_container" instance=ExtResource("29_mvok5")]
 layout_mode = 2
 
+[node name="buyButton" type="TextureButton" parent="item_shop_panel"]
+visible = false
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -1188.0
+offset_top = 285.0
+offset_right = -739.0
+offset_bottom = 384.0
+texture_normal = ExtResource("3_yrmm3")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.526423, 0.526423, 0.526423, 1)
+FocusColor = Color(0.548679, 0.635066, 0.715424, 1)
+HoverColor = Color(0.683077, 0.683077, 0.683077, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="Label" type="Label" parent="item_shop_panel/buyButton"]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 16.0
+offset_right = 411.0
+offset_bottom = 71.0
+text = "Buy Item"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="item_info" type="Control" parent="item_shop_panel"]
 light_mask = 0
 anchors_preset = 0
@@ -2883,7 +2774,7 @@ layout_mode = 0
 offset_left = -22.0
 offset_top = 63.0
 offset_right = 573.0
-offset_bottom = 342.0
+offset_bottom = 372.0
 texture = ExtResource("3_yrmm3")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -2896,37 +2787,41 @@ layout_mode = 0
 offset_left = 51.0
 offset_top = 38.0
 offset_right = 542.0
-offset_bottom = 240.0
+offset_bottom = 281.0
 text = "store_item_shop_desc"
 
-[node name="name" type="TextureRect" parent="item_shop_panel/item_info"]
+[node name="name" type="NinePatchRect" parent="item_shop_panel/item_info"]
 self_modulate = Color(0.0881506, 0.222945, 0.390885, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 48.0
-offset_top = 5.0
-offset_right = 510.0
-offset_bottom = 79.0
+offset_top = 6.0
+offset_right = 554.0
+offset_bottom = 76.0
 texture = ExtResource("32_iw5ng")
-expand_mode = 1
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
 
 [node name="name_text" type="RichTextLabel" parent="item_shop_panel/item_info/name"]
 light_mask = 0
 layout_mode = 0
-offset_left = 35.0
-offset_top = 11.0
-offset_right = 431.0
-offset_bottom = 64.0
+offset_left = 29.0
+offset_top = 7.0
+offset_right = 520.0
+offset_bottom = 65.0
 text = "store_item_shop_name"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="icon" type="NinePatchRect" parent="item_shop_panel/item_info"]
 self_modulate = Color(0.117647, 0.258824, 0.435294, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 120.0
-offset_top = -294.0
+offset_top = -319.0
 offset_right = 404.0
-offset_bottom = -22.0
+offset_bottom = -47.0
 texture = ExtResource("15_ghqbq")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -2943,24 +2838,25 @@ offset_bottom = 229.0
 expand_mode = 1
 
 [node name="cost" type="TextureRect" parent="item_shop_panel/item_info"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+self_modulate = Color(0.0666667, 0.168627, 0.294118, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 168.0
-offset_top = -65.0
-offset_right = 356.0
-offset_bottom = -4.0
+offset_left = 100.0
+offset_top = -75.0
+offset_right = 425.0
+offset_bottom = -14.0
 texture = ExtResource("3_yrmm3")
 expand_mode = 1
+stretch_mode = 4
 
 [node name="cost_text" type="Label" parent="item_shop_panel/item_info/cost"]
 light_mask = 0
 layout_mode = 0
-offset_left = 67.0
+offset_left = 69.0
 offset_top = 7.0
-offset_right = 175.0
+offset_right = 306.0
 offset_bottom = 55.0
-text = "$2345"
+text = "$99999999"
 autowrap_mode = 3
 clip_text = true
 
@@ -2969,8 +2865,8 @@ light_mask = 0
 layout_mode = 0
 offset_left = 17.0
 offset_top = 9.0
-offset_right = 57.0
-offset_bottom = 49.0
+offset_right = 63.0
+offset_bottom = 55.0
 texture = ExtResource("33_gn48s")
 
 [node name="kitchen_menu" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "ingredient1Button", "ingredient2Button", "resultButton", "redoRecipe", "ingredient1Icon", "ingredient2Icon", "resultIcon", "portrait", "resultName", "dialogBox", "inventoryGrid")]
@@ -3416,25 +3312,21 @@ layout_mode = 2
 [node name="inv_item_container16" parent="kitchen_menu/inventory_bg/inventory_container" instance=ExtResource("35_dvpl5")]
 layout_mode = 2
 
-[node name="build_menu" type="Control" parent="." node_paths=PackedStringArray("storageContainer", "menuPlayer", "buildButton", "storageButton")]
+[node name="build_menu" type="Control" parent="." node_paths=PackedStringArray("storageContainer", "menuPlayer", "buildButton", "storageButton", "controlPrompt")]
 visible = false
 layout_mode = 3
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -1152.0
-offset_top = -324.0
-offset_right = -1112.0
-offset_bottom = -284.0
-grow_horizontal = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("38_k0d1x")
-storageContainer = NodePath("sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container")
+storageContainer = NodePath("sliding_panel/build_panel/ScrollContainer/storage_container")
 menuPlayer = NodePath("build_player")
 buildButton = NodePath("../freeCameraHUD/hud_bg/hud_grid/buildButton")
-storageButton = NodePath("sliding_panel/sliding_popup/show_storage")
+storageButton = NodePath("sliding_panel/show_storage")
+controlPrompt = NodePath("sliding_panel/show_storage/bg/control_prompt")
 
 [node name="build_player" type="AnimationPlayer" parent="build_menu"]
 process_mode = 1
@@ -3446,19 +3338,51 @@ libraries = {
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 anchors_preset = 0
-offset_left = 1145.0
-offset_top = 10.0
-offset_right = 1272.0
-offset_bottom = 627.0
+offset_left = 1118.0
+offset_top = 70.0
+offset_right = 1245.0
+offset_bottom = 687.0
 
-[node name="sliding_popup" type="Control" parent="build_menu/sliding_panel"]
-editor_description = "This one is used in the animation player to create a "
-use_parent_material = true
-anchors_preset = 0
-offset_right = 40.0002
-offset_bottom = 40.0
+[node name="show_storage" type="TextureButton" parent="build_menu/sliding_panel"]
+light_mask = 0
+layout_mode = 0
+offset_left = 3.0
+offset_top = 535.0
+offset_right = 109.0
+offset_bottom = 641.0
+focus_mode = 0
+texture_normal = ExtResource("39_ysf7p")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.482353, 0.482353, 0.482353, 1)
+HoverColor = Color(0.717647, 0.717647, 0.717647, 1)
 
-[node name="build_panel" type="NinePatchRect" parent="build_menu/sliding_panel/sliding_popup"]
+[node name="bg" type="NinePatchRect" parent="build_menu/sliding_panel/show_storage"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_left = 21.0
+offset_top = 21.0
+offset_right = 179.0
+offset_bottom = 80.0
+texture = ExtResource("32_iw5ng")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="control_prompt" type="Label" parent="build_menu/sliding_panel/show_storage/bg"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 7.0
+offset_right = 103.0
+offset_bottom = 55.0
+mouse_filter = 1
+theme_override_constants/outline_size = 10
+text = "Shift"
+horizontal_alignment = 2
+
+[node name="build_panel" type="NinePatchRect" parent="build_menu/sliding_panel"]
 light_mask = 0
 layout_mode = 0
 offset_left = 136.0
@@ -3474,80 +3398,66 @@ patch_margin_bottom = 30
 axis_stretch_horizontal = 1
 axis_stretch_vertical = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="build_menu/sliding_panel/sliding_popup/build_panel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="build_menu/sliding_panel/build_panel"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 53.0
 offset_right = 447.0
 offset_bottom = 578.0
 
-[node name="storage_container" type="GridContainer" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer"]
+[node name="storage_container" type="GridContainer" parent="build_menu/sliding_panel/build_panel/ScrollContainer"]
 layout_mode = 2
 columns = 3
 
-[node name="item" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item2" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item2" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item3" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item3" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item4" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item4" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item6" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item6" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item7" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item7" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item8" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item8" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item9" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item9" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item10" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item10" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item11" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item11" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item12" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item12" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="item5" parent="build_menu/sliding_panel/sliding_popup/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
+[node name="item5" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 self_modulate = Color(0.898039, 0.454902, 0.309804, 1)
 layout_mode = 2
 
-[node name="show_storage" type="TextureButton" parent="build_menu/sliding_panel/sliding_popup"]
-light_mask = 0
-layout_mode = 0
-offset_left = 26.0
-offset_top = 496.0
-offset_right = 132.0
-offset_bottom = 602.0
-focus_mode = 0
-texture_normal = ExtResource("39_ysf7p")
-stretch_mode = 4
-script = ExtResource("5_i34va")
-PressedColor = Color(0.482353, 0.482353, 0.482353, 1)
-HoverColor = Color(0.717647, 0.717647, 0.717647, 1)
-
-[node name="furniture_menu" type="Control" parent="." node_paths=PackedStringArray("open_button", "storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon")]
+[node name="furniture_menu" type="Control" parent="." node_paths=PackedStringArray("open_button", "storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -3569,9 +3479,9 @@ itemDescription = NodePath("anchor_right/description/desc_label")
 itemCost = NodePath("anchor_right/cost/Label")
 itemIcon = NodePath("anchor_right/icon/image")
 itemContainer = ExtResource("29_mvok5")
+itemBuyButton = NodePath("window/buyButton2")
 bgColorSlot = Color(0.817851, 0.516828, 0.855053, 1)
-default_item_icon = ExtResource("40_iuxyn")
-errorSound = ExtResource("32_p352r")
+defaultIcon = ExtResource("40_iuxyn")
 
 [node name="furniture_player" type="AnimationPlayer" parent="furniture_menu"]
 libraries = {
@@ -3591,19 +3501,21 @@ texture = ExtResource("42_3hjo3")
 stretch_mode = 1
 
 [node name="window" type="NinePatchRect" parent="furniture_menu"]
-self_modulate = Color(0.748499, 0.309524, 0.450425, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 1000.0
+offset_left = -546.0
 offset_top = -321.0
-offset_right = 1506.0
-offset_bottom = 325.0
+offset_right = -46.0
+offset_bottom = 329.0
 scale = Vector2(1e-05, 1)
-texture = ExtResource("15_ghqbq")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+pivot_offset = Vector2(500, 0)
+texture = ExtResource("38_aw538")
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="furniture_menu/window"]
 light_mask = 0
@@ -3623,12 +3535,41 @@ columns = 3
 [node name="item" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
 layout_mode = 2
 
+[node name="item2" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
+layout_mode = 2
+
+[node name="buyButton2" type="TextureButton" parent="furniture_menu/window"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 27.0
+offset_top = 597.0
+offset_right = 476.0
+offset_bottom = 696.0
+texture_normal = ExtResource("3_yrmm3")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.526423, 0.526423, 0.526423, 1)
+FocusColor = Color(0.548679, 0.635066, 0.715424, 1)
+HoverColor = Color(0.683077, 0.683077, 0.683077, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="Label" type="Label" parent="furniture_menu/window/buyButton2"]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 16.0
+offset_right = 411.0
+offset_bottom = 71.0
+text = "Buy Item"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="anchor_right" type="Control" parent="furniture_menu"]
 light_mask = 0
 anchors_preset = 0
-offset_left = 1000.0
+offset_left = 18.0
 offset_top = -25.0
-offset_right = 1040.0
+offset_right = 58.0
 offset_bottom = 15.0
 
 [node name="description" type="NinePatchRect" parent="furniture_menu/anchor_right"]
@@ -3636,9 +3577,9 @@ self_modulate = Color(0.748499, 0.309524, 0.450425, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 6.0
-offset_top = 107.0
+offset_top = 67.0
 offset_right = 555.0
-offset_bottom = 351.0
+offset_bottom = 357.0
 texture = ExtResource("32_iw5ng")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -3651,48 +3592,48 @@ layout_mode = 0
 offset_left = 29.0
 offset_top = 23.0
 offset_right = 521.0
-offset_bottom = 217.0
+offset_bottom = 271.0
 text = "This is a text for furniture
 A lot of text
 Wow! I think Bug Fables sucks!g
 This text is not visible"
 scroll_active = false
 
-[node name="name" type="TextureRect" parent="furniture_menu/anchor_right"]
+[node name="name" type="NinePatchRect" parent="furniture_menu/anchor_right"]
 self_modulate = Color(0.748499, 0.309524, 0.450425, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 53.0
-offset_top = 39.0
+offset_top = -1.0
 offset_right = 522.0
-offset_bottom = 129.0
+offset_bottom = 89.0
 texture = ExtResource("32_iw5ng")
-stretch_mode = 4
 
 [node name="name_label" type="RichTextLabel" parent="furniture_menu/anchor_right/name"]
 light_mask = 0
 layout_mode = 0
 offset_left = 30.0
-offset_top = 22.0
+offset_top = 15.0
 offset_right = 438.0
-offset_bottom = 66.0
+offset_bottom = 78.0
 text = "Name of the furniture longer"
 scroll_active = false
 autowrap_mode = 1
+vertical_alignment = 1
 
 [node name="icon" type="NinePatchRect" parent="furniture_menu/anchor_right"]
 self_modulate = Color(0.748499, 0.309524, 0.450425, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 140.0
-offset_top = -267.0
+offset_top = -315.0
 offset_right = 423.0
-offset_bottom = 12.0
+offset_bottom = -36.0
 texture = ExtResource("15_ghqbq")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
 
 [node name="image" type="TextureRect" parent="furniture_menu/anchor_right/icon"]
 light_mask = 0
@@ -3709,10 +3650,10 @@ stretch_mode = 5
 self_modulate = Color(0.64269, 0.245781, 0.376276, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 194.0
-offset_top = -23.0
-offset_right = 348.0
-offset_bottom = 34.0
+offset_left = 124.0
+offset_top = -71.0
+offset_right = 443.0
+offset_bottom = -9.0
 texture = ExtResource("3_yrmm3")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -3722,18 +3663,19 @@ patch_margin_bottom = 20
 [node name="Label" type="Label" parent="furniture_menu/anchor_right/cost"]
 light_mask = 0
 layout_mode = 0
-offset_left = 36.0
-offset_top = 10.0
-offset_right = 124.0
-offset_bottom = 46.0
-text = "On Sale"
-label_settings = SubResource("LabelSettings_qmsyr")
+offset_left = 63.0
+offset_top = 6.0
+offset_right = 310.0
+offset_bottom = 58.0
+text = "999"
+vertical_alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="furniture_menu/anchor_right/cost"]
 light_mask = 0
 layout_mode = 0
-offset_left = -3.0
-offset_top = 8.0
-offset_right = 37.0
-offset_bottom = 48.0
+offset_left = 11.0
+offset_top = 6.0
+offset_right = 63.0
+offset_bottom = 56.0
 texture = ExtResource("33_gn48s")
+stretch_mode = 4

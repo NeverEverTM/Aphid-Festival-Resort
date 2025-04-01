@@ -8,12 +8,10 @@ public partial class Player : CharacterBody2D
 {
 	public static Player Instance { get; private set; }
 
-	[Export] private Camera2D camera;
 	[Export] private Area2D interactionArea;
 	[Export] private Node2D spriteBody;
 	[Export] private AnimatedSprite2D animator;
 	[Export] private AudioStream Audio_Whistle;
-	[Export] public PlayerInventory inventory;
 
 	/// <summary>
 	/// Disables player input interaction.
@@ -119,7 +117,6 @@ public partial class Player : CharacterBody2D
 	public override void _EnterTree()
 	{
 		Instance = this;
-		GlobalManager.GlobalCamera = camera;
 
 		void _leaveItemInGround(GlobalManager.SceneName _)
 		{
@@ -152,6 +149,7 @@ public partial class Player : CharacterBody2D
 	}
 	public override void _Ready()
 	{
+		CameraManager.Focus(this);
 		stepAudio = SoundManager.GetAudioStream("player/step");
 		animator.FrameChanged += () =>
 		{
@@ -184,7 +182,7 @@ public partial class Player : CharacterBody2D
 			{
 				if (HeldPickup.Item != null)
 					_ = Drop();
-				inventory?.SetTo(false);
+				PlayerInventory.SetTo(false);
 				if (animator.Animation != StringNames.IdleAnim)
 					SetPlayerAnim(StringNames.IdleAnim);
 			}
@@ -246,9 +244,15 @@ public partial class Player : CharacterBody2D
 			return;
 		}
 
+		if (@event.IsActionPressed(InputNames.ChangeMode))
+		{
+			PlayerInventory.ChangeSellMode();
+			return;
+		}
+
 		if (@event.IsActionPressed(InputNames.OpenInventory))
 		{
-			inventory?.SetTo(!inventory.Visible);
+			PlayerInventory.Set();
 			return;
 		}
 
@@ -273,7 +277,7 @@ public partial class Player : CharacterBody2D
 			if (HeldPickup.Item != null)
 				PlayerInventory.StoreCurrentItem();
 			else
-				inventory.PullItem(0);
+				PlayerInventory.PullItem(0);
 		}
 	}
 	/// <summary>
@@ -297,7 +301,7 @@ public partial class Player : CharacterBody2D
 		{
 			if (HeldPickup.Item != null)
 				_ = Drop();
-			inventory?.SetTo(false);
+			PlayerInventory.SetTo(false);
 			if (animator.Animation != StringNames.IdleAnim)
 				SetPlayerAnim(StringNames.IdleAnim);
 			MovementDirection = Vector2.Zero;
@@ -497,7 +501,7 @@ public partial class Player : CharacterBody2D
 			return;
 
 		var _node = pickups_nearby[0];
-		var _tag = _node.HasMeta(StringNames.TagMeta) ? (string)_node.GetMeta(StringNames.TagMeta) : "item";
+		var _tag = _node.HasMeta(StringNames.TagMeta) ? (string)_node.GetMeta(StringNames.TagMeta) : "none";
 		// If is an aphid, do a bunch of extra shit
 		if (_tag == Aphid.Tag)
 		{

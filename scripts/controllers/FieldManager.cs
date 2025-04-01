@@ -9,20 +9,20 @@ public partial class FieldManager : Node2D
 
 	public enum DayHours { Morning, Noon, Sunset, Night }
 	public static DayHours TimeOfDay { get; set; }
-	public static readonly Color[] DayFilters = new Color[]
-	{
-		new(0.706f, 0.933f, 0.992f),
+	public static readonly Color[] DayFilters =
+    [
+        new(0.706f, 0.933f, 0.992f),
 		new(1, 1, 1),
 		new(0.984f, 0.62f, 0.553f),
 		new(0.133f, 0.298f, 0.592f)
-	};
-	public readonly static Color[] WeatherColors = new Color[]
-	{
-		new(0.22f, 0.608f, 0.898f), // Morning
+	];
+	public readonly static Color[] WeatherColors =
+    [
+        new(0.22f, 0.608f, 0.898f), // Morning
 		new(0.984f, 0.796f, 0.039f), // Noon
 		new(0.987f, 0.371f, 0), // Sunset
 		new(0.435f, 0.33f, 0.823f) // Night
-	};
+	];
 
 	public delegate void HourlyCall();
 	public static HourlyCall OnTimeChange { get; set; }
@@ -33,7 +33,7 @@ public partial class FieldManager : Node2D
 		SetTime(null, true);
 	}
 
-	public override async void _Ready()
+	public override void _Ready()
 	{
 		Timer _timeloop = new()
 		{
@@ -52,13 +52,10 @@ public partial class FieldManager : Node2D
 		AddChild(_timeloop);
 		_timeloop.Start();
 
-		while (!IsInstanceValid(GlobalManager.GlobalCamera))
-			await Task.Delay(1);
-
-		GlobalManager.GlobalCamera.LimitTop = (int)TopLeft.GlobalPosition.Y;
-		GlobalManager.GlobalCamera.LimitBottom = (int)BottomRight.GlobalPosition.Y;
-		GlobalManager.GlobalCamera.LimitLeft = (int)TopLeft.GlobalPosition.X;
-		GlobalManager.GlobalCamera.LimitRight = (int)BottomRight.GlobalPosition.X;
+		CameraManager.Instance.LimitTop = (int)TopLeft.GlobalPosition.Y;
+		CameraManager.Instance.LimitBottom = (int)BottomRight.GlobalPosition.Y;
+		CameraManager.Instance.LimitLeft = (int)TopLeft.GlobalPosition.X;
+		CameraManager.Instance.LimitRight = (int)BottomRight.GlobalPosition.X;
 	}
 
 	// opens weather overlay and creates timer to hide it automatically

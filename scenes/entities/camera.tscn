@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwqplcbrf0lqj"]
+
+[ext_resource type="PackedScene" uid="uid://cy6ba6twhk3o3" path="res://scenes/particles/leaves_overlay.tscn" id="1_8li4g"]
+[ext_resource type="Script" uid="uid://j6h1r2ljn7lp" path="res://scripts/controllers/CameraManager.cs" id="1_v3ehm"]
+
+[node name="Camera2D" type="Camera2D"]
+offset = Vector2(0, -15)
+zoom = Vector2(2, 2)
+process_callback = 0
+script = ExtResource("1_v3ehm")
+
+[node name="AudioListener2D" type="AudioListener2D" parent="."]
+
+[node name="GPUParticles2D" parent="." instance=ExtResource("1_8li4g")]
+position = Vector2(23, -533)
+amount_ratio = 0.4982
+visibility_rect = Rect2(-1136.26, -32.9904, 2130.36, 3003.42)

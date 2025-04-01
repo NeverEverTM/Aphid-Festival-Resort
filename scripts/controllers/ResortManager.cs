@@ -14,7 +14,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 	/// <summary>
 	/// Access local aphids within this resort. To access aphids across all resorts, use SaveSystem.Aphids instead.
 	/// </summary>
-	public readonly List<Aphid> AphidsOnResort = new();
+	public readonly List<Aphid> AphidsOnResort = [];
 	public Savefile Data { get; set; }
 
 	private SaveSystem.SaveModule<Savefile> ResortSaveModule;
@@ -70,7 +70,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 		{
 			Node2D _item = CurrentResort.EntityRoot.GetChild(i) as Node2D;
 
-			if (!_item.HasMeta("id"))
+			if (!_item.HasMeta(StringNames.IdMeta))
 			{
 				Logger.Print(Logger.LogPriority.Error, $"ResortManager: The object {_item.Name}({_item.GetClass()}) did not have a valid id.");
 				continue;
@@ -78,7 +78,7 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 			
 			Data.Items[i] = new()
 			{
-				Id = _item.GetMeta("id").ToString(),
+				Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 				PositionX = (int)_item.GlobalPosition.X,
 				PositionY = (int)_item.GlobalPosition.Y
 			};
@@ -88,9 +88,16 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 		for (int i = 0; i < CurrentResort.StructureRoot.GetChildCount(); i++)
 		{
 			Node2D _item = CurrentResort.StructureRoot.GetChild(i) as Node2D;
+
+			if (!_item.HasMeta(StringNames.IdMeta))
+			{
+				Logger.Print(Logger.LogPriority.Error, $"ResortManager: The object {_item.Name}({_item.GetClass()}) did not have a valid id.");
+				continue;
+			}
+
 			Data.Structures[i] = new()
 			{
-				Id = _item.GetMeta("id").ToString(),
+				Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 				PositionX = (int)_item.GlobalPosition.X,
 				PositionY = (int)_item.GlobalPosition.Y,
 				Data = (_item is IStructureData) ? (_item as IStructureData).GetData() : null
@@ -210,19 +217,22 @@ public partial class ResortManager : Node2D, SaveSystem.IDataModule<ResortManage
 		CurrentResort.EntityRoot.AddChild(_item);
 		return _item;
 	}
-	public static void CreateStructure(string _id, Vector2 _position, string _data = null)
+	public static Node2D CreateStructure(string _id, Vector2 _position, string _data = null)
 	{
 		string _path = GlobalManager.ABSOLUTE_STRUCTURES_DB_PATH + $"/{_id}.tscn";
 		if (!ResourceLoader.Exists(_path))
 		{
 			Logger.Print(Logger.LogPriority.Error, $"ResortManager: {_id} is not a valid id.");
-			return;
+			return null;
 		}
 
-		Node2D _item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
-		_item.GlobalPosition = _position;
-		CurrentResort.StructureRoot.AddChild(_item);
-		if (_data != null && _item is IStructureData)
-			(_item as IStructureData).SetData(_data);
+		Node2D _structure = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
+		_structure.GlobalPosition = _position;
+		_structure.SetMeta(StringNames.IdMeta, _id);
+		CurrentResort.StructureRoot.AddChild(_structure);
+
+		if (_data != null && _structure is IStructureData)
+			(_structure as IStructureData).SetData(_data);
+		return _structure;
 	}
 }

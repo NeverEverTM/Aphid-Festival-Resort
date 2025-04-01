@@ -103,8 +103,15 @@ public static class ControlsManager
 	/// <summary>
 	/// Returns the human-friendly name for an action. Intended for UI display.
 	/// </summary>
-	public static string GetActionName(string _action_name) =>
-		GetActionName(Binds[_action_name]);
+	public static string GetActionName(string _action_name)
+	{
+		if (!Binds.TryGetValue(_action_name, out InputEvent _bind))
+		{
+			Logger.Print(Logger.LogPriority.Warning, "ControlsManager: The following bind is not present in the control list: " + _action_name);
+			return _action_name;
+		}
+		return GetActionName(_bind);
+	}
 	public static void ResetToDefault()
 	{
 		InputMap.LoadFromProjectSettings();
@@ -118,8 +125,8 @@ public static class ControlsManager
 			{
 				if (_events[0].AsText().StartsWith("ui"))
 					continue;
-				OnControlChanged?.Invoke(_events[0].AsText(), _action);
 				Binds[_action] = _events[0];
+				OnControlChanged?.Invoke(_events[0].AsText(), _action);
 			}
 		}
 	}

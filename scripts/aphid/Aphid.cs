@@ -304,7 +304,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			{
 				Shader = ResourceLoader.Load<Shader>(GlobalManager.CG_OUTLINE_SHADER)
 			};
-			_outline.SetShaderParameter("line_colour", Color.FromHtml("f25400"));
+			_outline.SetShaderParameter("line_colour", new Color(0,0.2f,0.7f));
 			_outline.SetShaderParameter("line_thickness", 2);
 			skin.Material = _outline;
 			harvest_effect = GlobalManager.EmitParticles("harvest", new(), this, false);

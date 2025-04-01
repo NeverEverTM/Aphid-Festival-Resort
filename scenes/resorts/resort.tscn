@@ -1,10 +1,11 @@
-[gd_scene load_steps=74 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=75 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" uid="uid://7tuds0dv1fbo" path="res://scripts/controllers/ResortManager.cs" id="1_07ebe"]
 [ext_resource type="PackedScene" uid="uid://dd1kgkvs8hkc6" path="res://scenes/ui/resort_canvas.tscn" id="2_tevxm"]
 [ext_resource type="PackedScene" uid="uid://bufmc14xek8uk" path="res://scenes/ui/canvas.tscn" id="3_xt4xu"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="4_053y3"]
 [ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="5_ct3om"]
+[ext_resource type="PackedScene" uid="uid://cwqplcbrf0lqj" path="res://scenes/entities/camera.tscn" id="5_sm3i7"]
 [ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/entities/npc.tscn" id="6_tqo43"]
 [ext_resource type="Texture2D" uid="uid://b1go4uvd135xi" path="res://sprites/characters/kut_sprite.png" id="7_h3tlf"]
 [ext_resource type="PackedScene" uid="uid://cum5tqdw2hog8" path="res://scenes/entities/menu_trigger.tscn" id="9_rm1s3"]
@@ -484,9 +485,10 @@ metadata/_edit_lock_ = true
 [node name="entityPit" type="Node2D" parent="."]
 y_sort_enabled = true
 
-[node name="player" parent="." node_paths=PackedStringArray("inventory") instance=ExtResource("5_ct3om")]
+[node name="Camera2D" parent="." instance=ExtResource("5_sm3i7")]
+
+[node name="player" parent="." instance=ExtResource("5_ct3om")]
 position = Vector2(-2, 0)
-inventory = NodePath("../canvas/inventory")
 
 [node name="kut" parent="." instance=ExtResource("6_tqo43")]
 position = Vector2(-484, -166)

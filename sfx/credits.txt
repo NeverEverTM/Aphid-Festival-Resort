@@ -1,5 +1,7 @@
-Pixabay
+====| Pixabay |=====
 Steam Sizzle by floraphonic
 Camera Flash by irinairinafomicheva
-Leaves by Kinoton (Freesound)
-Backpack sounds by j1987 (Freesound)
+Leaves Sweep by Kinoton (Freesound)
+Backpack Sounds by j1987 (Freesound)
+Store Bell by David Dumais (DavidDrumaisAudio)
+====| All other sounds were made with JSFXR |====

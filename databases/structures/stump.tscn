@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://mobb6ffpg1lv"]
+
+[ext_resource type="Texture2D" uid="uid://c6sxlnodi7bl3" path="res://sprites/props/stump.png" id="1_1rqe0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rxj05"]
+size = Vector2(27, 11)
+
+[node name="stump" type="Sprite2D"]
+texture = ExtResource("1_1rqe0")
+offset = Vector2(0, -14)
+metadata/id = "largebox_0"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0.5, -6.5)
+shape = SubResource("RectangleShape2D_rxj05")

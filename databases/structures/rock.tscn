@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bsc8ycguesuuo"]
+
+[ext_resource type="Texture2D" uid="uid://cefkrjn0wd0v0" path="res://sprites/props/rock.png" id="1_4ccj8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mdc5e"]
+size = Vector2(43, 22)
+
+[node name="rock" type="Sprite2D"]
+texture = ExtResource("1_4ccj8")
+offset = Vector2(0, -21)
+metadata/id = "largebox_0"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0.5, -12)
+shape = SubResource("RectangleShape2D_mdc5e")

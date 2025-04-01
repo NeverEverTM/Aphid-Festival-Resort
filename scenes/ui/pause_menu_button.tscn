@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://co34071w6qov6"]
+
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_26sag"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="2_xv1op"]
+
+[node name="resume" type="TextureButton"]
+self_modulate = Color(0.913725, 0, 0.25098, 1)
+custom_minimum_size = Vector2(360, 70)
+offset_right = 360.0
+offset_bottom = 67.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("1_26sag")
+stretch_mode = 4
+script = ExtResource("2_xv1op")
+PressedColor = Color(0.764919, 0.69863, 0.811174, 1)
+FocusColor = Color(0.422275, 0.64882, 0.79132, 1)
+HoverColor = Color(0.74902, 0.447059, 0.462745, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 5.0
+offset_right = 335.0
+offset_bottom = 59.0
+text = "pause_resume"
+horizontal_alignment = 1
+vertical_alignment = 1

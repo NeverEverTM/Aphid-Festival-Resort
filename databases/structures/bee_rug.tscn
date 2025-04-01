@@ -4,5 +4,5 @@
 
 [node name="bee_rug" type="Sprite2D"]
 texture = ExtResource("1_gd0a1")
-offset = Vector2(0, 31.06)
+offset = Vector2(0, 32)
 metadata/id = "bee_rug"
