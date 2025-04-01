@@ -8,10 +8,10 @@ public partial class BuildMenu : Control
 	[Export] private TextureButton buildButton, storageButton;
 	[Export] private Label controlPrompt;
 	private const string ITEM_CONTAINER_SCENE = "uid://cn7d8wjyx78a3";
+	public static StringName WATER_PLACEABLE = new("allow_water"), WALL_PLACEABLE = new("allow_wallmount");
 	private PackedScene item_container;
 	private MenuUtil.MenuInstance build_menu;
-
-	public static StringName WATER_PLACEABLE = new("allow_water"), WALL_PLACEABLE = new("allow_wallmount");
+	public static bool DEBUG_SHOW_RECTS { get; set; }
 
 	// Variables
 	public bool IsStorageOpen;
@@ -128,7 +128,8 @@ public partial class BuildMenu : Control
 
 		if (selected_building != null)
 		{
-			QueueRedraw();
+			if (DEBUG_SHOW_RECTS)
+				QueueRedraw();
 			ProcessBuildingInteraction();
 		}
 	}
@@ -145,7 +146,7 @@ public partial class BuildMenu : Control
 	}
     public override void _Draw()
     {
-		if (selected_building == null)	
+		if (selected_building == null || !DEBUG_SHOW_RECTS)	
 			return;
 		Vector2 _position = CameraManager.GetWorldToCanvasPosition(selected_building.Collider.Position),
 			_topleft = CameraManager.GetWorldToCanvasPosition(selected_building.Collider.Position + new Vector2(selected_building.Collider.Size.X, 0)),

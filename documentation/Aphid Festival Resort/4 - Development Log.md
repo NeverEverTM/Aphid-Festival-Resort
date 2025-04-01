@@ -90,9 +90,11 @@
 - Retouched some menu interfaces.
 - Added a backdrop to most text in the game which i think looks nice.
 - Improved spritework of torches.
-- Improved some aspects of the generations album aphid tracking.
+- Moved the tracking of the album to the aphid focus feature (this was done in the last update but forgot to include it, it also didnt have a way to trigger it)
 ## Development
-- Updated to Godot 4.4. With this, comes the new meta reference system, thus, all resources have been automatically given a ".uid".
+- Updated to Godot 4.4. 
+	- With this, comes the new meta reference system, thus, all resources have been automatically given a ".uid".
+	- Some changes on how collections are created.
 - Various improvements to the debug console.
 - Optimized several string references to use cached StringNames when proper.
 - Replaced absolute paths in GlobalManager with their corresponding UID's
@@ -112,3 +114,4 @@
 - Bee flag structure had the wrong id, which turned it into a rug after game reload, the way ids are set has been changed to prevent such things from happening in the future.
 - Build menu did not use the standard method for spawning structures and caused issues when loading these new structures.
 - Leaves no longer darken when the player goes under a sunshade.
+- Furniture hitboxes were off by a few pixels of their actual visual sprite

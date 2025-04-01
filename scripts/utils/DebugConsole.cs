@@ -318,7 +318,14 @@ public partial class DebugConsole : CanvasLayer
 			{ "log_mode", (args) =>
 				{
 					Logger.LogMode = (Logger.LogPriorityMode)GetInt(1, args, 2);
-					Logger.Print(Logger.LogPriority.Error, $"GameRules: Log mode is now <{Logger.LogMode}>");
+					Logger.Print(Logger.LogPriority.IgnorePriority, $"GameRules: Log mode is now <{Logger.LogMode}>");
+				}
+			},
+			{ "enable_build_rects", (args) =>
+				{
+					BuildMenu.DEBUG_SHOW_RECTS = GetBool(1, args, false);
+					Logger.Print(Logger.LogPriority.Info, $"GameRules: ", BuildMenu.DEBUG_SHOW_RECTS ?
+						"Enabled rect visualization for furniture." : "Disabled rect visualization for furniture.");
 				}
 			},
 		};
@@ -408,7 +415,7 @@ public partial class DebugConsole : CanvasLayer
 						return;
 					GameManager.RemoveAphid(new Guid(validAphid.Instance.ID));
 					validAphid.QueueFree();
-				break;
+					break;
 			}
 		}
 	}
@@ -431,13 +438,13 @@ public partial class DebugConsole : CanvasLayer
 				Logger.Print(Logger.LogPriority.Log, $"GiveItem: {_id} is not a valid item.");
 		}
 	}
-    private class DialogSim : IConsoleCommand
-    {
-        public string HelpText => "This is a text";
+	private class DialogSim : IConsoleCommand
+	{
+		public string HelpText => "This is a text";
 
-        public void Execute(string[] args)
-        {
-            if (!GetArg(0, args, out string _id))
+		public void Execute(string[] args)
+		{
+			if (!GetArg(0, args, out string _id))
 				return;
 			if (_id.Equals(Instance.Tr(_id)))
 			{
@@ -446,6 +453,6 @@ public partial class DebugConsole : CanvasLayer
 			}
 			Logger.Print(Logger.LogPriority.IgnorePriority, $"DialogSim: Displaying <{_id}>:");
 			Logger.Print(Logger.LogPriority.IgnorePriority, "[color=cyan]", Instance.Tr(_id), "[/color]");
-        }
-    }
+		}
+	}
 }
