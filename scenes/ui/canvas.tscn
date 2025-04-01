@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
 [ext_resource type="Texture2D" uid="uid://sgkiuo2x4mba" path="res://sprites/ui/weather_night.png" id="3_7sasc"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="4_bri73"]
-[ext_resource type="Texture2D" uid="uid://bxc35yxy7uvir" path="res://sprites/ui/gui_icons/icon_inventory_close.png" id="4_s23ya"]
+[ext_resource type="Texture2D" uid="uid://cgy8fdgjf0qo2" path="res://sprites/icons/aphid_icon.png" id="4_x6j0u"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="5_ea4nc"]
 [ext_resource type="PackedScene" uid="uid://uk8rbyvf7hlf" path="res://scenes/ui/control_prompt.tscn" id="6_2mjwi"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://default_theme.tres" id="6_pcakw"]
@@ -18,11 +18,11 @@
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="11_u4uj5"]
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="12_fyjyg"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="13_7k46k"]
+[ext_resource type="AudioStream" uid="uid://264yfkixta8q" path="res://sfx/aphid/boing.wav" id="14_1qpog"]
 [ext_resource type="Script" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="15_4n2d7"]
-[ext_resource type="AudioStream" uid="uid://biqb5tx1cjmwl" path="res://sfx/ui/backpack_open.wav" id="15_jpkck"]
+[ext_resource type="AudioStream" uid="uid://yrsx0chxxnyd" path="res://sfx/aphid/disgust.wav" id="15_vaqj6"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/switch.wav" id="16_crekn"]
-[ext_resource type="AudioStream" uid="uid://bsk5hdjfe6fiy" path="res://sfx/ui/backpack_close.wav" id="16_wn1tp"]
 [ext_resource type="Shader" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/ui/options_panel.tscn" id="19_h41ts"]
@@ -574,7 +574,7 @@ weather_player = NodePath("datetime/AnimationPlayer")
 screenshot_button = NodePath("hud/screenshotButton")
 menu_button = NodePath("hud/menuButton")
 inventoryButton = NodePath("hud/inventoryButton")
-inventory_button_sprites = [ExtResource("4_s23ya"), ExtResource("9_smev1")]
+inventory_button_sprites = [ExtResource("4_x6j0u"), ExtResource("4_x6j0u")]
 inventory_control_label = NodePath("hud/inventoryButton/control_icon")
 prompt_grid = NodePath("DO NOT REMOVE/prompt_grid")
 prompt_element = ExtResource("6_2mjwi")
@@ -769,8 +769,8 @@ inventory_player = NodePath("animator")
 inventoryGrid = NodePath("anchor/inventory_container")
 invItemContainer = ExtResource("11_u4uj5")
 inventoryCount = NodePath("anchor/count_bg/inventory_count")
-audio_inventory_open = ExtResource("15_jpkck")
-audio_inventory_close = ExtResource("16_wn1tp")
+audio_inventory_open = ExtResource("14_1qpog")
+audio_inventory_close = ExtResource("15_vaqj6")
 
 [node name="animator" type="AnimationPlayer" parent="inventory"]
 libraries = {
@@ -1329,9 +1329,9 @@ vertical_alignment = 1
 [node name="panel_bg" type="TextureRect" parent="pause_menu"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 layout_mode = 0
-offset_left = 450.0
+offset_left = 367.0
 offset_top = 132.0
-offset_right = 813.0
+offset_right = 730.0
 offset_bottom = 525.0
 texture = ExtResource("4_bri73")
 

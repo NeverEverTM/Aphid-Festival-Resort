@@ -1,4 +1,4 @@
-[gd_scene load_steps=93 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=91 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" path="res://scripts/gui/ResortGUI.cs" id="1_i0o2h"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_yrmm3"]
@@ -19,18 +19,16 @@
 [ext_resource type="Texture2D" uid="uid://c5r0qq64uwen0" path="res://sprites/ui/aphid_info_hud.png" id="18_wc2dv"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="20_tekx7"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="23_0ppya"]
+[ext_resource type="Texture2D" uid="uid://cgy8fdgjf0qo2" path="res://sprites/icons/aphid_icon.png" id="23_igqaj"]
+[ext_resource type="AudioStream" uid="uid://b6qld1ak4wg5u" path="res://sfx/aphid/hurt.wav" id="24_8v1n6"]
 [ext_resource type="Script" path="res://scripts/panels/ItemShop.cs" id="28_xm5ie"]
 [ext_resource type="PackedScene" uid="uid://cn7d8wjyx78a3" path="res://scenes/ui/item_container.tscn" id="29_mvok5"]
-[ext_resource type="Texture2D" uid="uid://c1fmd5yqanbuy" path="res://sprites/ui/portraits/kut_dissapointed_portrait.png" id="31_gxjv5"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="32_iw5ng"]
-[ext_resource type="Texture2D" uid="uid://c272xi11ewypl" path="res://sprites/ui/portraits/kut_proud_portrait.png" id="32_l72np"]
-[ext_resource type="AudioStream" uid="uid://c2i25l6w3yeqq" path="res://sfx/ui/button_fail.wav" id="32_p352r"]
 [ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="33_gn48s"]
 [ext_resource type="Script" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
 [ext_resource type="PackedScene" uid="uid://boxaly7dtxe0r" path="res://scenes/ui/inv_item_container.tscn" id="35_dvpl5"]
 [ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="36_g3t8v"]
 [ext_resource type="Texture2D" uid="uid://g1s4ngp035a8" path="res://sprites/ui/portraits/wasp_portrait.png" id="36_m6tkj"]
-[ext_resource type="Texture2D" uid="uid://doll68sgg6dvl" path="res://sprites/ui/portraits/kut_portrait.png" id="37_8puiq"]
 [ext_resource type="Texture2D" uid="uid://cs2foh4c6do3o" path="res://sprites/props/sign_no_aphid.png" id="37_160i8"]
 [ext_resource type="Texture2D" uid="uid://blbsu5b7ougdg" path="res://sprites/ui/store_selected.png" id="37_eiku4"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="38_aw538"]
@@ -2182,8 +2180,8 @@ itemCost = NodePath("item_info/cost/cost_text")
 itemIcon = NodePath("item_info/icon/icon_image")
 itemContainer = ExtResource("29_mvok5")
 bgColorSlot = Color(0.513726, 0.701961, 0.921569, 1)
-default_item_icon = ExtResource("36_m6tkj")
-errorSound = ExtResource("32_p352r")
+default_item_icon = ExtResource("23_igqaj")
+errorSound = ExtResource("24_8v1n6")
 
 [node name="store_animator" type="AnimationPlayer" parent="item_shop_panel"]
 libraries = {
@@ -2442,7 +2440,7 @@ ingredient1Icon = NodePath("recipe_interface/ingredient_1/ingredient_1_icon")
 ingredient2Icon = NodePath("recipe_interface/ingredient_2/ingredient_2_icon")
 resultIcon = NodePath("recipe_interface/result/result_icon")
 portrait = NodePath("dialog/portrait")
-portraitImages = Array[Texture2D]([ExtResource("37_8puiq"), ExtResource("31_gxjv5"), ExtResource("32_l72np")])
+portraitImages = Array[Texture2D]([ExtResource("23_igqaj"), ExtResource("23_igqaj"), ExtResource("23_igqaj")])
 resultName = NodePath("recipe_interface/result/result_name/result_name_text")
 dialogBox = NodePath("dialog/desc")
 inventoryGrid = NodePath("inventory_bg/inventory_container")
@@ -3011,8 +3009,8 @@ itemCost = NodePath("anchor_right/cost/Label")
 itemIcon = NodePath("anchor_right/icon/image")
 itemContainer = ExtResource("29_mvok5")
 bgColorSlot = Color(0.817851, 0.516828, 0.855053, 1)
-default_item_icon = ExtResource("40_iuxyn")
-errorSound = ExtResource("32_p352r")
+default_item_icon = ExtResource("23_igqaj")
+errorSound = ExtResource("24_8v1n6")
 
 [node name="furniture_player" type="AnimationPlayer" parent="furniture_menu"]
 libraries = {

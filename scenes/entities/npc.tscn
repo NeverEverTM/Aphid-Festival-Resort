@@ -23,7 +23,7 @@ size = Vector2(17.663, 9.48144)
 
 [node name="NPC" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_x8yc6")
-offset = Vector2(0, -32)
+offset = Vector2(0, -7.63)
 script = ExtResource("1_to8yc")
 
 [node name="hitbox" type="RigidBody2D" parent="."]

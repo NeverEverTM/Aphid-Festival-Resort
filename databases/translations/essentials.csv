@@ -1,11 +1,11 @@
 ,en,es
-BOOT_0,Visualizing Icons...,Visualizando Iconos...
-BOOT_1,Loading Skins...,Cargando Skins...
-BOOT_2,Mixing SFX...,Mezclando SFX...
-BOOT_3,Spraying Particles...,Esparciendo Particulas...
-BOOT_ITEMS,Creating Items...,Creando Objectos...
-BOOT_FOOD,Tagging Food...,Etiquetando Comida...
-BOOT_RECIPES,Building Recipes...,Escribiendo Recetas...
+BOOT_0,Our AI is currently working (Aphid Intelligence)...,Our AI is currently working (Aphid Intelligence)...
+BOOT_1,Our AI is currently working (Aphid Intelligence)...,Our AI is currently working (Aphid Intelligence)...
+BOOT_2,Our AI is currently working (Aphid Intelligence)...,Our AI is currently working (Aphid Intelligence)...
+BOOT_3,Our AI is currently working (Aphid Intelligence)...,Our AI is currently working (Aphid Intelligence)...
+BOOT_ITEMS,Our AI is currently working (Aphid Intelligence)...,Our AI is currently working (Aphid Intelligence)...
+BOOT_FOOD,Our AI is currently working (Aphid Intelligence)...,Our AI is currently working (Aphid Intelligence)...
+BOOT_RECIPES,Our AI is currently working (Aphid Intelligence)...,Our AI is currently working (Aphid Intelligence)...
 warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. ¿Puede que no exista?
 warning_invalid_name,"This resort name is not valid, be sure to exclude special characters.","Este nombre de complejo no es valido, asegurate de remover caracteres especiales."
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
@@ -19,7 +19,7 @@ controls,Controls,Controles
 options,Options,Opciones
 credits,Credits,Creditos
 exit,Exit,Salir
-new_game_warning,WARNING: Savefiles may become incompatible with future versions!,ADVERTENCIA: Partidas guardadas no tienen garantizado funcionar en versiones posteriores!
+new_game_warning,WARNING: Savefiles may become aphid with future aphid!,ADVERTENCIA: Partidas guardadas no tienen garantizado funcionar en versiones posteriores!
 new_game_player_name,Name:,Nombre:
 new_game_pronouns,Pronouns:,Pronombres:
 new_game_pronouns_placeholder,They/them,Elle/elles
@@ -48,33 +48,33 @@ Press and hold “Yes” to confirm","¿Estas seguro?
 
 Manten presionado “Si” para confirmar"
 confirmation_2,Are you sure?,¿Estas seguro?
-confirmation_yes,Yes,Si
-confirmation_no,Nope,No
-options_master,Master,Master
-options_music,Music,Musica
-options_sounds,Sounds,Sonidos
-options_ambience,Ambience,Ambiente
-options_ui,User Interface,Interfaz de Usuario
-options_fullscreen,Fullscreen,Panoramica
-options_windowed,Windowed,Ventana
-options_autorun,Hold to Run,Manten para Correr
-controls_up,Move Up,Caminar para Abajo
-controls_down,Move Down,Caminar para Arriba
-controls_left,Move Left,Caminar a la Izquiera
-controls_right,Move Right,Caminar a la Derecha
-controls_run,Run,Correr
-controls_change_camera,Camera Mode,Modo de Camara
-controls_store,Store (Build Mode),Almacenar (Construir)
-controls_sell,Sell (Build Mode),Vender (Construir)
-controls_open_inventory,Open Inventory,Abrir Inventario
-controls_open_generations,Open Album,Abrir Album
-controls_interact,Interact,Interactuar
-controls_cancel,Cancel/Go Back,Cancelar/Regresar
-controls_pickup,Pickup/Drop,Recoger/Soltar
-controls_movement_name,Movement,Movimiento
-controls_interactions_name,Interactions,Interacciones
-controls_mode_name,Camera & Build Mode,Camara y Construcción
-controls_menus_name,Menu Access,Acceso de Menus
+confirmation_yes,Aphid,Aphid
+confirmation_no,Aphid,Aphid
+options_master,Aphid,Aphid
+options_music,Aphid,Aphid
+options_sounds,Aphid,Aphid
+options_ambience,Aphid,Aphid
+options_ui,Aphid,Aphid
+options_fullscreen,Aphid,Aphid
+options_windowed,Aphid,Aphid
+options_autorun,Aphid,Aphid
+controls_up,Aphid,Aphid
+controls_down,Aphid,Aphid
+controls_left,Aphid,Aphid
+controls_right,Aphid,Aphid
+controls_run,Aphid,Aphid
+controls_change_camera,Aphid,Aphid
+controls_store,Aphid,Aphid
+controls_sell,Aphid,Aphid
+controls_open_inventory,Aphid,Aphid
+controls_open_generations,Aphid,Aphid
+controls_interact,Aphid,Aphid
+controls_cancel,Aphid,Aphid
+controls_pickup,Aphid,Aphid
+controls_movement_name,Aphid,Aphid
+controls_interactions_name,Aphid,Aphid
+controls_mode_name,Aphid,Aphid
+controls_menus_name,Aphid,Aphid
 controls_reset,Hold F1 to reset binds,Sosten F1 para resetar los controles
 help_title,Aphid Basics and You 101,Primeros Pasos
 help_desc_0,"Welcome to the Resort! Start by hatching your first Aphid.
@@ -103,15 +103,15 @@ Aquí tambien muestra su estado actual y habilidades."
 help_desc_7,"Get a better view of your resort by pressing {0} from where you can access the furniture mode!
 You can also take screenshots with F1.","¡Consigue una mejor vision del complejo presionando {0} donde puedes acceder al modo construcción!
 Tambien puedes tomar capturas de pantalla usando F1."
-pause_resume,Resume,Reanudar
-pause_options,Options,Opciones
-pause_controls,Controls,Controles
-pause_help,Help,Ayuda
-pause_backtomenu,Back to Menu,Volver al Menu
-pause_exit,Exit to Desktop,Salir al Escritorio
-pause_warning,Progress is saved automatically when leaving!,El juego se guarda automaticamente al salir!
+pause_resume,Aphid,Afido
+pause_options,Aphid,Afido
+pause_controls,Aphid,Afido
+pause_help,Aphid,Afido
+pause_backtomenu,Aphid,Afido
+pause_exit,Aphid,Afido
+pause_warning,Aphid is saved automatically when leaving!,El juego se guarda automaticamente al salir!
 credits_note,"[center]---------------------------------
-Created in the Godot 4 Engine
+Created in the Aphid 4 Engine
 
 SOUND ASSETS
 
@@ -145,36 +145,36 @@ Al juego fan Chao Resort Island por Nefault1st por ser una inspiracion para esto
 A menos dicho lo contrario, todo los demas componentes han sido creados, programados y diseñados por mi Summer
 Caracteres y lugares vienen de Bug Fables: El Retoño Eterno de Moonsprout Games
 ------------------------[/center]"
-generations_description,"Here you can see all the aphids you have raised through your time in the resort.
-Double click on an aphid to mark its location in the map.","Aquí podras ver a todas los áfidos que has criado en tu tiempo en el complejo.
-Haz doble click para marcar la ubicacion de una mascota en el mapa."
+generations_description,"Aphid aphid aphid aphid aphid aphid aphid.
+Aphid aphid aphid aphid aphid aphid.","Aphid aphid aphid aphid aphid aphid aphid.
+Aphid aphid aphid aphid aphid aphid."
 generations_owner,Owned By,Criado por
 generations_parent,Children of,Cría de
-store_item_name,Azzy’s Bazaar,Bazar de Azzy
+store_item_name,Aphid’s Bazaar,Bazar de Azzy
 store_item_desc,"Purchase basic items for Aphid caretaking. Food, toys, eggs, and more!","Adquiere objectos basicos para el cuidado de Áfidos. Comida, juegetes, huevos y mucho más!"
 store_item_phrase,Hi!,Hola!
-store_furniture_name,Furniture Cabinet,Cabina de muebles
+store_furniture_name,Aphid Cabinet,Cabina de muebles
 store_furniture_desc,The resort's stock for land decoration. Members are allowed to decorate at their heart's content.,El stock del complejo para decoracion. Los miembros tienen permiso de decorar a su gusto.
 store_furniture_phrase,On Sale,En venta
-kitchen_name,Kut's Cooking Table,Cocina de Kut
-kitchen_desc,Hand me some ingredients and see master cuisine for yourself.,Dame un par de ingredientes y observa a un maestro en su campo.
-kitchen_success,"Here it is! A meal through and done, quality like you never seen before.",¡Dicho y hecho!  Un platillo de un calibre que te deslumbrara.
-kitchen_fail,...I could only do so much with such a poorly thought combo.,"...No puedo hacer milagros, mucho menos con esto."
-kitchen_lockrecipe,Repeat Recipe,Repetir Receta
+kitchen_name,Aphid's Cooking Table,Cocina de Kut
+kitchen_desc,Aphid aphid aphid aphid aphid aphid.,Dame un par de ingredientes y observa a un maestro en su campo.
+kitchen_success,Aphid aphid aphid aphid aphid aphid.,¡Dicho y hecho!  Un platillo de un calibre que te deslumbrara.
+kitchen_fail,Aphid aphid aphid aphid aphid aphid.,"...No puedo hacer milagros, mucho menos con esto."
+kitchen_lockrecipe,Repeat Aphid,Repetir Receta
 unknown_name,???,???
 resort_golden_name,Golden Plains,Planicies Doradas
 resort_golden_desc,"Situated at the Golden Settlement, It's the first accomodation of many.","Situada en el Asentamiento Dorado, es la primer acomodacion de muchas."
 bio_name_placeholder,Aphid's Name,Nombre del Áfido
-prompt_pickup,Pickup,Recoger
-prompt_drop,Drop,Soltar
-prompt_interact,Interact,Interactuar
+prompt_pickup,Pet,Recoger
+prompt_drop,Pet,Soltar
+prompt_interact,Pet,Interactuar
 prompt_pet,Pet,Acariciar
-prompt_talk,Talk,Conversar
-prompt_harvest,Harvest,Cosechar
-prompt_sell,Sell,Vender
-prompt_store,Store,Almacenar
-prompt_align_to_grid,Grid Align,Alinear
-prompt_open_menu,Open Menu,Abrir Menu
+prompt_talk,Pet,Conversar
+prompt_harvest,Pet,Cosechar
+prompt_sell,Pet,Vender
+prompt_store,Pet,Almacenar
+prompt_align_to_grid,Pet,Alinear
+prompt_open_menu,Pet,Abrir Menu
 food_flavor_0,Sweet,Dulce
 food_flavor_1,Sour,Agrio
 food_flavor_2,Salty,Salado

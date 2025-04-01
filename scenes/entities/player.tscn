@@ -181,9 +181,9 @@ metadata/tag = "player"
 [node name="animator" type="AnimatedSprite2D" parent="."]
 scale = Vector2(-1, 1)
 sprite_frames = SubResource("SpriteFrames_mupq7")
-animation = &"sit"
+animation = &"idle"
 autoplay = "idle"
-offset = Vector2(0, -32)
+offset = Vector2(0, -16.93)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, -3)

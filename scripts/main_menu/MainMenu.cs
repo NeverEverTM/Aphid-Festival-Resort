@@ -216,7 +216,7 @@ public partial class MainMenu : Node2D
 		SoundManager.CreateSound(selectSound);
 
 		// Start Panel behaviour
-		button_wheel.Text = $"[center]<| [tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado] |>[/center]";
+		button_wheel.Text = $"[center]<| [tornado radius=2.0 freq=6.0 connected=1] Aphid [/tornado] |>[/center]";
 		SetButtonWheel(() => MenuActions[currentCategory](), SwitchCategories);
 		MenuWheelIndex = lastCategoryIndex;
 

@@ -374,6 +374,7 @@ patch_margin_right = 20
 patch_margin_bottom = 20
 
 [node name="language" type="OptionButton" parent="."]
+visible = false
 light_mask = 0
 layout_mode = 0
 offset_left = 834.0
