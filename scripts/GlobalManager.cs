@@ -145,7 +145,7 @@ internal partial class GlobalManager : Node2D
 			ACTIVE_PARTICLES_CACHED.RemoveAt(i);
 		}
 	}
-	
+
 	// MARK: Game Initialization
 	/// <summary>
 	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
@@ -182,19 +182,7 @@ internal partial class GlobalManager : Node2D
 		}
 		catch (Exception _err)
 		{
-			AcceptDialog _dialog = new()
-			{
-				DialogText = "Critical Error: " + _err.Message,
-				PopupWindow = true,
-				Title = "The game has given up on you"
-			};
-			_dialog.Canceled += () => Instance.GetTree().Quit(1);
-			_dialog.Confirmed += () => Instance.GetTree().Quit(1);
-			Instance.AddChild(_dialog);
-			_dialog.PopupCentered();
-			Logger.Print(Logger.LogPriority.Error, _err);
-
-			await Task.Delay(int.MaxValue);
+			THROW_CRASH(_err);
 		}
 	}
 	private static async Task LOAD_ICONS()
@@ -423,6 +411,20 @@ internal partial class GlobalManager : Node2D
 
 		return ResourceLoader.LoadThreadedGet(_path);
 	}
+	public static void THROW_CRASH(Exception _err)
+	{
+		AcceptDialog _dialog = new()
+		{
+			DialogText = "Critical Error: " + _err.Message,
+			PopupWindow = true,
+			Title = "The game has given up on you"
+		};
+		_dialog.Canceled += () => Instance.GetTree().Quit(1);
+		_dialog.Confirmed += () => Instance.GetTree().Quit(1);
+		Instance.AddChild(_dialog);
+		_dialog.PopupCentered();
+		Logger.Print(Logger.LogPriority.Error, _err);
+	}
 
 	// MARK: Dedicated Functions
 	/// <summary>
@@ -457,7 +459,7 @@ internal partial class GlobalManager : Node2D
 
 	public async static Task LoadScene(SceneName _scene)
 	{
-		await Task.Delay(1);
+		// hardcoded available scenes
 		string _path = _scene switch
 		{
 			SceneName.Menu => MENU_SCENE,
@@ -466,47 +468,30 @@ internal partial class GlobalManager : Node2D
 		};
 		if (_path == "N/A")
 			return;
-		Logger.Print(Logger.LogPriority.Log, $"GlobalManager: Loading scene <{Scene}>.");
-		Scene = _scene;
 		IsBusy = true;
-		SoundManager.StopSong();
+		Scene = _scene;
+		Logger.Print(Logger.LogPriority.Log, $"GlobalManager: Loading scene <{Scene}>.");
 
-		// load the load screen
-		LoadScreen _loading = ResourceLoader.Load<PackedScene>(LOADING_SCENE).Instantiate() as LoadScreen;
+		// start the load screen, but dont wait for it, instead we use that time to load the next scene
+		LoadScreen _loading = (await PRELOAD_RESOURCE(LOADING_SCENE) as PackedScene).Instantiate() as LoadScreen;
 		Instance.GetTree().Root.AddChild(_loading);
 		_ = _loading.CreateLeaves();
 
-		// await for scene creation
-		ResourceLoader.LoadThreadedRequest(_path);
-		ResourceLoader.ThreadLoadStatus _status = ResourceLoader.LoadThreadedGetStatus(_path);
-
-		while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-			_status = ResourceLoader.LoadThreadedGetStatus(_path);
-
-		if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
-		{
-			if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
-				GD.PrintErr($"Item at <{_path}> is not a valid resource or request.");
-			else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-				GD.PrintErr($"Scene at <{_path}> was not able to be loaded.");
-
-			IsBusy = false;
-			Instance.GetTree().Quit(2);
-		}
-
-		// wait until full transition, then do all your shit
+		// preload setup
+		SoundManager.StopSong();
+		PackedScene _packedScene = await PRELOAD_RESOURCE(_path) as PackedScene;
 		while (!_loading.IsDone)
 			await Task.Delay(1);
 		OnPreLoadScene?.Invoke(Scene);
 		SaveSystem.ProfileClassData.Clear();
-		CleanAllParticles();
 		SoundManager.CleanAllSounds();
-		await Task.Delay(1);
+		CleanAllParticles();
 
 		// set scene and request ready/events
-		Instance.GetTree().ChangeSceneToPacked(ResourceLoader.LoadThreadedGet(_path) as PackedScene);
+		Instance.GetTree().ChangeSceneToPacked(_packedScene);
 		Instance.RequestReady();
 		OnPostLoadScene?.Invoke(Scene);
+
 		IsBusy = false;
 		await _loading.SweepLeaves();
 	}
@@ -539,10 +524,10 @@ internal partial class GlobalManager : Node2D
 		_vanish.Start(1.5f);
 		_timer.Start(2);
 	}
-	
+
 	public static class Utils
 	{
-		public static Godot.Collections.Dictionary RaycastBetween(Vector2 from, Vector2 to, 
+		public static Godot.Collections.Dictionary RaycastBetween(Vector2 from, Vector2 to,
 				Godot.Collections.Array<Rid> _excludeList)
 		{
 			var query = PhysicsRayQueryParameters2D.Create(from, to);
@@ -550,7 +535,7 @@ internal partial class GlobalManager : Node2D
 			query.Exclude = _excludeList;
 			return Instance.spaceState.IntersectRay(query);
 		}
-		public static Godot.Collections.Dictionary RaycastTowards(Vector2 _position, Vector2 _direction, 
+		public static Godot.Collections.Dictionary RaycastTowards(Vector2 _position, Vector2 _direction,
 				Godot.Collections.Array<Rid> _excludeList)
 		{
 			var query = PhysicsRayQueryParameters2D.Create(_position, _position + _direction);
@@ -570,7 +555,7 @@ internal partial class GlobalManager : Node2D
 			// We take a sum of all weights
 			float _total = 0;
 			Array.ForEach(weights, _weight =>
-            {
+			{
 				_total += _weight;
 			});
 

@@ -88,6 +88,12 @@ public partial class NewGameMenu : Control
 			SoundManager.CreateSound(Aphid.Audio_Hurt);
 			return;
 		}
+		else if (_resortName.ToLower() == "medic!")
+		{
+			SoundManager.CreateSound("misc/medic_prognosis", false);
+			MainMenu.Instance.CloseMenu();
+			return;
+		}
 
 		// Invalid resort names
 		if (string.IsNullOrWhiteSpace(_resortName) || !_resortName.IsValidFileName())

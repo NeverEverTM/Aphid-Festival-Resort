@@ -15,12 +15,12 @@ public partial class LoadScreen : CanvasLayer
 
 	// Customizable Params
 	private int spacing = 280, scale = 10;
-	private float[] points = new float[]
-	{
-		0,
+	private float[] points =
+    [
+        0,
 		0.75f,
 		1
-	};
+	];
 
 	public async Task CreateLeaves()
 	{
@@ -50,7 +50,7 @@ public partial class LoadScreen : CanvasLayer
 			});
 		}
 		
-		SoundManager.CreateSound(leaves_sound);
+		SoundManager.CreateSound("ui/leaves");
 		while(true)
 		{
 			await Task.Delay(1);

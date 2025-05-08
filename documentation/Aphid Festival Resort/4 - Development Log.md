@@ -10,17 +10,6 @@
 	- Aphids can interact with nearby structures
 	- No structures currently have any interactability functionality
 
-- sounds vanish far away too soon [done?]
-- a one and done check for aphids and furniture outside game bounds [done?]
-- box near shop gets stored [DONE]
-- organize better items in shop [done]
-- tweak berry bush time to be a tad longer plus randomized times [done]
-- faster food lower [done]
-- faster care lower [done]
-- bondship raise when below 90 [done]
-- energy should go up more smoothly [done]
-- aphid info should go down when opening menu [done]
-
 ## Bug Tracker:
 - [IMPORTANT] eggs that are either, stored and put back, or are spawned after reload, LOSE their genes, with bought eggs it doesnt matter but it matters with any egg produced from breeding
 	- This issue has been partially softened by disallowing storing an egg
@@ -70,19 +59,16 @@
 - You can now sell items in your inventory by activating sell mode, just like structures, items are sold for half their price.
 - Aphid traits and preferences are now revelead in the generations album depending on how much bondship you have with them (thats what the big pink circle meter is for!)
 - Added "Pull Item" and "Align to Grid" as rebindable controls.
-- Added the following furniture:
-	- Ant Flag
-	- Boulder
-	- Stump Chair
-	- Lilypad (Can only be placed on water)
-	- Small billboard and BIG Billboard (Custom Images can be placed in it!)
+- Added 6 new furniture. Including custom image signs.
+- Added 5 new recipes and one new ingredient. Rebalanced and tweaked several values related to foods which are yet to be properly revised in a later update.
+
 ## Technical
 - Aphid skins have been packed into a spriteatlas and a heavy boost in performance should be noticeable, however, this affects how new aphid skins can be implemented, refer to [[Atlas Packager Usage]] for more information.
 - Tilemaps have been properly adjusted to not block shadow lights.
 - NPC's no longer repeat the same line of dialog when set to Random, and will in fact not say it again until the entire dialogue tree is exahusted.
 - Build mode binds should no longer interfere with overworld binds, allowing to bind the same key to other actions in different bind groups.
 - Many control prompts, buttons and shortcuts have been added for accessibility.
-- Build menu has been adapted to include some extra data about building's behaviour, this allows them to have special properties like "being water placeable"
+
 ## Graphics & Sound
 - Some furniture sprite improvements, including functionality wise. 
 - Adjusted some UI theme elements for better readibility.
@@ -92,6 +78,9 @@
 - Hello everyone my name is Markiplier and welcome to Five Nights at Freddys
 - Retouched some menu interfaces.
 - Added a backdrop to most text in the game which i think looks nice.
+- Remastered some sounds to be more quiet/louder.
+- Updated help image examples.
+
 ## Development
 - Updated to Godot 4.4. 
 	- With this, comes the new meta reference system, thus, all resources have been automatically given a ".uid".
@@ -102,13 +91,18 @@
 - Updated several instances of sound managing to use the new system and keep in memory frequent ones.
 - Updated the way Screen Size is calculated to allow for modifications to camera and viewport and still retain mouse tracking
 - Renamed ResortGui to FreeCameraManager, as its purpose wasnt as resort general but more free camera mode focused.
-- New Atlas packager utility, GUI included, please revise [[Atlas Packager Usage]] if you want to implement a skin or item.
+- New Atlas packager utility, GUI included, please revise [[Atlas Packager Usage]] if you want to implement a skin or item. Various development assets have been included in the documentation folder for this purpose.
 - MenuUtil has been adjusted to include better control over menu behaviour.
 - Added an event handler for when the game binds a new action control.
 - Moved some scenes to new folders plus added a new [Resources] folder for misc godot-specific resources.
 - Created a CameraManager, which takes all the camera code from GlobalManager and FreeCameraManager and puts it in one place.
+- Build menu has been adapted to include some extra data about building's behaviour, this allows them to have special properties like "being water placeable" or "non collideable with other furniture"
+- Added the PostLoad and PreLoad functions to SaveModule for when data is loaded and for when the path is created, respectively. This is to allow for some of the earlier patches to live more elegantly within their respective modules.
+- Backwards compability has been updated to handle down to 1.2 savefiles (more or less)
+- Food items have been packaged into an atlas using the same tool ([[Atlas Packager Usage]]), for consistency and to fix some issues with bleeding sprites.
 ## Fixed
 - [Not Fixed] Aphid eggs can lose their inherited genes if you leave the game *before* the egg hatches, this could happen when grabbing and storing them but this has been now prohibited, a proper fix for this should be up next update.
+- [Not Fixed] The name of the parents of an aphid does not update if you change them later.
 - You can now close various menus elements without exiting the menu itself. (Ex. build menu closes the storage tab if attempting to exit)
 - Pickyeaters can now eat neutral-flavoured foods aswell.
 - Particle manager would make other classes throw errors if they attempted to spawn particles over the particle limit. This should no longer happen.
