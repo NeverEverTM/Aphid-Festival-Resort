@@ -78,7 +78,7 @@ texture = ExtResource("1_q1h30")
 offset = Vector2(0, -15)
 script = ExtResource("2_ied3s")
 berryTextures = [ExtResource("1_q1h30"), ExtResource("3_8l5nk")]
-interactionArea = NodePath("RigidBody2D")
+interactionArea = NodePath("area2d")
 player = NodePath("AnimationPlayer")
 particles = NodePath("leaves_bush")
 metadata/id = "berry_bush"
@@ -87,17 +87,12 @@ metadata/id = "berry_bush"
 show_behind_parent = true
 position = Vector2(0, -18)
 
-[node name="RigidBody2D" type="RigidBody2D" parent="."]
-collision_layer = 2
+[node name="area2d" type="Area2D" parent="."]
 collision_mask = 0
-mass = 999.0
-gravity_scale = 0.0
-sleeping = true
-lock_rotation = true
-freeze = true
-freeze_mode = 1
+input_pickable = false
+monitoring = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="area2d"]
 position = Vector2(-0.5, -4.5)
 shape = SubResource("RectangleShape2D_iqnwb")
 

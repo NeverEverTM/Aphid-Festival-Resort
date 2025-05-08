@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://7oo48cet73pb"]
+[gd_scene load_steps=12 format=3 uid="uid://7oo48cet73pb"]
 
 [ext_resource type="Script" uid="uid://doi3mfn603vc7" path="res://scripts/aphid/Aphid.cs" id="1_acxg7"]
 [ext_resource type="Script" uid="uid://iy6e0bhh0det" path="res://scripts/aphid/AphidSkin.cs" id="2_xeinf"]
+[ext_resource type="Texture2D" uid="uid://bxe7xpr3u2lyb" path="res://sprites/atlases/atlas_skins.res" id="3_8peo8"]
+[ext_resource type="Script" uid="uid://bhd8cxo87lh2a" path="res://scripts/aphid/AphidHover.cs" id="3_d51lm"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_aeaon"]
 load_path = "res://.godot/imported/legs_idle.png-d9cdd6c74f01dbb3076c7f959a753f9c.ctex"
@@ -21,23 +23,21 @@ size = Vector2(35, 10)
 [sub_resource type="CircleShape2D" id="CircleShape2D_7a8x1"]
 radius = 77.0584
 
-[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea", "audioPlayer")]
+[sub_resource type="PlaneMesh" id="PlaneMesh_d51lm"]
+size = Vector2(64, 64)
+orientation = 2
+
+[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea")]
+collision_layer = 3
 motion_mode = 1
 script = ExtResource("1_acxg7")
 skin = NodePath("anchor")
 triggerArea = NodePath("TriggerArea")
-audioPlayer = NodePath("audioPlayer")
 metadata/pickup = true
 metadata/tag = "aphid"
 
-[node name="audioPlayer" type="AudioStreamPlayer2D" parent="."]
-volume_db = -20.0
-max_distance = 200.0
-attenuation = 0.5
-max_polyphony = 20
-bus = &"Sounds"
-
-[node name="anchor" type="CanvasGroup" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
+[node name="anchor" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
+process_mode = 1
 script = ExtResource("2_xeinf")
 eyes = NodePath("eyes")
 antenna = NodePath("antenna")
@@ -46,11 +46,13 @@ back_legs = NodePath("back_legs")
 front_legs = NodePath("front_legs")
 
 [node name="back_legs" type="Sprite2D" parent="anchor"]
+use_parent_material = true
 position = Vector2(0, 1)
 texture = SubResource("CompressedTexture2D_aeaon")
 offset = Vector2(-6, -18)
 
 [node name="body" type="Sprite2D" parent="anchor"]
+use_parent_material = true
 texture = SubResource("CompressedTexture2D_8peo8")
 offset = Vector2(0, -16)
 
@@ -59,6 +61,7 @@ texture = SubResource("CompressedTexture2D_d51lm")
 offset = Vector2(0, -16)
 
 [node name="front_legs" type="Sprite2D" parent="anchor"]
+use_parent_material = true
 texture = SubResource("CompressedTexture2D_aeaon")
 offset = Vector2(0, -16)
 
@@ -67,14 +70,24 @@ texture = SubResource("CompressedTexture2D_daav4")
 offset = Vector2(0, -16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+z_index = -10
 position = Vector2(0.5, -3)
 shape = SubResource("RectangleShape2D_5soec")
-debug_color = Color(0.572549, 0.054902, 0.392157, 0.403922)
+debug_color = Color(0.212894, 0.44259, 0.625621, 0.666667)
 
-[node name="TriggerArea" type="Area2D" parent="."]
+[node name="TriggerArea" type="Area2D" parent="." node_paths=PackedStringArray("aphid")]
 position = Vector2(0, -8)
+collision_layer = 3
+collision_mask = 2
 monitorable = false
+script = ExtResource("3_d51lm")
+aphid = NodePath("..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerArea"]
 shape = SubResource("CircleShape2D_7a8x1")
-debug_color = Color(0, 0.580392, 0.678431, 0)
+debug_color = Color(0.756863, 0.364706, 0.556863, 0.160784)
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+visible = false
+mesh = SubResource("PlaneMesh_d51lm")
+texture = ExtResource("3_8peo8")

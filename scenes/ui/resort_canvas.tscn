@@ -1,8 +1,10 @@
-[gd_scene load_steps=98 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=109 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" uid="uid://5lbbq4ta7i38" path="res://scripts/gui/FreeCameraManager.cs" id="1_i0o2h"]
+[ext_resource type="Texture2D" uid="uid://bda8yonlw8knv" path="res://sprites/ui/gui_icons/icon_spectator.png" id="3_5cibe"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_yrmm3"]
 [ext_resource type="Texture2D" uid="uid://cv3cq1quo8mf6" path="res://sprites/ui/gui_icons/icon_build.png" id="4_iu7p2"]
+[ext_resource type="Texture2D" uid="uid://04ej67djpwaa" path="res://sprites/ui/gui_icons/icon_ping.png" id="5_du6md"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="5_i34va"]
 [ext_resource type="Texture2D" uid="uid://uu0tsycbiw44" path="res://sprites/ui/gui_icons/icon_camera.png" id="6_hswat"]
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="7_fjjb6"]
@@ -21,8 +23,13 @@
 [ext_resource type="Texture2D" uid="uid://c5r0qq64uwen0" path="res://sprites/ui/aphid_info_hud.png" id="18_wc2dv"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="20_tekx7"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="23_0ppya"]
+[ext_resource type="PackedScene" uid="uid://s63wnc34rtmn" path="res://scenes/ui/photo_slot.tscn" id="24_lmq7c"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="24_tdldo"]
+[ext_resource type="Texture2D" uid="uid://dvogijqb7j12i" path="res://sprites/ui/menu_book.png" id="25_du6md"]
+[ext_resource type="Texture2D" uid="uid://bu0m4pg4pi2xi" path="res://sprites/ui/menu_book_inverted.png" id="27_m3hyw"]
 [ext_resource type="Script" uid="uid://yysr1t6oifa0" path="res://scripts/panels/ItemShop.cs" id="28_xm5ie"]
 [ext_resource type="PackedScene" uid="uid://cn7d8wjyx78a3" path="res://scenes/ui/item_container.tscn" id="29_mvok5"]
+[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="30_m3hyw"]
 [ext_resource type="Texture2D" uid="uid://c1fmd5yqanbuy" path="res://sprites/ui/portraits/kut_dissapointed_portrait.png" id="31_gxjv5"]
 [ext_resource type="Texture2D" uid="uid://byb6ydijmncwf" path="res://sprites/ui/menu_bar_active.png" id="32_iw5ng"]
 [ext_resource type="Texture2D" uid="uid://c272xi11ewypl" path="res://sprites/ui/portraits/kut_proud_portrait.png" id="32_l72np"]
@@ -42,7 +49,7 @@
 [ext_resource type="Shader" uid="uid://bhxvuy8s0oq6t" path="res://scripts/shaders/pulse.gdshader" id="41_74vi1"]
 [ext_resource type="Script" uid="uid://mn34i1ogcv2v" path="res://scripts/panels/FurnitureShop.cs" id="41_t8bbk"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="42_3hjo3"]
-[ext_resource type="Texture2D" uid="uid://clbrld5tb6c4y" path="res://sprites/icons/mushroom_gummies.tres" id="43_7kk4s"]
+[ext_resource type="Texture2D" uid="uid://ddbwv457v6nxq" path="res://sprites/icons/mushroom_gummies.tres" id="43_7kk4s"]
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="44_wa54d"]
 
 [sub_resource type="Animation" id="Animation_he8jw"]
@@ -98,22 +105,10 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("camera_bg:size")
+tracks/4/path = NodePath("zoom_bg/zoom_level:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(315, 40)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("zoom_bg/zoom_level:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -159,6 +154,18 @@ tracks/2/keys = {
 "update": 1,
 "values": [true, false]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("zoom_bg/zoom_level:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(32, 14)]
+}
 
 [sub_resource type="Animation" id="Animation_86kpo"]
 resource_name = "close_submenu"
@@ -171,26 +178,14 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(0.5, 0.5),
+"transitions": PackedFloat32Array(2, 0.5),
 "update": 0,
-"values": [Vector2(13, -74.205), Vector2(13, 10)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("camera_bg:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(315, 130), Vector2(315, 40)]
+"values": [Vector2(350, 6), Vector2(13, 6)]
 }
 
 [sub_resource type="Animation" id="Animation_v7sb2"]
 resource_name = "open"
-length = 0.5
+length = 0.44
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -198,8 +193,8 @@ tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(-10.9283, 0.5),
+"times": PackedFloat32Array(0, 0.233333),
+"transitions": PackedFloat32Array(0.5, 2),
 "update": 0,
 "values": [Vector2(-148, 200), Vector2(-148, -51)]
 }
@@ -210,7 +205,7 @@ tracks/1/path = NodePath("hud_grid:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.5),
+"times": PackedFloat32Array(0, 0.3, 0.433333),
 "transitions": PackedFloat32Array(-1.07177, 0.25, 1),
 "update": 0,
 "values": [Vector2(44, 200), Vector2(44, 0), Vector2(44, 4)]
@@ -242,26 +237,14 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("camera_bg:size")
+tracks/4/path = NodePath("zoom_bg/zoom_level:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(315, 40)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("zoom_bg/zoom_level:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.31, 0.5),
+"times": PackedFloat32Array(0, 0.3, 0.433333),
 "transitions": PackedFloat32Array(1, 0.25, 1),
 "update": 0,
-"values": [Vector2(32, 200), Vector2(32, 5), Vector2(32, 14)]
+"values": [Vector2(32, 200), Vector2(32, 6), Vector2(32, 14)]
 }
 
 [sub_resource type="Animation" id="Animation_eb8uf"]
@@ -277,19 +260,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Vector2(13, 10), Vector2(13, -74.205)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("camera_bg:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.133333),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(315, 40), Vector2(315, 130)]
+"values": [Vector2(13, 6), Vector2(350, 6)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ebyno"]
@@ -507,7 +478,7 @@ tracks/5/keys = {
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("album_bg:position")
+tracks/6/path = NodePath("album:position")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
@@ -519,7 +490,7 @@ tracks/6/keys = {
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("album_bg:visible")
+tracks/7/path = NodePath("album:visible")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
@@ -527,6 +498,138 @@ tracks/7/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("album/page_1:scale")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("album/page_2:scale")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("album/page_2_deco:scale")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1e-05, 1)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("album/page_2_deco:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-192, 0)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("album/page_1_deco:position")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(552, 3)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("album/page_1_deco:scale")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("album/bg_temp:size")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(116, 670)]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("album/bg_temp:position")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(534, -17)]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("album/bg_full_photo:visible")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("album/bg_full_photo/full_photo:position")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(121, 62)]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("album/bg_full_photo:self_modulate")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 0.580392)]
 }
 
 [sub_resource type="Animation" id="Animation_x8v33"]
@@ -583,7 +686,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("album_bg:position")
+tracks/4/path = NodePath("album:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -624,7 +727,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("album_bg:position")
+tracks/2/path = NodePath("album:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -636,7 +739,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("album_bg:visible")
+tracks/3/path = NodePath("album:visible")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -644,6 +747,148 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_tdldo"]
+resource_name = "close_page"
+length = 0.2
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("album/page_1:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(2, 0.5),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1e-05, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("album/page_2:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(2, 0.5),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("album/page_2_deco:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1.27456, 0.870551),
+"update": 0,
+"values": [Vector2(1e-05, 1), Vector2(0.75, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("album/page_2_deco:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.02, 0.04, 0.06, 0.08, 0.12, 0.14, 0.16, 0.18, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1198.23, 3), Vector2(1179.42, 3), Vector2(1146.49, 3), Vector2(1104.22, 3), Vector2(970.028, 3), Vector2(886.249, 3), Vector2(787.284, 3), Vector2(683.318, 3), Vector2(592, 3)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("album/page_1_deco:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.02, 0.04, 0.06, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-4.54, 3), Vector2(22.867, 3), Vector2(43.516, 3), Vector2(156.265, 3), Vector2(219.262, 3), Vector2(295.552, 3), Vector2(386.462, 3), Vector2(486.577, 3), Vector2(562, 3)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("album/page_1_deco:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 1), Vector2(0.75, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("album/bg_temp:size")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.16, 0.18, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(489, 670), Vector2(276, 670), Vector2(116, 670)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("album/bg_temp:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.16, 0.18, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(352, -17), Vector2(463, -17), Vector2(534, -17)]
+}
+
+[sub_resource type="Animation" id="Animation_vskhh"]
+resource_name = "close_photo"
+length = 0.4
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("album/bg_full_photo:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("album/bg_full_photo/full_photo:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.14, 0.4),
+"transitions": PackedFloat32Array(1, 2, 1),
+"update": 0,
+"values": [Vector2(121, 62), Vector2(121, 62), Vector2(121, 1000)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("album/bg_full_photo:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0.580392), Color(0, 0, 0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_iuh1e"]
@@ -724,7 +969,7 @@ tracks/5/keys = {
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("album_bg:visible")
+tracks/6/path = NodePath("album:visible")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
@@ -745,7 +990,7 @@ tracks/0/path = NodePath("description:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
+"times": PackedFloat32Array(0, 0.24),
 "transitions": PackedFloat32Array(-2, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
@@ -757,7 +1002,7 @@ tracks/1/path = NodePath("aphid_display_bg:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3),
+"times": PackedFloat32Array(0, 0.24),
 "transitions": PackedFloat32Array(-2, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
@@ -765,11 +1010,11 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("album_bg:position")
+tracks/2/path = NodePath("album:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.3, 0.7),
+"times": PackedFloat32Array(0.24, 0.5),
 "transitions": PackedFloat32Array(-2, 1),
 "update": 0,
 "values": [Vector2(-577, 486), Vector2(-577, -298)]
@@ -777,14 +1022,252 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("album_bg:visible")
+tracks/3/path = NodePath("album:visible")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.3),
+"times": PackedFloat32Array(0.24),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("album/page_1:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.5, 0.7),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1), Vector2(1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("album/page_2:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.5, 0.7),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(0, 1), Vector2(1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("album/page_2_deco:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.5, 0.7),
+"transitions": PackedFloat32Array(0.870551, 1),
+"update": 0,
+"values": [Vector2(0.75, 1), Vector2(1e-05, 1)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("album/page_2_deco:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.5, 0.52, 0.54, 0.56, 0.58, 0.62, 0.64, 0.66, 0.68),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(592, 3), Vector2(683.808, 3), Vector2(786.589, 3), Vector2(886.249, 3), Vector2(970.028, 3), Vector2(1104.22, 3), Vector2(1146.49, 3), Vector2(1179.42, 3), Vector2(1198.23, 3)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("album/page_1_deco:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.5, 0.52, 0.54, 0.56, 0.58, 0.6, 0.64, 0.66, 0.68),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(562, 3), Vector2(486.577, 3), Vector2(386.462, 3), Vector2(295.552, 3), Vector2(219.262, 3), Vector2(156.265, 3), Vector2(43.516, 3), Vector2(22.867, 3), Vector2(-4.54, 3)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("album/page_1_deco:scale")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0.5, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.75, 1), Vector2(0, 1)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("album/bg_temp:size")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0.5, 0.52, 0.54),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(94, 670), Vector2(276, 670), Vector2(489, 670)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("album/bg_temp:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0.5, 0.52, 0.54),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(544, -17), Vector2(463, -17), Vector2(352, -17)]
+}
+
+[sub_resource type="Animation" id="Animation_du6md"]
+resource_name = "open_page"
+length = 0.2
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("album/page_1:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("album/page_2:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(0, 1), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("album/page_2_deco:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.870551, 1),
+"update": 0,
+"values": [Vector2(0.75, 1), Vector2(1e-05, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("album/page_2_deco:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.02, 0.04, 0.06, 0.08, 0.12, 0.14, 0.16, 0.18),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(592, 3), Vector2(683.593, 3), Vector2(789.401, 3), Vector2(886.249, 3), Vector2(970.028, 3), Vector2(1104.22, 3), Vector2(1146.49, 3), Vector2(1179.42, 3), Vector2(1198.23, 3)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("album/page_1_deco:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.14, 0.16, 0.18),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(562, 3), Vector2(486.577, 3), Vector2(386.462, 3), Vector2(295.552, 3), Vector2(219.262, 3), Vector2(156.265, 3), Vector2(43.516, 3), Vector2(22.867, 3), Vector2(-4.54, 3)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("album/page_1_deco:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.75, 1), Vector2(0, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("album/bg_temp:size")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.02, 0.04),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(94, 670), Vector2(276, 670), Vector2(489, 670)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("album/bg_temp:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.02, 0.04),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(544, -17), Vector2(463, -17), Vector2(352, -17)]
+}
+
+[sub_resource type="Animation" id="Animation_5b07p"]
+resource_name = "show_photo"
+length = 0.4
+step = 0.02
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("album/bg_full_photo:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("album/bg_full_photo/full_photo:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.24, 0.4),
+"transitions": PackedFloat32Array(1, 0.5, 1),
+"update": 0,
+"values": [Vector2(121, 1000), Vector2(121, 1000), Vector2(121, 62)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("album/bg_full_photo:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 0.580392)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_egrm7"]
@@ -792,8 +1275,12 @@ _data = {
 &"RESET": SubResource("Animation_iv61d"),
 &"close": SubResource("Animation_x8v33"),
 &"close_album": SubResource("Animation_lmq7c"),
+&"close_page": SubResource("Animation_tdldo"),
+&"close_photo": SubResource("Animation_vskhh"),
 &"open": SubResource("Animation_iuh1e"),
-&"open_album": SubResource("Animation_on0f6")
+&"open_album": SubResource("Animation_on0f6"),
+&"open_page": SubResource("Animation_du6md"),
+&"show_photo": SubResource("Animation_5b07p")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flcd2"]
@@ -926,7 +1413,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(-2, 0.5),
 "update": 0,
-"values": [Vector2(-545, -299), Vector2(-1200, -299)]
+"values": [Vector2(-545, -299), Vector2(-1400, -299)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -974,7 +1461,7 @@ tracks/5/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.0, -0.176278]
+"values": [0.0, -0.349066]
 }
 
 [sub_resource type="Animation" id="Animation_3dg7i"]
@@ -999,10 +1486,10 @@ tracks/1/path = NodePath("item_box:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4),
-"transitions": PackedFloat32Array(1, 0.225313, -2),
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, -2),
 "update": 0,
-"values": [Vector2(-1200, -299), Vector2(-525, -299), Vector2(-545, -299)]
+"values": [Vector2(-1200, -299), Vector2(-545, -299)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -1047,10 +1534,10 @@ tracks/5/path = NodePath("item_box:rotation")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.5),
-"transitions": PackedFloat32Array(0.5, 2, 1),
+"times": PackedFloat32Array(0, 0.133333, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(-2, -2, 2, 0.5, 1),
 "update": 0,
-"values": [0.354302, -0.176278, 0.0]
+"values": [1.13446, 1.0472, -0.174533, 0.0523599, 0.0]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
@@ -1071,10 +1558,10 @@ tracks/7/path = NodePath("item_box/item_box_scroll:position")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0.333333, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(26.5729, 680.018), Vector2(37, 52)]
+"values": [Vector2(37, 52)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0prst"]
@@ -1840,7 +2327,7 @@ shader_parameter/color = Color(0.917246, 0.0969195, 0.650233, 1)
 [node name="resort_canvas" type="CanvasLayer"]
 layer = 0
 
-[node name="freeCameraHUD" type="Control" parent="." node_paths=PackedStringArray("animator", "cameraMenuButton", "focusedAphidButton", "buttonGrid", "spectatorLabel", "zoomLevelSlider")]
+[node name="freeCameraHUD" type="Control" parent="." node_paths=PackedStringArray("animator", "cameraMenuButton", "focusedAphidButton", "pingAphidButton", "buttonGrid", "spectatorLabel", "zoomLevelSlider")]
 visible = false
 layout_mode = 3
 anchors_preset = 7
@@ -1856,9 +2343,10 @@ grow_vertical = 0
 script = ExtResource("1_i0o2h")
 animator = NodePath("hud_animation")
 cameraMenuButton = NodePath("hud_bg/hud_grid/camera_mode_button")
-focusedAphidButton = NodePath("hud_bg/camera_bg/camera_grid/select_aphid")
+focusedAphidButton = NodePath("hud_bg/camera_bg/camera_grid/change_focus")
+pingAphidButton = NodePath("hud_bg/camera_bg/camera_grid/track_aphid")
 buttonGrid = NodePath("hud_bg/hud_grid")
-spectatorLabel = NodePath("hud_bg/camera_bg/spectator_label")
+spectatorLabel = NodePath("hud_bg/spectator_label")
 zoomLevelSlider = NodePath("hud_bg/zoom_bg/zoom_level")
 
 [node name="hud_animation" type="AnimationPlayer" parent="freeCameraHUD"]
@@ -1882,6 +2370,21 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
+[node name="spectator_label" type="RichTextLabel" parent="freeCameraHUD/hud_bg"]
+visible = false
+layout_mode = 0
+offset_left = -99.0
+offset_top = -105.0
+offset_right = 438.0
+offset_bottom = 10.0
+mouse_filter = 2
+theme_override_constants/outline_size = 8
+bbcode_enabled = true
+text = "Spectating:
+<| Extremely long aphid name |>"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="camera_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg"]
 self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
 show_behind_parent = true
@@ -1890,7 +2393,7 @@ layout_mode = 0
 offset_left = 13.0
 offset_top = 10.0
 offset_right = 328.0
-offset_bottom = 50.0
+offset_bottom = 90.0
 mouse_filter = 0
 texture = ExtResource("3_yrmm3")
 patch_margin_left = 20
@@ -1902,18 +2405,47 @@ axis_stretch_vertical = 1
 
 [node name="camera_grid" type="HBoxContainer" parent="freeCameraHUD/hud_bg/camera_bg"]
 layout_mode = 0
-offset_left = 31.0
+offset_left = 15.0
 offset_top = 12.0
-offset_right = 290.0
+offset_right = 307.0
 offset_bottom = 72.0
 
-[node name="select_aphid" type="TextureButton" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
+[node name="change_focus" type="TextureButton" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
 light_mask = 0
-custom_minimum_size = Vector2(90, 60)
+custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 0
 focus_mode = 1
+texture_normal = ExtResource("3_5cibe")
+stretch_mode = 5
+script = ExtResource("5_i34va")
+PressedColor = Color(0.507972, 0.507972, 0.507972, 1)
+FocusColor = Color(0.837469, 0.837469, 0.837469, 1)
+HoverColor = Color(0.786347, 0.786347, 0.786347, 1)
+
+[node name="track_aphid" type="TextureButton" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
+light_mask = 0
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 0
+focus_mode = 1
+texture_normal = ExtResource("5_du6md")
+stretch_mode = 5
+script = ExtResource("5_i34va")
+PressedColor = Color(0.507972, 0.507972, 0.507972, 1)
+FocusColor = Color(0.837469, 0.837469, 0.837469, 1)
+HoverColor = Color(0.786347, 0.786347, 0.786347, 1)
+
+[node name="disabled" type="TextureButton" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
+light_mask = 0
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 0
+focus_mode = 1
+disabled = true
 texture_normal = ExtResource("7_fjjb6")
 stretch_mode = 5
 script = ExtResource("5_i34va")
@@ -1921,19 +2453,20 @@ PressedColor = Color(0.507972, 0.507972, 0.507972, 1)
 FocusColor = Color(0.837469, 0.837469, 0.837469, 1)
 HoverColor = Color(0.786347, 0.786347, 0.786347, 1)
 
-[node name="spectator_label" type="RichTextLabel" parent="freeCameraHUD/hud_bg/camera_bg"]
-visible = false
-layout_mode = 0
-offset_left = -112.0
-offset_top = -115.0
-offset_right = 425.0
-mouse_filter = 2
-theme_override_constants/outline_size = 8
-bbcode_enabled = true
-text = "Spectating:
-<| Extremely long aphid name |>"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="disabled2" type="TextureButton" parent="freeCameraHUD/hud_bg/camera_bg/camera_grid"]
+light_mask = 0
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 0
+focus_mode = 1
+disabled = true
+texture_normal = ExtResource("7_fjjb6")
+stretch_mode = 5
+script = ExtResource("5_i34va")
+PressedColor = Color(0.507972, 0.507972, 0.507972, 1)
+FocusColor = Color(0.837469, 0.837469, 0.837469, 1)
+HoverColor = Color(0.786347, 0.786347, 0.786347, 1)
 
 [node name="hud_grid" type="HBoxContainer" parent="freeCameraHUD/hud_bg"]
 light_mask = 0
@@ -1957,6 +2490,33 @@ PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
 FocusColor = Color(0.345098, 0.603922, 0.917647, 1)
 HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
+[node name="build_prompt_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg/hud_grid/buildButton"]
+self_modulate = Color(0.482353, 0.0784314, 0.152941, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 49.0
+offset_top = 32.0
+offset_right = 95.0
+offset_bottom = 80.0
+texture = ExtResource("3_yrmm3")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="build_prompt" type="Label" parent="freeCameraHUD/hud_bg/hud_grid/buildButton/build_prompt_bg"]
+layout_mode = 0
+offset_left = 11.0
+offset_right = 32.0
+offset_bottom = 48.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 40
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="furnitureButton" type="TextureButton" parent="freeCameraHUD/hud_bg/hud_grid"]
 light_mask = 0
 custom_minimum_size = Vector2(75, 75)
@@ -1969,6 +2529,33 @@ script = ExtResource("5_i34va")
 PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
 HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
 
+[node name="furniture_prompt_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg/hud_grid/furnitureButton"]
+self_modulate = Color(0.482353, 0.0784314, 0.152941, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 50.0
+offset_top = 32.0
+offset_right = 96.0
+offset_bottom = 80.0
+texture = ExtResource("3_yrmm3")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="furniture_prompt" type="Label" parent="freeCameraHUD/hud_bg/hud_grid/furnitureButton/furniture_prompt_bg"]
+layout_mode = 0
+offset_left = 11.0
+offset_right = 32.0
+offset_bottom = 48.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 40
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="camera_mode_button" type="TextureButton" parent="freeCameraHUD/hud_bg/hud_grid"]
 light_mask = 0
 custom_minimum_size = Vector2(75, 75)
@@ -1980,6 +2567,33 @@ stretch_mode = 4
 script = ExtResource("5_i34va")
 PressedColor = Color(0.458824, 0.482353, 0.52549, 1)
 HoverColor = Color(0.678431, 0.65098, 0.643137, 1)
+
+[node name="camera_prompt_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg/hud_grid/camera_mode_button"]
+self_modulate = Color(0.482353, 0.0784314, 0.152941, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 44.0
+offset_top = 32.0
+offset_right = 90.0
+offset_bottom = 80.0
+texture = ExtResource("3_yrmm3")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="camera_prompt" type="Label" parent="freeCameraHUD/hud_bg/hud_grid/camera_mode_button/camera_prompt_bg"]
+layout_mode = 0
+offset_left = 11.0
+offset_right = 32.0
+offset_bottom = 48.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 40
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="zoom_bg" type="NinePatchRect" parent="freeCameraHUD/hud_bg"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
@@ -2032,15 +2646,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="aphid_info" type="Control" parent="." node_paths=PackedStringArray("menu_player", "name_label", "ageDisplay", "foodBar", "waterBar", "affectionBar", "sleepBar", "bondshipBar", "staminaBar", "strengthBar", "speedBar", "intelligenceBar", "staminaLabel", "strengthLabel", "speedLabel", "intelligenceLabel")]
-editor_description = "stringnames:
-0.002004008016032064
-0.02404809619238477
-0.002004008016032064
-strings:
-0.018036072144288578
-0.002004008016032064
-0.05410821643286573
-"
 visible = false
 light_mask = 2
 layout_mode = 3
@@ -2055,6 +2660,7 @@ offset_right = -519.0
 offset_bottom = -33.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(-356.51, 0)
 size_flags_stretch_ratio = 14.62
 theme = ExtResource("7_uocqb")
 script = ExtResource("12_j87mf")
@@ -2072,9 +2678,9 @@ strengthBar = NodePath("strength")
 speedBar = NodePath("speed")
 intelligenceBar = NodePath("intelligence")
 staminaLabel = NodePath("stamina/stamina_text")
-strengthLabel = NodePath("strength/strength_icon/strength_text")
-speedLabel = NodePath("speed/speed_icon/speed_text")
-intelligenceLabel = NodePath("intelligence/intelligence_icon/intelligence_text")
+strengthLabel = NodePath("strength/strength_text")
+speedLabel = NodePath("speed/speed_text")
+intelligenceLabel = NodePath("intelligence/intelligence_text")
 
 [node name="aphid_info_player" type="AnimationPlayer" parent="aphid_info"]
 libraries = {
@@ -2114,6 +2720,7 @@ offset_left = 23.0
 offset_top = 8.0
 offset_right = 340.0
 offset_bottom = 51.0
+mouse_force_pass_scroll_events = false
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_selected_color = Color(0.196078, 0.6, 0.756863, 1)
 theme_override_font_sizes/font_size = 30
@@ -2263,10 +2870,10 @@ stretch_mode = 5
 [node name="stamina" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -508.0
-offset_top = 30.0
-offset_right = -210.0
-offset_bottom = 70.0
+offset_left = -501.0
+offset_top = 35.0
+offset_right = -203.0
+offset_bottom = 75.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2283,13 +2890,14 @@ tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = -24.0
-offset_top = -25.0
+offset_top = -42.0
 offset_right = 28.0
-offset_bottom = 31.0
+offset_bottom = 14.0
 texture = SubResource("AtlasTexture_72c4q")
 stretch_mode = 5
 
 [node name="stamina_text" type="Label" parent="aphid_info/stamina"]
+light_mask = 0
 layout_mode = 0
 offset_left = 32.0
 offset_top = -53.0
@@ -2305,10 +2913,10 @@ vertical_alignment = 1
 [node name="strength" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -508.0
-offset_top = 118.0
-offset_right = -210.0
-offset_bottom = 158.0
+offset_left = -501.0
+offset_top = 123.0
+offset_right = -203.0
+offset_bottom = 163.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2325,28 +2933,29 @@ tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = -32.0
-offset_top = -22.0
+offset_top = -44.0
 offset_right = 20.0
-offset_bottom = 34.0
+offset_bottom = 12.0
 texture = SubResource("AtlasTexture_6e778")
 stretch_mode = 5
 
-[node name="strength_text" type="Label" parent="aphid_info/strength/strength_icon"]
+[node name="strength_text" type="Label" parent="aphid_info/strength"]
+light_mask = 0
 layout_mode = 0
-offset_left = 64.0
-offset_top = -27.0
-offset_right = 286.0
-offset_bottom = 21.0
+offset_left = 32.0
+offset_top = -49.0
+offset_right = 254.0
+offset_bottom = -1.0
 text = "Strength (lvl 8)"
 label_settings = ExtResource("18_lmq7c")
 
 [node name="speed" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -508.0
-offset_top = 206.0
-offset_right = -210.0
-offset_bottom = 246.0
+offset_left = -501.0
+offset_top = 211.0
+offset_right = -203.0
+offset_bottom = 251.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2363,28 +2972,28 @@ tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = -29.0
-offset_top = -23.0
+offset_top = -48.0
 offset_right = 23.0
-offset_bottom = 33.0
+offset_bottom = 8.0
 texture = SubResource("AtlasTexture_tsrb7")
 stretch_mode = 5
 
-[node name="speed_text" type="Label" parent="aphid_info/speed/speed_icon"]
+[node name="speed_text" type="Label" parent="aphid_info/speed"]
+light_mask = 0
 layout_mode = 0
-offset_left = 62.0
-offset_top = -25.0
-offset_right = 292.0
-offset_bottom = 23.0
+offset_left = 33.0
+offset_top = -48.0
+offset_right = 263.0
 text = "Speed (lvl 100)"
 label_settings = ExtResource("18_lmq7c")
 
 [node name="intelligence" type="TextureProgressBar" parent="aphid_info"]
 light_mask = 0
 layout_mode = 0
-offset_left = -508.0
-offset_top = 294.0
-offset_right = -210.0
-offset_bottom = 334.0
+offset_left = -501.0
+offset_top = 299.0
+offset_right = -203.0
+offset_bottom = 339.0
 max_value = 10.0
 value = 5.0
 nine_patch_stretch = true
@@ -2397,26 +3006,26 @@ texture_progress = ExtResource("23_0ppya")
 tint_under = Color(0.0754647, 0.379145, 0.479899, 1)
 tint_progress = Color(0.122036, 0.851522, 0.892608, 1)
 
+[node name="intelligence_text" type="Label" parent="aphid_info/intelligence"]
+light_mask = 0
+layout_mode = 0
+offset_left = 27.0
+offset_top = -48.0
+offset_right = 334.0
+text = "Intelligence (lvl 100)"
+label_settings = ExtResource("18_lmq7c")
+
 [node name="intelligence_icon" type="TextureRect" parent="aphid_info/intelligence"]
 light_mask = 0
 layout_mode = 0
-offset_left = -24.0
-offset_top = -32.0
-offset_right = 28.0
-offset_bottom = 24.0
+offset_left = -28.0
+offset_top = -49.0
+offset_right = 24.0
+offset_bottom = 7.0
 texture = SubResource("AtlasTexture_i8no1")
 stretch_mode = 5
 
-[node name="intelligence_text" type="Label" parent="aphid_info/intelligence/intelligence_icon"]
-layout_mode = 0
-offset_left = 57.0
-offset_top = -16.0
-offset_right = 226.0
-offset_bottom = 32.0
-text = "Intelligence"
-label_settings = ExtResource("18_lmq7c")
-
-[node name="generations_panel" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "descriptionLabel", "iconNode", "aphidContainer", "photoContainer", "albumButton", "aphidAlbumButton")]
+[node name="generations_panel" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "descriptionLabel", "warning", "iconNode", "aphidContainer", "pageContainer1", "pageContainer2", "albumButton", "aphidAlbumButton", "pageLeft", "pageRight", "fullPhotoDisplay")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -2435,11 +3044,16 @@ theme = ExtResource("7_uocqb")
 script = ExtResource("8_pnptv")
 animPlayer = NodePath("generations_player")
 descriptionLabel = NodePath("description/generations_desc")
+warning = NodePath("album/page_1/no_photo_warning")
 iconNode = NodePath("description/aphid_ui_anchor")
 aphidContainer = NodePath("aphid_display_bg/aphid_display_scroll/aphid_display_grid")
-photoContainer = NodePath("album_bg/album_scroll/photo_grid")
+pageContainer1 = NodePath("album/page_1/page_1_grid")
+pageContainer2 = NodePath("album/page_2/page_2_grid")
 albumButton = NodePath("aphid_display_bg/album_button")
 aphidAlbumButton = NodePath("description/aphid_album_button2")
+pageLeft = NodePath("album/page_1/left")
+pageRight = NodePath("album/page_2/right")
+fullPhotoDisplay = NodePath("album/bg_full_photo/full_photo")
 
 [node name="generations_player" type="AnimationPlayer" parent="generations_panel"]
 libraries = {
@@ -2476,9 +3090,9 @@ axis_stretch_vertical = 1
 
 [node name="aphid_display_scroll" type="ScrollContainer" parent="generations_panel/aphid_display_bg"]
 layout_mode = 0
-offset_left = 39.0
+offset_left = 40.0
 offset_top = 52.0
-offset_right = 715.0
+offset_right = 716.0
 offset_bottom = 659.0
 
 [node name="aphid_display_grid" type="GridContainer" parent="generations_panel/aphid_display_bg/aphid_display_scroll"]
@@ -2507,7 +3121,7 @@ layout_mode = 0
 offset_left = -440.571
 offset_top = 480.475
 offset_right = 25.429
-offset_bottom = 800.475
+offset_bottom = 810.475
 texture = ExtResource("3_yrmm3")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -2528,9 +3142,9 @@ mouse_filter = 2
 light_mask = 0
 layout_mode = 0
 offset_left = 20.0
-offset_top = 27.0
+offset_top = 18.0
 offset_right = 446.0
-offset_bottom = 295.0
+offset_bottom = 313.0
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
@@ -2551,33 +3165,224 @@ stretch_mode = 5
 script = ExtResource("5_i34va")
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
-[node name="album_bg" type="NinePatchRect" parent="generations_panel"]
+[node name="album" type="Control" parent="generations_panel"]
 self_modulate = Color(0.743247, 0.154148, 0.418508, 1)
 light_mask = 0
-layout_mode = 0
+anchors_preset = 0
 offset_left = -577.0
 offset_top = -298.0
-offset_right = 648.0
-offset_bottom = 352.0
-texture = ExtResource("36_g3t8v")
-patch_margin_left = 10
-patch_margin_top = 6
-patch_margin_right = 10
-patch_margin_bottom = 6
+offset_right = 50.0
+offset_bottom = 371.001
 
-[node name="album_scroll" type="ScrollContainer" parent="generations_panel/album_bg"]
+[node name="bg_temp" type="NinePatchRect" parent="generations_panel/album"]
+self_modulate = Color(0.745098, 0.152941, 0.419608, 1)
+light_mask = 0
 layout_mode = 0
-offset_left = 15.0
-offset_top = 38.0
-offset_right = 1210.0
-offset_bottom = 609.0
+offset_left = 534.0
+offset_top = -17.0
+offset_right = 650.0
+offset_bottom = 653.0
+texture = ExtResource("24_tdldo")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
 
-[node name="photo_grid" type="GridContainer" parent="generations_panel/album_bg/album_scroll"]
-custom_minimum_size = Vector2(1100, 2000)
+[node name="bg_temp2" type="NinePatchRect" parent="generations_panel/album"]
+self_modulate = Color(0.562404, 0.0908552, 0.307965, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 562.0
+offset_top = -17.0
+offset_right = 622.0
+offset_bottom = 653.0
+texture = ExtResource("24_tdldo")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="page_1" type="NinePatchRect" parent="generations_panel/album"]
+light_mask = 0
+layout_mode = 0
+offset_left = -30.0
+offset_top = -17.0016
+offset_right = 597.0
+offset_bottom = 651.998
+pivot_offset = Vector2(627, 0)
+texture = ExtResource("25_du6md")
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="page_1_grid" type="GridContainer" parent="generations_panel/album/page_1"]
 layout_mode = 2
-theme_override_constants/h_separation = 20
-theme_override_constants/v_separation = 60
-columns = 4
+offset_left = 30.0
+offset_top = 45.0
+offset_right = 604.0
+offset_bottom = 675.0
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 30
+columns = 2
+
+[node name="photo_slot" parent="generations_panel/album/page_1/page_1_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot4" parent="generations_panel/album/page_1/page_1_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot5" parent="generations_panel/album/page_1/page_1_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot6" parent="generations_panel/album/page_1/page_1_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot2" parent="generations_panel/album/page_1/page_1_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot3" parent="generations_panel/album/page_1/page_1_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="no_photo_warning" type="Label" parent="generations_panel/album/page_1"]
+layout_mode = 0
+offset_left = 41.0
+offset_top = 43.0016
+offset_right = 564.0
+offset_bottom = 620.002
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+text = "There is no photos here..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="left" type="TextureButton" parent="generations_panel/album/page_1"]
+light_mask = 0
+layout_mode = 0
+offset_left = 513.0
+offset_top = 596.002
+offset_right = 617.0
+offset_bottom = 692.002
+focus_mode = 0
+texture_normal = ExtResource("39_ysf7p")
+stretch_mode = 5
+script = ExtResource("5_i34va")
+PressedColor = Color(0.644663, 0.644663, 0.644663, 1)
+FocusColor = Color(0.851769, 0.851769, 0.851769, 1)
+HoverColor = Color(0.840326, 0.840326, 0.840325, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="page_1_deco" type="NinePatchRect" parent="generations_panel/album"]
+self_modulate = Color(1, 0.980392, 0.827451, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 552.0
+offset_top = 3.0
+offset_right = 592.0
+offset_bottom = 632.0
+texture = ExtResource("24_tdldo")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="page_2" type="NinePatchRect" parent="generations_panel/album"]
+light_mask = 0
+layout_mode = 0
+offset_left = 597.0
+offset_top = -17.0016
+offset_right = 1224.0
+offset_bottom = 651.998
+texture = ExtResource("27_m3hyw")
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="page_2_grid" type="GridContainer" parent="generations_panel/album/page_2"]
+layout_mode = 2
+offset_left = 30.0
+offset_top = 45.0016
+offset_right = 604.0
+offset_bottom = 675.002
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 30
+columns = 2
+
+[node name="photo_slot" parent="generations_panel/album/page_2/page_2_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot4" parent="generations_panel/album/page_2/page_2_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot5" parent="generations_panel/album/page_2/page_2_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot6" parent="generations_panel/album/page_2/page_2_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot2" parent="generations_panel/album/page_2/page_2_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="photo_slot3" parent="generations_panel/album/page_2/page_2_grid" instance=ExtResource("24_lmq7c")]
+layout_mode = 2
+
+[node name="right" type="TextureButton" parent="generations_panel/album/page_2"]
+light_mask = 0
+layout_mode = 0
+offset_left = 6.0
+offset_top = 596.002
+offset_right = 110.0
+offset_bottom = 692.002
+focus_mode = 0
+texture_normal = ExtResource("39_ysf7p")
+stretch_mode = 5
+flip_h = true
+script = ExtResource("5_i34va")
+PressedColor = Color(0.644663, 0.644663, 0.644663, 1)
+FocusColor = Color(0.851769, 0.851769, 0.851769, 1)
+HoverColor = Color(0.840326, 0.840326, 0.840325, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="page_2_deco" type="NinePatchRect" parent="generations_panel/album"]
+self_modulate = Color(1, 0.980392, 0.827451, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = -192.0
+offset_right = -152.0
+offset_bottom = 629.0
+scale = Vector2(1e-05, 1)
+texture = ExtResource("24_tdldo")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="bg_full_photo" type="TextureRect" parent="generations_panel/album"]
+visible = false
+self_modulate = Color(0, 0, 0, 0.580392)
+light_mask = 0
+layout_mode = 0
+offset_left = -43.0
+offset_top = -42.0
+offset_right = 1237.0
+offset_bottom = 677.0
+texture = ExtResource("24_tdldo")
+
+[node name="full_photo" type="TextureRect" parent="generations_panel/album/bg_full_photo"]
+light_mask = 0
+layout_mode = 0
+offset_left = 121.0
+offset_top = 62.0
+offset_right = 1165.0
+offset_bottom = 639.0
+texture = ExtResource("30_m3hyw")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton")]
 visible = false
@@ -2604,7 +3409,7 @@ itemDescription = NodePath("item_info/desc/desc_text")
 itemCost = NodePath("item_info/cost/cost_text")
 itemIcon = NodePath("item_info/icon/icon_image")
 itemContainer = ExtResource("29_mvok5")
-itemBuyButton = NodePath("buyButton")
+itemBuyButton = NodePath("item_box/itemBuyButton")
 bgColorSlot = Color(0.513726, 0.701961, 0.921569, 1)
 defaultIcon = ExtResource("36_m6tkj")
 
@@ -2627,9 +3432,7 @@ stretch_mode = 1
 
 [node name="item_box" type="NinePatchRect" parent="item_shop_panel"]
 self_modulate = Color(0.117647, 0.258824, 0.435294, 1)
-clip_children = 2
 light_mask = 0
-clip_contents = true
 layout_mode = 0
 offset_left = -1200.0
 offset_top = -299.0
@@ -2733,15 +3536,15 @@ layout_mode = 2
 [node name="item25" parent="item_shop_panel/item_box/item_box_scroll/item_container" instance=ExtResource("29_mvok5")]
 layout_mode = 2
 
-[node name="buyButton" type="TextureButton" parent="item_shop_panel"]
+[node name="itemBuyButton" type="TextureButton" parent="item_shop_panel/item_box"]
 visible = false
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+self_modulate = Color(0.379931, 0.421316, 0.896196, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = -1188.0
-offset_top = 285.0
-offset_right = -739.0
-offset_bottom = 384.0
+offset_left = 11.9997
+offset_top = 590.0
+offset_right = 461.0
+offset_bottom = 689.0
 texture_normal = ExtResource("3_yrmm3")
 stretch_mode = 4
 script = ExtResource("5_i34va")
@@ -2750,13 +3553,13 @@ FocusColor = Color(0.548679, 0.635066, 0.715424, 1)
 HoverColor = Color(0.683077, 0.683077, 0.683077, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
-[node name="Label" type="Label" parent="item_shop_panel/buyButton"]
+[node name="Label" type="Label" parent="item_shop_panel/item_box/itemBuyButton"]
 layout_mode = 0
 offset_left = 42.0
 offset_top = 16.0
 offset_right = 411.0
 offset_bottom = 71.0
-text = "Buy Item"
+text = "store_buy"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -3320,13 +4123,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(640, 360)
 mouse_filter = 2
 script = ExtResource("38_k0d1x")
 storageContainer = NodePath("sliding_panel/build_panel/ScrollContainer/storage_container")
 menuPlayer = NodePath("build_player")
 buildButton = NodePath("../freeCameraHUD/hud_bg/hud_grid/buildButton")
 storageButton = NodePath("sliding_panel/show_storage")
-controlPrompt = NodePath("sliding_panel/show_storage/bg/control_prompt")
+controlPrompt = NodePath("sliding_panel/bg/control_prompt")
 
 [node name="build_player" type="AnimationPlayer" parent="build_menu"]
 process_mode = 1
@@ -3338,40 +4142,28 @@ libraries = {
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 anchors_preset = 0
-offset_left = 1118.0
-offset_top = 70.0
-offset_right = 1245.0
-offset_bottom = 687.0
+offset_left = 1145.0
+offset_top = 10.0
+offset_right = 1272.0
+offset_bottom = 627.0
 
-[node name="show_storage" type="TextureButton" parent="build_menu/sliding_panel"]
+[node name="bg" type="NinePatchRect" parent="build_menu/sliding_panel"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+show_behind_parent = true
 light_mask = 0
 layout_mode = 0
 offset_left = 3.0
-offset_top = 535.0
-offset_right = 109.0
-offset_bottom = 641.0
-focus_mode = 0
-texture_normal = ExtResource("39_ysf7p")
-stretch_mode = 4
-script = ExtResource("5_i34va")
-PressedColor = Color(0.482353, 0.482353, 0.482353, 1)
-HoverColor = Color(0.717647, 0.717647, 0.717647, 1)
-
-[node name="bg" type="NinePatchRect" parent="build_menu/sliding_panel/show_storage"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-show_behind_parent = true
-layout_mode = 0
-offset_left = 21.0
-offset_top = 21.0
-offset_right = 179.0
-offset_bottom = 80.0
+offset_top = 459.0
+offset_right = 161.0
+offset_bottom = 518.0
 texture = ExtResource("32_iw5ng")
 patch_margin_left = 20
 patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="control_prompt" type="Label" parent="build_menu/sliding_panel/show_storage/bg"]
+[node name="control_prompt" type="Label" parent="build_menu/sliding_panel/bg"]
+light_mask = 0
 layout_mode = 0
 offset_left = 15.0
 offset_top = 7.0
@@ -3381,6 +4173,20 @@ mouse_filter = 1
 theme_override_constants/outline_size = 10
 text = "Shift"
 horizontal_alignment = 2
+
+[node name="show_storage" type="TextureButton" parent="build_menu/sliding_panel"]
+light_mask = 0
+layout_mode = 0
+offset_left = 19.0
+offset_top = 519.0
+offset_right = 125.0
+offset_bottom = 625.0
+focus_mode = 0
+texture_normal = ExtResource("39_ysf7p")
+stretch_mode = 4
+script = ExtResource("5_i34va")
+PressedColor = Color(0.482353, 0.482353, 0.482353, 1)
+HoverColor = Color(0.717647, 0.717647, 0.717647, 1)
 
 [node name="build_panel" type="NinePatchRect" parent="build_menu/sliding_panel"]
 light_mask = 0
@@ -3479,7 +4285,7 @@ itemDescription = NodePath("anchor_right/description/desc_label")
 itemCost = NodePath("anchor_right/cost/Label")
 itemIcon = NodePath("anchor_right/icon/image")
 itemContainer = ExtResource("29_mvok5")
-itemBuyButton = NodePath("window/buyButton2")
+itemBuyButton = NodePath("window/furnitureBuyButton")
 bgColorSlot = Color(0.817851, 0.516828, 0.855053, 1)
 defaultIcon = ExtResource("40_iuxyn")
 
@@ -3503,9 +4309,9 @@ stretch_mode = 1
 [node name="window" type="NinePatchRect" parent="furniture_menu"]
 light_mask = 0
 layout_mode = 0
-offset_left = -546.0
+offset_left = 1000.0
 offset_top = -321.0
-offset_right = -46.0
+offset_right = 1500.0
 offset_bottom = 329.0
 scale = Vector2(1e-05, 1)
 pivot_offset = Vector2(500, 0)
@@ -3538,7 +4344,7 @@ layout_mode = 2
 [node name="item2" parent="furniture_menu/window/ScrollContainer/GridContainer" instance=ExtResource("29_mvok5")]
 layout_mode = 2
 
-[node name="buyButton2" type="TextureButton" parent="furniture_menu/window"]
+[node name="furnitureBuyButton" type="TextureButton" parent="furniture_menu/window"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -3554,13 +4360,13 @@ FocusColor = Color(0.548679, 0.635066, 0.715424, 1)
 HoverColor = Color(0.683077, 0.683077, 0.683077, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
-[node name="Label" type="Label" parent="furniture_menu/window/buyButton2"]
+[node name="buy_label" type="Label" parent="furniture_menu/window/furnitureBuyButton"]
 layout_mode = 0
 offset_left = 42.0
 offset_top = 16.0
 offset_right = 411.0
 offset_bottom = 71.0
-text = "Buy Item"
+text = "store_buy"
 horizontal_alignment = 1
 vertical_alignment = 1
 

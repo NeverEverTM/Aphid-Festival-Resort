@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public class AphidData
 {
@@ -14,8 +13,8 @@ public class AphidData
 		5
 	];
 	public readonly static string[] NameArchive =
-    [
-        "Apuff", "Kiwi", "Brassmo",
+	[
+		"Apuff", "Kiwi", "Brassmo",
 		"Alphred", "Sumi", "Summer",
 		"Apa", "Miriam", "Cascade",
 		"Artyom", "Leif", "Sushi",
@@ -33,9 +32,10 @@ public class AphidData
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	];
 	internal static int Age_Adulthood = 1200, Age_Death = 7200,
-		Breed_Cooldown = 1200, Harvest_Cooldown = 120, Food_Drain_Time = 16, Water_Drain_Time = 10;
+		Breed_Cooldown = 1000, Harvest_Cooldown = 180, Food_Drain_Time = 10, Water_Drain_Time = 8;
 
-	internal const int HARVEST_VALUE_BABY = 5, HARVEST_VALUE_ADULT = 9, PET_DURATION = 1;
+	internal const int HARVEST_VALUE_BABY = 4, HARVEST_VALUE_ADULT = 8, PET_DURATION = 1;
+	internal const float COLOR_RANGE = 0.15f;
 
 	/// <summary>
 	/// Current living status of the aphid and its needs
@@ -51,8 +51,8 @@ public class AphidData
 
 		// Production & Breeding
 		public float BreedBuildup { get; set; }
+		public float HarvestBuildup { get; set; }
 		public AphidActions.BreedState.BreedEnum BreedMode { get; set; }
-		public float MilkBuildup { get; set; }
 
 		// Lifetime
 		public float Health { get; set; }
@@ -63,6 +63,7 @@ public class AphidData
 		public float PositionX { get; set; }
 		public float PositionY { get; set; }
 		public Aphid.StateEnum LastActiveState { set; get; }
+		public string HomeResort { get; set; }
 
 		// Gen Data
 		public Status()
@@ -109,8 +110,9 @@ public class AphidData
 		public FoodType FoodPreference { get; set; }
 		public float[] FoodMultipliers { get; set; }
 
-		public List<Aphid.Skill> Skills { get; set; }
-		public List<string> Traits { get; set; }
+		public Dictionary<string, Aphid.Skill> Skills { get; set; } = [];
+		public List<string> Traits { get; set; } = [];
+		public Dictionary<Guid, Aphid.Relationship> Relationships { get; set; } = [];
 
 		/// <summary>
 		/// This function generates new info completely from scratch without taking inheritance into account.
@@ -135,38 +137,45 @@ public class AphidData
 
 			// inherit skills
 			GenerateSkills();
-			for (int i = 0; i < Skills.Count; i++)
-			{
-				int _total = Mathf.CeilToInt((_father.Genes.Skills[i].Level + _mother.Genes.Skills[i].Level) / 4);
-				Skills[i].Level = _total;
-			}
 
-			GenerateTraits(2); // randomize two traits
+
+			// randomize two traits
+			GenerateTraits(2);
 			// inherit two random traits from the father and mother
-			Traits.Add(_father.Genes.Traits[GlobalManager.RNG.RandiRange(0, _father.Genes.Traits.Count - 1)]);
-			Traits.Add(_mother.Genes.Traits[GlobalManager.RNG.RandiRange(0, _mother.Genes.Traits.Count - 1)]);
-			
+			InheritTrait(_father);
+			InheritTrait(_mother);
+
 			GenerateFoodPreferences();
 
 			AntennaType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.AntennaType;
 			EyeType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.EyeType;
 			BodyType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.BodyType;
 			LegType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.LegType;
-			AntennaColor = LerpColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor);
-			EyeColor = LerpColor(_mother.Genes.EyeColor, _father.Genes.EyeColor);
-			BodyColor = LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor);
-			LegColor = LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor);
+			AntennaColor = LerpColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor, _mother, _father);
+			EyeColor = LerpColor(_mother.Genes.EyeColor, _father.Genes.EyeColor, _mother, _father);
+			BodyColor = LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor, _mother, _father);
+			LegColor = LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor, _mother, _father);
+
+			Relationships.Add(_mother.GUID, new(_mother.GUID, Aphid.Relationship.RelationshipLevel.Parent, 50, true));
 		}
-		
+
 		public virtual void GenerateSkills()
 		{
-			Skills =
-            [
-                new Aphid.Skill("stamina"),
-				new Aphid.Skill("strength"),
-				new Aphid.Skill("intelligence"),
-				new Aphid.Skill("speed"),
-			];
+			Skills = new()
+			{
+				{"stamina", new Aphid.Skill("stamina")},
+				{"strength", new Aphid.Skill("strength")},
+				{"intelligence", new Aphid.Skill("intelligence")},
+				{"speed", new Aphid.Skill("speed")},
+			};
+		}
+		public virtual void InheritSkills(AphidInstance _father, AphidInstance _mother)
+		{
+			foreach (var _pair in Skills)
+			{
+				int _total = Mathf.CeilToInt((_father.Genes.Skills[_pair.Key].Level + _mother.Genes.Skills[_pair.Key].Level) / 4);
+				_pair.Value.Level = _total;
+			}
 		}
 		public virtual void GenerateTraits(int _amount = 3)
 		{
@@ -200,6 +209,30 @@ public class AphidData
 			}
 			Logger.Print(Logger.LogPriority.Debug, "AphidTraits: Selected the following traits: ", string.Join(", ", Traits));
 		}
+		public virtual void InheritTrait(AphidInstance _aphid)
+		{
+			for (int timeout = 0; timeout < 500; timeout++)
+			{
+				string _trait_name = _aphid.Genes.Traits[GlobalManager.RNG.RandiRange(0, _aphid.Genes.Traits.Count - 1)];
+				if (Traits.Contains(_trait_name))
+					continue;
+
+				bool _incompatible = false;
+				for (int i = 0; i < Traits.Count; i++)
+				{
+					Aphid.ITrait _trait = AphidTraits.GetTraitByName(Traits[i]);
+					if (_trait.IsIncompatibleWith(_trait_name))
+					{
+						_incompatible = true;
+						break;
+					}
+				}
+				if (_incompatible)
+					continue;
+
+				Traits.Add(_trait_name);
+			}
+		}
 		public virtual void GenerateFoodPreferences()
 		{
 			FoodPreference = (FoodType)GlobalManager.Utils.GetRandomByWeight(flavor_weights);
@@ -215,23 +248,23 @@ public class AphidData
 		}
 		public virtual float GetMultiplier(FoodType _type) =>
 			0.5f + (_type == FoodPreference ? 0.5f : 0) + GlobalManager.RNG.Randf();
-		public virtual Color LerpColor(Color _color1, Color _color2)
+		public virtual Color LerpColor(Color _color1, Color _color2, AphidInstance _mother, AphidInstance _father = null)
 		{
 			// we combine all colors to find the strongest value and order by such
-			List<float> _colors = [(_color1.R + _color2.R) / 2,
-					(_color1.G + _color2.G) / 2,
-					(_color1.B + _color2.B ) / 2];
+			List<float> _colors = [GD.RandRange(0,1) == 0 ? _color1.R : _color2.R,
+					GD.RandRange(0,1) == 0 ? _color1.G : _color2.G,
+					GD.RandRange(0,1) == 0 ? _color1.B : _color2.B];
 
 			// we randomize the gain and loss of RGB values
-			_colors[0] = Mathf.Clamp(_colors[0] + GlobalManager.RNG.RandfRange(-30, 30), 0.2f, 0.8f);
-			_colors[1] = Mathf.Clamp(_colors[1] + GlobalManager.RNG.RandfRange(-30, 30), 0.2f, 0.8f);
-			_colors[2] = Mathf.Clamp(_colors[2] + GlobalManager.RNG.RandfRange(-30, 30), 0.2f, 0.8f);
+			_colors[0] = Mathf.Clamp(_colors[0] + GlobalManager.RNG.RandfRange(-COLOR_RANGE, COLOR_RANGE), 0.1f, 0.9f);
+			_colors[1] = Mathf.Clamp(_colors[1] + GlobalManager.RNG.RandfRange(-COLOR_RANGE, COLOR_RANGE), 0.1f, 0.9f);
+			_colors[2] = Mathf.Clamp(_colors[2] + GlobalManager.RNG.RandfRange(-COLOR_RANGE, COLOR_RANGE), 0.1f, 0.9f);
 
 			// check that they do not equal to a grey-ish/white/black color
 			if (Mathf.IsEqualApprox(_colors[0], _colors[1], 0.05) && Mathf.IsEqualApprox(_colors[1], _colors[2], 0.05))
 			{
-				_colors[0] += _colors[0] - 0.1f < 0.2f ?  0.1f : -0.1f;
-				_colors[2] += _colors[0] - 0.2f < 0.2f ?  0.2f : -0.2f;
+				_colors[0] = Mathf.Clamp(_colors[0] + GlobalManager.RNG.RandfRange(-COLOR_RANGE, 0), 0.1f, 0.9f);
+				_colors[2] = Mathf.Clamp(_colors[0] + GlobalManager.RNG.RandfRange(0, COLOR_RANGE), 0.1f, 0.9f);
 			}
 
 			return new Color(_colors[0], _colors[1], _colors[2]);
@@ -260,10 +293,10 @@ public class AphidData
 
 			if (_generateSkinTypes)
 			{
-				AntennaType = _gen.RandiRange(0, 1);
-				EyeType = _gen.RandiRange(0, 1);
-				BodyType = _gen.RandiRange(0, 1);
-				LegType = _gen.RandiRange(0, 1);
+				AntennaType = _gen.RandiRange(0, 2);
+				EyeType = _gen.RandiRange(0, 2);
+				BodyType = _gen.RandiRange(0, 2);
+				LegType = _gen.RandiRange(0, 2);
 			}
 
 			if (_generateGenes)
@@ -274,11 +307,5 @@ public class AphidData
 				Traits = [];
 			}
 		}
-	}
-
-	public class AphidRelationship
-	{
-		public Guid aphid;
-		public sbyte relationship;
 	}
 }

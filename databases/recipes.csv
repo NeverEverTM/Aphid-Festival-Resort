@@ -1,6 +1,8 @@
 RECIPES,ingredient1,ingredient2
 leaf_honey,leaf,honey_drop
+leaf_honey,leaf,glazed_honey
 leaf_honey,leaf_salad,honey_drop
+leaf_honey,leaf_salad,glazed_honey
 glazed_honey,honey_drop,
 leaf_salad,leaf,
 mushroom_salad,leaf,shroom
@@ -8,6 +10,7 @@ mushroom_salad,leaf,cooked_shroom
 mushroom_salad,leaf_salad,shroom
 mushroom_salad,leaf_salad,cooked_shroom
 berry_juice,berry,water
+berry_juice,roasted_berries,water
 cooked_shroom,shroom,
 berry_icecream,icecream,berry
 berry_icecream,shaved_ice,berry
@@ -15,6 +18,7 @@ honey_icecream,icecream,honey_drop
 honey_icecream,icecream,glazed_honey
 honey_icecream,shaved_ice,glazed_honey
 icecream,shaved_ice,honey_drop
+icecream,shaved_ice,plant_sap
 shaved_ice,water,
 roasted_berries,berry,
 mushroom_gummies,flour_bag,shroom
@@ -24,9 +28,14 @@ abomihoney,glazed_honey,
 cold_salad,leaf,shaved_ice
 cold_salad,leaf_salad,shaved_ice
 honey_pancakes,glazed_honey,flour_bag
-cake,applesauce,flour_bag
+cake,flour_bag,plant_sap
 nutty_cake,berry,flour_bag
 nutty_cake,roasted_berries,flour_bag
 plain_tea,leaf,water
 leaf_croissant,leaf,dry_bread
 leaf_croissant,leaf,flour_bag
+pretzel,applesauce,leaf
+baked_yam,danger_spud,
+yam_bread,danger_spud,flour_bag
+yam_bread,baked_yam,flour_bag
+tangy_carpaccio,tangy_berry,

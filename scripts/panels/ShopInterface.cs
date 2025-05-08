@@ -4,6 +4,8 @@ using Godot;
 // Used for the UI interface you interact with
 public partial class ShopInterface : Control, MenuTrigger.ITrigger
 {
+	public MenuUtil.MenuInstance Menu { get; protected set; }
+
 	[Export] protected string shopTag;
 	[Export] protected AnimationPlayer storePlayer;
 	[Export] protected GridContainer itemGrid;
@@ -15,7 +17,6 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	[ExportCategory("Customizables")]
 	[Export] protected Color bgColorSlot = new("cyan");
 	[Export] protected Texture2D defaultIcon;
-	protected MenuUtil.MenuInstance menu;
 	protected string currentItem;
 	protected int currentCost;
 
@@ -23,7 +24,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	public override void _EnterTree()
 	{
 		CleanShelf();
-		menu = new MenuUtil.MenuInstance(shopTag,
+		Menu = new MenuUtil.MenuInstance(shopTag,
 			storePlayer,
 			Open: _ => 
 			{
@@ -35,7 +36,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 				CleanShelf();
 				return true;
 			},
-			true
+			false
 		);
 		itemBuyButton.Pressed += () => SelectItem(currentItem);
 	}
@@ -125,13 +126,13 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	/// </summary>
 	protected virtual void Purchase()
 	{
-		Player.Data.AddCurrency(-currentCost);
+		Player.Data.ChangeCurrency(-currentCost);
 		SoundManager.CreateSound("ui/kaching");
 	}
 
 	public void SetMenu()
 	{
-		if (CanvasManager.Menus.CurrentMenu != menu)
-			CanvasManager.Menus.OpenMenu(menu);
+		if (CanvasManager.Menus.CurrentMenu != Menu)
+			CanvasManager.Menus.OpenMenu(Menu);
 	}
 }

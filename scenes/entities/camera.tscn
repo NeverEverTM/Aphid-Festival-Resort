@@ -4,9 +4,13 @@
 [ext_resource type="Script" uid="uid://j6h1r2ljn7lp" path="res://scripts/controllers/CameraManager.cs" id="1_v3ehm"]
 
 [node name="Camera2D" type="Camera2D"]
+top_level = true
+light_mask = 0
 offset = Vector2(0, -15)
 zoom = Vector2(2, 2)
 process_callback = 0
+position_smoothing_enabled = true
+position_smoothing_speed = 8.5
 script = ExtResource("1_v3ehm")
 
 [node name="AudioListener2D" type="AudioListener2D" parent="."]

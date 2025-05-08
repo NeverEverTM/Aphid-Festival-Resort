@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=75 format=3 uid="uid://bufmc14xek8uk"]
 
 [ext_resource type="Script" uid="uid://du1wf6ua7yxdx" path="res://scripts/gui/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
@@ -22,8 +22,8 @@
 [ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="15_4n2d7"]
 [ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/button_switch.wav" id="16_crekn"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
+[ext_resource type="Texture2D" uid="uid://4n4rotaskrdw" path="res://sprites/ui/gui_icons/icon_sell.png" id="17_y86om"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
-[ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/gui_icons/icon_folder.png" id="18_j2rvs"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/panels/options_panel.tscn" id="19_h41ts"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="20_qrmy7"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="23_au4eg"]
@@ -38,8 +38,12 @@
 [ext_resource type="Texture2D" uid="uid://b76u5f8hbpncc" path="res://sprites/help_examples/stats.PNG" id="31_x27oh"]
 [ext_resource type="Texture2D" uid="uid://drtx08aejoe38" path="res://sprites/help_examples/album.PNG" id="32_o4x4n"]
 [ext_resource type="Texture2D" uid="uid://6mmehkh5ph1d" path="res://sprites/help_examples/storage.PNG" id="33_mlkyv"]
+[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="36_n1534"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="39_j2rvs"]
 [ext_resource type="PackedScene" uid="uid://co34071w6qov6" path="res://scenes/ui/pause_menu_button.tscn" id="40_8siup"]
+[ext_resource type="Script" uid="uid://4hi7mig7sbn1" path="res://scripts/panels/GameOver.cs" id="41_y86om"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="42_n1534"]
+[ext_resource type="PackedScene" uid="uid://ttn1ivy2gfhv" path="res://scenes/ui/player_ui_display.tscn" id="43_6x4su"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8junb"]
 font_size = 40
@@ -825,6 +829,101 @@ shader_parameter/speed = 0.1
 shader_parameter/node_size = Vector2(32, 32)
 shader_parameter/color = Color(1, 1, 1, 1)
 
+[sub_resource type="Shader" id="Shader_n1534"]
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform vec4 color : source_color = vec4(1.0);
+uniform bool ignore_modulate = true;
+uniform float width : hint_range(0, 10) = 1.0;
+uniform int pattern : hint_range(0, 2) = 0; // diamond, circle, square
+uniform bool inside = false;
+uniform bool add_margins = true; // only useful when inside is false
+uniform vec2 number_of_images = vec2(1.0); // number of horizontal and vertical images in the sprite sheet
+
+varying flat vec4 modulate;
+
+void vertex() {
+	modulate = COLOR;
+
+	if (add_margins) {
+		if ((UV.x <= 0.0 || UV.x >= 1.0) && (UV.y <= 0.0 || UV.y >= 1.0)) {
+			VERTEX += (UV * 2.0 - 1.0) * width;
+		} else {
+			VERTEX += sign(VERTEX) * width; // replace sign(VERTEX) by (sign(VERTEX) * 2.0 - 1.0) if your AnimatedSprite2D isn't Centered
+		}
+	}
+}
+
+bool hasContraryNeighbour(vec2 uv, vec2 texture_pixel_size, vec2 image_top_left, vec2 image_bottom_right, sampler2D texture) {
+	for (float i = -ceil(width); i <= ceil(width); i++) {
+		float x = abs(i) > width ? width * sign(i) : i;
+		float offset;
+
+		if (pattern == 0) {
+			offset = width - abs(x);
+		} else if (pattern == 1) {
+			offset = floor(sqrt(pow(width + 0.5, 2) - x * x));
+		} else if (pattern == 2) {
+			offset = width;
+		}
+
+		for (float j = -ceil(offset); j <= ceil(offset); j++) {
+			float y = abs(j) > offset ? offset * sign(j) : j;
+			vec2 xy = uv + texture_pixel_size * vec2(x, y);
+
+			if ((xy != clamp(xy, image_top_left, image_bottom_right) || texture(texture, xy).a <= 0.0) == inside) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void fragment() {
+	vec2 uv = UV;
+	vec2 image_top_left = floor(uv * number_of_images) / number_of_images;
+	vec2 image_bottom_right = image_top_left + vec2(1.0) / number_of_images;
+
+	if (add_margins) {
+		vec2 texture_pixel_size = vec2(1.0) / (vec2(1.0) / TEXTURE_PIXEL_SIZE + vec2(width * 2.0) * number_of_images);
+
+		uv = (uv - texture_pixel_size * width - image_top_left) * TEXTURE_PIXEL_SIZE / texture_pixel_size + image_top_left;
+
+		if (uv != clamp(uv, image_top_left, image_bottom_right)) {
+			COLOR.a = 0.0;
+		} else {
+			COLOR = texture(TEXTURE, uv) * modulate;
+		}
+	} else {
+		COLOR = texture(TEXTURE, uv) * modulate;
+	}
+
+	if ((COLOR.a > 0.0) == inside && hasContraryNeighbour(uv, TEXTURE_PIXEL_SIZE, image_top_left, image_bottom_right, TEXTURE)) {
+		if (ignore_modulate){
+		// Plugin from the Lib didnt have this option,
+		//so here i manually ask if to use the modulate color as base
+			COLOR.rgb = inside ? mix(COLOR.rgb, color.rgb, color.a * modulate.a) : color.rgb;
+		}
+		else {
+			COLOR.rgb = inside ? mix(COLOR.rgb, color.rgb * modulate.rgb, color.a * modulate.a) : color.rgb * modulate.rgb;
+		}
+		COLOR.a += (1.0 - COLOR.a) * color.a * modulate.a;
+	}
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6x4su"]
+shader = SubResource("Shader_n1534")
+shader_parameter/color = Color(0.465524, 0.0281535, 0.169077, 1)
+shader_parameter/ignore_modulate = true
+shader_parameter/width = 5.17
+shader_parameter/pattern = 2
+shader_parameter/inside = false
+shader_parameter/add_margins = true
+shader_parameter/number_of_images = Vector2(1, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_sc5y1"]
 font_size = 40
 outline_size = 10
@@ -901,7 +1000,10 @@ grow_vertical = 2
 [node name="control_prompt_grid" type="VBoxContainer" parent="control_prompt_anchor"]
 light_mask = 0
 layout_mode = 0
-offset_bottom = 200.0
+offset_left = -8.0
+offset_top = -48.0
+offset_right = -8.0
+offset_bottom = 152.0
 size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 2
@@ -1139,17 +1241,17 @@ scale = Vector2(0.5, 0.5)
 [node name="mode_bg" type="TextureButton" parent="inventory/anchor"]
 light_mask = 0
 layout_mode = 0
-offset_left = 439.0
-offset_top = 225.0
-offset_right = 530.0
-offset_bottom = 322.0
+offset_left = 448.0
+offset_top = 223.0
+offset_right = 521.0
+offset_bottom = 306.0
 focus_mode = 0
-texture_normal = ExtResource("18_j2rvs")
-stretch_mode = 4
+texture_normal = ExtResource("17_y86om")
+stretch_mode = 5
 script = ExtResource("8_y632t")
 PressedColor = Color(0.484398, 0.484398, 0.484398, 1)
 FocusColor = Color(0.719012, 0.877187, 0.98421, 1)
-HoverColor = Color(0.789172, 0.789172, 0.789172, 1)
+HoverColor = Color(0.710741, 0.710741, 0.710741, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
 [node name="control_icon" type="RichTextLabel" parent="inventory/anchor/mode_bg"]
@@ -1295,7 +1397,7 @@ offset_top = 325.0
 offset_right = 646.0
 offset_bottom = 365.0
 
-[node name="help_panel" type="Control" parent="pause_menu" node_paths=PackedStringArray("helpDescriptions")]
+[node name="help_panel" type="Control" parent="pause_menu" node_paths=PackedStringArray("helpDescriptions", "scrollContainer")]
 visible = false
 light_mask = 0
 layout_mode = 1
@@ -1312,6 +1414,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_xmavb")
 helpDescriptions = [NodePath("ScrollContainer/Control/intro_panel/welcome"), NodePath("ScrollContainer/Control/caretake_panel/care"), NodePath("ScrollContainer/Control/shop_panel/shop"), NodePath("ScrollContainer/Control/money_panel/money"), NodePath("ScrollContainer/Control/kitchen_panel/kitchen"), NodePath("ScrollContainer/Control/generations_panel/album"), NodePath("ScrollContainer/Control/stats_panel/stats"), NodePath("ScrollContainer/Control/resort_misc_panel/resort")]
+scrollContainer = NodePath("ScrollContainer")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="pause_menu/help_panel"]
 layout_mode = 0
@@ -1319,6 +1422,7 @@ offset_left = -556.0
 offset_top = -206.0
 offset_right = 597.0
 offset_bottom = 381.0
+scroll_vertical = 100
 horizontal_scroll_mode = 0
 
 [node name="Control" type="Control" parent="pause_menu/help_panel/ScrollContainer"]
@@ -1330,7 +1434,7 @@ self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 47.0
-offset_top = 29.0
+offset_top = 22.0
 offset_right = 1119.0
 offset_bottom = 626.0
 texture = ExtResource("4_bri73")
@@ -1342,7 +1446,7 @@ patch_margin_bottom = 20
 [node name="welcome" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/intro_panel"]
 layout_mode = 0
 offset_left = 66.0
-offset_top = 38.0
+offset_top = 27.0
 offset_right = 986.0
 offset_bottom = 209.0
 theme_override_font_sizes/normal_font_size = 35
@@ -1358,7 +1462,7 @@ material = ExtResource("30_snkug")
 layout_mode = 0
 offset_left = 71.0
 offset_top = 233.0
-offset_right = 525.0
+offset_right = 509.0
 offset_bottom = 530.0
 texture = ExtResource("26_6gm3y")
 expand_mode = 1
@@ -1509,10 +1613,24 @@ light_mask = 0
 texture_filter = 2
 material = ExtResource("30_snkug")
 layout_mode = 0
-offset_left = 560.0
-offset_top = 192.0
-offset_right = 991.0
-offset_bottom = 499.0
+offset_left = 511.0
+offset_top = 236.0
+offset_right = 5421.0
+offset_bottom = 3036.0
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("36_n1534")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="kitchen_npc_img2" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/kitchen_panel"]
+light_mask = 0
+texture_filter = 2
+material = SubResource("ShaderMaterial_6x4su")
+layout_mode = 0
+offset_left = 86.0
+offset_top = 236.0
+offset_right = 495.0
+offset_bottom = 510.0
 texture = ExtResource("31_uwabr")
 expand_mode = 1
 stretch_mode = 4
@@ -1520,9 +1638,9 @@ stretch_mode = 4
 [node name="kitchen" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/kitchen_panel"]
 layout_mode = 0
 offset_left = 53.0
-offset_top = 42.0
-offset_right = 515.0
-offset_bottom = 483.0
+offset_top = 39.0
+offset_right = 972.0
+offset_bottom = 201.0
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
 text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
@@ -1548,7 +1666,7 @@ patch_margin_bottom = 20
 layout_mode = 0
 offset_left = 54.0
 offset_top = 36.0
-offset_right = 555.0
+offset_right = 603.0
 offset_bottom = 360.0
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
@@ -1561,9 +1679,9 @@ scroll_active = false
 light_mask = 0
 material = ExtResource("30_snkug")
 layout_mode = 0
-offset_left = 600.0
+offset_left = 640.0
 offset_top = 26.0
-offset_right = 1008.0
+offset_right = 993.0
 offset_bottom = 369.0
 texture = ExtResource("31_x27oh")
 expand_mode = 1
@@ -1626,7 +1744,7 @@ patch_margin_bottom = 20
 layout_mode = 0
 offset_left = 47.0
 offset_top = 36.0
-offset_right = 520.0
+offset_right = 553.0
 offset_bottom = 396.0
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
@@ -1639,10 +1757,10 @@ scroll_active = false
 light_mask = 0
 material = ExtResource("30_snkug")
 layout_mode = 0
-offset_left = 558.0
-offset_top = 60.0
-offset_right = 1011.0
-offset_bottom = 391.0
+offset_left = 593.0
+offset_top = 58.0
+offset_right = 990.0
+offset_bottom = 389.0
 texture = ExtResource("33_mlkyv")
 expand_mode = 1
 stretch_mode = 4
@@ -1674,10 +1792,10 @@ vertical_alignment = 1
 
 [node name="panel_bg" type="NinePatchRect" parent="pause_menu"]
 layout_mode = 0
-offset_left = 425.0
-offset_top = 90.0001
-offset_right = 846.0
-offset_bottom = 597.0
+offset_left = 367.0
+offset_top = 132.0
+offset_right = 788.0
+offset_bottom = 639.0
 texture = ExtResource("39_j2rvs")
 patch_margin_left = 30
 patch_margin_top = 30
@@ -1721,3 +1839,64 @@ text = "pause_warning"
 label_settings = SubResource("LabelSettings_sc5y1")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="game_over" type="Control" parent="." node_paths=PackedStringArray("sprite", "label", "bg", "doneSymbol")]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("41_y86om")
+sprite = NodePath("bg/player_ui_display")
+label = NodePath("bg/Label")
+bg = NodePath("bg")
+doneSymbol = NodePath("bg/Control/dialog_advance_cursor")
+
+[node name="bg" type="TextureRect" parent="game_over"]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+texture = ExtResource("42_n1534")
+
+[node name="Control" type="Control" parent="game_over/bg"]
+anchors_preset = 0
+offset_left = 475.0
+offset_top = 330.0
+offset_right = 515.0
+offset_bottom = 370.0
+
+[node name="dialog_advance_cursor" type="TextureRect" parent="game_over/bg/Control"]
+visible = false
+layout_mode = 0
+offset_left = 467.0
+offset_top = 276.0
+offset_right = 545.0
+offset_bottom = 356.0
+texture = ExtResource("13_7k46k")
+expand_mode = 1
+
+[node name="advance_cusor_player" type="AnimationPlayer" parent="game_over/bg/Control/dialog_advance_cursor"]
+libraries = {
+&"": SubResource("AnimationLibrary_7mn38")
+}
+autoplay = "squiggly"
+
+[node name="Label" type="Label" parent="game_over/bg"]
+layout_mode = 0
+offset_left = 389.0
+offset_top = 510.0
+offset_right = 898.0
+offset_bottom = 558.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="player_ui_display" parent="game_over/bg" instance=ExtResource("43_6x4su")]
+position = Vector2(658, 315)

@@ -187,7 +187,7 @@ public partial class DialogManager : Control
 					dialogAudio.Play();
 				}
 
-				await Task.Delay(Speed * 20);
+				await Task.Delay(Speed * 18);
 			}
 			i++;
 		}
@@ -288,9 +288,9 @@ public partial class DialogManager : Control
     {
         public string Execute(string[] _args)
         {
-			if (Player.Data.Pronouns[0].ToLower() == "el")
+			if (Player.Data.Pronouns[0].Equals("el", StringComparison.OrdinalIgnoreCase))
 				return "o";
-			if (Player.Data.Pronouns[0].ToLower() == "ella")
+			if (Player.Data.Pronouns[0].Equals("ella", StringComparison.OrdinalIgnoreCase))
 		   		return "a";
 			else
 				return "e";

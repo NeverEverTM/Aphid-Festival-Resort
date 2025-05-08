@@ -19,6 +19,7 @@ public partial class ConfirmationPopup : CanvasLayer
 	public ConfirmationEnum confirmationType;
 	private Action confirmationAction, cancelAction;
 	private float standardTimer;
+	private string displayText;
 
 	[Export] private AnimationPlayer player;
 	[Export] private BaseButton cancel_button, yes_button, no_button;
@@ -43,17 +44,18 @@ public partial class ConfirmationPopup : CanvasLayer
 				no_button.Pressed += Cancel;
 				break;
 			case ConfirmationEnum.Fast:
+				confirmation_edit.Hide();
 				yes_button.Pressed += Accept;
 				no_button.Pressed += Cancel;
 				break;
 		}
 
 		cancel_button.Pressed += Cancel;
-		confirmation_label.Text = "[center]" + Tr("confirmation_" + (int)confirmationType) + "[/center]";
+		confirmation_label.Text = displayText;
 		confirmation_edit.GrabFocus();
 		// This is to prevent typing a key bind char if that was used to open the window
 		GetViewport().SetInputAsHandled();
-		player.Play("open");
+		player.Play(StringNames.OpenAnim);
 	}
 	public override void _ExitTree()
 	{
@@ -63,8 +65,9 @@ public partial class ConfirmationPopup : CanvasLayer
 
 	public override void _Input(InputEvent _event)
 	{
-		if (_event.IsActionPressed("cancel") || _event.IsActionPressed("escape"))
+		if (_event.IsActionPressed(InputNames.Escape) || _event.IsActionPressed(InputNames.Cancel))
 		{
+			GlobalManager.Instance.GetViewport().SetInputAsHandled();
 			Cancel();
 			return;
 		}
@@ -76,8 +79,8 @@ public partial class ConfirmationPopup : CanvasLayer
 
 		if (_input.KeyLabel == Key.Enter)
 		{
-			confirmation_edit.ReleaseFocus();
 			CheckConfirm();
+			GlobalManager.Instance.GetViewport().SetInputAsHandled();
 		}
 	}
 
@@ -102,7 +105,7 @@ public partial class ConfirmationPopup : CanvasLayer
 					Accept();
 					return;
 				}
-				progress.Value = 100 - 100 * progressCurve.Sample(standardTimer);
+				progress.Value = 101 - 100 * progressCurve.Sample(standardTimer);
 			}
 		}
 	}
@@ -110,15 +113,27 @@ public partial class ConfirmationPopup : CanvasLayer
 	private void CheckConfirm()
 	{
 		if (confirmation_edit.Text == Tr("confirmation_yes"))
+		{
+			confirmation_edit.ReleaseFocus();
 			Accept();
+		}
 		else
 		{
-			confirmation_edit.Text = "";
+			confirmation_edit.Text = string.Empty;
 			confirmation_edit.GrabFocus();
+			SoundManager.CreateSound("ui/button_fail");
 		}
 	}
 
-	public static ConfirmationPopup Create(Action _onConfirm, Action _onCancel = null, ConfirmationEnum _type = ConfirmationEnum.Standard)
+	/// <summary>
+	/// Create a new confirmation popup.
+	/// </summary>
+	/// <param name="_onConfirm">Action to take if confirmed</param>
+	/// <param name="_onCancel">Action to take if canceled</param>
+	/// <param name="_type">The type of confirmation security needed</param>
+	/// <param name="_custom_tr_key">Custom translation key to display</param>
+	/// <returns></returns>
+	public static ConfirmationPopup Create(Action _onConfirm, Action _onCancel = null, ConfirmationEnum _type = ConfirmationEnum.Standard, string _custom_tr_key = null)
 	{
 		IsConfirming = true;
 		if (IsInstanceValid(currentPopup))
@@ -128,6 +143,11 @@ public partial class ConfirmationPopup : CanvasLayer
 		currentPopup.confirmationType = _type;
 		currentPopup.confirmationAction = _onConfirm;
 		currentPopup.cancelAction = _onCancel;
+		if (_custom_tr_key == null)
+			currentPopup.displayText = currentPopup.Tr("confirmation_" + (int)currentPopup.confirmationType);
+		else
+			currentPopup.displayText = currentPopup.Tr(_custom_tr_key);
+
 		GlobalManager.Instance.GetViewport().SetInputAsHandled();
 		GlobalManager.Instance.GetTree().Root.CallDeferred(Node.MethodName.AddChild, currentPopup);
 		GlobalManager.Instance.GetTree().Root.ProcessMode = ProcessModeEnum.Disabled;

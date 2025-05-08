@@ -10,6 +10,9 @@ public class MenuUtil
 	public readonly List<MenuInstance> MenuList = [];
 
 	public delegate void MenuEvent(MenuInstance _last, MenuInstance _current);
+	/// <summary>
+	/// Parameters: Last Menu and Current Menu
+	/// </summary>
 	public event MenuEvent OnSwitch;
 
 	public record class MenuInstance(string Name, AnimationPlayer MenuPlayer,
@@ -19,6 +22,7 @@ public class MenuUtil
 		/// Identification name for this menu
 		/// </summary>
 		public string Name { get; private set; } = Name;
+		public bool IsOpen { get; set; }
 		/// <summary>
 		/// Whether or not this menu is a child of the current menu, if so add on-top, otherwise, set this as the parent (one parent alllowed at a time)
 		/// </summary>
@@ -37,8 +41,13 @@ public class MenuUtil
 
 	public bool OpenMenu(MenuInstance _menu)
 	{
+		if (_menu == null)
+		{
+			GoBack();
+			return false;
+		}
 		// if is the same menu we have, close it and go to previous one
-		if (_menu.Equals(CurrentMenu))
+		if (_menu.Name.Equals(CurrentMenu?.Name))
 		{
 			GoBack();
 			return false;
@@ -64,6 +73,7 @@ public class MenuUtil
 			// cancel close if this menu is currently not allowed to
 			if (CurrentMenu.Close != null && !CurrentMenu.Close.Invoke(_menu))
 				return false;
+			CurrentMenu.IsOpen = false;
 			CurrentMenu.MenuPlayer.Play(StringNames.CloseAnim);
 			if (_menu == null || !_menu.IsASubMenu)
 				MenuList.Clear();
@@ -74,6 +84,7 @@ public class MenuUtil
 		{
 			_menu.Open?.Invoke(CurrentMenu);
 			_menu.MenuPlayer.Play(StringNames.OpenAnim);
+			_menu.IsOpen = true;
 			MenuList.Add(_menu);
 		}
 

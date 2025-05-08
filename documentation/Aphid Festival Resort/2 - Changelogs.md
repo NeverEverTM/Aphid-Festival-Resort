@@ -86,7 +86,7 @@
 - Added AutoRun setting
 - Added a new npc "Echo", guard of the gate, gate which is still in construction
 ## Technical
-- SaveSystem.ISaveData has been discarded in favour of SaveModule[T], refer to the [[SaveData Implementation]] documentation.
+- SaveSystem.ISaveData has been discarded in favour of SaveModule[T], refer to the [[SaveData Documentation]] documentation.
 - The apex of this update. Several Aphid behaviour related scripts have been modified and added
   - IState defines an aphid's state behaviour and compatibilities
   - ITrait defines unique trait behaviour
@@ -113,7 +113,7 @@
 
 # v0.2.0.1
 ## Fixed
-- Mushroom gummies had the wrong display sprite
-- (Spanish) User interface label did not position itself correctly
-- Leaving the build or furniture menu would turn back back the normal HUD while in free camera mode.
-- Aphids left their harvest particles when they died.
+- Mushroom gummies had the wrong display sprite.
+- (Spanish) User interface label did not position itself correctly.
+- Leaving the build or furniture menu would turn back the normal HUD while in free camera mode.
+- Aphids left their harvest particles after they died.

@@ -29,11 +29,22 @@ public static class Logger
 		else if (priority == LogPriority.Log)
 			GD.PrintRich(_message.Insert(0, $"[{_time}] [Log]: "));
 		else if (priority == LogPriority.Warning)
+		{
+// this is to pintpoint errors and warnings in the editor within the log timeline
+# if DEBUG
+			GD.PrintRich(_message.Insert(0, $"[{_time}] |-[WARN]-|: "));
+# endif
 			GD.PushWarning(_message.Insert(0, $"[{_time}] |-[WARN]-|: "));
+		}
 		else if (priority == LogPriority.Error)
+		{
+# if DEBUG
+			GD.PrintRich(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
+# endif
 			GD.PushError(_message.Insert(0, $"[{_time}] ||===[ERROR]===||: "));
+		}
 		else
-			GD.PrintRich(_message.Insert(0, $"[{_time}] [Log]: "));
+			GD.PrintRich(_message.Insert(0, $"[{_time}] [*Log*]: "));
 		DebugConsole.Print(_message);
 	}
 	public static void Print(LogPriority priority, GameTermination mode, params object[] args)

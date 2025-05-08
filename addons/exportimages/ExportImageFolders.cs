@@ -185,9 +185,13 @@ public partial class ExportImageFolders : EditorPlugin
                 GD.PrintRich($"[color=cyan]Exporting folder <{img_folders[i].name}> at <{img_folders[i].path}>...[/color]");
                 GET_IMAGE_DATA(img_folders[i].path, i);
             }
-            GENERATE_ATLAS();
+            if (!GENERATE_ATLAS())
+                return;
             for (int i = 0; i < img_folders.Count; i++)
-                GENERATE_TEXTURE_FOLDERS(img_folders[i].name, i);
+            {
+                if (!GENERATE_TEXTURE_FOLDERS(img_folders[i].name, i))
+                    return;
+            }
         }
         catch (Exception _err)
         {
@@ -241,7 +245,7 @@ public partial class ExportImageFolders : EditorPlugin
             GD.Print($"Image: <{_file}> loaded to <{_path}>.");
         }
     }
-    internal void GENERATE_ATLAS()
+    internal bool GENERATE_ATLAS()
     {
         GD.PrintRich("[color=cyan]Creating spriteatlas...[/color]");
         // create atlas by joining all previous images into one spritesheet
@@ -262,19 +266,20 @@ public partial class ExportImageFolders : EditorPlugin
         else
         {
             THROW_POPUP($"Failed to save atlas. Following error: {_error_atlas}");
-            return;
+            return false;
         }
+        return true;
     }
-    internal void GENERATE_TEXTURE_FOLDERS(string _dir_name, int _dir_index)
+    internal bool GENERATE_TEXTURE_FOLDERS(string _dir_name, int _dir_index)
     {
         Regex _regex = MyRegex();
         // generate atlas textures 
         GD.PrintRich($"[color=cyan]Creating folder and generating textures for <{_dir_name}>...[/color]");
-        using var _skinFolder = DirAccess.Open(GlobalManager.ABSOLUTE_SKINS_PATH);
-        if (!_skinFolder.DirExists(_dir_name))
+        using var _folder = DirAccess.Open(output_path);
+        if (!_folder.DirExists(_dir_name))
         {
-            _skinFolder.MakeDir(_dir_name);
-            GD.Print($"Created skin directory for <{_dir_name}>");
+            _folder.MakeDir(_dir_name);
+            GD.Print($"Created directory for <{_dir_name}>");
         }
         // set index point to the start of 
         for (int i = 0; i < img_folders[_dir_index].images.Count; i++)
@@ -285,19 +290,20 @@ public partial class ExportImageFolders : EditorPlugin
                 Region = new Rect2(i * image_size, _dir_index * image_size, image_size, image_size)
             };
 
-            var _path = GlobalManager.ABSOLUTE_SKINS_PATH + _dir_name + "/" + _regex.Match(img_folders[_dir_index].images[i].name).Value + ".tres";
+            var _path = $"{output_path}/{_dir_name}/{_regex.Match(img_folders[_dir_index].images[i].name).Value}.tres";
             _texture.TakeOverPath(_path);
             // check if it was saved correctly
             var _error_texture = ResourceSaver.Save(_texture, _path);
 
             if (_error_texture == Error.Ok)
-                GD.Print($"Created resource <{img_folders[_dir_index].images[i].name}>");
+                GD.Print($"Created resource <{img_folders[_dir_index].images[i].name}> at <{_path}>");
             else
             {
                 THROW_POPUP($"Failed to save resource at <{_path}>. Texture Error ID: {_error_texture}");
-                return;
+                return false;
             }
         }
+        return true;
     }
 }
 #endif

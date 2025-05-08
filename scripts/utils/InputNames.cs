@@ -25,4 +25,7 @@ public static class InputNames
 	public readonly static StringName Pull = new("pull");
 	public readonly static StringName AlignToGrid = new("align_to_grid");
 	public readonly static StringName ChangeMode = new("change_mode");
+	public readonly static StringName QuickAction1 = new("quick_action_1");
+	public readonly static StringName QuickAction2 = new("quick_action_2");
+	public readonly static StringName QuickAction3 = new("quick_action_3");
 } 

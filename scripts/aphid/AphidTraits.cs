@@ -2,9 +2,11 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static AphidActions;
 
-public partial class AphidTraits : Aphid
+using static AphidActions;
+using static Aphid;
+
+public static class AphidTraits
 {
     public static readonly Dictionary<string, Type> G_TRAITS = new()
     {
@@ -120,7 +122,7 @@ public partial class AphidTraits : Aphid
 
             public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
             {
-                if (!IsInstanceValid(interaction_timer))
+                if (!GameManager.IsInstanceValid(interaction_timer))
                 {
                     interaction_timer = new();
                     _aphid.AddChild(interaction_timer);
@@ -181,7 +183,7 @@ public partial class AphidTraits : Aphid
 
             IdleState.IdleArgs _args = args as IdleState.IdleArgs;
 
-            if (_args.timeleft > 0)
+            if (_args.stand_time > 0)
             {
                 if (!lazy_emote_active)
                 {

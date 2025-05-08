@@ -22,15 +22,6 @@ public partial class TorchBehaviour : AnimatedSprite2D
 		FieldManager.OnTimeChange += SetLight;
 		SetLightInstant();
 	}
-	// public override void _Process(double delta)
-	// {
-	// 	if (CameraManager.Instance == null)
-	// 		return;
-
-	// 	// apparently not needed, this turns lights off when the player is far away
-	// 	//light.Visible = GlobalPosition.DistanceTo(Player.Instance.GlobalPosition) 
-	// 	//		< CameraManager.SCREEN_SIZE_CANVAS.X / (CameraManager.Instance.Zoom.X + 0.75f);
-	// }
 	public void SetLight()
 	{
 		// dont trigger this function when first spawned

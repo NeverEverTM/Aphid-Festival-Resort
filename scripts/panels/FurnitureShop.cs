@@ -2,6 +2,7 @@ using Godot;
 
 public partial class FurnitureShop : ShopInterface
 {
+	internal static FurnitureShop Instance { get; private set; }
 	[ExportCategory("Furniture Menu")]
 	[Export] private TextureButton open_button;
 
@@ -13,17 +14,19 @@ public partial class FurnitureShop : ShopInterface
 
 	public override void _Ready()
 	{
-		menu.Open = _ =>
+		Instance = this;
+		Menu.Open = _ =>
 		{
 			CameraManager.Instance.EnableFreeRoam = false;
 			FreeCameraManager.SetFreeCameraHud(false);
 			ResetShop();
 			SoundManager.CreateSound("ui/store_bell");
 		};
-		menu.Close = _ =>
+		Menu.Close = _next =>
 		{
 			CameraManager.Instance.EnableFreeRoam = true;
-			FreeCameraManager.SetFreeCameraHud(true);
+			if (_next == null)
+				FreeCameraManager.SetFreeCameraHud(true);
 			CleanShelf();
 			return true;
 		};

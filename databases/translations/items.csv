@@ -6,7 +6,7 @@ leaf_desc,"A dry leaf, good for a snack but could be better.","Una hoja seca, un
 shroom_name,Mushroom,Hongo
 shroom_desc,"A sour, chewwy shroom that is better cooked.","Un hongo agrio y gomoso, cocinado es preferible."
 berry_name,Fruity Berry ,Baya Frutal
-berry_desc,"A type of berry commonly cultivated in the Settlement, unlike the ones used as currency, this one tastes sweet.","Un tipo de baya comunmente cultivada en la region, a diferencia de las monetarias, esta es dulce."
+berry_desc,"Unlike the ones used as currency, this one's edible.","A diferencia de las de valor, esta es comestible."
 water_name,Clear Water,Agua Fresca
 water_desc,"A drop of fresh rain water, for when you feel thirsty.","Una gota de lluvia fresca, para cuando te encuentras sediento."
 shaved_ice_name,Shaved Ice,Hielo Granizado
@@ -58,16 +58,26 @@ applesauce_desc,"An alternative to eggs in recipes, much more sweeter too!","Una
 berry_icecream_name,Berry Ice Cream,Helado de Baya
 berry_icecream_desc,"For a hot summer day! Or any other season really, can't go wrong with it.","Para un caluroso día de verano! U cualquier otra estación, no puedes fallar con esto."
 honey_pancakes_name,Honey Pancakes,Panqueques de Miel
-honey_pancakes_desc,"Heaven turned breakfast. A plate of delicious, warm and fluffy pancakes covered in honey.","Cielo hecho desayuno. Un plato de deliciosos, calientitos y esponjados panqueques cubiertos en miel."
+honey_pancakes_desc,Heaven turned breakfast. A plate of delicious pancakes covered in honey.,Cielo hecho desayuno. Un plato de deliciosos panqueques cubiertos en miel.
 nutty_cake_name,Nutty Cake,Pastelito de Nuez
 nutty_cake_desc,"A rather bitter but enjoyable pastry. Your aphid is not nut-allergic, right?","Un pastelillo amargo, pero incredible. No eres alergico a la nuez, verdad?"
 cake_name,Baked Cake,Pastel Horneado
-cake_desc,"As basic as a cake gets, made of applesauce, flour and maybe a lil bit of love.","Lo màs basico que un pastel puede ser, hecho con pure, harina, y puede que un poquito de amor."
+cake_desc,"As basic as a cake gets, to complain of no one.","Lo más basico que un pastel puede ser, pero a queja de quien."
 danger_spud_name,Danger Spud,Batata Toxica
-danger_spud_desc,"A toxin filled yam, seen as a some as a sweet delicacy.","Una batata llena de toxinas, visto por muchos como una dulce delicadeza."
-plain_tea_name,Plain Tea,Tè Simple
-plain_tea_desc,Nothing beats a simple tea to accompany the noon.,Nada supera un simple tè para acompañar la tarde.
+danger_spud_desc,"A toxin filled yam, seen by some as an exotic delicacy.","Una batata llena de toxinas, visto por muchos como un manjar curioso."
+plain_tea_name,Plain Tea,Té Simple
+plain_tea_desc,Nothing beats a simple tea to accompany the noon.,Nada supera un simple té para acompañar la tarde.
 tangy_berry_name,Tangy Berry,Baya Acida
 tangy_berry_desc,"A strange berry, non-native of these lands. It's rarity makes it a luxurious ingredient.","Una baya extraña, no nativa de estos lares. Su rareza la hace un manjar lujurioso."
 leaf_croissant_name,Leaf Croissant,Croissant en Hoja
 leaf_croissant_desc,"A freshly baked croissant, wrapped in leaves to make it extra crunchy.","Un croissant recien horneado, envuelto en hojas para hacerlo extra crujiente."
+plant_sap_name,Plant Sap,Savia de Planta
+plant_sap_desc,A sweet milky replacement for aphid honeydew in baked goods.,Una alternativa a la savia de los áfidos para postres.
+tangy_carpaccio_name,Tangy Carpaccio,Carpaccio Acido
+tangy_carpaccio_desc,Kut's star dish. Provides extraordinary aphid satisfaction.,Platillo estrella de Kut. Provee extraordinaria satisfacción a un áfido.
+baked_yam_name,Baked Yam,Batata Horneada
+baked_yam_desc,"Baking the spud has gotten rid of its toxins, making it safe and pleasant to eat.","Hornear la batata ha removido las toxinas, haciendola segura y placentera de comer."
+yam_bread_name,Yam Bread,Pan de Batata
+yam_bread_desc,Freshly baked bread made out of spud. It's fluffy and rich in flavor.,Pan recientemente horneado hecho de batata. Es esponjoso y rico en sabor.
+pretzel_name,Pretzel,Pretzel
+pretzel_desc,"A tasty salty pretzel, goes well with a hot drink.","Un disfrutable pretzel salado, va bien con una bebida caliente."

@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class AphidHatch : RigidBody2D
+public partial class AphidHatch : Area2D
 {
 	public bool IsNatural;
 	private Timer hatch;

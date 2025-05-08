@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class NPCPhysicsBody : CharacterBody2D, Player.IPlayerInteractable
+public partial class NPCPhysicsBody : CharacterBody2D, Player.IInteractEvent
 {
 	[Export] private NPCBehaviour npcBody;
 	[Export(PropertyHint.Range, "10,1000,10")] private float maxWanderRange;

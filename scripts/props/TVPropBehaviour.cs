@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class TVPropBehaviour : Sprite2D
+public partial class TVPropBehaviour : Sprite2D, Player.IInteractEvent, ResortManager.IStructureData
 {
 	[Export] private Texture2D[] backgrounds;
 	[Export] private Sprite2D viewport_display, background_display;
@@ -8,10 +8,18 @@ public partial class TVPropBehaviour : Sprite2D
 	[Export] private AudioStreamPlayer2D stereo;
 	[Export] private VideoStreamPlayer player;
 
-	private bool is_connected = false;
 	private int channel;
 
-	private void Interact()
+	public void SetData(string _data)
+	{
+		player.VolumeDb = -80; // keep it quiet during startup
+		channel = int.Parse(_data) - 1;
+		Interact();
+	}
+    public string GetData() =>
+		channel.ToString();
+
+    public void Interact()
 	{
 		channel++;
 		if (channel == 3)
@@ -40,5 +48,13 @@ public partial class TVPropBehaviour : Sprite2D
 			player.Play();
 			light.Color = new("darkblue");
 		}
+	}
+    public override void _PhysicsProcess(double delta)
+    {
+        if (channel == 2)
+		{
+			float _distance = GlobalPosition.DistanceSquaredTo(Player.Instance.GlobalPosition);
+			player.VolumeDb = -20 - (80 * (_distance / 160000));
+		}    
 	}
 }

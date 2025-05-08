@@ -104,13 +104,13 @@ position = Vector2(396, 85)
 position = Vector2(-1029.5, -61)
 
 [node name="largebox_0" parent="structurePit" instance=ExtResource("4_o6f4t")]
-position = Vector2(727, -266)
+position = Vector2(732, -273)
 
 [node name="largebox_3" parent="structurePit" instance=ExtResource("4_o6f4t")]
 position = Vector2(-593, -202)
 
 [node name="largebox_4" parent="structurePit" instance=ExtResource("4_o6f4t")]
-position = Vector2(-286, 208)
+position = Vector2(-297, 203)
 
 [node name="largebox_5" parent="structurePit" instance=ExtResource("4_o6f4t")]
 position = Vector2(-1709, 367)
@@ -119,7 +119,7 @@ position = Vector2(-1709, 367)
 position = Vector2(-1684.5, 280)
 
 [node name="largebox_1" parent="structurePit" instance=ExtResource("4_o6f4t")]
-position = Vector2(899, -213)
+position = Vector2(902, -217)
 
 [node name="largebox_2" parent="structurePit" instance=ExtResource("4_o6f4t")]
 position = Vector2(591, -75)
@@ -164,7 +164,7 @@ metadata/_edit_lock_ = true
 position = Vector2(168, 446)
 
 [node name="box_0" parent="structurePit" instance=ExtResource("6_6517d")]
-position = Vector2(701, -245)
+position = Vector2(728, -251)
 
 [node name="box_5" parent="structurePit" instance=ExtResource("6_6517d")]
 position = Vector2(-373, -209)
@@ -188,7 +188,7 @@ position = Vector2(-1593.5, 273)
 position = Vector2(-1717.5, 182)
 
 [node name="box_1" parent="structurePit" instance=ExtResource("6_6517d")]
-position = Vector2(681, -259)
+position = Vector2(671, -262)
 
 [node name="box_2" parent="structurePit" instance=ExtResource("6_6517d")]
 position = Vector2(860, -200)
@@ -362,7 +362,7 @@ position = Vector2(-860, 287)
 position = Vector2(1562, -114)
 
 [node name="torch3" parent="structurePit" instance=ExtResource("5_oqbea")]
-position = Vector2(446, -180)
+position = Vector2(442, -189)
 
 [node name="torch4" parent="structurePit" instance=ExtResource("5_oqbea")]
 position = Vector2(453, 13)

@@ -34,21 +34,21 @@ Me encanta trabajar de cuidadora para los pequeñines.(...)
 Aparte de en tiempos de festival, este lugar es bastante silencioso.
 >Hablando de aquello, creo que esta por llegar!(...[0.5])
 espero..."
-joy_flavor_1,">They are still filling the resort with all sorts of wonders
+joy_flavor_1,">They are still filling the resort with all sorts of wonders(...)
 So sorry for all the mess of boxes! They won't let me touch them.
 >I don't know why either, that moth at the gate told me not to.
 >When I got nearby one, they just gave me a death stare(...)
-So I stay away from them ever since...",">Todavia estan llenando el complejo con todo tipo de artilugios
+So I stay away from them ever since...",">Todavia estan llenando el complejo con todo tipo de artilugios(...)
 Asi que lo siento por el monton de cajas! No me dejan tocarlas.
 >Yo tampoco lo se, aquella polilla en la entrada me dijo que no podia.
 >Cuando me acerque a una, me devolvio una mirada asesina(...)
 Desde entonces no me acerco..."
-joy_flavor_2,">Aphid breeding has been on the rise more and more recently.
-Looks like bugs outside the Golden Settlement ask us for some of our own.
->Makes me wonder why.
->You should be able to help sooner or later, I heard they pay well!",">La crianza de afidos ha estado en la alza utlimamente.
-Parece que bichos fuera del Asentamiento nos piden unos pocos de los nuestros.
->Me hace preguntar el porque.
+joy_flavor_2,">Aphid breeding has been on the rise more and more recently.(...)
+Looks like bugs outside the Golden Settlement are requiring more and more aphids.
+>Makes me wonder why...
+>You should be able to help sooner or later, I heard they pay well!",">La crianza de afidos ha estado en la alza utlimamente.(...)
+Parece que bichos fuera del Asentamiento estan necesitando más y más áfidos.
+>Me pregunto porque...
 >Podras ayudar con eso en algun punto, ¡He escuchado que pagan bien!"
 joy_flavor_3,">Remember to treat your Aphids with respect!
 They need love and care if you want them to grow big and strong.",">Recuerda tratar tus Áfidos con amor y cariño!
@@ -67,9 +67,11 @@ I wonder what they are saying?",">¿Sabes cuanta personalidad puede un áfido te
 ¿Me pregunto de que hablaran?"
 joy_flavor_5,">Mmh...(...)
 Oh, sorry, didn't see you there!
->I tune out a little too much, too often.",">Mmh...(...)
+>I tune out a little too much, too often.(...)
+I really like to take in the air...",">Mmh...(...)
 Oh perdona, no te vi llegar!
->A veces se me va mucho el pensamiento."
+>A veces se me va mucho el pensamiento.(...)
+Realmente me gusta disfrutar el tiempo..."
 azzy_flavor_0,">(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
@@ -81,11 +83,11 @@ Y si no... pues puede que luego.
 No es lo que necesites de todos modos!"
 azzy_flavor_1,">I heard lots of stories of the guy who owns this resort(...)
 Apparently he's gone adventuring a tad lot in the past.
->Not suprised for how much it costs to upkeep this place
-It takes the queen's wealth entire worth and much more!
+>Not suprised for how much it costs to upkeep this place(...)
+It takes the entire queen's wealth and much more!
 ",">He oido muchas historias sobre el tipo que lleva el complejo(...)
 Aparentemente solía irse de aventura con frecuencia en el pasado.
->No me sorprende teniendo en cuenta el costo de mantenimiento de este sitio.
+>No me sorprende teniendo en cuenta el costo de mantenimiento de este sitio.(...)
 Requiere la entera riqueza de la reina misma y mucho más!"
 azzy_flavor_2,">I wonder how  things are up there with the Wasps?...
 I left that place [wave amp=25.0 freq=5.0 connected=1]loooong[/wave] ago but I 'ear some stuff recently.
@@ -98,17 +100,30 @@ Deje ese lugar hace [wave amp=25.0 freq=5.0 connected=1]baaastante[/wave] rato, 
 Incluso conoci a mi pareja aqui. Así que, gracias a Venus y demas charla.
 >Oops, perdona, se me ha ido el hilo otra vez....(...)
 ¿Que necesitas, (name)?"
+azzy_flavor_3,">Have you seen Echo?(...)
+I need 'em to go pick more supplies.(...)
+>Don't fear them, they a good moth.(...)
+I brought 'em to the settlement to relax for a bit.
+>But once in a moon they seem unable to do so.
+>[color=grey][wave amp=25.0 freq=5.0 connected=1]sigh[/wave][/color]. I really appreciate them trying.(...)
+Hard times, ya know?",">¿Has visto a Echo?(...)
+Ocupo que se encargen de unos mandados(...)
+>No les temas mucho, son una polilla amable.(...)
+Les traje al asentamiento para relajarse por un tiempo.
+>Pero en ocasion, algo de estres se llevan.
+>[color=grey][wave amp=25.0 freq=5.0 connected=1]suspiro[/wave][/color] . Aprecio que lo intenten.(...)
+Tiempos dificiles, ¿sabes?"
 kut_flavor_0,">No one in this town has proved more expert taste than the aphids.
-The best customers I ever had.
->They even gather around to see my craft.
-Truly an inspiring environment.",">Nadie en este pueblo ha provado tener un sentido del gusto tan exquisito como los áfidos.
+They are the best customers I ever had.
+>They even gather around to see my craft.(...)
+[wave amp=25.0 freq=5.0 connected=1]Truly an inspiring environment.[/wave]",">Nadie en este pueblo ha provado tener un sentido del gusto tan exquisito como los áfidos.
 Los mejores clientes que uno puede pedir.
->Incluso se reunen para ver mi arte.
-Un ambiente asi me inspira."
-kut_flavor_1,">Mmpfh...
+>Incluso se reunen para verme crear arte.(...)
+[wave amp=25.0 freq=5.0 connected=1]Un ambiente asi me inspira.[/wave]"
+kut_flavor_1,">Mmpfh...(...)
 Should I try spice it up(...) or(...) should I make it sickly sweet.
 >Oh, you're(...), (name)?
-Did you came to see a culinary master in action?",">Mmpfh...
+Did you came to see a culinary master in action?",">Mmpfh...(...)
 ¿Deberia intentar añadirle picor(...) o hacerlo amargamente dulce?.
 >Oh, tu eres(...), (name)?
 ¿Has venido a ver a un maestro culinario en acción?"
@@ -126,13 +141,20 @@ Y todo depende de los ingredientes que uses."
 crystal_flavor_0,>Fi,>Fi
 crystal_flavor_1,>Fi Fi,>Fi Fi
 crystal_flavor_2,>[wave amp=25.0 freq=5.0 connected=1][color='grey']squeak,>[wave amp=25.0 freq=5.0 connected=1][color='grey']chi chi
+crystal_flavor_3,">Fi fi(...)
+Fi?",">Fi fi(...)
+Fi?"
 echo_flavor_0,">...(...)What do you want?(...)
 Don't I look busy to you?
->You look lost, I am pretty sure they gave you a [color=red]Help[/color] guide(...)
+>Are you lost or what?
+>...(...[0.7])Oh bother(...), you really are.
+>I am pretty sure they gave you a [color=red]Help[/color] guide(...)
 It would be a good idea if you read it, don't you think.",">...(...)¿Que es lo que buscas?(...)
 ¿No te parezco ocupade?
->Pareces perdid(o/a), estoy segure que te dieron una guía de [color=red]ayuda[/color](...)
-No te parece que sería una buena idea leerlo ahora."
+>¿Estas perdid(o/a) o qué?
+>...(...[0.7])Oh(...), lo estas, no es cierto.
+>Estoy segure que te dieron una guía de [color=red]ayuda[/color](...)
+Sería una buena idea leerlo ahora, no te parece."
 echo_flavor_1,">Where is the bridge?(...)
 Bridge's gone.(...) Not fixing that now.(...)
 I am busy standing here.",">¿Donde esta el puente?(...)
@@ -143,7 +165,21 @@ Erhm, hello?
 >Could you mind your own business?",">...[font_size=20]De verdad tenia que formar parte de esto por ella...[/font_size]...(...)
 Huh, ¿hola?
 >¿Te importa?"
-echo_flavor_3,>...(...[1.0]) Get lost.,>...(...[1.0]) Pierdete.
+echo_flavor_3,">Have you ever seen the Giant's Lair?(...)
+Me either(...), but I heard exciting things.
+>A pretty fun adventure, in and out. (...)Mostly in.(...)
+Out was the hard part.",">¿Alguna vez has visto la Tierra de los Gigantes?
+Yo tampoco.(...) Pero he escuchade cosas sorprendentes.
+>Una aventura de locos, de ida y vuelta. (...)Mayormente ida.(...)
+Vuelta era la parte dificíl."
 echo_flavor_4,">Don't cause trouble. I am watching you.(...)
-All four of my eyes are.",">No causes problemas, te estare vigilando.(...)
+All four of my eyes are.",">No causes problemas, te estoy vigilando.(...)
 Mis cuatro ojos lo hacen."
+echo_flavor_5,">They hired me to guard the resort 
+but all I do is watch for these [i]dumb[/i] boxes.
+>There is no way anything bigger than a seedling is gonna come knocking the door.(...)
+But I sure wished...",">Me contrataron para hacer de guardia en el complejo,
+pero todo lo que hago es solo mirar estas [i]estupidas[/i] cajas.
+>No hay manera que cualquier cosa más grande que un áfido sea capaz
+de venir a tocar la puerta.(...)
+Solo puedo esperar..."

@@ -82,13 +82,17 @@ public partial class OptionsMenu : Control
 	{
 		AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb((float)value));
 		OptionsManager.Settings.VolumeSound = (float)value;
-		SoundManager.CreateSound(Aphid.Audio_Step, false, "Sounds");
+		var _player = SoundManager.SFXPlayer.Duplicate() as AudioStreamPlayer;
+		_player.Bus = "Sounds";
+		SoundManager.CreateSound(Aphid.Audio_Step, _player, false);
 	}
 	private void OnAmbienceSlider(double value)
 	{
 		AudioServer.SetBusVolumeDb(3, Mathf.LinearToDb((float)value));
 		OptionsManager.Settings.VolumeAmbience = (float)value;
-		SoundManager.CreateSound(Aphid.Audio_Step, false, "Ambience");
+		var _player = SoundManager.SFXPlayer.Duplicate() as AudioStreamPlayer;
+		_player.Bus = "Ambience";
+		SoundManager.CreateSound(Aphid.Audio_Step, _player, false);
 	}
 	private void OnUISlider(double value)
 	{

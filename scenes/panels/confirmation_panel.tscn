@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://blrpv4ys07erj"]
+[gd_scene load_steps=16 format=3 uid="uid://blrpv4ys07erj"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_2yndv"]
 [ext_resource type="Script" uid="uid://co0e1gb8uuuxb" path="res://scripts/gui/ConfirmationPopup.cs" id="2_8dn0h"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="2_87n6b"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="3_5mj36"]
-[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="5_55ynw"]
+[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="5_n8f61"]
+[ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="6_2mxcw"]
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="6_i5hp4"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="7_bpalb"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="8_wa0ti"]
@@ -43,6 +44,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_p0jdc"]
 resource_name = "open"
+length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -89,7 +91,7 @@ cancel_button = NodePath("theme/cancel")
 yes_button = NodePath("theme/yes_button")
 no_button = NodePath("theme/no_button")
 confirmation_edit = NodePath("theme/confirm")
-confirmation_label = NodePath("theme/bg/warning")
+confirmation_label = NodePath("theme/display_bg/warning")
 progress = NodePath("theme/progress")
 progressCurve = SubResource("Curve_nsmtd")
 
@@ -101,10 +103,11 @@ libraries = {
 [node name="load_bg" type="TextureRect" parent="."]
 self_modulate = Color(1, 1, 1, 0)
 material = SubResource("ShaderMaterial_ftv1n")
-offset_left = -20.0
-offset_top = -39.0
-offset_right = 1324.0
-offset_bottom = 775.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("3_5mj36")
 stretch_mode = 1
 
@@ -126,33 +129,49 @@ scale = Vector2(1, 1e-05)
 theme = ExtResource("1_2yndv")
 
 [node name="bg" type="NinePatchRect" parent="theme"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
 layout_mode = 0
 offset_left = -364.0
 offset_top = -224.0
 offset_right = 430.0
 offset_bottom = 238.0
-texture = ExtResource("5_55ynw")
+texture = ExtResource("5_n8f61")
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="display_bg" type="NinePatchRect" parent="theme"]
+self_modulate = Color(0, 0, 0, 0.517647)
+layout_mode = 0
+offset_left = -281.0
+offset_top = -174.0
+offset_right = 337.0
+offset_bottom = 94.0
+texture = ExtResource("6_2mxcw")
 patch_margin_left = 20
 patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="warning" type="RichTextLabel" parent="theme/bg"]
+[node name="warning" type="RichTextLabel" parent="theme/display_bg"]
 layout_mode = 0
-offset_left = 71.0
-offset_top = 69.0
-offset_right = 722.0
-offset_bottom = 321.0
+offset_top = 10.0
+offset_right = 618.0
+offset_bottom = 262.0
 bbcode_enabled = true
 text = "confirmation_warning"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="confirm" type="TextEdit" parent="theme"]
 layout_mode = 0
 offset_left = -52.0
-offset_top = 103.0
+offset_top = 135.0
 offset_right = 118.0
-offset_bottom = 161.0
+offset_bottom = 193.0
 focus_neighbor_left = NodePath("../cancel")
 focus_neighbor_right = NodePath("../cancel")
 focus_next = NodePath("../cancel")
@@ -172,6 +191,11 @@ focus_next = NodePath("../confirm")
 focus_previous = NodePath("../confirm")
 texture_normal = ExtResource("6_i5hp4")
 stretch_mode = 4
+script = ExtResource("8_wa0ti")
+PressedColor = Color(0.74978, 0.74978, 0.74978, 1)
+FocusColor = Color(0.886262, 0.886261, 0.886262, 1)
+HoverColor = Color(0.563626, 0.563626, 0.563626, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
 [node name="yes_button" type="TextureButton" parent="theme"]
 self_modulate = Color(0.87451, 0.12549, 0.352941, 1)

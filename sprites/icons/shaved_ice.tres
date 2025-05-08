@@ -1,7 +1,7 @@
-[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://gv8mb763h0i4"]
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://b5d5o2ryqj8yj"]
 
-[ext_resource type="Texture2D" uid="uid://bsw45c1ouka3g" path="res://sprites/atlases/food_sprites.png" id="1_wexfn"]
+[ext_resource type="Texture2D" uid="uid://d14kkwbcyrl83" path="res://sprites/atlases/food_sprites.res" id="1_crai0"]
 
 [resource]
-atlas = ExtResource("1_wexfn")
-region = Rect2(48, 0, 16, 16)
+atlas = ExtResource("1_crai0")
+region = Rect2(594, 0, 18, 18)

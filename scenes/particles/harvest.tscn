@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://cn8dkk8s0hi0u" path="res://sprites/particles/harvest_sprite.tres" id="1_jjsms"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6x8fq"]
-blend_mode = 2
 light_mode = 1
 
 [sub_resource type="Curve" id="Curve_qasph"]
@@ -23,7 +22,8 @@ curve = SubResource("Curve_ruyml")
 
 [sub_resource type="Gradient" id="Gradient_508n5"]
 interpolation_mode = 2
-colors = PackedColorArray(0.800328, 0.262717, 0.10717, 1, 0.959775, 0.675616, 0, 1)
+offsets = PackedFloat32Array(0.0041841, 1)
+colors = PackedColorArray(0.582462, 0.292088, 0.924255, 1, 0.730511, 2.14663e-05, 0.524444, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_tqohv"]
 gradient = SubResource("Gradient_508n5")
@@ -44,23 +44,18 @@ curve = SubResource("Curve_obm67")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_41uej"]
 particle_flag_disable_z = true
-emission_shape_scale = Vector3(30, 20, 1)
+emission_shape_scale = Vector3(30, 10, 1)
 emission_shape = 3
 emission_box_extents = Vector3(1, 1, 1)
-angle_min = 446.5
-angle_max = 585.8
-spread = 67.075
-angular_velocity_min = 0.999984
-angular_velocity_max = 0.999984
+flatness = 1.0
 angular_velocity_curve = SubResource("CurveTexture_gtfx1")
-directional_velocity_min = -30.79
-directional_velocity_max = -1.60933e-05
+directional_velocity_min = -60.0
+directional_velocity_max = -20.0
 directional_velocity_curve = SubResource("CurveXYZTexture_kxb76")
-radial_velocity_min = -2.7
-radial_velocity_max = 1.65
 gravity = Vector3(0, 0, 0)
 attractor_interaction_enabled = false
 scale_min = 0.5
+scale_max = 1.5
 scale_curve = SubResource("CurveTexture_xneat")
 color_ramp = SubResource("GradientTexture1D_tqohv")
 alpha_curve = SubResource("CurveTexture_apq25")
@@ -73,7 +68,6 @@ turbulence_influence_max = 0.969
 light_mask = 0
 z_index = 1000
 material = SubResource("CanvasItemMaterial_6x8fq")
-amount = 20
-amount_ratio = 0.7407
+amount = 30
 texture = ExtResource("1_jjsms")
 process_material = SubResource("ParticleProcessMaterial_41uej")

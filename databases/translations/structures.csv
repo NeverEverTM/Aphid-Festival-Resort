@@ -9,7 +9,7 @@ box_0_name,Supply Box,Caja de Suministros
 box_0_desc,"It has been already emptied by the resort, so it just looks “nice”.","Ya ha sido vaciado por el hotel, asi que simplemente esta por las “apariencias”."
 torch_name,Leaf Torch,Antorcha Hoja
 torch_desc,"A light to iluminate the darkness, the way they work is beyond your comprehension.","Una luz para iluminar el camino, el como funcionan es un misterio."
-bee_rug_name,Hand-crafted Golden Rug,Carpeta Dorada Artesanal
+bee_rug_name,HandCrafted Golden Rug,Carpeta Dorada Artesanal
 bee_rug_desc,A meticulously hand-crafted rug with the symbol of the Bee Kingdom stiched onto it.,Una carpeta hecha meticulosamente a mano. Tiene el simbolo del Reino de las Abejas estampado en el.
 grass_0_name,Patch of Grass,Parche de Hierba
 grass_0_desc,"It's a piece of grass, can't get any simpler than that.","Es un pedazo de hierba, no puede ser mas simple que eso."
@@ -17,7 +17,7 @@ grass_1_name,Flame Tuft,Mata Flama
 grass_1_desc,"It looks like a fire, hopefully it won't start a real one of its own.","No mata las flamas, de hecho, parece que es en si misma, una flama."
 largegrass_0_name,Flame Vine,Vid Flama
 largegrass_0_desc,A common type of tuft that grows everywhere in the Golden Path.,Una mata común que crece en todos los alreadores del Camino Dorado
-sign_no_aphid_name,“No Aphids Allowed” Sign,Cartel de “Prohibido Áfidos”
+sign_no_aphid_name,“No Aphids Allowed” Sign,Señal “Prohibido Áfidos”
 sign_no_aphid_desc,"That sign can't stop me, because I can't read! Wait...",¡Este letrero no puede detenerme porque no sé leer! Espera...
 berry_bush_name,Berry Bush,Arbusto de Bayas
 berry_bush_desc,"This bush grows edible berries every so often, and they can be used to feed Aphids.","Este arbusto crece bayas comestibles ocasionalmente, y se pueden usan para alimentar a los Áfidos."
@@ -37,3 +37,7 @@ stump_name,Stump Chair,Silla de Tocón
 stump_desc,A simple chair made from the base of a larger twig.,Una simple silla hecha con la base de una rama de gran tamaño.
 lilypad_name,Lilypad,Nenúfar
 lilypad_desc,Adorn the water surface with this rather elegant water leaf.,Adorna la superficie del agua con esta elegante hoja aquatica.
+image_sign_name,Small Billboard,Cartel Pequeño
+image_sign_desc,Display your very own imagery in this fabulous tiny teenie billboard.,Despliega tus propias imagenes en esta fabulosa cartelera diminuta.
+big_image_sign_name,Big Billboard,Cartel Largo
+big_image_sign_desc,Display your very own imagery in this fabulous big boy billboard.,Despliega tus propias imagenes en esta fabulosa cartelera gigante.

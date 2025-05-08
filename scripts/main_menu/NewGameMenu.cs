@@ -65,13 +65,14 @@ public partial class NewGameMenu : Control
 	{
 		MainMenu.Instance.CreateMenuAction(newGameCategory, () =>
 		{
-			resort_name_input.Text = "";
-			player_name_input.Text = "";
-			pronouns_input.Text = "";
+			resort_name_input.Text = string.Empty;
+			player_name_input.Text = string.Empty;
+			pronouns_input.Text = string.Empty;
 			player_name_input.GrabFocus();
 			MainMenu.Instance.SetMenu(this);
 			menuPlayer.Play("open");
 		});
+		MainMenu.Instance.SetCategory(newGameCategory);
 	}
 	private async void CreateResort()
 	{

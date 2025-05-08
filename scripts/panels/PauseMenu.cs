@@ -18,8 +18,8 @@ public partial class PauseMenu : Control
 		Instance = this;
 
 		Action[] actions =
-        [
-            ResumeButton,
+		[
+			ResumeButton,
 			OptionsButton,
 			ControlsButton,
 			HelpButton,
@@ -37,7 +37,7 @@ public partial class PauseMenu : Control
 				OnButtonPress(actions[new_index]);
 			};
 			buttons[i].FocusEntered += () => SoundManager.CreateSound(switch_sound);
-			(buttons[i].GetChild(0) as Label).Text = Tr($"pause_{buttons[i].Name}");
+			(buttons[i].GetChild(0) as Label).Text = $"pause_{buttons[i].Name}";
 		}
 
 		menu = new("pause", menu_player, null, null, false);
@@ -51,13 +51,11 @@ public partial class PauseMenu : Control
 	{
 		if (_state)
 		{
-			if (FreeCameraManager.Instance.Enabled || CanvasManager.Instance.IsInFocus 
-					|| CanvasManager.Menus.IsBusy || DialogManager.IsActive)
+			if (FreeCameraManager.Enabled || CanvasManager.Menus.IsBusy || DialogManager.IsActive)
 				return;
-				
+
 			SoundManager.PauseSong();
 			CanvasManager.Menus.OpenMenu(menu);
-			CanvasManager.RemoveFocus();
 			buttons[0].GrabFocus();
 			GetTree().Paused = true;
 			SoundManager.CreateSound(switch_sound);
@@ -121,8 +119,15 @@ public partial class PauseMenu : Control
 		await SaveSystem.SaveProfile();
 		await GlobalManager.LoadScene(GlobalManager.SceneName.Menu);
 	}
-	private async void ExitButton()
+	private void ExitButton()
 	{
+		ConfirmationPopup.Create(ExitGame, null,
+			ConfirmationPopup.ConfirmationEnum.Fast, "confirmation_exit");
+
+	}
+	private async void ExitGame()
+	{
+		GlobalManager.IsBusy = true;
 		await SaveSystem.SaveProfile();
 		GetTree().Quit();
 	}

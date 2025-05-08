@@ -12,7 +12,7 @@ public partial class CameraManager : Camera2D
     /// </summary>
     public static Vector2 SCREEN_SIZE_CANVAS { get; private set; }
     /// <summary>
-    /// The center of the viweport, offset starting from the top-left.
+    /// The center of the viewport, offset starting from the top-left.
     /// </summary>
     public static Vector2 SCREEN_CENTER_CANVAS { get; private set; }
     /// <summary>
@@ -37,7 +37,7 @@ public partial class CameraManager : Camera2D
         GetViewport().SizeChanged -= UpdateViewportSizeTracking;
     }
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
     {
         if (!IsInstanceValid(FocusedObject))
         {
@@ -56,18 +56,21 @@ public partial class CameraManager : Camera2D
         // for moving buildings and stuff (yes, its intentional that it stacks with arrow movement)
         if (EnableMouseFollow)
         {
-            Vector2 _movement = GetMouseToWorldPosition() - Instance.GlobalPosition;
+            Vector2 _movement = GetMouseToWorldPosition() - Instance.GetScreenCenterPosition();
             if (Math.Abs(_movement.X) > SCREEN_CENTER_GLOBAL.X * 0.8f || Math.Abs(_movement.Y) > SCREEN_CENTER_GLOBAL.Y * 0.8f)
                 Instance.GlobalPosition += _movement.Normalized() * 8;
         }
 
-        Instance.GlobalPosition += Input.GetVector(InputNames.Left, InputNames.Right, InputNames.Up, InputNames.Down) * 8;
+        Instance.GlobalPosition += Input.GetVector(InputNames.Left, InputNames.Right, InputNames.Up, InputNames.Down)
+                 * (Input.IsActionPressed(InputNames.Run) ? 16 : 8);
     }
+    // Sets current focus target for the camera. If is an aphid, it fills the current focused aphid too.
     public static void Focus(Node2D _focusObject)
     {
         FocusedObject = _focusObject;
         if (FocusedObject is Aphid)
             FocusedAphid = FocusedObject as Aphid;
+        Instance.GlobalPosition = _focusObject.GlobalPosition;
     }
     public static void UnFocus()
     {
@@ -95,12 +98,9 @@ public partial class CameraManager : Camera2D
     }
 
     /// <returns>The mouse position translated to global position/returns>
-    public static Vector2 GetMouseToWorldPosition() => Instance.GlobalPosition + (Instance.GetViewport().GetMousePosition() - SCREEN_CENTER_CANVAS) * 1 / Instance.Zoom;
-    public static Vector2 GetMouseToCanvasCenter() => Instance.GetViewport().GetMousePosition() - SCREEN_CENTER_CANVAS;
-    /// <summary>
-    /// Translates world position to canvas coordinates.
-    /// </summary>
-    /// <returns>A 2D Vector of an objects position translated to canvas coordinates</returns>
-    public static Vector2 GetWorldToCanvasPosition(Vector2 _position) => SCREEN_CENTER_CANVAS + (_position - Instance.GlobalPosition) * Instance.Zoom;
-
+    public static Vector2 GetMouseToWorldPosition() => Instance.GetGlobalMousePosition();
+    /// <returns>The mouse position in canvas coordinates</returns>
+    public static Vector2 GetMouseToCanvasPosition() => Instance.GetLocalMousePosition();
+    /// <returns>A global position translated to canvas coordinates</returns>
+    public static Vector2 GetWorldToCanvasPosition(Vector2 _position) => (_position - Instance.GetScreenCenterPosition()) * Instance.Zoom.X + SCREEN_CENTER_CANVAS;
 }

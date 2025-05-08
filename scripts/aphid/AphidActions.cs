@@ -1,8 +1,9 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using static Aphid;
 
-public partial class AphidActions : Aphid
+public class AphidActions
 {
 	public class HungerDecay : IDecayEvent
 	{
@@ -14,10 +15,7 @@ public partial class AphidActions : Aphid
 			else
 			{
 				aphid.Instance.Status.AddHunger(-1);
-
-				TimeLeft = aphid.State.Is(StateEnum.Sleep) ?
-					AphidData.Food_Drain_Time * 2f :
-					AphidData.Food_Drain_Time;
+				TimeLeft = AphidData.Food_Drain_Time;
 			}
 		}
 	}
@@ -60,7 +58,7 @@ public partial class AphidActions : Aphid
 
 				// small chance to sleep every tick, chances increase the more sleepiness you have
 				if (aphid.Instance.Status.Tiredness == 100 || GlobalManager.Utils.GetRandomByWeight
-						(new float[] { 100 - aphid.Instance.Status.Tiredness, aphid.Instance.Status.Tiredness }) == 1)
+						([100 - aphid.Instance.Status.Tiredness, aphid.Instance.Status.Tiredness]) == 1)
 					aphid.SetState(StateEnum.Sleep);
 			}
 		}
@@ -68,7 +66,7 @@ public partial class AphidActions : Aphid
 	public class AffectionDecay : IDecayEvent
 	{
 		public float TimeLeft { get; set; }
-		private const float affection_decay = 13.2f;
+		private const float affection_decay = 10;
 
 		public void Tick(Aphid aphid, EventArgs args, float _delta)
 		{
@@ -80,9 +78,7 @@ public partial class AphidActions : Aphid
 			else
 			{
 				aphid.Instance.Status.AddAffection(-1);
-				TimeLeft = aphid.State.Is(StateEnum.Sleep) ?
-					affection_decay * 2f :
-					affection_decay;
+				TimeLeft = affection_decay;
 			}
 		}
 	}
@@ -123,7 +119,7 @@ public partial class AphidActions : Aphid
 			// Grow up into an adult
 			if (!aphid.Instance.Status.IsAdult)
 			{
-				if (aphid.State.Is(StateEnum.Idle) && 
+				if (aphid.State.Is(StateEnum.Idle) &&
 						aphid.Instance.Status.Age > AphidData.Age_Adulthood)
 				{
 					aphid.Instance.Status.IsAdult = true;
@@ -132,9 +128,10 @@ public partial class AphidActions : Aphid
 			}
 			// Die at the old age of old years old
 			else if (aphid.Instance.Status.Age > AphidData.Age_Death)
-				aphid.Die();
+				aphid.PrepareToDie();
 		}
 	}
+
 	/* NOT IMPLEMENTED */
 	public class HealthDecay : IDecayEvent
 	{
@@ -146,14 +143,77 @@ public partial class AphidActions : Aphid
 		}
 	}
 
+	public class AphidInteraction : ITriggerEvent
+	{
+		public string TriggerID => StringNames.InteractableTag;
+
+		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
+		{
+			// Attempts interacting with the CollisionObject itself
+			if (_node is IInteractEvent)
+				_node.CallDeferred(StringNames.InteractFunc, _aphid);
+			// Otherwise, attempts to interact with its parent instead
+			else if (_node.GetParent() is IInteractEvent)
+				_node.GetParent().CallDeferred(StringNames.InteractFunc, _aphid);
+		}
+	}
+	public class AphidFriendhsip : ITriggerEvent
+	{
+		public string TriggerID => "aphid";
+		private readonly static float[] aphid_interaction_weights = [50, 50];
+
+		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
+		{
+			if (!_aphid.State.Is(StateEnum.Idle))
+				return;
+			Aphid _otherAphid = _node as Aphid;
+			if (!_otherAphid.State.Is(StateEnum.Idle))
+				return;
+
+			// met strangers you see for the first time
+			if (!_aphid.Instance.Genes.Relationships.TryGetValue(_otherAphid.Instance.GUID, out Relationship current_relationship))
+			{
+				current_relationship = new(_otherAphid.Instance.GUID, Relationship.RelationshipLevel.Acquaintance);
+				_aphid.Instance.Genes.Relationships.Add(_otherAphid.Instance.GUID, current_relationship);
+				return;
+			}
+			if (_aphid.rng.Randf() < 0.67f) //flip a coin on wheter it happens
+				return;
+
+			// attempt social interaction
+			(_aphid.StateArgs as IdleState.IdleArgs).stand_time = (_otherAphid.StateArgs as IdleState.IdleArgs).stand_time = 5;
+			_aphid.skin.SetFlipDirection(_otherAphid.GlobalPosition - _aphid.GlobalPosition);
+			_aphid.CreateTimer(() => SoundManager.CreateSound2D(_aphid.AudioDynamic_Idle, _aphid.GlobalPosition), 1);
+
+			switch (_aphid.rng.RandWeighted(aphid_interaction_weights))
+			{
+				case 0: // get angry at interaction
+					_aphid.CreateTimer(() =>
+					{
+						current_relationship.AddToTotal(-3);
+						GlobalManager.EmitParticles("anger", _aphid.GlobalPosition, false);
+					}, 2);
+					return;
+				case 1: // get pleased at interaction
+					_aphid.CreateTimer(() =>
+					{
+						current_relationship.AddToTotal(3);
+						GlobalManager.EmitParticles("heart", _aphid.GlobalPosition, false);
+						_aphid.skin.DoJumpAnim();
+					}, 2);
+					return;
+			}
+		}
+	}
+
 	public class BusyState : IState
 	{
 		public StateEnum Type => StateEnum.Busy;
-        public StateEnum[] TransitionList => null;
+		public StateEnum[] TransitionList => null;
 		public bool TransitionToAnything = true;
 		public bool Locked { get; set; }
 
-        public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
+		public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
 		{
 			Logger.Print(Logger.LogPriority.Debug, $"AphidActions: {aphid.Instance.ID} has been set to busy.");
 		}
@@ -169,27 +229,30 @@ public partial class AphidActions : Aphid
 	public class IdleState : IState
 	{
 		public StateEnum Type => StateEnum.Idle;
-        public StateEnum[] TransitionList => null;
+		public StateEnum[] TransitionList => null;
 		public bool TransitionToAnything => true;
 		public bool Locked { get; set; }
 
-        private const int idle_rand_range = 100;
+		private const int idle_rand_range = 50;
 		private const float idle_timer_range = 1.15f, idle_timeout = 5f;
 
-		public class IdleArgs : EventArgs
+		public class IdleArgs(Vector2 target_position, float stand_time, float timeout = 0) : EventArgs
 		{
-			public Vector2 target_position;
-			public float timeleft, decay_rate = 1;
-			public float timeout = 0;
+			public Vector2 target_position = target_position;
+			public float stand_time = stand_time;
+			public float timeout = timeout;
+			public float decay_rate = 1;
 		}
 
 		public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
 		{
-			aphid.StateArgs = new IdleArgs()
-			{
-				timeleft = aphid.rng.RandfRange(idle_timer_range, idle_timer_range * 2),
-				target_position = aphid.GlobalPosition
-			};
+			if (args is IdleArgs)
+				aphid.StateArgs = args as IdleArgs;
+			else
+				aphid.StateArgs = new IdleArgs(
+					aphid.GlobalPosition,
+					aphid.rng.RandfRange(idle_timer_range, idle_timer_range * 2)
+				);
 		}
 
 		public void Exit(Aphid aphid, EventArgs args, StateEnum _next)
@@ -201,19 +264,21 @@ public partial class AphidActions : Aphid
 		{
 			IdleArgs _args = args as IdleArgs;
 			// standing still wait time
-			if (_args.timeleft > 0)
+			if (_args.stand_time > 0)
 			{
-				(aphid.StateArgs as IdleArgs).timeleft -= delta * _args.decay_rate;
+				aphid.SetMovementDirection(Vector2.Zero);
+				_args.timeout = 0;
+				_args.stand_time -= delta * _args.decay_rate;
 				return;
 			}
 
 			// we are close to idle pos, generate a new one and stand still for a few seconds
-			if (aphid.GlobalPosition.DistanceTo(_args.target_position) < 20)
+			if (aphid.GlobalPosition.DistanceSquaredTo(_args.target_position) < 400)
 			{
-				(aphid.StateArgs as IdleArgs).target_position = new Vector2(aphid.rng.RandfRange(-idle_rand_range, idle_rand_range),
+				_args.target_position = new Vector2(aphid.rng.RandfRange(-idle_rand_range, idle_rand_range),
 					aphid.rng.RandfRange(-idle_rand_range, idle_rand_range)) + aphid.GlobalPosition;
 				aphid.SetMovementDirection(Vector2.Zero);
-				(aphid.StateArgs as IdleArgs).timeleft = aphid.rng.RandfRange(idle_timer_range, idle_timer_range * 2);
+				_args.stand_time = aphid.rng.RandfRange(idle_timer_range, idle_timer_range * 2);
 				_args.timeout = 0;
 				return;
 			}
@@ -222,10 +287,7 @@ public partial class AphidActions : Aphid
 			aphid.SetMovementDirection(_args.target_position - aphid.GlobalPosition);
 			_args.timeout += delta;
 			if (_args.timeout > idle_timeout)
-			{
 				_args.target_position = aphid.GlobalPosition;
-				_args.timeout = 0;
-			}
 		}
 	}
 	public class HungryState : IState, ITriggerEvent
@@ -269,7 +331,7 @@ public partial class AphidActions : Aphid
 			ref Node2D _food_item = ref (aphid.StateArgs as HungryArgs).food_item;
 
 			// if is not valid, too far away, or claimed by someone, let go
-			if (!IsInstanceValid(_food_item) || aphid.GlobalPosition.DistanceTo(_food_item.GlobalPosition) > 200
+			if (!GameManager.IsInstanceValid(_food_item) || aphid.GlobalPosition.DistanceTo(_food_item.GlobalPosition) > 200
 				|| !(bool)_food_item.GetMeta(StringNames.PickupMeta) || !_food_item.HasMeta(StringNames.TagMeta))
 			{
 				aphid.SetState(StateEnum.Idle);
@@ -376,7 +438,7 @@ public partial class AphidActions : Aphid
 				OneShot = true
 			};
 			food_pursue_timer.Timeout += () =>
-			{	
+			{
 				if (aphid.State.Is(StateEnum.Hungry))
 				{
 					food_ignore_list.Add(_food_item);
@@ -397,10 +459,10 @@ public partial class AphidActions : Aphid
 	public class EatingState : IState
 	{
 		public StateEnum Type => StateEnum.Eat;
-        public StateEnum[] TransitionList => new StateEnum[]{ StateEnum.Idle };
+		public StateEnum[] TransitionList => [StateEnum.Idle];
 		public bool Locked { get; set; }
 
-        private int foodgobble_shutter_speed;
+		private int foodgobble_shutter_speed;
 		private bool food_item_switch;
 		protected float gobble_timer;
 		private const float gobble_duration = 2f;
@@ -422,7 +484,7 @@ public partial class AphidActions : Aphid
 			// Gobbling it up, yum yum
 			gobble_timer -= delta;
 			ref Node2D _food_item = ref (aphid.StateArgs as HungryState.HungryArgs).food_item;
-			if (!IsInstanceValid(_food_item))
+			if (!GameManager.IsInstanceValid(_food_item))
 			{
 				Locked = false;
 				aphid.SetState(StateEnum.Idle);
@@ -438,7 +500,7 @@ public partial class AphidActions : Aphid
 					_food_item.Scale -= new Vector2(0.05f, 0.05f);
 				food_item_switch = !food_item_switch;
 				foodgobble_shutter_speed = 8;
-				aphid.PlaySound(Audio_Nom, true);
+				SoundManager.CreateSound2D(Audio_Nom, aphid.GlobalPosition);
 			}
 			else
 				foodgobble_shutter_speed--;
@@ -454,15 +516,12 @@ public partial class AphidActions : Aphid
 
 				if (_food.drink_value > 0)
 					aphid.Instance.Status.AddThirst(_food.drink_value * _multi);
-				
+
 				// set skill values
 				if (_food.skill_list != null && _food.skill_list.Length > 0)
 				{
 					for (int i = 0; i < _food.skill_list.Length; i++)
-					{
-						int _index = aphid.Instance.Genes.Skills.FindIndex((s) => s.Name == _food.skill_list[i]);
-						aphid.Instance.Genes.Skills[_index].GivePoints(_food.skill_values[i]);
-					}
+						aphid.Instance.Genes.Skills[_food.skill_list[i]].GivePoints(_food.skill_values[i]);
 				}
 
 				// Dispose of the food item now
@@ -475,11 +534,11 @@ public partial class AphidActions : Aphid
 	public class SleepState : IState
 	{
 		public StateEnum Type => StateEnum.Sleep;
-		public StateEnum[] TransitionList => new StateEnum[] { StateEnum.Idle, StateEnum.Pet };
+		public StateEnum[] TransitionList => [StateEnum.Idle, StateEnum.Pet];
 		public bool Locked { get; set; }
 
 		private float sleep_gain_timer;
-		private const float sleep_gain = 4.5f;
+		private const float sleep_gain = 3.5f;
 		private GpuParticles2D sleep_effect;
 
 		public class SleepArgs : EventArgs
@@ -518,7 +577,7 @@ public partial class AphidActions : Aphid
 				sleep_gain_timer -= delta;
 			else
 			{
-				aphid.Instance.Status.AddTiredness(-(aphid.rng.RandfRange(0.75f, 1.95f) * _args.gain_rate));
+				aphid.Instance.Status.AddTiredness(-1 * _args.gain_rate);
 				sleep_gain_timer = sleep_gain;
 				// bare minimum sleep
 				if (aphid.Instance.Status.Tiredness > 15)
@@ -526,7 +585,7 @@ public partial class AphidActions : Aphid
 
 				// chance to wake up after getting enough sleep
 				if (aphid.Instance.Status.Tiredness == 0 || GlobalManager.Utils.GetRandomByWeight
-						(new float[] { 100 - aphid.Instance.Status.Tiredness, aphid.Instance.Status.Tiredness }) == 0)
+						([100 - aphid.Instance.Status.Tiredness, aphid.Instance.Status.Tiredness]) == 0)
 					aphid.WakeUp(false, true);
 			}
 		}
@@ -534,7 +593,7 @@ public partial class AphidActions : Aphid
 	public class PetState : IState
 	{
 		public StateEnum Type => StateEnum.Pet;
-		public StateEnum[] TransitionList => new StateEnum[] { StateEnum.Idle };
+		public StateEnum[] TransitionList => [StateEnum.Idle];
 		public bool Locked { get; set; }
 
 		private float pet_timer;
@@ -543,7 +602,7 @@ public partial class AphidActions : Aphid
 		{
 			pet_timer = AphidData.PET_DURATION;
 			Player.Instance.SetDisabled(true);
-			Player.Instance.RunDisabledTimer(AphidData.PET_DURATION);
+			Player.Instance.RunDisabledTimer(AphidData.PET_DURATION, false, false);
 
 			// visuals
 			Player.Instance.SetPlayerAnim("pet");
@@ -563,7 +622,7 @@ public partial class AphidActions : Aphid
 			else
 			{
 				// If low on affection, raise bondship too
-				if (aphid.Instance.Status.Affection < 80)
+				if (aphid.Instance.Status.Affection <= 90)
 				{
 					GlobalManager.EmitParticles("heart", aphid.GlobalPosition - new Vector2(0, 10));
 					aphid.Instance.Status.AddBondship(1);
@@ -577,14 +636,14 @@ public partial class AphidActions : Aphid
 	public class BreedState : IState, ITriggerEvent, IDecayEvent
 	{
 		public StateEnum Type => StateEnum.Breed;
-		public StateEnum[] TransitionList => new StateEnum[] { StateEnum.Idle };
+		public StateEnum[] TransitionList => [StateEnum.Idle];
 		public bool Locked { get; set; }
 
 		public string TriggerID => Tag;
 		public float TimeLeft { get; set; }
 
-		private readonly float[] breeding_weights = new float[] { 35, 65 };
-		private const int BREED_TIMEOUT_BASE = 60, PARTNER_TIMEOUT_BASE = 10;
+		private readonly float[] breeding_weights = [70, 30];
+		private const int BREED_TIMEOUT_BASE = 80, PARTNER_TIMEOUT_BASE = 8;
 		public enum BreedEnum { Inactive = -1, WithItself = 0, WithPartner = 1, Starting = 2 }
 
 		private Aphid breed_partner;
@@ -611,13 +670,16 @@ public partial class AphidActions : Aphid
 		{
 			aphid.skin.OverrideMovementAnim = false;
 			aphid.TriggerActions.Remove(this);
+			aphid.Instance.Status.BreedMode = BreedEnum.Inactive;
 
 			breed_partner?.SetState(StateEnum.Idle);
 			if (breed_effect != null)
 				breed_effect.OneShot = true;
-
-			breed_partner = null;
 			breed_effect = null;
+
+			if (breed_partner != null)
+				breed_partner.Instance.Status.BreedMode = BreedEnum.Inactive;
+			breed_partner = null;
 		}
 
 		public void Tick(Aphid aphid, EventArgs args, float _delta)
@@ -670,22 +732,30 @@ public partial class AphidActions : Aphid
 		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
 		{
 			Aphid _partner = _node as Aphid;
-			// only get a partner that is also an adult and its in the mood
-			if (breed_partner != null || !_partner.Instance.Status.IsAdult ||
-					_partner.Instance.Status.Hunger < 10 || _partner.Instance.Status.Thirst < 10)
+			if (breed_partner != null)
 				return;
 
-			if (_partner.State.Is(StateEnum.Idle))
+			// only get a partner that is also an adult and its in the mood
+			if (!_partner.Instance.Status.IsAdult ||
+				_partner.Instance.Status.Hunger < 10 ||
+				_partner.Instance.Status.Thirst < 10)
+				return;
+
+			if (_aphid.Instance.Genes.Relationships.TryGetValue(_partner.Instance.GUID, out var _relation) &&
+					_relation.Total < -10)
+			return;
+
+			if (!_partner.State.Is(StateEnum.Idle))
+				return;
+
+			breed_partner = _partner;
+			_partner.skin.DoJumpAnim();
+			GlobalManager.EmitParticles("heart", _partner.GlobalPosition, false);
+			_partner.SetState(Type, new BreedArgs()
 			{
-				breed_partner = _partner;
-				_partner.skin.DoJumpAnim();
-				GlobalManager.EmitParticles("heart", _partner.GlobalPosition, false);
-				_partner.SetState(Type, new BreedArgs()
-				{
-					position = _aphid.GlobalPosition + (_aphid.skin.IsFlipped ? new(-28, -5) : new(28, -5)),
-				});
-				partner_timeout = PARTNER_TIMEOUT_BASE;
-			}
+				position = _aphid.GlobalPosition + (_aphid.skin.IsFlipped ? new(-40, -5) : new(40, -5)),
+			});
+			partner_timeout = PARTNER_TIMEOUT_BASE;
 		}
 		public async void Process(Aphid aphid, EventArgs args, float delta)
 		{
@@ -711,10 +781,13 @@ public partial class AphidActions : Aphid
 				if (breed_timeout_timer > 0)
 					breed_timeout_timer -= delta;
 				else
+				{
+					aphid.Instance.Status.BreedBuildup = AphidData.Breed_Cooldown / 5;
 					aphid.SetState(StateEnum.Idle);
+				}
 
 				// partner validity
-				if (!IsInstanceValid(breed_partner) || !breed_partner.State.Is(Type))
+				if (!GameManager.IsInstanceValid(breed_partner) || !breed_partner.State.Is(Type))
 					breed_partner = null;
 
 				// wait for partner
@@ -752,26 +825,40 @@ public partial class AphidActions : Aphid
 			}
 		}
 	}
-	/* NOT IMPLEMENTED */
+	
 	public class TrainState : IState
 	{
-		public StateEnum Type => throw new NotImplementedException();
-		public StateEnum[] TransitionList => throw new NotImplementedException();
+		public StateEnum Type => StateEnum.Train;
+		public StateEnum[] TransitionList => [StateEnum.Idle];
 		public bool Locked { get; set; }
+
+		public class TrainArgs : EventArgs
+		{
+			public int point_gain;
+			public float gain_rate;
+		}
 
 		public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
 		{
-			throw new NotImplementedException();
+			aphid.StateArgs = new();
+			// start chase
 		}
 
 		public void Exit(Aphid aphid, EventArgs args, StateEnum _next)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public void Process(Aphid aphid, EventArgs args, float delta)
 		{
-			throw new NotImplementedException();
+			// if far from it
+			// chase
+			// else
+			// snap to it and start anim & training
+
+			// if training
+			// gain points at rate
+			// check for exhaustion, if so, cancel
 		}
 	}
 	public class PlayState : IState

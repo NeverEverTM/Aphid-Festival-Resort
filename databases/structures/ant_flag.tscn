@@ -12,5 +12,4 @@ offset = Vector2(0, -35)
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(0, -16)
 shape = SubResource("RectangleShape2D_6ji7j")

@@ -75,41 +75,56 @@ public partial class PlayerInventory : Control
 		if (!IsInstanceValid(Instance) || !Instance.enabled)
 			return;
 
-		if (_item_name != "none")
+		if (_item_name == "none")
 		{
-			_item_slot.SetMeta(StringNames.IdMeta, _item_name);
-			_item_slot.TooltipText = $"{Tr(_item_name + "_name")}\n"
-				+ $"{Tr(_item_name + "_desc")}";
+			(_item_slot.GetChild(0) as TextureRect).Texture = null;
+			return;
+		}
 
-			(_item_slot.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
-			// press function
-			if (!is_selling)
+		_item_slot.SetMeta(StringNames.IdMeta, _item_name);
+		var _desc = Tr(_item_name + "_desc");
+		_item_slot.TooltipText = Tr(_item_name + "_name") + "\n" +
+			_desc + (_desc.Length == 20 ? "\n" : string.Empty);
+
+		(_item_slot.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
+		// press function
+		if (!is_selling)
+		{
+			void _pressed_store()
 			{
-				_item_slot.Pressed += () =>
+				if (Player.Instance.IsDisabled)
+					return;
+				if (Player.Instance.HeldPickup.Item != null && !StoreCurrentItem())
 				{
-					if (Player.Instance.IsDisabled)
-						return;
-					if (Player.Instance.HeldPickup.Item != null)
-						StoreCurrentItem();
-					PullItem(_item_name);
-					SetTo(false);
-				};
+					SoundManager.CreateSound("ui/button_fail");
+					return;
+				}
+
+				PullItem(_item_name);
+				SetTo(false);
 			}
-			else
-			{
-				_item_slot.Pressed += () =>
-				{
-					if (Player.Instance.IsDisabled)
-						return;
-					Player.Data.Inventory.Remove(_item_name);
-					Player.Data.AddCurrency(GlobalManager.G_ITEMS[_item_name].cost / 2);
-					Update();
-					SoundManager.CreateSound("ui/kaching");
-				};
-			}
+			_item_slot.Pressed += _pressed_store;
 		}
 		else
-			(_item_slot.GetChild(0) as TextureRect).Texture = null;
+		{
+			void _pressed_selling()
+			{
+				if (Player.Instance.IsDisabled)
+					return;
+
+				if (_item_name == "aphid_egg")
+				{
+					SoundManager.CreateSound("ui/button_fail");
+					return;
+				}
+
+				Player.Data.Inventory.Remove(_item_name);
+				Player.Data.ChangeCurrency(GlobalManager.G_ITEMS[_item_name].cost / 2);
+				Update();
+				SoundManager.CreateSound("ui/kaching");
+			}
+			_item_slot.Pressed += _pressed_selling;
+		}
 	}
 	private void ChangeControlPrompt(string _, StringName _action)
 	{
@@ -126,7 +141,7 @@ public partial class PlayerInventory : Control
 			return;
 
 		if (Player.Instance.HeldPickup.Item != null)
-			await Player.Instance.Drop();
+			Player.Instance.Drop();
 		Node2D _item = ResortManager.CreateItem(_item_name, Player.Instance.GlobalPosition);
 		await Player.Instance.Pickup(_item, _item.GetMeta(StringNames.TagMeta).ToString(), false);
 		Player.Data.Inventory.Remove(_item_name);
@@ -140,7 +155,7 @@ public partial class PlayerInventory : Control
 
 		PullItem(Player.Data.Inventory[_index]);
 	}
-	public static bool StoreItem(string _item)
+	public static bool StoreItem(string _item, bool _force = false)
 	{
 		if (string.IsNullOrEmpty(_item))
 		{
@@ -149,26 +164,41 @@ public partial class PlayerInventory : Control
 		}
 
 		if (!CanStoreItem())
+		{
+			if (_force)
+				ResortManager.CreateItem(_item, Player.Instance.GlobalPosition);
+			else
+				SoundManager.CreateSound("ui/button_fail");
 			return false;
+		}
 
 		Player.Data.Inventory.Add(_item);
 		Update();
 
 		return true;
 	}
-	public static bool CanStoreItem() =>
-		Player.Data.Inventory.Count < Player.Data.InventoryMaxCapacity;
-	public static void StoreCurrentItem()
+	public static bool CanStoreItem(int _amount = 1) =>
+		Player.Data.Inventory.Count + (_amount - 1) < Player.Data.InventoryMaxCapacity;
+
+	public static bool StoreCurrentItem()
 	{
 		if (Player.Instance.HeldPickup.Item.GetMeta(StringNames.TagMeta).ToString() == Aphid.Tag)
-			return;
+			return false;
 
-		if (!StoreItem(Player.Instance.HeldPickup.Item.GetMeta(StringNames.IdMeta).ToString()))
-			return;
+		var _id = Player.Instance.HeldPickup.Item.GetMeta(StringNames.IdMeta).ToString();
 
+		if (_id == "aphid_egg") // aphid eggs cannot be stored back
+			return false;
+
+		if (!Player.Instance.CanDrop())
+			return false;
+
+		if (!StoreItem(_id))
+			return false;
+
+		Player.Instance.Drop(false);
 		SoundManager.CreateSound(Instance.audio_inventory_close);
-		Player.Instance.HeldPickup.Item.QueueFree();
-		Player.Instance.HeldPickup = new();
+		return true;
 	}
 	public static void ChangeSellMode()
 	{

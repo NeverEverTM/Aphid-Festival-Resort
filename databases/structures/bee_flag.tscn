@@ -8,6 +8,7 @@ size = Vector2(15, 11)
 [node name="bee_flag" type="Sprite2D"]
 texture = ExtResource("1_5onow")
 offset = Vector2(0, -35)
+metadata/id = "bee_flag"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

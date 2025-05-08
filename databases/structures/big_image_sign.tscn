@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://dmo505ujibtbs"]
+
+[ext_resource type="Texture2D" uid="uid://c76wsibtbi12" path="res://sprites/props/big_image_sign.png" id="1_ylhd2"]
+[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/props/ImageSign.cs" id="2_6hw3u"]
+[ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="3_ylhd2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6hw3u"]
+size = Vector2(188.916, 11.1807)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c74d2"]
+size = Vector2(207.422, 26.988)
+
+[node name="big_image_sign" type="Sprite2D" node_paths=PackedStringArray("billboard")]
+texture = ExtResource("1_ylhd2")
+offset = Vector2(0, -80)
+script = ExtResource("2_6hw3u")
+billboard = NodePath("billboard")
+
+[node name="billboard" type="Sprite2D" parent="."]
+light_mask = 2
+position = Vector2(2.38419e-07, -82)
+scale = Vector2(0.43, 0.43)
+
+[node name="PointLight2D" type="PointLight2D" parent="billboard"]
+position = Vector2(-150.973, -32.0963)
+range_item_cull_mask = 2
+texture = ExtResource("3_ylhd2")
+texture_scale = 0.5
+
+[node name="PointLight2D2" type="PointLight2D" parent="billboard"]
+position = Vector2(152.982, -9.12143)
+range_item_cull_mask = 2
+texture = ExtResource("3_ylhd2")
+texture_scale = 0.5
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-0.369045, -4.4394)
+shape = SubResource("RectangleShape2D_6hw3u")
+
+[node name="Area2D" type="Area2D" parent="."]
+metadata/tag = "interactable"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-0.369053, -5.40326)
+shape = SubResource("RectangleShape2D_c74d2")
+debug_color = Color(0.79115, 0.351221, 0.635911, 0.42)

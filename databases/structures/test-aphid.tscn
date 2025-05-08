@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://by7ojvd0f4qx6"]
+
+[ext_resource type="Texture2D" uid="uid://cw0aarmc3i3yu" path="res://databases/skins/1/body_idle.tres" id="1_p8dj7"]
+[ext_resource type="Texture2D" uid="uid://c1jtpm68uqgx1" path="res://databases/skins/0/legs_idle.tres" id="1_xoega"]
+[ext_resource type="Texture2D" uid="uid://ca12oiuq2yrpg" path="res://databases/skins/0/eyes_idle.tres" id="3_ur2om"]
+[ext_resource type="Texture2D" uid="uid://cj5maqmor6mpu" path="res://databases/skins/0/antenna_idle.tres" id="4_iookl"]
+
+[node name="CanvasGroup" type="Node2D"]
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(-8, 0)
+texture = ExtResource("1_xoega")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+texture = ExtResource("1_p8dj7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_ur2om")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+texture = ExtResource("1_xoega")
+
+[node name="Sprite2D5" type="Sprite2D" parent="."]
+texture = ExtResource("4_iookl")

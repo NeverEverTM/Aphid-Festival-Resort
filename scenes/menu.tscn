@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=58 format=3 uid="uid://by6u0617yy7oe"]
 
 [ext_resource type="Script" uid="uid://cesdis2vfhjmp" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="Texture2D" uid="uid://0x1papnmvhtm" path="res://sprites/ui/sweep.png" id="2_fmpp6"]
@@ -25,7 +25,6 @@
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="16_rnb0o"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="17_w4wev"]
 [ext_resource type="PackedScene" uid="uid://ttn1ivy2gfhv" path="res://scenes/ui/player_ui_display.tscn" id="17_w6vnm"]
-[ext_resource type="Texture2D" uid="uid://eo125tpin4j3" path="res://sprites/ui/menu_border_active.png" id="18_r8j8b"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="21_5jg8l"]
 [ext_resource type="Texture2D" uid="uid://ct4h858npiyg6" path="res://sprites/aphibu.png" id="23_rt0qn"]
 [ext_resource type="Shader" uid="uid://c1trbf56kaou1" path="res://scripts/shaders/shine_highlight.gdshader" id="26_ukngl"]
@@ -1301,7 +1300,7 @@ texture = ExtResource("14_vlxys")
 stretch_mode = 1
 
 [node name="savefiles_bg" type="NinePatchRect" parent="CanvasLayer/loadgame_panel"]
-self_modulate = Color(0.584884, 0.209978, 0.293838, 1)
+self_modulate = Color(0.676943, 0, 0.129635, 1)
 clip_children = 2
 light_mask = 0
 layout_mode = 0
@@ -1309,7 +1308,7 @@ offset_left = -576.0
 offset_top = -243.0
 offset_right = 595.0
 offset_bottom = 335.0
-texture = ExtResource("18_r8j8b")
+texture = ExtResource("21_5jg8l")
 patch_margin_left = 30
 patch_margin_top = 30
 patch_margin_right = 30
@@ -1334,7 +1333,7 @@ size_flags_horizontal = 2
 size_flags_vertical = 0
 
 [node name="load_quote" type="NinePatchRect" parent="CanvasLayer/loadgame_panel"]
-self_modulate = Color(0.309393, 0.102721, 0.150571, 1)
+self_modulate = Color(0.730964, 0.00106292, 0.101444, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = -467.0
@@ -1523,6 +1522,11 @@ vertical_alignment = 1
 text_direction = 2
 
 [node name="AnimatedSprite2D" parent="CanvasLayer/BOOT_CONTROL" instance=ExtResource("17_w6vnm")]
+position = Vector2(591, 200)
+animation = &"default"
+autoplay = "default"
+frame = 0
+frame_progress = 0.0
 
 [node name="CUTSCENE_START" type="Control" parent="CanvasLayer"]
 layout_mode = 3

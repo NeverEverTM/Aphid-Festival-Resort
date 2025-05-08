@@ -9,7 +9,7 @@ using Godot;
 /// </summary>
 internal partial class GlobalManager : Node2D
 {
-	public const uint GAME_VERSION = 200;
+	public const uint GAME_VERSION = 210;
 
 	public static GlobalManager Instance { get; private set; }
 	public readonly static RandomNumberGenerator RNG = new();
@@ -119,7 +119,7 @@ internal partial class GlobalManager : Node2D
 #else
 		Logger.LogMode = Logger.LogPriorityMode.Default;
 #endif
-		GameManager.ProfileSaveModule = new(GameManager.ID, new GameManager.SaveModule(), int.MaxValue)
+		GameManager.ProfileSaveModule = new(GameManager.ID, new GameManager.SaveModule(), 9999)
 		{
 			Extension = SaveSystem.SAVEFILE_EXTENSION
 		};
@@ -367,16 +367,16 @@ internal partial class GlobalManager : Node2D
 			));
 		});
 	}
-	private static async Task LOAD_DATABASE(string _fileName, Action<string[]> _onItem)
+	private static Task LOAD_DATABASE(string _fileName, Action<string[]> _onItem)
 	{
 		FileAccess _file = FileAccess.Open(ABSOLUTE_DATABASES_PATH + _fileName + ".csv", FileAccess.ModeFlags.Read);
 		string _header = _file.GetCsvLine()[0], _boot = Instance.Tr($"BOOT_{_header}");
 		while (_file.GetPosition() < _file.GetLength())
 		{
 			_onItem(_file.GetCsvLine());
-			await Task.Delay(1);
 			BOOT_LOADING_LABEL.Text = $"{_boot} ({(int)((float)_file.GetPosition() / (float)_file.GetLength() * 100)}%)";
 		}
+		return Task.CompletedTask;
 	}
 	private static async Task LOAD_PARTICLES()
 	{
@@ -390,8 +390,8 @@ internal partial class GlobalManager : Node2D
 
 			// we instantiate it and then delete it
 			// we do this so Godot properly loads it now, so it doesnt cause a lag spike later
+			// UPDATE: Godot 4 supposedly does this by default now but it stays just in case
 			Instance.AddChild(_particle);
-			await Task.Delay(1);
 			_particle.QueueFree();
 
 			G_PARTICLES.AddResource(_particleList[i].Split('.')[0], _resource);
@@ -466,6 +466,7 @@ internal partial class GlobalManager : Node2D
 		};
 		if (_path == "N/A")
 			return;
+		Logger.Print(Logger.LogPriority.Log, $"GlobalManager: Loading scene <{Scene}>.");
 		Scene = _scene;
 		IsBusy = true;
 		SoundManager.StopSong();
@@ -541,16 +542,24 @@ internal partial class GlobalManager : Node2D
 	
 	public static class Utils
 	{
-		public static Godot.Collections.Dictionary Raycast(Vector2 _position, Vector2 _direction, Godot.Collections.Array<Rid> _excludeList)
+		public static Godot.Collections.Dictionary RaycastBetween(Vector2 from, Vector2 to, 
+				Godot.Collections.Array<Rid> _excludeList)
 		{
-			var query = PhysicsRayQueryParameters2D.Create(_position, _position + _direction);
+			var query = PhysicsRayQueryParameters2D.Create(from, to);
+			query.HitFromInside = true;
 			query.Exclude = _excludeList;
 			return Instance.spaceState.IntersectRay(query);
 		}
-		public static Godot.Collections.Dictionary Raycast(PhysicsRayQueryParameters2D _query, Vector2 _position, Vector2 _direction)
+		public static Godot.Collections.Dictionary RaycastTowards(Vector2 _position, Vector2 _direction, 
+				Godot.Collections.Array<Rid> _excludeList)
 		{
-			_query.From = _position;
-			_query.To = _position + _direction;
+			var query = PhysicsRayQueryParameters2D.Create(_position, _position + _direction);
+			query.HitFromInside = true;
+			query.Exclude = _excludeList;
+			return Instance.spaceState.IntersectRay(query);
+		}
+		public static Godot.Collections.Dictionary Raycast(PhysicsRayQueryParameters2D _query)
+		{
 			return Instance.spaceState.IntersectRay(_query);
 		}
 

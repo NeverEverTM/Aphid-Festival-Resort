@@ -1,7 +1,6 @@
-[gd_scene load_steps=52 format=3 uid="uid://b2tg0d8sg4vd0"]
+[gd_scene load_steps=50 format=3 uid="uid://b2tg0d8sg4vd0"]
 
 [ext_resource type="Script" uid="uid://c6r7uhrq81xi1" path="res://scripts/Player.cs" id="1_02bb8"]
-[ext_resource type="AudioStream" uid="uid://cv5a0x5ojrrc2" path="res://sfx/player/whistle.wav" id="2_8g5nl"]
 [ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player_0.png" id="2_muo8i"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_37afu"]
@@ -379,21 +378,18 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r3o6d"]
 size = Vector2(19, 10)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_5p45l"]
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4xmv"]
 size = Vector2(68, 37)
 
-[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("camera", "interactionArea", "spriteBody", "animator")]
+[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("interactionArea", "spriteBody", "animator")]
+collision_priority = 10.0
 motion_mode = 1
 platform_on_leave = 2
 platform_floor_layers = 4294967040
 script = ExtResource("1_02bb8")
-camera = NodePath("")
 interactionArea = NodePath("interaction_area")
 spriteBody = NodePath("animator")
 animator = NodePath("animator")
-Audio_Whistle = ExtResource("2_8g5nl")
 metadata/tag = "player"
 
 [node name="animator" type="AnimatedSprite2D" parent="."]
@@ -408,19 +404,9 @@ flip_h = true
 position = Vector2(0.5, -3)
 shape = SubResource("RectangleShape2D_r3o6d")
 
-[node name="triggerArea" type="Area2D" parent="."]
-position = Vector2(1, -11)
-monitoring = false
-priority = 1000
-metadata/tag = "player"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="triggerArea"]
-position = Vector2(0, 10)
-shape = SubResource("CircleShape2D_5p45l")
-
 [node name="interaction_area" type="Area2D" parent="."]
 y_sort_enabled = true
-collision_mask = 3
+collision_layer = 0
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interaction_area"]

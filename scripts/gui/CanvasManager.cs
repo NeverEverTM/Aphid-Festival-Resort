@@ -18,22 +18,12 @@ public partial class CanvasManager : CanvasLayer
 	[Export] private Texture2D[] weather_sprites;
 	[Export] private TextureRect weather_bg;
 
-	private readonly Dictionary<string, Control> prompt_list = [];
-	public const string Prompt_Drop = "prompt_drop";
-	public const string Prompt_Talk = "prompt_talk";
-	public const string Prompt_Pet = "prompt_pet";
-	public const string Prompt_Harvest = "prompt_harvest";
-	public const string Prompt_Pickup = "prompt_pickup";
-	public const string Prompt_Interact = "prompt_interact";
+	public readonly Dictionary<string, Control> PromptList = [];
 
 	public static CanvasManager Instance { get; private set; }
-	public static MenuUtil Menus { get; private set; }
+	public static MenuUtil Menus { get; private set; } = new();
 
 	private Timer vanish_screenshot_timer;
-
-	// Focus
-	public Control CurrentFocus { get; private set; }
-	public bool IsInFocus { get; private set; }
 
 	public override void _EnterTree()
 	{
@@ -53,10 +43,16 @@ public partial class CanvasManager : CanvasLayer
 				ClearControlPrompts();
 			}
 			// dont set them back in if we are in free camera mode
-			else if (!IsInstanceValid(FreeCameraManager.Instance) || !FreeCameraManager.Instance.Enabled)
+			else if (!IsInstanceValid(FreeCameraManager.Instance) || !FreeCameraManager.Enabled)
 				SetHudElements(true);
 		};
 	}
+    public override void _ExitTree()
+    {
+       	Instance = null;
+		Menus = new();
+    }
+
 	public override void _Input(InputEvent @event)
 	{
 		if (@event.IsActionPressed(InputNames.TakeScreenshot))
@@ -71,12 +67,15 @@ public partial class CanvasManager : CanvasLayer
 
 	public static async void TakeScreenshot()
 	{
-		bool _is_free_camera = IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Instance.Enabled;
+		bool _is_free_camera = IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Enabled;
 
 		Instance.Hide();
 		Instance.photo_display.Hide();
 		if (_is_free_camera)
+		{
 			FreeCameraManager.SetFreeCameraHud(false, true);
+			AphidInfo.Instance.Hide();
+		}
 
 		await Task.Delay(1);
 		try
@@ -119,7 +118,10 @@ public partial class CanvasManager : CanvasLayer
 		}
 
 		if (_is_free_camera)
+		{
 			FreeCameraManager.SetFreeCameraHud(true, true);
+			AphidInfo.Instance.Show();
+		}
 		Instance.photo_display.Show();
 		Instance.Show();
 	}
@@ -135,6 +137,9 @@ public partial class CanvasManager : CanvasLayer
 	}
 	public static void UpdateCurrency()
 	{
+		if (Instance == null)
+			return;
+
 		if (Player.Data.Currency >= 10000)
 			Instance.currency_text.Text = (Player.Data.Currency / 1000).ToString("00K");
 		else
@@ -149,35 +154,36 @@ public partial class CanvasManager : CanvasLayer
 	/// <param name="_action_key">A key to indicate which input action should show as.</param>
 	public static void AddControlPrompt(string _tr_key, string _id, string _action_key)
 	{
-		if (Instance.prompt_list.ContainsKey(_id))
+		if (Instance == null || Instance.PromptList.ContainsKey(_id))
 			return;
 
 		Control _node = Instance.prompt_element.Instantiate<Control>();
 		_node.Modulate = new(1, 1, 1, 0);
 		(_node.GetChild(0) as RichTextLabel).Text = ControlsManager.GetActionName(_action_key);
-		(_node.GetChild(1) as RichTextLabel).Text = _tr_key;
+		(_node.GetChild(1) as RichTextLabel).Text = "prompt_" + _tr_key;
 		Tween tween = _node.CreateTween();
 		tween.SetEase(Tween.EaseType.Out);
 		tween.SetTrans(Tween.TransitionType.Linear);
 		tween.TweenProperty(_node, "modulate", new Color(1, 1, 1, 1), 0.2f);
 		Instance.prompt_grid.AddChild(_node);
-		Instance.prompt_list.Add(_id, _node);
+		Instance.PromptList.Add(_id, _node);
 	}
-	public static bool HasControlPrompt(string _id) => Instance.prompt_list.ContainsKey(_id);
+	public static bool HasControlPrompt(string _id) => Instance.PromptList.ContainsKey(_id);
 	public static void RemoveControlPrompt(string _id)
 	{
-		if (!Instance.prompt_list.ContainsKey(_id))
+		if (Instance == null || !Instance.PromptList.TryGetValue(_id, out Control value))
 			return;
-
-		Instance.prompt_list[_id].QueueFree();
-		Instance.prompt_list.Remove(_id);
+        value.QueueFree();
+		Instance.PromptList.Remove(_id);
 	}
 	public static void ClearControlPrompts()
 	{
-		foreach (var _pair in Instance.prompt_list)
+		if (Instance == null)
+			return;
+		foreach (var _pair in Instance.PromptList)
 			_pair.Value.QueueFree();
 
-		Instance.prompt_list.Clear();
+		Instance.PromptList.Clear();
 	}
 
 	public static void OpenWeather(Color _color)
@@ -197,32 +203,4 @@ public partial class CanvasManager : CanvasLayer
 		if (Instance.weather_bg.Visible)
 			Instance.weather_player.Play("close");
 	}
-
-	// ======| Focus Related (For TextEdit and such) |=========
-	public static void SetFocus(Control _focus)
-	{
-		if (IsInstanceValid(Instance.CurrentFocus))
-		{
-			Instance.CurrentFocus.ReleaseFocus();
-			Instance.CurrentFocus = null;
-		}
-
-		if (!_focus.HasFocus())
-			_focus.GrabFocus();
-		Instance.CurrentFocus = _focus;
-
-		if (!Instance.IsInFocus)
-			Instance.IsInFocus = true;
-	}
-	public static void RemoveFocus()
-	{
-		if (!Instance.IsInFocus)
-			return;
-
-		Instance.CurrentFocus?.ReleaseFocus();
-		Instance.CurrentFocus = null;
-		Instance.IsInFocus = false;
-	}
-	public static bool IsFocus(Control _focus) =>
-		_focus.Equals(Instance.CurrentFocus);
 }

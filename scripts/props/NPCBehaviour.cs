@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
-public partial class NPCBehaviour : AnimatedSprite2D, Player.IPlayerInteractable
+public partial class NPCBehaviour : AnimatedSprite2D, Player.IInteractEvent
 {
 	/// <summary>
 	/// Linear: Read lines in order, repeat the last one once you reach it

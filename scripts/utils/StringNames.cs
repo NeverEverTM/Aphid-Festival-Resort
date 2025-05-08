@@ -1,6 +1,6 @@
 using Godot;
 /// <summary>
-/// This is NOT automatically generated, it contains all global StringName references
+/// This is NOT automatically generated, it contains all global StringName and string references.
 /// </summary>
 public static class StringNames
 {
@@ -19,4 +19,6 @@ public static class StringNames
     public readonly static StringName RunAnim = new("run");
     public readonly static StringName WhistleAnim = new("whistle");
     public readonly static StringName PickupAnim = new("pickup");
+
+    public const string InteractableTag = "interactable";
 }

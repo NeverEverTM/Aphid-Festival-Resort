@@ -54,8 +54,7 @@ public partial class MainMenu : Node2D
 		CreateMenuAction("controls", () => SetMenu(controls_panel));
 		CreateMenuAction("options", () => SetMenu(options_panel));
 		CreateMenuAction("credits", () => SetMenu(credits_panel));
-		CreateMenuAction("exit", () => GetTree().Quit());
-		SetCategory(NewGameMenu.newGameCategory);
+		CreateMenuAction("exit", ExitGame);
 
 		if (!HasBeenIntialized)
 		{
@@ -77,8 +76,6 @@ public partial class MainMenu : Node2D
 		}
 		SoundManager.PlaySong("misc/title.wav");
 		title_animator.Play("slide_down");
-		if (!string.IsNullOrEmpty(OptionsManager.Settings.LastPlayedResort))
-			SetCategory("continue");
 		SpawnBunchaOfAphidsForTheFunnies();
 		start_panel.SetPanel();
 		HasBeenIntialized = true;
@@ -91,7 +88,7 @@ public partial class MainMenu : Node2D
 		// Press To Start - Pressed
 		if (!start_panel.IsReady)
 		{
-			if (Input.IsActionJustPressed("interact"))
+			if (Input.IsActionJustPressed(InputNames.Interact))
 				start_panel.ReadyUp();
 			return;
 		}
@@ -99,41 +96,35 @@ public partial class MainMenu : Node2D
 		// Exit current menu
 		if (!start_panel.Visible)
 		{
-			if (@event.IsActionPressed("escape") || @event.IsActionPressed("cancel"))
-			{
-				SetMenu();
-				return;
-			}
-		}
-		else // interact with wheel
-		{
-			if (@event.IsActionPressed("interact"))
-			{
-				OnMenuInteract?.Invoke();
-				SoundManager.CreateSound(selectSound);
-			}
-			else // choice scroll behaviour
-			{
-				if (@event is InputEventMouseButton && (@event as InputEventMouseButton).Pressed)
-				{
-					InputEventMouseButton _mouse = @event as InputEventMouseButton;
-					if (_mouse.ButtonIndex == MouseButton.WheelUp)
-						GoLeftInWheel();
-					else if (_mouse.ButtonIndex == MouseButton.WheelDown)
-						GoRightInWheel();
-				}
-				else
-				{
-					if (@event.IsActionPressed("left") || @event.IsActionPressed("ui_left"))
-						GoLeftInWheel();
-					else if (@event.IsActionPressed("right") || @event.IsActionPressed("ui_right"))
-						GoRightInWheel();
-				}
-			}
+			if (@event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.Cancel))
+				CloseMenu();
 			return;
 		}
+
+		// wheel interactions
+		if (@event is InputEventMouseButton && (@event as InputEventMouseButton).Pressed)
+		{
+			InputEventMouseButton _mouse = @event as InputEventMouseButton;
+			if (_mouse.ButtonIndex == MouseButton.WheelUp)
+				GoLeftInWheel();
+			else if (_mouse.ButtonIndex == MouseButton.WheelDown)
+				GoRightInWheel();
+		}
+		else
+		{
+			if (@event.IsActionPressed(InputNames.Left) || @event.IsActionPressed("ui_left"))
+				GoLeftInWheel();
+			else if (@event.IsActionPressed(InputNames.Right) || @event.IsActionPressed("ui_right"))
+				GoRightInWheel();
+		}
+
+		if (@event.IsActionPressed(InputNames.Interact))
+		{
+			OnMenuInteract?.Invoke();
+			SoundManager.CreateSound(selectSound);
+		}
 	}
-    public override void _Process(double delta)
+	public override void _Process(double delta)
 	{
 		DoBounceAnim();
 	}
@@ -182,8 +173,14 @@ public partial class MainMenu : Node2D
 	public static async void LoadResort()
 	{
 		OptionsManager.Settings.LastPlayedResort = SaveSystem.Profile;
+		Logger.Print(Logger.LogPriority.Info, $"MainMenu: Loading the profile <{SaveSystem.Profile}>.");
 		await OptionsManager.Module.Save();
 		await GlobalManager.LoadScene(GlobalManager.SceneName.Resort);
+	}
+	public void ExitGame()
+	{
+		ConfirmationPopup.Create(() => GetTree().Quit(), null,
+			ConfirmationPopup.ConfirmationEnum.Fast, "confirmation_exit");
 	}
 
 	// MARK: Menu Managment
@@ -194,9 +191,13 @@ public partial class MainMenu : Node2D
 	}
 	public void RemoveMenuAction(string _key)
 	{
+		if (_key == NewGameMenu.newGameCategory)
+		{
+			Logger.Print(Logger.LogPriority.Warning, "Main Menu: Cannot remove default category");
+			return;
+		}
 		MenuCategories.Remove(_key);
 		SetCategory(NewGameMenu.newGameCategory);
-		MenuWheelIndex = 0;
 	}
 	public void SetMenu(Control _menu)
 	{
@@ -208,7 +209,7 @@ public partial class MainMenu : Node2D
 
 		currentMenu = _menu;
 	}
-	public void SetMenu()
+	public void CloseMenu()
 	{
 		currentMenu.Hide();
 		SoundManager.CreateSound(selectSound);
@@ -235,10 +236,10 @@ public partial class MainMenu : Node2D
 		lastCategoryIndex = MenuWheelIndex;
 		SetCategory(MenuCategories[MenuWheelIndex]);
 	}
-	
+
 	// MARK: Cosmetics
 	private bool DirectionForX, DirectionForY;
-	private float MaxWanderDistanceX = 1200, MaxWanderDistanceY = 600;
+	private float MaxWanderDistanceX = 800, MaxWanderDistanceY = 300;
 	private void DoBounceAnim()
 	{
 		if (CameraManager.Instance.Position.X > MaxWanderDistanceX)
@@ -260,13 +261,16 @@ public partial class MainMenu : Node2D
 		{
 			var _aphid = aphidPrefab.Instantiate() as Aphid;
 			_aphid.IS_FAKE = true;
-			_aphid.Instance = new();
+			_aphid.Instance = new(Guid.Empty);
 			_aphid.Instance.Genes.DEBUG_Randomize(false);
 			_aphid.Instance.Status.IsAdult = GlobalManager.Utils.GetRandomByWeight(babyWeight) == 0;
 			_aphid.GlobalPosition = GlobalManager.Utils.GetRandomVector(-300, 300);
 			entityRoot.AddChild(_aphid);
-			_aphid.skin.SetSkin("idle");
-			(_aphid.StateArgs as AphidActions.IdleState.IdleArgs).timeleft = 0;
+			_aphid.SetReady();
+			_aphid.State.Enter(_aphid, new AphidActions.IdleState.IdleArgs(
+				GlobalManager.Utils.GetRandomVector(-300, 300),
+				GlobalManager.RNG.RandiRange(0, 3)
+			), Aphid.StateEnum.Idle);
 		}
 	}
 }

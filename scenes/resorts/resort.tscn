@@ -471,8 +471,8 @@ EntityRoot = NodePath("entityPit")
 StructureRoot = NodePath("tilemap_resort/structurePit")
 SpawnPoint = NodePath("spawnpoint")
 
-[node name="spawnpoint" type="Node2D" parent="."]
-position = Vector2(-1771, 51)
+[node name="spawnpoint" type="Marker2D" parent="."]
+position = Vector2(-1818, 82)
 
 [node name="resort_canvas" parent="." instance=ExtResource("2_tevxm")]
 
@@ -488,7 +488,6 @@ y_sort_enabled = true
 [node name="Camera2D" parent="." instance=ExtResource("5_sm3i7")]
 
 [node name="player" parent="." instance=ExtResource("5_ct3om")]
-position = Vector2(-2, 0)
 
 [node name="kut" parent="." instance=ExtResource("6_tqo43")]
 position = Vector2(-484, -166)
@@ -519,6 +518,7 @@ position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_2j0ix")
 
 [node name="shelf" type="Sprite2D" parent="."]
+y_sort_enabled = true
 position = Vector2(793, -212)
 texture = ExtResource("11_2sxyt")
 offset = Vector2(0, -30)

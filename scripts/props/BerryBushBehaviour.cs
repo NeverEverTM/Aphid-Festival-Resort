@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, ResortManager.IStructureData
+public partial class BerryBushBehaviour : Sprite2D, Player.IInteractEvent, ResortManager.IStructureData
 {
 	[Export] private Texture2D[] berryTextures = new Texture2D[2];
 	[Export] private Node2D interactionArea;
@@ -8,16 +8,15 @@ public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, 
 	[Export] private GpuParticles2D particles;
 	private float berry_timer;
 	private bool isfinished;
-	private const int TIMER_BASE = 60 * 4;
 
     public override void _Ready()
     {
-		berry_timer = TIMER_BASE;
+		berry_timer = 60 * GlobalManager.RNG.RandiRange(3,5);
     }
 
 	public void Interact()
 	{
-		if (isfinished && PlayerInventory.CanStoreItem())
+		if (isfinished && PlayerInventory.CanStoreItem(2))
 		{
 			isfinished = false;
 			PlayerInventory.StoreItem("berry");
@@ -25,13 +24,11 @@ public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, 
 			Texture = berryTextures[0];
 			player.Play("harvest");
 			particles.Emitting = true;
-			SoundManager.CreateSound2D(SoundManager.GetAudioStream("ui/leaves"), new AudioStreamPlayer2D()
-			{
-				Bus = "Sounds",
-				PitchScale = 3
-			}, GlobalPosition);
+			var _player = SoundManager.SFXPlayer2D.Duplicate() as AudioStreamPlayer2D;
+			_player.PitchScale = 3;
+			SoundManager.CreateSound2D("ui/leaves", _player, GlobalPosition);
 			interactionArea.RemoveMeta(StringNames.TagMeta);
-			berry_timer = TIMER_BASE;
+			berry_timer = 60 * GlobalManager.RNG.RandiRange(3,5);
 		}
 	}
     public override void _Process(double delta)
@@ -42,7 +39,7 @@ public partial class BerryBushBehaviour : Sprite2D, Player.IPlayerInteractable, 
 		{
 			isfinished = true;
 			Texture = berryTextures[1];
-			interactionArea.SetMeta(StringNames.TagMeta, Player.InteractableTag);
+			interactionArea.SetMeta(StringNames.TagMeta, StringNames.InteractableTag);
 			player.Play("grow");
 		}
     }

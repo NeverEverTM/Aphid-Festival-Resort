@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cwhom1s0n5b5c"]
+[gd_scene load_steps=24 format=3 uid="uid://cwhom1s0n5b5c"]
 
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
 [ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/props/TVPropBehaviour.cs" id="2_3qsjy"]
@@ -119,6 +119,12 @@ _data = {
 &"dance": SubResource("Animation_brmh7")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
+size = Vector2(96, 8.42106)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_talqc"]
+size = Vector2(95.5892, 23.4365)
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
 light_mode = 1
 
@@ -128,12 +134,9 @@ viewport_path = NodePath("SubViewport")
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_talqc"]
 light_mode = 1
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
-size = Vector2(96, 8.42106)
-
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_opwmt"]
 cull_mode = 1
-polygon = PackedVector2Array(-44.9735, -6.38944, 55.1395, -7.05687, 48.799, -64.7887, -36.6308, -65.7898)
+polygon = PackedVector2Array(-44.7192, -5.70451, 57.4314, -6.07149, 50.5351, -66.0207, -37.426, -65.796)
 
 [node name="tv" type="Sprite2D" node_paths=PackedStringArray("viewport_display", "background_display", "light", "stereo", "player")]
 texture = ExtResource("1_dcqxn")
@@ -145,7 +148,6 @@ background_display = NodePath("background")
 light = NodePath("light")
 stereo = NodePath("stereo")
 player = NodePath("VideoStreamPlayer")
-metadata/id = "tv"
 
 [node name="SubViewport" type="SubViewport" parent="."]
 own_world_3d = true
@@ -183,12 +185,27 @@ script = ExtResource("3_gmdqp")
 cull_mask = 1047553
 fov = 76.5
 
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-0.390244, -4.21052)
+shape = SubResource("RectangleShape2D_1namf")
+
+[node name="Area2D" type="Area2D" parent="."]
+metadata/tag = "interactable"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-0.146744, 12.3973)
+shape = SubResource("RectangleShape2D_talqc")
+debug_color = Color(0.78378, 0.378687, 0.561617, 0.42)
+metadata/tag = "interactable"
+
 [node name="background" type="Sprite2D" parent="."]
 show_behind_parent = true
 light_mask = 0
 material = SubResource("CanvasItemMaterial_qug4s")
-position = Vector2(0.120862, -32.0892)
-scale = Vector2(1.01078, 1.0067)
+position = Vector2(0.120862, -32.1568)
+scale = Vector2(1.01078, 1.00881)
 texture = ExtResource("5_2b0vm")
 
 [node name="viewport_display" type="Sprite2D" parent="."]
@@ -205,7 +222,7 @@ show_behind_parent = true
 light_mask = 0
 material = SubResource("CanvasItemMaterial_talqc")
 offset_left = -44.0
-offset_top = -60.0
+offset_top = -61.0
 offset_right = 45.0
 offset_bottom = -3.0
 mouse_filter = 2
@@ -214,19 +231,6 @@ volume_db = -10.93
 expand = true
 loop = true
 bus = &"Sounds"
-
-[node name="StaticBody2D" type="RigidBody2D" parent="."]
-mass = 999.0
-gravity_scale = 0.0
-sleeping = true
-lock_rotation = true
-freeze = true
-freeze_mode = 1
-metadata/tag = "interactable"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-0.390244, -4.21052)
-shape = SubResource("RectangleShape2D_1namf")
 
 [node name="stereo" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_uxujw")

@@ -1,17 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://b4bya6a01lx1q"]
+[gd_scene load_steps=4 format=3 uid="uid://b4bya6a01lx1q"]
 
 [ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="1_rw348"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ji7j"]
-size = Vector2(15, 13)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rw348"]
+size = Vector2(20, 9.5)
 
-[node name="bee_flag" type="Sprite2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_rw348"]
+radius = 33.0
+
+[node name="test-skill" type="Sprite2D"]
 texture = ExtResource("1_rw348")
 offset = Vector2(-0.66, -4.78)
-metadata/id = "bee_rug"
+metadata/id = "test-skill"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-0.5, 0.5)
-shape = SubResource("RectangleShape2D_6ji7j")
+position = Vector2(-0.5, -4.75)
+shape = SubResource("RectangleShape2D_rw348")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+metadata/tag = "interactable"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_rw348")
+debug_color = Color(0.740182, 0.394256, 0.653542, 0.42)

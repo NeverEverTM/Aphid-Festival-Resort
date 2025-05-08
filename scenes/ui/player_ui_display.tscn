@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ttn1ivy2gfhv"]
+[gd_scene load_steps=15 format=3 uid="uid://ttn1ivy2gfhv"]
 
 [ext_resource type="Shader" uid="uid://dw8sws2xkkyr6" path="res://scripts/shaders/outline.gdshader" id="1_6x5ea"]
 [ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/characters/player_0.png" id="2_ybax6"]
@@ -12,6 +12,26 @@ shader_parameter/pattern = 1
 shader_parameter/inside = true
 shader_parameter/add_margins = false
 shader_parameter/number_of_images = Vector2(1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c2nad"]
+atlas = ExtResource("2_ybax6")
+region = Rect2(320, 128, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iucro"]
+atlas = ExtResource("2_ybax6")
+region = Rect2(352, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbhwj"]
+atlas = ExtResource("2_ybax6")
+region = Rect2(384, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gpkw"]
+atlas = ExtResource("2_ybax6")
+region = Rect2(416, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ge8h5"]
+atlas = ExtResource("2_ybax6")
+region = Rect2(448, 0, 32, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xqn2h"]
 atlas = ExtResource("2_ybax6")
@@ -37,6 +57,29 @@ region = Rect2(128, 64, 32, 64)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_c2nad")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c2nad")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iucro")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tbhwj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gpkw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ge8h5")
+}],
+"loop": false,
+"name": &"death",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_xqn2h")
 }, {
 "duration": 1.0,
@@ -60,7 +103,8 @@ animations = [{
 self_modulate = Color(0.984314, 0.513726, 0.027451, 1)
 light_mask = 0
 material = SubResource("ShaderMaterial_jpjqr")
-position = Vector2(603, 229)
 scale = Vector2(3, 3)
 sprite_frames = SubResource("SpriteFrames_x0hdr")
-frame_progress = 0.498188
+animation = &"death"
+frame = 5
+frame_progress = 1.0

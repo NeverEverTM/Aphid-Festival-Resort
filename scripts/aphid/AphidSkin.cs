@@ -23,6 +23,11 @@ public partial class AphidSkin : Node2D
 	private bool legsStep;
 	private Vector2 front_legs_position, back_legs_position;
 
+    public override void _Process(double delta)
+    {
+        TickFlip((float)delta);
+    }
+
 	public void SetInstance(AphidInstance _instance, Aphid _aphid)
 	{
 		Instance = _instance;
@@ -115,7 +120,8 @@ public partial class AphidSkin : Node2D
 		front_legs.Position = front_legs_position + (legsStep ? new Vector2(0, -1) : Vector2.Zero);
 		back_legs.Position = back_legs_position + (legsStep ? Vector2.Zero : new Vector2(0, -1));
 
-		MyAphid.PlaySound(Aphid.Audio_Step, true);
+		var _sound = SoundManager.CreateSound2D(Aphid.Audio_Step, MyAphid.GlobalPosition);
+		_sound.VolumeDb = -10;
 	}
 	/// <summary>
 	/// Properly handles walking during movement. 

@@ -3,12 +3,16 @@ using Godot;
 public partial class HelpPanel : Control
 {
 	[Export] private RichTextLabel[] helpDescriptions;
+	[Export] private ScrollContainer scrollContainer;
 	public override void _Ready()
 	{
 		VisibilityChanged += () =>
 		{
 			if (Visible)
+			{
+				scrollContainer.ScrollVertical = 0;
 				UpdateHelpDescriptions();
+			}
 		};
 
 		UpdateHelpDescriptions();

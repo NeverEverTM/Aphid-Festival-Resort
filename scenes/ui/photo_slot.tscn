@@ -1,25 +1,40 @@
-[gd_scene load_steps=3 format=3 uid="uid://s63wnc34rtmn"]
+[gd_scene load_steps=4 format=3 uid="uid://s63wnc34rtmn"]
 
-[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="1_6cr3l"]
+[ext_resource type="Texture2D" uid="uid://eatbgmr2y7qu" path="res://sprites/ui/photo_frame.png" id="1_6cr3l"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/ButtonBehaviour.cs" id="1_sl776"]
 [ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="2_sl776"]
 
-[node name="photo_slot" type="NinePatchRect"]
+[node name="photo_slot" type="TextureButton"]
 light_mask = 0
-custom_minimum_size = Vector2(280, 170)
+custom_minimum_size = Vector2(277, 170)
+offset_right = 277.0
+offset_bottom = 183.0
+script = ExtResource("1_sl776")
+PressedColor = Color(0.306923, 0.306923, 0.306923, 1)
+FocusColor = Color(0.760999, 0.760999, 0.760999, 1)
+HoverColor = Color(0.783523, 0.783523, 0.783523, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="frame" type="NinePatchRect" parent="."]
+light_mask = 0
+custom_minimum_size = Vector2(277, 170)
+layout_mode = 0
+offset_right = 277.0
+offset_bottom = 183.0
 texture = ExtResource("1_6cr3l")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
 
 [node name="image" type="TextureRect" parent="."]
 light_mask = 0
-custom_minimum_size = Vector2(252.905, 140)
+custom_minimum_size = Vector2(255, 145)
 layout_mode = 0
-offset_left = 14.0
-offset_top = 6.0
-offset_right = 267.0
-offset_bottom = 147.0
+offset_left = 11.0
+offset_top = 7.0
+offset_right = 266.0
+offset_bottom = 152.0
 size_flags_horizontal = 0
 size_flags_vertical = 8
 texture = ExtResource("2_sl776")

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using Godot;
 
-public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
+public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 {
 	public AphidInstance Instance;
 	/// <summary>
@@ -16,7 +15,6 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 
 	[Export] public AphidSkin skin;
 	[Export] private Area2D triggerArea;
-	[Export] private AudioStreamPlayer2D audioPlayer;
 
 	// Aphid state
 	public enum StateEnum { Busy, Idle, Hungry, Eat, Sleep, Play, Pet, Breed, Train }
@@ -32,8 +30,8 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	public IState State = new AphidActions.IdleState();
 	public EventArgs StateArgs = new();
 	public readonly List<IDecayEvent> DecayActions =
-    [
-        new AphidActions.HungerDecay(),
+	[
+		new AphidActions.HungerDecay(),
 		new AphidActions.ThirstDecay(),
 		new AphidActions.RestDecay(),
 		new AphidActions.AffectionDecay(),
@@ -46,11 +44,10 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	/// </summary>
 	public readonly List<ITrait> Traits = [];
 
-	public Vector2 MovementDirection;
-	public float MovementSpeed;
-	public bool IsReadyForHarvest;
-	public bool IsDisabled;
-	private GpuParticles2D harvest_effect;
+	public Vector2 MovementDirection { get; set; }
+	public float MovementSpeed { get; set; }
+	public bool IsReadyForHarvest { get; private set; }
+	public bool IsDisabled { get; private set; }
 	public RandomNumberGenerator rng = new();
 
 	// replace these with proper stored vars or single sound calls
@@ -66,38 +63,54 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 				return Audio_Idle_Baby;
 		}
 	}
+	private GpuParticles2D harvest_effect;
 
-	public override void _Ready()
+	public void SetReady()
 	{
+		MovementSpeed = 20;
 		skin.SetInstance(Instance, this);
 		skin.SetSkin("idle");
-		MovementSpeed = 20; // + (0.15f * Instance.Genes.Level);
 		SetTimers();
 
-		// patch for 0.1.3v files, give aphid new skills and traits
-		if (Instance.Genes.Traits == null)
-		{
-			Instance.Genes.GenerateTraits();
-			Instance.Genes.GenerateSkills();
-			Instance.Genes.GenerateFoodPreferences();
-		}
-
-		// we call awake, which can set a last active state
-		// and then we check if this didnt set a state already 
 		if (!IS_FAKE)
+		{
+			// patch for 1.3.3 savefiles
+			if (Instance.Genes.Skills.Count == 0)
+				Instance.Genes.GenerateSkills();
+
+			if (Instance.Genes.Traits.Count == 0)
+				Instance.Genes.GenerateTraits();
+
+			// we call awake, which can set a last active state
+			// and then we check if this didnt set a state 
 			ActiveStates[Instance.Status.LastActiveState]?.Awake(this, new());
 
-		// properly configures idle
-		if (State.Is(StateEnum.Idle))
-			State.Enter(this, new(), StateEnum.Idle);
-
-		if (!IS_FAKE)
-		{
-			SetTraits();
 			triggerArea.BodyEntered += OnTriggerEnter;
 			triggerArea.AreaEntered += OnTriggerEnter;
+			TriggerActions.Add(new AphidActions.AphidInteraction());
+			TriggerActions.Add(new AphidActions.AphidFriendhsip());
 			TriggerActions.Add(ActiveStates[StateEnum.Hungry] as ITriggerEvent);
 			DecayActions.Add(ActiveStates[StateEnum.Breed] as IDecayEvent);
+
+			// properly configures idle
+			if (State.Is(StateEnum.Idle))
+				State.Enter(this, new(), StateEnum.Idle);
+
+			SetTraits();
+
+			for (int i = 0; i < DecayActions.Count; i++)
+				DecayActions[i].Start(this, new());
+			
+			void set_movement_speed(int _, int _level) =>
+				MovementSpeed = 20 + 0.2f * _level;
+			Instance.Genes.Skills["speed"].OnLevelUp += set_movement_speed;
+			set_movement_speed(0, Instance.Genes.Skills["speed"].Level);
+		}
+		else
+		{
+			// properly configures idle
+			if (State.Is(StateEnum.Idle))
+				State.Enter(this, new(), StateEnum.Idle);
 		}
 	}
 	private void SetTimers()
@@ -117,7 +130,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		blink_timer.OneShot = true;
 		blink_timer.Timeout += () =>
 		{
-			if (!State.Is(StateEnum.Sleep))
+			if (!State.Is(StateEnum.Sleep) && !IsDisabled)
 				skin.SetEyesSkin("blink");
 			blink_duration_timer.Start(0.1f);
 		};
@@ -126,12 +139,8 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		blink_duration_timer.OneShot = true;
 		blink_duration_timer.Timeout += () =>
 		{
-			if (!State.Is(StateEnum.Sleep))
-			{
-				if (skin.lastEyeExpression == "blink")
-					skin.lastEyeExpression = "idle";
+			if (skin.currentEyeExpression == "blink" && !State.Is(StateEnum.Sleep) && !IsDisabled)
 				skin.SetEyesSkin(skin.lastEyeExpression);
-			}
 			blink_timer.Start(rng.RandfRange(4.5f, 6.7f));
 		};
 		blink_timer.Start(rng.RandfRange(4.5f, 6.7f));
@@ -140,9 +149,6 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		blink_duration_timer.ProcessMode = ProcessModeEnum.Pausable;
 		blink_timer.ProcessMode = ProcessModeEnum.Pausable;
 		squeak_timer.ProcessMode = ProcessModeEnum.Pausable;
-
-		for (int i = 0; i < DecayActions.Count; i++)
-			DecayActions[i].Start(this, new());
 	}
 	private void SetTraits()
 	{
@@ -173,13 +179,12 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	public override void _PhysicsProcess(double delta)
 	{
 		float _delta = (float)delta;
-		
+
 		// Set default movement state
 		Velocity = MovementDirection * MovementSpeed;
 		if (!MovementDirection.IsEqualApprox(Vector2.Zero))
 			skin.SetFlipDirection(MovementDirection);
 		skin.StartWalk();
-		skin.TickFlip(_delta);
 
 		if (IS_FAKE)
 		{
@@ -187,7 +192,7 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			MoveAndSlide();
 			return;
 		}
-		
+
 		// trait update process
 		for (int i = 0; i < Traits.Count; i++)
 			Traits[i].OnProcess(this, StateArgs, _delta);
@@ -196,11 +201,14 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		State.Process(this, StateArgs, _delta);
 		MoveAndSlide();
 	}
-
+	
 	public bool SetState(StateEnum _newState, EventArgs _specialArgs = null)
 	{
 		StateEnum _lastState = State.Type;
-		if (!State.CanTransitionInto(_newState) && !IsDisabled)
+		if (IsDisabled)
+			return false;
+
+		if (!State.CanTransitionInto(_newState))
 		{
 			Logger.Print(Logger.LogPriority.Warning, $"AphidState: Cannot transition from {State.Type} to {_newState}");
 			return false;
@@ -231,21 +239,8 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		if (State.Is(StateEnum.Idle) == State.Is(StateEnum.Play))
 			return;
 
-		SetState(StateEnum.Idle);
-		StateArgs = new AphidActions.IdleState.IdleArgs
-		{
-			timeleft = 0,
-			target_position = _position,
-			timeout = -15
-		};
+		SetState(StateEnum.Idle, new AphidActions.IdleState.IdleArgs(_position, 0, -15));
 		skin.DoJumpAnim();
-	}
-	public void PlaySound(AudioStream _audio, bool _pitchRand = false)
-	{
-		if (_pitchRand)
-			audioPlayer.PitchScale = GlobalManager.RNG.RandfRange(0.81f, 1.27f);
-		audioPlayer.Stream = _audio;
-		audioPlayer.Play();
 	}
 	public bool WakeUp(bool _forcefully = false, bool _byPassHeavySleeper = false)
 	{
@@ -260,13 +255,13 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 			return true;
 		Instance.Status.AddAffection(-5);
 		GlobalManager.EmitParticles("anger", new(), this);
-		PlaySound(Audio_Hurt);
+		SoundManager.CreateSound2D(Audio_Hurt, GlobalPosition, false);
 		return true;
 	}
-	public virtual async void Die()
+	public virtual void PrepareToDie()
 	{
-		IsDisabled = true;
 		SetState(StateEnum.Idle);
+		IsDisabled = true;
 		if (IsInstanceValid(harvest_effect))
 			harvest_effect.QueueFree();
 
@@ -275,37 +270,38 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		skin.SetLegsSkin("sleep");
 		skin.Position = new(0, 2);
 		ProcessMode = ProcessModeEnum.Disabled;
-		// play sound
-		await Task.Delay(10000);
 
-		// fade away :(
-		skin.SetEyesSkin("blink");
-		await Task.Delay(1000);
-		for (int i = 0; i < 100; i++)
+		CreateTimer(() =>
 		{
-			await Task.Delay(80);
 			skin.SetEyesSkin("blink");
-			skin.Modulate -= new Color(0, 0, 0, 0.025f);
-		}
+			skin.ProcessMode = ProcessModeEnum.Pausable;
+			skin.CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Linear,
+					"modulate", new Color(0), 5).Finished += Kill;
+		}, 8, true);
+	}
+	public void Kill()
+	{
 		GenerationsTracker.Data.Add(Instance);
 		GameManager.RemoveAphid(Guid.Parse(Instance.ID));
 		Instance = null;
 		QueueFree();
+
+		GameManager.CheckForGameOver();
 	}
 
 	protected virtual void TickHarvest(float _delta)
 	{
-		if (Instance.Status.MilkBuildup < AphidData.Harvest_Cooldown)
-			Instance.Status.MilkBuildup += _delta;
+		if (Instance.Status.HarvestBuildup < AphidData.Harvest_Cooldown)
+			Instance.Status.HarvestBuildup += _delta;
 		else if (!IsReadyForHarvest)
 		{
 			IsReadyForHarvest = true;
 			ShaderMaterial _outline = new()
 			{
-				Shader = ResourceLoader.Load<Shader>(GlobalManager.CG_OUTLINE_SHADER)
+				Shader = ResourceLoader.Load<Shader>(GlobalManager.OUTLINE_SHADER)
 			};
-			_outline.SetShaderParameter("line_colour", new Color(0,0.2f,0.7f));
-			_outline.SetShaderParameter("line_thickness", 2);
+			_outline.SetShaderParameter("color", new Color(0.7f, 0, 0.7f));
+			_outline.SetShaderParameter("pattern", 1);
 			skin.Material = _outline;
 			harvest_effect = GlobalManager.EmitParticles("harvest", new(), this, false);
 			skin.LightMask = 0;
@@ -315,9 +311,13 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	{
 		IsReadyForHarvest = false;
 		// result
-		Instance.Status.MilkBuildup = 0;
-		Player.Data.AddCurrency(Instance.Status.IsAdult ? AphidData.HARVEST_VALUE_ADULT : AphidData.HARVEST_VALUE_BABY);
+		Instance.Status.HarvestBuildup = 0;
+		float _multiplier = 0.5f + (Instance.Status.Hunger + Instance.Status.Thirst) / 200;
+		Player.Data.ChangeCurrency(Mathf.CeilToInt((Instance.Status.IsAdult ? 
+				AphidData.HARVEST_VALUE_ADULT : AphidData.HARVEST_VALUE_BABY) 
+				* _multiplier));
 		CanvasManager.RemoveControlPrompt(Tag);
+		CanvasManager.AddControlPrompt("pet", Tag, InputNames.Interact);
 		// visuals
 		skin.DoSquishAnim();
 		skin.Material = null;
@@ -326,7 +326,6 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		harvest_effect = null;
 		skin.LightMask = 1;
 	}
-
 	// The actual breed that causes an egg to spawn, also sets aphids back to normal
 	public void LayAnEgg(AphidInstance _father, bool _alone = false)
 	{
@@ -335,32 +334,46 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		_egg.given_genes.BreedNewAphid(_father, Instance);
 		_egg.IsNatural = true;
 
+		SetState(StateEnum.Idle);
 		Instance.Status.BreedBuildup = 0;
-		Instance.Status.BreedMode = AphidActions.BreedState.BreedEnum.Inactive;
 		Instance.Status.AddAffection(100);
 		Instance.Status.AddTiredness(50);
-		SetState(StateEnum.Idle);
+
 		if (!_alone)
 		{
+			_father.Entity.SetState(StateEnum.Idle);
 			_father.Status.BreedBuildup = 0;
 			_father.Status.AddAffection(100);
 			_father.Status.AddTiredness(50);
-			_father.Entity.SetState(StateEnum.Idle);
+
+			Instance.Genes.Relationships[_father.GUID].AddToTotal(30);
+			_father.Genes.Relationships[Instance.GUID].AddToTotal(30);
 		}
 		GlobalManager.EmitParticles("heart", GlobalPosition - new Vector2(0, 10), false);
 	}
 
-	// =======| Collision Behaviours |========
+	public Timer CreateTimer(Action _timeout, float _duration, bool _bypassDisable = false)
+	{
+		Timer _timer = new()
+		{
+			OneShot = true
+		};
+		AddChild(_timer);
+		_timer.Timeout += _timeout;
+		_timer.Start(_duration);
+		if (_bypassDisable)
+			_timer.ProcessMode = ProcessModeEnum.Pausable;
+		return _timer;
+	}
 	public void OnTriggerEnter(Node2D _node)
 	{
-		if (!_node.HasMeta(StringNames.TagMeta))
+		if (_node.Equals(this) || !_node.HasMeta(StringNames.TagMeta))
 			return;
 		var _tag = (string)_node.GetMeta(StringNames.TagMeta);
 
 		var _action = TriggerActions.Find((e) => e.TriggerID == _tag);
 		_action?.OnTrigger(this, _node, StateArgs);
 	}
-
 	public void Interact() // player interaction
 	{
 		if (IsDisabled)
@@ -396,12 +409,12 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	{
 		public StateEnum Type { get; }
 		/// <summary>
-		/// States from which this one can transition from.
+		/// States that can/cannot transition into it. Dictated by TransitionToAnything.
 		/// </summary>
 		public StateEnum[] TransitionList { get; }
 		/// <summary>
-		/// Allows this state to dictate wheter it can transition from any state to this.
-		/// Allowing it makes the transition list a blacklist, and disallowing it a whitelist.
+		/// Dictate wheter it can transition into any state.
+		/// True makes the transition list a blacklist, and false makes it a whitelist.
 		/// </summary>
 		public bool TransitionToAnything { get => false; }
 		/// <summary>
@@ -473,26 +486,31 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 		}
 	}
 	public class Skill(string Name)
-    {
-        public string Name { get; set; } = Name;
-        public int Points { get { return points; } set { points = Mathf.Clamp(value, 0, 10); } }
+	{
+		public string Name { get; set; } = Name;
+		public int Points { get { return points; } set { points = Mathf.Clamp(value, 0, 10); } }
 		private int points;
 		public int Level { get; set; }
 
-		public delegate void AphidSkillLevelUp(int _lastLevel, int _currentLevel);
-		public event AphidSkillLevelUp OnLevelUp;
+		public delegate void LevelUp(int _lastLevel, int _currentLevel);
+		public event LevelUp OnLevelUp;
+		public delegate void SkillChange();
+		public event SkillChange OnSkillChange;
 
-        public virtual void GivePoints(int _points, bool _noSignal = false)
+		public virtual void GivePoints(int _points, bool _noSignal = false)
 		{
 			points += _points;
-			int _levelUps = 0;
-			while (points > 10)
+			if (points > 10)
 			{
 				points -= 10;
-				_levelUps++;
+				GiveLevel(1, _noSignal);
 			}
-			Points = Mathf.Max(0, points);
-			GiveLevel(_levelUps, _noSignal);
+			else if (points < 0)
+			{
+				points += 10;
+				GiveLevel(-1, _noSignal);
+			}
+			OnSkillChange?.Invoke();
 		}
 		public virtual void GiveLevel(int _level, bool _noSignal = false)
 		{
@@ -500,6 +518,29 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 				OnLevelUp?.Invoke(Level, Level + _level);
 			Level += _level;
 		}
+	}
+	public class Relationship(Guid Aphid, 
+			Relationship.RelationshipLevel Level = Relationship.RelationshipLevel.Stranger, sbyte Total = 0, bool Locked = false)
+	{
+		public enum RelationshipLevel { Parent = -8, Stranger = -7,
+			Enemy = -2, Hated, Acquaintance, Friend, BestFriend, Lover }
+		 
+		public Guid Aphid { get ; set; } = Aphid;
+		public RelationshipLevel Level { get; set; } = Level;
+		public sbyte Total { get; set; } = Total;
+		public bool Locked { get; set; } = Locked;
+
+		public virtual void AddToTotal(sbyte _points)
+		{
+			Total += _points;
+
+			if (Locked)
+				return;
+
+			Level = (RelationshipLevel)Mathf.Clamp(Total / 30, -2, 3);
+		}
+
+		public bool Equals(Aphid _aphid) => Aphid.Equals(_aphid.Instance.GUID);
 	}
 	public interface IDecayEvent
 	{
@@ -514,5 +555,9 @@ public partial class Aphid : CharacterBody2D, Player.IPlayerInteractable
 	{
 		public string TriggerID { get; }
 		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args);
+	}
+	public interface IInteractEvent
+	{
+		public void Interact(Aphid _aphid);
 	}
 }

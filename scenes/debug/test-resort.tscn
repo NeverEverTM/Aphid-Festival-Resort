@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://d0yn37lf538vo"]
+[gd_scene load_steps=10 format=3 uid="uid://d0yn37lf538vo"]
 
 [ext_resource type="Script" uid="uid://7tuds0dv1fbo" path="res://scripts/controllers/ResortManager.cs" id="1_rh1j6"]
 [ext_resource type="PackedScene" uid="uid://cwqplcbrf0lqj" path="res://scenes/entities/camera.tscn" id="2_gpa5i"]
+[ext_resource type="Script" uid="uid://pohaec3n3ypy" path="res://scripts/controllers/FieldManager.cs" id="2_y7kfg"]
 [ext_resource type="Script" uid="uid://co6jq3ny35gqg" path="res://scripts/debug/test_camera.cs" id="3_lrt1v"]
+[ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="4_8q6jh"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_gpa5i"]
 
@@ -24,22 +26,39 @@ EntityRoot = NodePath("entity_root")
 StructureRoot = NodePath("structure_root")
 SpawnPoint = NodePath("spawnpoint")
 
-[node name="structure_root" type="Node2D" parent="."]
+[node name="Camera2D" parent="." instance=ExtResource("2_gpa5i")]
+script = ExtResource("3_lrt1v")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+
+[node name="player" parent="." instance=ExtResource("4_8q6jh")]
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(-956, -533)
+gizmo_extents = 296.0
+
+[node name="Marker2D2" type="Marker2D" parent="."]
+position = Vector2(943, 529)
+gizmo_extents = 297.0
+
+[node name="structure_root" type="Node2D" parent="." node_paths=PackedStringArray("globalFilter", "TopLeft", "BottomRight")]
 y_sort_enabled = true
+script = ExtResource("2_y7kfg")
+globalFilter = NodePath("../CanvasModulate")
+TopLeft = NodePath("../Marker2D")
+BottomRight = NodePath("../Marker2D2")
 
 [node name="entity_root" type="Node2D" parent="."]
 y_sort_enabled = true
 
 [node name="spawnpoint" type="Marker2D" parent="."]
 
-[node name="Camera2D" parent="." instance=ExtResource("2_gpa5i")]
-script = ExtResource("3_lrt1v")
-
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(1, 179)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("WorldBoundaryShape2D_gpa5i")
+disabled = true
 
 [node name="StaticBody2D4" type="StaticBody2D" parent="."]
 position = Vector2(-3, -344)
@@ -47,6 +66,7 @@ position = Vector2(-3, -344)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4"]
 position = Vector2(5, 180)
 shape = SubResource("WorldBoundaryShape2D_lrt1v")
+disabled = true
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="."]
 position = Vector2(-326, -182)
@@ -54,6 +74,7 @@ position = Vector2(-326, -182)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
 position = Vector2(5, 180)
 shape = SubResource("WorldBoundaryShape2D_ogd1s")
+disabled = true
 
 [node name="StaticBody2D3" type="StaticBody2D" parent="."]
 position = Vector2(315, -182)
@@ -61,3 +82,4 @@ position = Vector2(315, -182)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
 position = Vector2(5, 180)
 shape = SubResource("WorldBoundaryShape2D_vb6xh")
+disabled = true

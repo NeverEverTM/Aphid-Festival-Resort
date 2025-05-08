@@ -1,10 +1,9 @@
-using Godot;
-using System;
 
 public partial class test_camera : CameraManager
 {
-    public override async void _EnterTree()
+    public async override void _Ready()
     {
         await GlobalManager.INTIALIZE_GAME_PROCESS(false);
+        EnableFreeRoam = true;
     }
 }

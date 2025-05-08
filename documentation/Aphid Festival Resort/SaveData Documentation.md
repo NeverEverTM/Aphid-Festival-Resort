@@ -25,6 +25,6 @@ The root of the file, by default it goes into Godot's default user directory.
 This is changed by a IGlobalCall to the user's profile path.
 Ex. "user://profiles/MyResortName"
 ### RelativePath: Default = [string.Empty]
-The relative path from within the root. It does not create folders so make sure that it points to a valid location. A filename is not needed since the assigned ID is used for this. Ex. "folder1/folder2"
+The relative path from within the root. It does not create folders so make sure that it points to a valid location. A filename is not needed since the assigned ID is used for this. Ex. "root/folder1/folder2"
 ### Extension: Default = [.json]
-A custom extension to use, profile data files tend to use ".data" instead.
+A custom extension to use, profile data files tend to use ".data" instead, while global configuration files used ".cfg".

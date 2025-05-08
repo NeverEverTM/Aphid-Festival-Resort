@@ -11,6 +11,8 @@ warning_invalid_name,"This resort name is not valid, be sure to exclude special 
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
 warning_key_duplicated,This key is already binded to another action!,¡Esta tecla ya esta conectada a otra accion!
 warning_incompatible_version,The savefile you are trying to load is from another version! Are you sure you want to load?,La partida que intentas cargar es de otra version! ¿Estas seguro que quieres cargarla?
+warning_invalid_building,Cannot place this building here!,No se puede colocar esta estructura aquí!
+warning_no_photo,There is no photos yet...,Aun no hay fotos aquí...
 press_start,Press {0} to start!,Presiona {0} para empezar!
 new_game,New Game,Nueva Partida
 load_game,Load Game,Cargar Partida
@@ -50,6 +52,9 @@ Manten presionado “Si” para confirmar"
 confirmation_2,Are you sure?,¿Estas seguro?
 confirmation_yes,Yes,Si
 confirmation_no,Nope,No
+confirmation_exit,"Are you sure you want to exit?
+Your aphids will miss you!","¿Estas seguro que quieres salir?
+Tus áfidos te echaran de menos!"
 options_master,Master,Master
 options_music,Music,Musica
 options_sounds,Sounds,Sonidos
@@ -80,31 +85,35 @@ controls_menus_name,Menu Access,Acceso de Menus
 controls_reset,Hold F1 to reset binds,Sosten F1 para resetar los controles
 help_title,Aphid Basics and You - 101,Introducción al Cuidado de Áfidos
 help_desc_0,"Welcome to the Resort! Start by hatching your first Aphid.
-Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
-Use the same button to pickup stuff as well!","¡Bienvenido al Complejo! Empieza eclosionando tu primer Áfido.
+Press {0} to open the inventory, you can click on an item to pull it, and press {1} to drop it.
+Use the latter to pickup stuff as well!","¡Bienvenido al Complejo! Empieza eclosionando tu primer Áfido.
 Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
+¡Este ultimo tambien se usa para recoger!"
 help_desc_1,"Aphids need to be taken care of! Interact with them using {0} to pet them.
-Be sure to also give them [color=cyan]food and water[/color]!","Áfidos requieren de cuidado! Interactua presionando {0} para acariciarlos.
+Be sure to also give them enough [color=cyan]food and water[/color]!","Áfidos requieren de cuidado! Interactua presionando {0} para acariciarlos.
 Asegurate de darles de [color=cyan]comer y beber[/color]!"
 help_desc_2,"You can buy supplies at the [color=cyan]store[/color], simply stand in front of it and interact with it.
 This applies to anything that looks, and is, interactable!","Compra provisiones en la [color=cyan ]tienda[/color], simplemente situate enfrente de ella e interactua.
 ¡Esto aplica para todo lo que se vea Y sea interactuable!"
 help_desc_3,"Money grows from Aphids, literally!
-Interact with [color=#e33d00]outlined[/color] aphids to harvest them for berries.","El dinero crece de los Áfidos, ¡literalmente!
-Interactua con áfidos [color=#e33d00]delineados[/color] para cultivarlos por bayas."
-help_desc_4,"You can make better snacks at the kitchen, mix and match ingredients to find a worthy meal.
-Remember that your aphids have a unique preference for certain food types!","Puedes hacer mejores snacks en la cocina, mezcla y combina para encontrar una cena apropiada.
+Interact with [color=#e33d00]outlined[/color] aphids to milk them for berries.
+The happier, the bigger the reward!","El dinero crece de los Áfidos, ¡literalmente!
+Interactua con áfidos [color=#e33d00]delineados[/color] para orderñarlos por bayas.
+Cuanto más felices esten, mejor la recompensa."
+help_desc_4,"You can cook diskes at the kitchen, where you can mix and match ingredients.
+Remember that your aphids have a unique preference for certain food types!","Puedes hacer platillos unicos en la cocina, donde puedes mezclar y combinar ingredientes.
 ¡Recuerda que tus áfidos tendran una preferencia unica por ciertos tipos de comida!"
 help_desc_5,"Want to see your progress? Open the generational album with {0} and admire all of
-your current and past aphids under your care.","¿Quieres ver tu progreso? Abre el album generacional con {0} y admira todos
-los áfidos presentes y pasados bajo tu cuidado."
-help_desc_6,"You can rename an Aphid by picking it up and pressing its name on the top left.
-It also shows its current status and skills.","Puedes renombrar un Áfido recogiendolo y presionando su nombre en la parte izquierda arriba.
-Aquí tambien muestra su estado actual y habilidades."
-help_desc_7,"Get a better view of your resort by pressing {0} from where you can access the furniture mode!
-You can also take screenshots with F1 and see them in your album.","¡Consigue una mejor vision del complejo presionando {0} donde puedes acceder al modo construcción!
-Tambien puedes tomar capturas de pantalla usando F1 y verlas en tu album."
+your current and past aphids under your care. You can watch their photos here too!","¿Quieres ver tu progreso? Abre el album generacional con {0} y admira todos
+los áfidos presentes y pasados bajo tu cuidado. Tambien puedes ver sus fotos aquí ."
+help_desc_6,"Here is the aphid's stat window, where you can see its needs and skills.
+You can easily rename an aphid by pressing the name, modyfing it and pressing Enter.","Esto es el estado de un áfidos, donde muestra sus necesidades y habilidades.
+Puedes renombrarlos facilmente, simplemente presiona su nombre, modificalo y presiona Enter."
+help_desc_7,"Get a better view of your resort by pressing {0} and enter free camera mode!
+While in this mode, you can watch over your aphids.
+Here you can find the build menu, the furniture store, and other camera functions","¡Consigue una mejor vision del complejo presionando {0} para acceder al modo camara libre!
+En este modo, puedes supervisar tus áfidos de forma rapida.
+Puedes encontrar los menus de construcción, el catalogo de muebles, y otras funciones de camara."
 pause_resume,Resume,Reanudar
 pause_options,Options,Opciones
 pause_controls,Controls,Controles
@@ -161,7 +170,7 @@ trait_clumsy,Clumsy,Torpe
 trait_glutton,Glutton,Tragón
 trait_hyperactive,Hyperactive,Hiperactivo
 trait_heavysleeper,Heavy Sleeper,Sueño Profundo
-trait_lightsleeper,Light Sleeper,Sueño Profundo
+trait_lightsleeper,Light Sleeper,Sueño Ligero
 trait_affectionate,Affectionate,Afectuoso
 trait_fastlearner,Fast Learner,Aprendiz Rapido
 trait_slowlearner,Slow Learner,Aprendiz Lento
@@ -172,6 +181,7 @@ food_flavor_3,Bitter,Amargo
 food_flavor_4,Vile,Vil
 food_flavor_5,Bland,Soso
 food_flavor_6,Neutral,Neutral
+store_buy,Buy Item,Comprar
 store_item_name,Azzy’s Bazaar,Bazar de Azzy
 store_item_desc,"Purchase basic items for Aphid caretaking. Food, toys, eggs, and more!","Adquiere objectos basicos para el cuidado de Áfidos. Comida, juegetes, huevos y mucho más!"
 store_item_phrase,Hi!,Hola!
@@ -202,3 +212,8 @@ prompt_sell,Sell,Vender
 prompt_store,Store,Almacenar
 prompt_align_to_grid,Align (Hold),Alinear (Mantener)
 prompt_open_menu,Open Menu,Abrir Menu
+prompt_show_info,Show,Mostar
+prompt_close_info,Close,Cerrar
+game_over_0,It seems you have ran out of aphids.,Parece que te has quededo sin áfidos.
+game_over_1,"You aren't  really good at this, are you?","No eres muy bueno en esto, verdad?"
+game_over_2,Try doing better with this one.,Intenta hacerlo mejor con el siguiente.
