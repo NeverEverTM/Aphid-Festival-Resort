@@ -8,7 +8,7 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
     private FileDialog popup = new();
     private string path;
     private Vector2 orig_scale;
-    private bool firstLoad = true;
+    private bool firstLoad = false;
 
     public override void _EnterTree()
     {
@@ -33,6 +33,7 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
 
     public void SetData(string _data)
     {
+        firstLoad = true;
         path = _data;
         SetImage(_data);
     }

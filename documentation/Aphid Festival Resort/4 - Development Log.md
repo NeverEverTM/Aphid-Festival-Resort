@@ -60,7 +60,7 @@
 - Aphid traits and preferences are now revelead in the generations album depending on how much bondship you have with them (thats what the big pink circle meter is for!)
 - Added "Pull Item" and "Align to Grid" as rebindable controls.
 - Added 6 new furniture. Including custom image signs.
-- Added 5 new recipes and one new ingredient. Rebalanced and tweaked several values related to foods which are yet to be properly revised in a later update.
+- Added 5 new recipes and one new ingredient.
 
 ## Technical
 - Aphid skins have been packed into a spriteatlas and a heavy boost in performance should be noticeable, however, this affects how new aphid skins can be implemented, refer to [[Atlas Packager Usage]] for more information.
@@ -68,6 +68,7 @@
 - NPC's no longer repeat the same line of dialog when set to Random, and will in fact not say it again until the entire dialogue tree is exahusted.
 - Build mode binds should no longer interfere with overworld binds, allowing to bind the same key to other actions in different bind groups.
 - Many control prompts, buttons and shortcuts have been added for accessibility.
+- Resized the resort map, furniture and aphids outside the playable area should be either stored or repositioned on bootup with no further complications.
 
 ## Graphics & Sound
 - Some furniture sprite improvements, including functionality wise. 
@@ -80,6 +81,7 @@
 - Added a backdrop to most text in the game which i think looks nice.
 - Remastered some sounds to be more quiet/louder.
 - Updated help image examples.
+- Added confirmation popups when exiting the game or loading a game from a previous version.
 
 ## Development
 - Updated to Godot 4.4. 
@@ -103,8 +105,11 @@
 ## Fixed
 - [Not Fixed] Aphid eggs can lose their inherited genes if you leave the game *before* the egg hatches, this could happen when grabbing and storing them but this has been now prohibited, a proper fix for this should be up next update.
 - [Not Fixed] The name of the parents of an aphid does not update if you change them later.
+- [Balance] Rebalanced several gamerule and database values, including furniture and food prices, mating cooldowns and aphid need drain.
+- [Balance] Fertile has been tweaked for a slight advantage rather than dividing by two the already low offspring cooldown.
+- [Balance] Rebalanced and tweaked several values related to foods which are yet to be properly revised in a later update.
 - You can now close various menus elements without exiting the menu itself. (Ex. build menu closes the storage tab if attempting to exit)
-- Pickyeaters can now eat neutral-flavoured foods aswell.
+- [Balance] Pickyeaters can now eat neutral-flavoured foods aswell.
 - Particle manager would make other classes throw errors if they attempted to spawn particles over the particle limit. This should no longer happen.
 - Aphids that were breeding would sometimes "T-Pose" towards their breed target, this should be fixed.
 - Bee flag structure had the wrong id, which turned it into a rug after game reload, the way ids are set has been changed to prevent such things from happening in the future.

@@ -9,7 +9,7 @@ To implement a food or recipe, they require the following:
 ## Structure Implementation
 To implement  a structure:
 - Include a packed scene in the structures folder in res://databases
-  - If they are used in the editor, it must have a metadata "id" with their corresponding ID as a string value. 
+  - If they are used to pre-decorate a modifieable area (like adding furniture to the resort on the editor), it must have a metadata "id" with their corresponding ID as a string value. 
   - Root must be a Sprite2D, AnimatedSprite2D or have the metadata "size" and "offset" for its build rect to be correctly built during build mode.
 - Have an entry in the [items.csv] with the corresponding ID. Check the tag classification in the second tab.
 - Have two entries in the translation file [structures.csv], one for its name ("id_name") and another for its description ("id_desc"), where id is replaced with the corresponding ID.
