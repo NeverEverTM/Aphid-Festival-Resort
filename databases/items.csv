@@ -56,6 +56,6 @@ bee_flag,15,0,decoration,furniture
 ant_flag,15,0,decoration,furniture
 stump,10,0,decoration,furniture
 lilypad,5,0,decoration,furniture
-rock,10,0,decoration,furniture
-image_sign,20,0,decoration,furniture
-big_image_sign,20,0,decoration,furniture
+rock,5,0,decoration,furniture
+image_sign,10,0,decoration,furniture
+big_image_sign,25,0,decoration,furniture

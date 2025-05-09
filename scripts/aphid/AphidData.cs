@@ -32,9 +32,10 @@ public class AphidData
 		"Alicia", "Mr Von Aphid", "Apartment Complex",
 	];
 	internal static int Age_Adulthood = 1200, Age_Death = 7200,
-		Breed_Cooldown = 1000, Harvest_Cooldown = 180, Food_Drain_Time = 10, Water_Drain_Time = 8;
+		Breed_Cooldown = 1800, Harvest_Cooldown = 180, Food_Drain_Time = 11, Water_Drain_Time = 9, Care_Drain_Time = 12;
 
-	internal const int HARVEST_VALUE_BABY = 4, HARVEST_VALUE_ADULT = 8, PET_DURATION = 1;
+	internal const int HARVEST_VALUE_BABY = 4, HARVEST_VALUE_ADULT = 8;
+	internal const float PET_DURATION = 0.8f;
 	internal const float COLOR_RANGE = 0.15f;
 
 	/// <summary>

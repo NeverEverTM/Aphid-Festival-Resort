@@ -25,13 +25,11 @@ scale = Vector2(0.43, 0.43)
 position = Vector2(-150.973, -32.0963)
 range_item_cull_mask = 2
 texture = ExtResource("3_ylhd2")
-texture_scale = 0.5
 
 [node name="PointLight2D2" type="PointLight2D" parent="billboard"]
 position = Vector2(152.982, -9.12143)
 range_item_cull_mask = 2
 texture = ExtResource("3_ylhd2")
-texture_scale = 0.5
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

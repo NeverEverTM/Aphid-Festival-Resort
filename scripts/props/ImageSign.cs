@@ -8,6 +8,7 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
     private FileDialog popup = new();
     private string path;
     private Vector2 orig_scale;
+    private bool firstLoad = true;
 
     public override void _EnterTree()
     {
@@ -43,7 +44,11 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
     public void SetImage(string _path)
     {
         if (!FileAccess.FileExists(_path))
+        {
+            if (!firstLoad)
+                Player.Instance.SetDisabled(false);
             return;
+        }
 
         // we get the image variables
         try
@@ -66,6 +71,8 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
             Logger.Print(Logger.LogPriority.Error, "Image Sign: Unable to load image.", _error);
         }
 
-        Player.Instance.SetDisabled(false);
+        if (!firstLoad)
+            Player.Instance.SetDisabled(false);
+        firstLoad = false;
     }
 }

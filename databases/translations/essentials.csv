@@ -210,10 +210,10 @@ prompt_talk,Talk,Conversar
 prompt_harvest,Harvest,Cosechar
 prompt_sell,Sell,Vender
 prompt_store,Store,Almacenar
-prompt_align_to_grid,Align (Hold),Alinear (Mantener)
+prompt_align_to_grid,Align (Hold),Alinear
 prompt_open_menu,Open Menu,Abrir Menu
 prompt_show_info,Show,Mostar
 prompt_close_info,Close,Cerrar
 game_over_0,It seems you have ran out of aphids.,Parece que te has quededo sin áfidos.
 game_over_1,"You aren't  really good at this, are you?","No eres muy bueno en esto, verdad?"
-game_over_2,Try doing better with this one.,Intenta hacerlo mejor con el siguiente.
+game_over_2,Try doing better with the next one.,Intenta hacerlo mejor con el siguiente.

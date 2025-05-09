@@ -66,7 +66,6 @@ public class AphidActions
 	public class AffectionDecay : IDecayEvent
 	{
 		public float TimeLeft { get; set; }
-		private const float affection_decay = 10;
 
 		public void Tick(Aphid aphid, EventArgs args, float _delta)
 		{
@@ -78,7 +77,7 @@ public class AphidActions
 			else
 			{
 				aphid.Instance.Status.AddAffection(-1);
-				TimeLeft = affection_decay;
+				TimeLeft = AphidData.Care_Drain_Time;
 			}
 		}
 	}
@@ -713,20 +712,20 @@ public class AphidActions
 				aphid.Instance.Status.BreedMode = _mode;
 			}
 
+			aphid.skin.OverrideMovementAnim = true;
 			if (_mode == BreedEnum.WithPartner) // Try finding a pardner around to mate
 			{
 				aphid.TriggerActions.Add(this);
 				breed_timeout_timer = BREED_TIMEOUT_BASE;
 				breed_effect = GlobalManager.EmitParticles("mating", aphid.GlobalPosition);
 			}
-			else // Mate with yourself
+			else if (_mode == BreedEnum.WithItself) // Mate with yourself
 			{
 				breed_effect = GlobalManager.EmitParticles("heart", aphid.GlobalPosition, false);
 				breed_effect.OneShot = false;
 				await aphid.skin.DoDanceAnim();
 				aphid.LayAnEgg(aphid.Instance, true);
 			}
-			aphid.skin.OverrideMovementAnim = true;
 		}
 		// constantly calls aphids around to complete the breeding process
 		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)

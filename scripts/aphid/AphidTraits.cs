@@ -248,6 +248,7 @@ public static class AphidTraits
     public class Fertile : ITrait
     {
         public string[] IncompatibleTraits => null;
+        private float timer;
 
         public void Activate(Aphid aphid, EventArgs args)
         {
@@ -264,7 +265,12 @@ public static class AphidTraits
             if (!aphid.Instance.Status.IsAdult)
                 return;
             
-            aphid.Instance.Status.BreedBuildup += _delta;
+            timer += _delta;
+            if (timer > 5)
+            {
+                timer = 0;
+                aphid.Instance.Status.BreedBuildup += 0.5f;
+            }
         }
     }
 }

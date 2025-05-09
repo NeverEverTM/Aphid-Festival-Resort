@@ -61,12 +61,12 @@ public partial class Player : CharacterBody2D
 	public static string NewName { get; set; }
 	public static string[] NewPronouns { get; set; }
 
-    public record SaveData
+	public record SaveData
 	{
 		public string Name { get; set; } = "Mello";
-		public string[] Pronouns { get; set; }  = ["They", "them"];
+		public string[] Pronouns { get; set; } = ["They", "them"];
 		public int Level { get; set; }
-		public string Room { get; set; } =  "resort_golden_grounds";
+		public string Room { get; set; } = "resort_golden_grounds";
 
 		public float PositionX { get; set; }
 		public float PositionY { get; set; }
@@ -204,16 +204,17 @@ public partial class Player : CharacterBody2D
 
 		CanvasManager.Menus.OnSwitch += (_lastMenu, _menu) =>
 		{
+			if (_menu != null && _menu.Name.Equals("pause")
+					|| (_lastMenu != null && _lastMenu.Name.Equals("pause")))
+				return;
+
 			if (CanvasManager.Menus.IsBusy != in_menu)
 			{
-				if (_menu == null && !_menu.Equals("pause") || (_lastMenu == null  && !_lastMenu.Equals("pause")))
-				{
-					in_menu = CanvasManager.Menus.IsBusy;
-					if (in_menu)
-						SetDisabled(true, true);
-					else
-						SetDisabled(false);
-				}
+				in_menu = CanvasManager.Menus.IsBusy;
+				if (in_menu)
+					SetDisabled(true, true);
+				else
+					SetDisabled(false);
 			}
 		};
 

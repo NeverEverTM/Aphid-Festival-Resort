@@ -66,7 +66,7 @@ public class MenuUtil
 	/// <param name="_menu">Next menu to display</param>
 	private bool SwitchTo(MenuInstance _menu)
 	{
-		var _lastMenu = _menu;
+		var _lastMenu = CurrentMenu;
 		// Close last menu
 		if (CurrentMenu != null)
 		{
@@ -91,7 +91,7 @@ public class MenuUtil
 		// Set menu state
 		CurrentMenu = _menu;
 		IsBusy = MenuList.Count > 0;
-		OnSwitch?.Invoke(_lastMenu, CurrentMenu);
+		OnSwitch?.Invoke(_lastMenu, _menu);
 		return true;
 	}
 	public void GoBack()
