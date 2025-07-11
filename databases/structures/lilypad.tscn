@@ -1,10 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://milwhyvpdumy"]
+[gd_scene load_steps=4 format=3 uid="uid://milwhyvpdumy"]
 
 [ext_resource type="Texture2D" uid="uid://dut6yhfuiahkj" path="res://sprites/props/lilypad.png" id="1_aedr5"]
-[ext_resource type="Script" uid="uid://ceve07mvghn1n" path="res://scripts/props/Lilypad.cs" id="2_xpr24"]
+[ext_resource type="Shader" uid="uid://cxlqld44bp5i1" path="res://scripts/shaders/water_placeable.gdshader" id="1_xpr24"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bsjku"]
+shader = ExtResource("1_xpr24")
+shader_parameter/frequency = 2.0
 
 [node name="lilypad" type="Sprite2D"]
+material = SubResource("ShaderMaterial_bsjku")
 texture = ExtResource("1_aedr5")
 offset = Vector2(0, -5.1)
-script = ExtResource("2_xpr24")
 metadata/allow_water = true

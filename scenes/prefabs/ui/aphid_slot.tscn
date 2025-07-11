@@ -1,0 +1,80 @@
+[gd_scene load_steps=7 format=3 uid="uid://d7m5e6tlxyve"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_m4hsb"]
+[ext_resource type="Texture2D" uid="uid://cj5maqmor6mpu" path="res://databases/skins/0/antenna_idle.tres" id="3_krlak"]
+[ext_resource type="Texture2D" uid="uid://c1jtpm68uqgx1" path="res://databases/skins/0/legs_idle.tres" id="4_bja8u"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="4_uqier"]
+[ext_resource type="Texture2D" uid="uid://b5u1m2wg1lahk" path="res://databases/skins/0/body_idle.tres" id="5_ok5wu"]
+[ext_resource type="Texture2D" uid="uid://ca12oiuq2yrpg" path="res://databases/skins/0/eyes_idle.tres" id="6_isk14"]
+
+[node name="aphid_slot" type="TextureButton"]
+light_mask = 0
+custom_minimum_size = Vector2(100, 100)
+offset_right = 128.0
+offset_bottom = 128.0
+size_flags_stretch_ratio = 2.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("1_m4hsb")
+script = ExtResource("4_uqier")
+PressedColor = Color(0.547633, 0.547633, 0.547632, 1)
+FocusColor = Color(0.64794, 0.784064, 0.814552, 1)
+HoverColor = Color(0.772247, 0.772247, 0.772247, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="Control" type="Control" parent="."]
+light_mask = 0
+anchors_preset = 0
+offset_right = 122.0
+offset_bottom = 118.0
+scale = Vector2(0.75, 0.75)
+mouse_filter = 2
+
+[node name="antenna" type="TextureRect" parent="Control"]
+light_mask = 0
+layout_mode = 0
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
+texture = ExtResource("3_krlak")
+stretch_mode = 5
+
+[node name="back_legs" type="TextureRect" parent="Control"]
+light_mask = 0
+layout_mode = 0
+offset_left = -33.3333
+offset_top = -25.3333
+offset_right = 166.667
+offset_bottom = 174.667
+texture = ExtResource("4_bja8u")
+stretch_mode = 5
+
+[node name="body" type="TextureRect" parent="Control"]
+light_mask = 0
+layout_mode = 0
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
+texture = ExtResource("5_ok5wu")
+stretch_mode = 5
+
+[node name="eyes" type="TextureRect" parent="Control"]
+light_mask = 0
+layout_mode = 0
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
+texture = ExtResource("6_isk14")
+stretch_mode = 5
+
+[node name="legs" type="TextureRect" parent="Control"]
+light_mask = 0
+layout_mode = 0
+offset_left = -14.6667
+offset_top = -22.6667
+offset_right = 185.333
+offset_bottom = 177.333
+texture = ExtResource("4_bja8u")
+stretch_mode = 5

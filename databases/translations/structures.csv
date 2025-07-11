@@ -9,7 +9,7 @@ box_0_name,Supply Box,Caja de Suministros
 box_0_desc,"It has been already emptied by the resort, so it just looks “nice”.","Ya ha sido vaciado por el hotel, asi que simplemente esta por las “apariencias”."
 torch_name,Leaf Torch,Antorcha Hoja
 torch_desc,"A light to iluminate the darkness, the way they work is beyond your comprehension.","Una luz para iluminar el camino, el como funcionan es un misterio."
-bee_rug_name,HandCrafted Golden Rug,Carpeta Dorada Artesanal
+bee_rug_name,Golden Rug,Carpeta Dorada
 bee_rug_desc,A meticulously hand-crafted rug with the symbol of the Bee Kingdom stiched onto it.,Una carpeta hecha meticulosamente a mano. Tiene el simbolo del Reino de las Abejas estampado en el.
 grass_0_name,Patch of Grass,Parche de Hierba
 grass_0_desc,"It's a piece of grass, can't get any simpler than that.","Es un pedazo de hierba, no puede ser mas simple que eso."
@@ -18,17 +18,17 @@ grass_1_desc,"It looks like a fire, hopefully it won't start a real one of its o
 largegrass_0_name,Flame Vine,Vid Flama
 largegrass_0_desc,A common type of tuft that grows everywhere in the Golden Path.,Una mata común que crece en todos los alreadores del Camino Dorado
 sign_no_aphid_name,“No Aphids Allowed” Sign,Señal “Prohibido Áfidos”
-sign_no_aphid_desc,"That sign can't stop me, because I can't read! Wait...",¡Este letrero no puede detenerme porque no sé leer! Espera...
+sign_no_aphid_desc,That sign can't stop me because I can't read! Wait...,¡Este letrero no puede detenerme porque no sé leer! Espera...
 berry_bush_name,Berry Bush,Arbusto de Bayas
 berry_bush_desc,"This bush grows edible berries every so often, and they can be used to feed Aphids.","Este arbusto crece bayas comestibles ocasionalmente, y se pueden usan para alimentar a los Áfidos."
 sunshade_name,Leaf Sunshade,Parasol de Hoja
-sunshade_desc,Keep the sun from touching you by sitting underneath the shade of this unnaturally cool leaf.,Manten al sol lejos de ti sentandote debajo de la inexplicadadamente refrescante sombra de esta hoja.
-lilypad_torch_name,Lilypad Torch,Antorcha de Nenúfar
-lilypad_torch_desc,Make any puddle of water look like the night sky above by placing these beautiful lights around.,Haz que cualquier charco de agua parezca como la bella noche misma colocando estos delicados adornos alreadedor.
+sunshade_desc,Keep the sun from touching you by sitting underneath the shade of this unnaturally cool leaf.,Manten al sol lejos de ti relajandote debajo de la inexplicadamente fresca sombra de esta hoja.
+paper_lantern_name,Paper Lantern,Linterna de Papel
+paper_lantern_desc,Make any puddle of water look like the night sky above by placing these beautiful lights around.,Haz que cualquier charco de agua parezca como la bella noche misma colocando estos delicados adornos alreadedor.
 bee_flag_name,Bee Kingdom Pennant,Estandarte - Abeja
 bee_flag_desc,"A flag that waves the emblem of the Bee Kingdom. For some reason, it is sold as a souvenir.",Una bandera que yergue el emblema del Reino de las Abejas. Por alguna razon lo venden como recuerdo.
 bench_name,Leaf Bench,Banco de Hoja
-bench_desc,"Why don't you just take a minute, and relax? I'm sure you turned off the fire stove.",¿Porque no te tomas un minuto y te relajas? Estoy seguro que no te dejaste el horno de fuego encendido.
+bench_desc,"Why don't you just take a minute, and relax? I'm sure you turned off the fire stove.",¿Porque no te tomas un minuto y te relajas? Estoy seguro que no te dejaste el horno encendido.
 ant_flag_name,Ant Kingdom Pennant,Estandarte - Hormiga
 ant_flag_desc,A flag displaying the symbol of the Ant Kingdom. Included as part of protocol.,Una bandera que despliega el simbolo del Reino de las Hormigas. Incluida como parte del protocolo.
 rock_name,Boulder,Roca
@@ -38,6 +38,28 @@ stump_desc,A simple chair made from the base of a larger twig.,Una simple silla 
 lilypad_name,Lilypad,Nenúfar
 lilypad_desc,Adorn the water surface with this rather elegant water leaf.,Adorna la superficie del agua con esta elegante hoja aquatica.
 image_sign_name,Small Billboard,Cartel Pequeño
-image_sign_desc,Display your very own imagery in this fabulous tiny teenie billboard.,Despliega tus propias imagenes en esta fabulosa cartelera diminuta.
+image_sign_desc,Display your very own imagery in this fabulous tiny teenie billboard.,Despliega tus propias imagenes en esta tremendamente pequeña cartelera.
+med_image_sign_name,Medium Billboard,Cartel Mediano
+med_image_sign_desc,Display your very own imagery in this average sized billboard.,Despliega tus propias imagenes en esta cartelera sorprendentemente promedio.
 big_image_sign_name,Big Billboard,Cartel Largo
-big_image_sign_desc,Display your very own imagery in this fabulous big boy billboard.,Despliega tus propias imagenes en esta fabulosa cartelera gigante.
+big_image_sign_desc,Display your very own imagery in this ludicrously big boy billboard.,Despliega tus propias imagenes en esta ridiculamente giante cartelera.
+bottle_cap_name,Cap Cot,Casa de Tapa
+bottle_cap_desc,A cozy hideout for aphids to take cover in.,Un comodo escondite para cualquier áfido que busque cobijo.
+hot_bathtub_name,Jacuzzi,Jacuzzi
+hot_bathtub_desc,A fancy bath of warm water that will refresh back up any aphid that you put in.,Un baño de agua caliente de primera que refrescara a cualquier áfido al que pongas.
+trampoline_name,Trampoline,Trampolín
+trampoline_desc,"Fun for all ages, now with extra spring on your step.","Diversion para todas las edades, ahora con más salto por cada paso que des."
+train_dummy_name,Train Dummy,Muñeco de Entrenamiento
+train_dummy_desc,Let it all against this outrageous looking fella that feels weirdly good to punch. Trains strength.,"Dalo tu todo contra este muñeco de entrenamiento, golpearlo se siente extrañamente relajante. Entrena fuerza."
+runmill_name,Runmill,Cinta de Correr
+runmill_desc,"Give it your all and run a marathon, all while in the comfort of your own home. Trains speed.",Corre un maratón en el comfort de tu propio hogar. Entrena agilidad.
+kindergarten_name,Kindergarten,Jardin de áfidos
+kindergarten_desc,"Where you can learn the basics of math, and Waspnish for some reason. Trains intelligence. ","Donde puedes aprender las bases de matematicas, y Bugnish por alguna razon. Entrena inteligencia."
+jump_rope_name,Jump Rope,Cuerda de Saltar
+jump_rope_desc,Who needs wings when you can jump as high as a grasshopper. Trains stamina.,Quien necesita alas cuando puedes saltar como un salatamontes. Entrena resistencia.
+pot_grass_name,Grass Pot,Maceta de Hierba
+pot_grass_desc,Why have grass in the ground when you could have it in this luxurious cheap pot.,"Para que tener una planta en el suelo, cuando podrias tenerla en esta lujosa maceta de segunda mano."
+poster_mothiva_name,Mothiva Show Poster,Mothiva Poster
+poster_mothiva_desc,"The art in the poster is fantastic, but that price is turning my face blue.",El arte del poster es fenomenal pero ese precio me aterra.
+aphid_rug_name,Adornated Rug,Alfombra Adornada
+aphid_rug_desc,This rug has an exquisite pattern stitched all over it. The symbols look weirdly familiar.,Esta alfombra tiene un exquisito patrón bordado. Los simbolos te parecen familiares.

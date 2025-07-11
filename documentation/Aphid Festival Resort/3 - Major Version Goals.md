@@ -16,7 +16,7 @@ For deadlines, take into account that things may take 1 or 2 extra months than a
 - [DONE] v1.3 Resort customization with the ability to place furniture
 	- Custom Input Binding
 - [DONE] v0.2 Base system for complex aphid personality and interactibility (traits, skills)
-## Version 0.3 (10%)
+## Version 0.3 (30%)
 - [DONE] v0.2.1 Misc. Resort functionality like the Album, QoL for aphid information and various tweaks.
 - v0.2.2 Aphid relationships and interactibility
 - v0.2... Aphid Customization and Job System

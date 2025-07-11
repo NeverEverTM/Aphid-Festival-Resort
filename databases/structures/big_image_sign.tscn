@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dmo505ujibtbs"]
 
 [ext_resource type="Texture2D" uid="uid://c76wsibtbi12" path="res://sprites/props/big_image_sign.png" id="1_ylhd2"]
-[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/props/ImageSign.cs" id="2_6hw3u"]
+[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSign.cs" id="2_6hw3u"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="3_ylhd2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6hw3u"]

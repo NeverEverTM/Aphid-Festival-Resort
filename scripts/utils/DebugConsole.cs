@@ -2,8 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 
 public partial class DebugConsole : CanvasLayer
 {
@@ -27,35 +25,41 @@ public partial class DebugConsole : CanvasLayer
 		IsEnabled = true;
 #endif
 		Print($"Debug Console Command - {GlobalManager.GAME_VERSION}v\n");
-		command_line_input.TextSubmitted += (_text) => 
+		command_line_input.TextSubmitted += (_text) =>
 		{
 			if (!string.IsNullOrEmpty(_text))
-				{
-					lastRawCommand = _text;
-					if (TriggerCommand(_text.Split(" ")))
-						command_line_input.ReleaseFocus();
-				}
-				GetViewport().SetInputAsHandled();
+			{
+				lastRawCommand = _text;
+				if (TriggerCommand(_text.Split(" ")))
+					command_line_input.ReleaseFocus();
+			}
+			GetViewport().SetInputAsHandled();
 		};
 	}
 	public override void _Process(double delta)
 	{
 		if (IsInstanceValid(validAphid))
 		{
-			debug_status.Text = "Name: " + validAphid.Instance.Genes.Name;
-			debug_status.Text += "\nState: " + validAphid.State.Type.ToString();
-			debug_status.Text += "\nFood: " + validAphid.Instance.Status.Hunger;
-			debug_status.Text += "\nWater: " + validAphid.Instance.Status.Thirst;
-			debug_status.Text += "\nBondship: " + validAphid.Instance.Status.Bondship;
-			debug_status.Text += "\nHealth: " + validAphid.Instance.Status.Health;
-			debug_status.Text += "\nAge: " + (int)validAphid.Instance.Status.Age + "/" + AphidData.Age_Death;
-			debug_status.Text += $"\nBreedBuildup: {(int)validAphid.Instance.Status.BreedBuildup}/{AphidData.Breed_Cooldown}";
-			debug_status.Text += "\nBreedMode: " + validAphid.Instance.Status.BreedMode;
-			debug_status.Text += $"\nHarvestBuildup: {(int)validAphid.Instance.Status.HarvestBuildup}/{AphidData.Harvest_Cooldown}";
-			debug_status.Text += "\nFoodPreference: " + validAphid.Instance.Genes.FoodPreference.ToString();
-			debug_status.Text += "\nTraits: \n";
-			for (int i = 0; i < validAphid.Instance.Genes.Traits.Count; i++)
-				debug_status.Text += $"{validAphid.Instance.Genes.Traits[i]}\n";
+			string[] _list =
+			[
+			 	"Name: " + validAphid.Instance.Genes.Name,
+				"State: " + validAphid.State.Type.ToString(),
+				"Food: " + validAphid.Instance.Status.Hunger,
+				"Water: " + validAphid.Instance.Status.Thirst,
+				"Bondship: " + validAphid.Instance.Status.Bondship,
+				"Health: " + validAphid.Instance.Status.Health,
+				"Age: " + (int)validAphid.Instance.Status.Age + "/" + AphidData.Age_Death,
+				$"BreedBuildup: {(int)validAphid.Instance.Status.BreedBuildup}/{AphidData.Breed_Cooldown}",
+				"BreedMode: " + validAphid.Instance.Status.BreedMode,
+				$"HarvestBuildup: {(int)validAphid.Instance.Status.HarvestBuildup}/{AphidData.Harvest_Cooldown}",
+				"FoodPreference: " + validAphid.Instance.Genes.FoodPreference.ToString(),
+				"Traits:",
+				validAphid.Instance.Genes.Traits[0],
+				validAphid.Instance.Genes.Traits[1],
+				validAphid.Instance.Genes.Traits[2],
+				validAphid.Instance.Genes.Traits.Count > 3 ? validAphid.Instance.Genes.Traits[3] : string.Empty
+			];
+			debug_status.Text = string.Join("\n", _list);
 		}
 		else
 			validAphid = null;
@@ -64,6 +68,18 @@ public partial class DebugConsole : CanvasLayer
 	{
 		if (IsEnabled)
 		{
+			if (@event.IsActionPressed(InputNames.Debug1))
+			{
+				Logger.Print(Logger.LogPriority.Debug, "IsActive: ", CanvasManager.Menus.IsActive);
+				Logger.Print(Logger.LogPriority.Debug, "Processing: ", CanvasManager.Menus.Processing);
+				
+				Logger.Print(Logger.LogPriority.Debug, "Current: " + CanvasManager.Menus.Current?.Name);
+				Logger.Print(Logger.LogPriority.Debug, "Current|IsOpen: " + CanvasManager.Menus.Current?.IsOpen);
+				Logger.Print(Logger.LogPriority.Debug, "Pending: " +  CanvasManager.Menus.Pending?.Name);
+				Logger.Print(Logger.LogPriority.Debug, "Available: ", CanvasManager.Menus.Available.Count);
+				return;
+			}
+
 			if (@event.IsActionPressed(InputNames.Debug0))
 			{
 				if (Visible)
@@ -80,8 +96,6 @@ public partial class DebugConsole : CanvasLayer
 			var _event = @event as InputEventKey;
 
 			if (_event.KeyLabel == Key.Up)
-				command_line_input.GrabClickFocus();
-			else if (_event.KeyLabel == Key.Down)
 			{
 				command_line_input.GrabFocus();
 				command_line_input.Text = lastRawCommand;
@@ -115,8 +129,6 @@ public partial class DebugConsole : CanvasLayer
 			else
 				DidntSayIDidntWarnYouBeforeHand = false;
 		}
-
-
 	}
 	public static bool TriggerCommand(string[] _commandLines)
 	{
@@ -132,7 +144,7 @@ public partial class DebugConsole : CanvasLayer
 			string[] _args = new string[_commandLines.Length - 1];
 			if (_args.Length > 0)
 				Array.Copy(_commandLines, 1, _args, 0, _args.Length);
-            value.Execute(_args);
+			value.Execute(_args);
 			Instance.command_line_input.Text = string.Empty;
 			return true;
 		}
@@ -147,14 +159,15 @@ public partial class DebugConsole : CanvasLayer
 	}
 	public readonly static Dictionary<string, IConsoleCommand> commands = new()
 	{
-		{ "help", new Help() },
+		{ "help", new Andrew() },
 		{ "motherload", new Motherload() },
 		{ "time", new DeLorean() },
 		{ "gamerule", new GameRules() },
 		{ "aphid", new AphidPrognosis() },
 		{ "give", new GrabBag() },
-		{ "dialog", new DialogSim() },
-		{ "build", new IKEA() }
+		{ "dialog", new VisualNovel() },
+		{ "build", new IKEA() },
+		{ "tp", new FlyMeToTheMoon() }
 	};
 
 	public static void Print(string _message) =>
@@ -215,7 +228,7 @@ public partial class DebugConsole : CanvasLayer
 			return _argBool;
 	}
 
-	private class Help : IConsoleCommand
+	private class Andrew : IConsoleCommand
 	{
 		public string HelpText => "Help yourself!";
 
@@ -242,13 +255,13 @@ public partial class DebugConsole : CanvasLayer
 
 		public void Execute(string[] args)
 		{
-			if (GlobalManager.Scene != GlobalManager.SceneName.Resort)
+			if (!GlobalManager.IsInGame)
 			{
 				Logger.Print(Logger.LogPriority.Log, $"Motherload: No game currently running.");
 				return;
 			}
 			int _amount = GetInt(0, args, 0);
-			Player.Data.ChangeCurrency(_amount);
+			Player.Data.AddCurrency(_amount);
 
 			if (_amount < 0)
 				Logger.Print(Logger.LogPriority.Log, $"Motherload: Removed ${_amount} from your current game.");
@@ -267,7 +280,7 @@ public partial class DebugConsole : CanvasLayer
 			var _date = Time.GetDatetimeDictFromSystem();
 			_date["hour"] = args[0];
 			_date["minute"] = args[1];
-			FieldManager.Instance.SetTime(_date);
+			FieldManager.Instance.SetTime(false, _date);
 
 			Logger.Print(Logger.LogPriority.Log, $"In-Game Time is now {args[0]}:{args[1]}");
 		}
@@ -340,7 +353,7 @@ public partial class DebugConsole : CanvasLayer
 			}
 
 			if (GetArg(0, args, out string _name) && game_rules.TryGetValue(_name, out Action<string[]> _rule))
-                _rule(args);
+				_rule(args);
 			else
 				Logger.Print(Logger.LogPriority.Info, $"GameRules: The rule {_name} does not exist.");
 		}
@@ -357,9 +370,6 @@ public partial class DebugConsole : CanvasLayer
 		{
 			switch (GetArg(0, args))
 			{
-				case "medic":
-					SoundManager.CreateSound("misc/medic_prognosis", false);
-					break;
 				case "new":
 				case "mew":
 				case "spawn":
@@ -412,6 +422,7 @@ public partial class DebugConsole : CanvasLayer
 					if (!IsInstanceValid(validAphid))
 						return;
 					validAphid.PrepareToDie();
+					SoundManager.CreateSound("misc/medic_prognosis", false).VolumeDb = -10;
 					break;
 				case "remove":
 					if (!IsInstanceValid(validAphid))
@@ -421,9 +432,9 @@ public partial class DebugConsole : CanvasLayer
 					break;
 				case "grant":
 					if (!IsInstanceValid(validAphid))
-							return;
+						return;
 					var _skill = GetArg(1, args);
-					validAphid.Instance.Genes.Skills[_skill].GivePoints(Mathf.Clamp(GetInt(2, args, 1), 0, 10)); 
+					validAphid.Instance.Genes.Skills[_skill].GivePoints(Mathf.Clamp(GetInt(2, args, 1), 0, 10));
 					break;
 			}
 		}
@@ -466,9 +477,9 @@ public partial class DebugConsole : CanvasLayer
 				Logger.Print(Logger.LogPriority.Log, $"SpawnStructure: {_id} is not a valid item.");
 		}
 	}
-	private class DialogSim : IConsoleCommand
+	private class VisualNovel : IConsoleCommand
 	{
-		public string HelpText => "This is a text";
+		public string HelpText => "Visualize a dialog string in the console. <dialog [id]>";
 
 		public void Execute(string[] args)
 		{
@@ -481,6 +492,31 @@ public partial class DebugConsole : CanvasLayer
 			}
 			Logger.Print(Logger.LogPriority.IgnorePriority, $"DialogSim: Displaying <{_id}>:");
 			Logger.Print(Logger.LogPriority.IgnorePriority, "[color=cyan]", Instance.Tr(_id), "[/color]");
+		}
+	}
+	private class FlyMeToTheMoon : IConsoleCommand
+	{
+		public string HelpText => "Teleports the player to the provided position. <tp [x] [y]>/<tp [safe]>";
+
+		public void Execute(string[] args)
+		{
+			if (GetArg(0, args, out string _keyword) && _keyword.Equals("safe"))
+			{
+				if (GameManager.IsOutOfBounds(Player.Instance.GlobalPosition)
+					|| GameManager.IsInsideGeometry(Player.Instance.GlobalPosition))
+				{
+					Player.Instance.GlobalPosition =
+							FieldManager.Instance.Doors[0].GlobalPosition
+							+ (-FieldManager.Instance.Doors[0].entryDirection) * 5;
+					Logger.Print(Logger.LogPriority.Info, "PlayerTeleport: Unstucked player.");
+				}
+				else
+					Logger.Print(Logger.LogPriority.Info, "PlayerTeleport: Player was supposedly in a valid position.");
+				return;
+			}
+
+			Player.Instance.GlobalPosition = new Vector2(GetFloat(0, args, 0), GetFloat(1, args, 0));
+			Logger.Print(Logger.LogPriority.Info, $"PlayerTeleport: Teleported to coordinates[{Player.Instance.GlobalPosition}]");
 		}
 	}
 }

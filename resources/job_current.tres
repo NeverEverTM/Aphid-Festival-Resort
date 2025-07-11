@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dyerhwix2wmjn"]
+
+[ext_resource type="Shader" uid="uid://bhxvuy8s0oq6t" path="res://scripts/shaders/pulse.gdshader" id="1_24p3p"]
+
+[resource]
+shader = ExtResource("1_24p3p")
+shader_parameter/speed = 6.0
+shader_parameter/flashing_color = Color(1, 1, 1, 1)

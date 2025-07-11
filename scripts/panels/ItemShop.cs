@@ -3,7 +3,7 @@ public partial class ItemShop : ShopInterface
     protected override bool CanPurchase()
     {
 		if (base.CanPurchase())
-        	return PlayerInventory.CanStoreItem();
+        	return !PlayerInventory.IsExceedingCapacity();
 		else
 			return false;
     }
@@ -11,5 +11,6 @@ public partial class ItemShop : ShopInterface
 	{
 		base.Purchase();
 		PlayerInventory.StoreItem(currentItem);
+		GameManager.Data.ItemsBought++;
 	}
 }

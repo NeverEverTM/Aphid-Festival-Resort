@@ -4,7 +4,7 @@ using Godot;
 // Used for the UI interface you interact with
 public partial class ShopInterface : Control, MenuTrigger.ITrigger
 {
-	public MenuUtil.MenuInstance Menu { get; protected set; }
+	public MenuInstance Menu { get; protected set; }
 
 	[Export] protected string shopTag;
 	[Export] protected AnimationPlayer storePlayer;
@@ -24,19 +24,15 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	public override void _EnterTree()
 	{
 		CleanShelf();
-		Menu = new MenuUtil.MenuInstance(shopTag,
+		Menu = new MenuInstance(shopTag,
 			storePlayer,
 			Open: _ => 
 			{
 				ResetShop();
 				SoundManager.CreateSound("ui/store_bell");
 			},
-			Close: _ => 
-			{
-				CleanShelf();
-				return true;
-			},
-			false
+			null,
+			Close: _ => CleanShelf()
 		);
 		itemBuyButton.Pressed += () => SelectItem(currentItem);
 	}
@@ -64,8 +60,8 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 			itemGrid.AddChild(_itemSlot);
 
 			// set icon
-			(_itemSlot.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_pair.Key);
-			_itemSlot.SelfModulate = bgColorSlot;
+			(_itemSlot.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(_pair.Key);
+			(_itemSlot.GetChild(0) as Control).SelfModulate = bgColorSlot;
 
 			// set behaviour
 			_itemSlot.Pressed += () => SelectItem(_pair.Key);
@@ -126,13 +122,13 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	/// </summary>
 	protected virtual void Purchase()
 	{
-		Player.Data.ChangeCurrency(-currentCost);
+		Player.Data.AddCurrency(-currentCost);
 		SoundManager.CreateSound("ui/kaching");
 	}
 
 	public void SetMenu()
 	{
-		if (CanvasManager.Menus.CurrentMenu != Menu)
-			CanvasManager.Menus.OpenMenu(Menu);
+		if (CanvasManager.Menus.Current != Menu)
+			_ = CanvasManager.Menus.SetTo(Menu);
 	}
 }

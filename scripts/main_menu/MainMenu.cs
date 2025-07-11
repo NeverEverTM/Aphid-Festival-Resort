@@ -11,37 +11,32 @@ public partial class MainMenu : Node2D
 	public static MainMenu Instance { get; private set; }
 
 	[Export] private CanvasLayer canvas;
-	[Export] private Label BOOT_LOADING_LABEL;
 	[Export] private RichTextLabel button_wheel, hover_start;
-	[Export] private AnimationPlayer sweep_animator, logo_animator, title_animator;
+	[Export] private AnimatedSprite2D load_sprite;
+	[Export] private AnimationPlayer intro_animator, title_animator;
 	[Export] private PackedScene aphidPrefab;
-	[Export] private Node2D entityRoot;
+	[Export] private Node2D entity_root;
 	[ExportCategory("Menu Panels")]
 	[Export] private StartMenu start_panel;
 	[Export] private NewGameMenu new_game_panel;
 	[Export] private LoadGameMenu load_game_panel;
 	[Export] private Control credits_panel, options_panel, controls_panel;
 
-	private static bool HasBeenIntialized;
-
-	[ExportCategory("Button Wheel Behaviour")]
-	[Export] private AudioStream switchSound;
-	[Export] private AudioStream selectSound;
-	private bool UsingButtonWheel = false;
-	private Action OnMenuSwitch, OnMenuInteract;
-	public int MenuWheelIndex { get; set; }
+	private static bool hasBeenInitialized;
+	private bool usingButtonWheel = false;
+	private Action onMenuSwitch, onMenuInteract;
 
 	// Categories for button wheel
+	public int menuWheelIndex;
 	public string currentCategory = NewGameMenu.newGameCategory;
 	private Control currentMenu;
 
-	private readonly List<string> MenuCategories = new();
-	public readonly Dictionary<string, Action> MenuActions = new();
+	private readonly List<string> menuCategories = [];
+	public readonly Dictionary<string, Action> menuActions = [];
 
 	public override void _EnterTree()
 	{
 		Instance = this;
-		(sweep_animator.GetParent() as Control).Visible = true;
 	}
 	public async override void _Ready()
 	{
@@ -56,33 +51,42 @@ public partial class MainMenu : Node2D
 		CreateMenuAction("credits", () => SetMenu(credits_panel));
 		CreateMenuAction("exit", ExitGame);
 
-		if (!HasBeenIntialized)
+		if (!hasBeenInitialized)
 		{
-			GlobalManager.BOOT_LOADING_LABEL = BOOT_LOADING_LABEL;
-			logo_animator.Play("start");
-			while (logo_animator.IsPlaying())
+			intro_animator.Play("start");
+			while (intro_animator.IsPlaying())
 			{
 				if (Input.IsAnythingPressed())
-					logo_animator.Play("RESET");
+				{
+					intro_animator.Play("sweep");
+					await Task.Delay(1);
+					intro_animator.Pause();
+					break;
+				}
 				await Task.Delay(1);
 			}
+			load_sprite.Visible = true;
 			await GlobalManager.INTIALIZE_GAME_PROCESS();
-			sweep_animator.Play("slide_up");
+			load_sprite.Visible = false;
+			intro_animator.Play("sweep");
 		}
 		else
-		{
-			(sweep_animator.GetParent() as Control).Visible = false;
 			start_panel.ReadyUp();
-		}
-		SoundManager.PlaySong("misc/title.wav");
-		title_animator.Play("slide_down");
+		
+		CameraManager.ForceCameraPosition(new());
 		SpawnBunchaOfAphidsForTheFunnies();
 		start_panel.SetPanel();
-		HasBeenIntialized = true;
+
+		SoundManager.PlaySong("misc/title");
+		title_animator.Play("slide_down");
+
+		while (title_animator.IsPlaying())
+			await Task.Delay(1);
+		hasBeenInitialized = true;
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (GlobalManager.IsBusy)
+		if (GlobalManager.IsBusy || !hasBeenInitialized)
 			return;
 
 		// Press To Start - Pressed
@@ -120,8 +124,8 @@ public partial class MainMenu : Node2D
 
 		if (@event.IsActionPressed(InputNames.Interact))
 		{
-			OnMenuInteract?.Invoke();
-			SoundManager.CreateSound(selectSound);
+			onMenuInteract?.Invoke();
+			SoundManager.CreateSound("ui/button_select");
 		}
 	}
 	public override void _Process(double delta)
@@ -131,31 +135,31 @@ public partial class MainMenu : Node2D
 
 	public void GoLeftInWheel()
 	{
-		MenuWheelIndex--;
-		if (MenuWheelIndex < 0)
-			MenuWheelIndex = MenuActions.Count - 1;
-		OnMenuSwitch();
-		SoundManager.CreateSound(switchSound);
+		menuWheelIndex--;
+		if (menuWheelIndex < 0)
+			menuWheelIndex = menuActions.Count - 1;
+		onMenuSwitch();
+		SoundManager.CreateSound("ui/button_switch");
 	}
 	public void GoRightInWheel()
 	{
-		MenuWheelIndex++;
-		if (MenuWheelIndex >= MenuActions.Count)
-			MenuWheelIndex = 0;
-		OnMenuSwitch?.Invoke();
-		SoundManager.CreateSound(switchSound);
+		menuWheelIndex++;
+		if (menuWheelIndex >= menuActions.Count)
+			menuWheelIndex = 0;
+		onMenuSwitch?.Invoke();
+		SoundManager.CreateSound("ui/button_switch");
 	}
 	public void SetButtonWheel(Action _interact, Action _switch)
 	{
-		OnMenuSwitch = _switch;
-		OnMenuInteract = _interact;
+		onMenuSwitch = _switch;
+		onMenuInteract = _interact;
 		button_wheel.Show();
-		UsingButtonWheel = true;
+		usingButtonWheel = true;
 	}
 	public void CloseButtonWheel()
 	{
 		button_wheel.Hide();
-		UsingButtonWheel = false;
+		usingButtonWheel = false;
 	}
 
 	public static void DeleteResort(string _profile)
@@ -170,12 +174,15 @@ public partial class MainMenu : Node2D
 		SaveSystem.DeleteProfile(_profile);
 		SoundManager.CreateSound(Aphid.Audio_Hurt);
 	}
-	public static async void LoadResort()
+	public static async void LoadResort(string _room = "")
 	{
+		if (string.IsNullOrEmpty(_room))
+			_room = "golden_resort";
+
 		OptionsManager.Settings.LastPlayedResort = SaveSystem.Profile;
 		Logger.Print(Logger.LogPriority.Info, $"MainMenu: Loading the profile <{SaveSystem.Profile}>.");
 		await OptionsManager.Module.Save();
-		await GlobalManager.LoadScene(GlobalManager.SceneName.Resort);
+		await SceneManager.Switch(_room, true, true);
 	}
 	public void ExitGame()
 	{
@@ -186,8 +193,8 @@ public partial class MainMenu : Node2D
 	// MARK: Menu Managment
 	public void CreateMenuAction(string _key, Action _action)
 	{
-		MenuActions.Add(_key, _action);
-		MenuCategories.Add(_key);
+		menuActions.Add(_key, _action);
+		menuCategories.Add(_key);
 	}
 	public void RemoveMenuAction(string _key)
 	{
@@ -196,7 +203,7 @@ public partial class MainMenu : Node2D
 			Logger.Print(Logger.LogPriority.Warning, "Main Menu: Cannot remove default category");
 			return;
 		}
-		MenuCategories.Remove(_key);
+		menuCategories.Remove(_key);
 		SetCategory(NewGameMenu.newGameCategory);
 	}
 	public void SetMenu(Control _menu)
@@ -204,7 +211,7 @@ public partial class MainMenu : Node2D
 		currentMenu.Hide();
 		_menu.Show();
 
-		if (UsingButtonWheel)
+		if (usingButtonWheel)
 			CloseButtonWheel();
 
 		currentMenu = _menu;
@@ -212,12 +219,12 @@ public partial class MainMenu : Node2D
 	public void CloseMenu()
 	{
 		currentMenu.Hide();
-		SoundManager.CreateSound(selectSound);
+		SoundManager.CreateSound("ui/button_select");
 
 		// Start Panel behaviour
 		button_wheel.Text = $"[center]<| [tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado] |>[/center]";
-		SetButtonWheel(() => MenuActions[currentCategory](), SwitchCategories);
-		MenuWheelIndex = lastCategoryIndex;
+		SetButtonWheel(() => menuActions[currentCategory](), SwitchCategories);
+		menuWheelIndex = lastCategoryIndex;
 
 		start_panel.Show();
 		currentMenu = start_panel;
@@ -229,17 +236,17 @@ public partial class MainMenu : Node2D
 	{
 		currentCategory = _text;
 		button_wheel.Text = $"[center]<| [tornado radius=2.0 freq=6.0 connected=1]{Tr(currentCategory)}[/tornado] |>[/center]";
-		MenuWheelIndex = MenuCategories.IndexOf(currentCategory);
+		menuWheelIndex = menuCategories.IndexOf(currentCategory);
 	}
 	public void SwitchCategories()
 	{
-		lastCategoryIndex = MenuWheelIndex;
-		SetCategory(MenuCategories[MenuWheelIndex]);
+		lastCategoryIndex = menuWheelIndex;
+		SetCategory(menuCategories[menuWheelIndex]);
 	}
 
 	// MARK: Cosmetics
 	private bool DirectionForX, DirectionForY;
-	private float MaxWanderDistanceX = 800, MaxWanderDistanceY = 300;
+	private float MaxWanderDistanceX = 800, MaxWanderDistanceY = 400;
 	private void DoBounceAnim()
 	{
 		if (CameraManager.Instance.Position.X > MaxWanderDistanceX)
@@ -257,7 +264,7 @@ public partial class MainMenu : Node2D
 	private float[] babyWeight = [70, 30];
 	private void SpawnBunchaOfAphidsForTheFunnies()
 	{
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			var _aphid = aphidPrefab.Instantiate() as Aphid;
 			_aphid.IS_FAKE = true;
@@ -265,7 +272,7 @@ public partial class MainMenu : Node2D
 			_aphid.Instance.Genes.DEBUG_Randomize(false);
 			_aphid.Instance.Status.IsAdult = GlobalManager.Utils.GetRandomByWeight(babyWeight) == 0;
 			_aphid.GlobalPosition = GlobalManager.Utils.GetRandomVector(-300, 300);
-			entityRoot.AddChild(_aphid);
+			entity_root.AddChild(_aphid);
 			_aphid.SetReady();
 			_aphid.State.Enter(_aphid, new AphidActions.IdleState.IdleArgs(
 				GlobalManager.Utils.GetRandomVector(-300, 300),

@@ -9,39 +9,36 @@ using Godot;
 /// </summary>
 internal partial class GlobalManager : Node2D
 {
-	public const uint GAME_VERSION = 210;
-
 	public static GlobalManager Instance { get; private set; }
 	public readonly static RandomNumberGenerator RNG = new();
-
-	public delegate void LoadSceneHandler(SceneName _name);
-	public static event LoadSceneHandler OnPreLoadScene, OnPostLoadScene;
-
-	public enum SceneName { Resort, Menu }
-	public static SceneName Scene { get; private set; }
-
-	public static bool IsBusy { get; set; }
+	public const uint GAME_VERSION = 220;
+	public static bool IsBusy { get; internal set; } = true;
+	public static bool IsInGame { get; internal set; } = false;
 
 	public const string
-		RESORT_SCENE = "uid://dsw70b8747xh8",
-		MENU_SCENE = "uid://by6u0617yy7oe",
-		LOADING_SCENE = "uid://ddfk4hhfrlxpa",
+		LEAF_LOADING_SCENE = "uid://ddfk4hhfrlxpa",
+		FADE_LOADING_SCENE = "uid://cxt1r6y5y6260",
 		CONFIRM_WINDOW_SCENE = "uid://blrpv4ys07erj",
 		POPUP_WINDOW_SCENE = "uid://dwp7dadam0k12",
 		CG_OUTLINE_SHADER = "uid://dc60jiy0ptbuc",
 		OUTLINE_SHADER = "uid://dw8sws2xkkyr6",
 		ITEM_ENTITY = "uid://d3miyavfmn4oh",
-		APHID_ENTITY = "uid://7oo48cet73pb";
+		APHID_ENTITY = "uid://7oo48cet73pb",
+		PLAYER_PREFAB = "uid://b2tg0d8sg4vd0",
+		CANVAS_PREFAB = "uid://bufmc14xek8uk",
+		APHID_SLOT_PREFAB = "uid://d7m5e6tlxyve";
 	public const string
 		ABSOLUTE_SFX_PATH = "res://sfx/",
 		ABSOLUTE_SCENES_PATH = "res://scenes/",
+		ABSOLUTE_ROOMS_PATH = "res://scenes/rooms/",
 		ABSOLUTE_PARTICLES_PATH = "res://scenes/particles/",
 		ABSOLUTE_SPRITES_PATH = "res://sprites/",
 		ABSOLUTE_ICONS_PATH = "res://sprites/icons/",
 		ABSOLUTE_DATABASES_PATH = "res://databases/",
 		ABSOLUTE_SKINS_PATH = "res://databases/skins/",
 		ABSOLUTE_ITEMS_DB_PATH = "res://databases/items",
-		ABSOLUTE_STRUCTURES_DB_PATH = "res://databases/structures";
+		ABSOLUTE_STRUCTURES_DB_PATH = "res://databases/structures",
+		ABSOLUTE_JOBS_DB_PATH = "res://databases/jobs/";
 
 	// =========| GLOBAL LOADED VALUES |===========
 	public static readonly Dictionary<string, Item> G_ITEMS = [];
@@ -106,28 +103,18 @@ internal partial class GlobalManager : Node2D
 	private PhysicsDirectSpaceState2D spaceState;
 	private readonly static List<GpuParticles2D> ACTIVE_PARTICLES_CACHED = [];
 
-	internal static Label BOOT_LOADING_LABEL;
-
 	public override void _EnterTree()
 	{
 		Instance = this;
-		IsBusy = true;
-		Scene = SceneName.Menu;
 		SaveSystem.CreateBaseDirectories();
 #if DEBUG
 		Logger.LogMode = Logger.LogPriorityMode.All;
 #else
 		Logger.LogMode = Logger.LogPriorityMode.Default;
 #endif
-		GameManager.ProfileSaveModule = new(GameManager.ID, new GameManager.SaveModule(), 9999)
-		{
-			Extension = SaveSystem.SAVEFILE_EXTENSION
-		};
 	}
-	////// GAMEMANAGER READY GETS CALLED WHEN LOADING NEW ROOT SCENE
 	public override void _Ready()
 	{
-		// Runtime Params
 		spaceState = GetWorld2D().DirectSpaceState;
 		ControlsManager.InputBinds.Load();
 		OptionsManager.Module.Load();
@@ -151,24 +138,8 @@ internal partial class GlobalManager : Node2D
 	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
 	/// In order to be called again, BOOT_LOADING_LABEL must be set to a valid text display node.
 	/// </summary>
-	public async static Task INTIALIZE_GAME_PROCESS(bool _playIntro = true)
+	public async static Task INTIALIZE_GAME_PROCESS()
 	{
-		Control _node = new();
-		// show loading screen animation
-		if (_playIntro)
-		{
-			_node = BOOT_LOADING_LABEL.GetParent() as Control;
-			_node.Visible = true;
-			(_node.GetChild(1) as AnimatedSprite2D).Play("default");
-		}
-		else
-		{
-			BOOT_LOADING_LABEL = new()
-			{
-				Visible = false
-			};
-		}
-
 		try
 		{
 			await LOAD_ICONS();
@@ -178,7 +149,6 @@ internal partial class GlobalManager : Node2D
 			await LOAD_DATA();
 			await LOAD_PARTICLES();
 			IsBusy = false;
-			_node.Visible = false;
 		}
 		catch (Exception _err)
 		{
@@ -194,7 +164,7 @@ internal partial class GlobalManager : Node2D
 			string _fileName = _icons[i].Replace(".import", string.Empty), _id = _fileName.Split('.')[0];
 			if (G_ICONS.ContainsKey(_id))
 				continue;
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (1/2) ({i + 1}/{_icons.Length})";
+			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (1/2) ({i + 1}/{_icons.Length})";
 
 			// Wait until it yields
 			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_ICONS_PATH + _fileName);
@@ -216,7 +186,7 @@ internal partial class GlobalManager : Node2D
 				continue;
 
 			string _path = $"{ABSOLUTE_STRUCTURES_DB_PATH}/{_structures[i]}";
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (2/2) ({i + 1})";
+			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (2/2) ({i + 1})";
 
 			// we load and create an icon directly from the resources sprite
 			Node2D _packedScene = (await PRELOAD_RESOURCE(_path) as PackedScene).Instantiate() as Node2D;
@@ -245,7 +215,7 @@ internal partial class GlobalManager : Node2D
 
 			if (G_SKINS.ContainsKey(_id))
 				continue;
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_files.Length})";
+			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_files.Length})";
 			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_SKINS_PATH + _fileName);
 			G_SKINS.Add(_id, _resource as Texture2D);
 		}
@@ -281,7 +251,7 @@ internal partial class GlobalManager : Node2D
 			if (G_AUDIO.ContainsKey(_id))
 				continue;
 
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({_directory}[{i}/{_files.Length}])";
+			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({_directory}[{i}/{_files.Length}])";
 			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(ABSOLUTE_SFX_PATH + _fileName) as AudioStream);
 		}
 	}
@@ -362,7 +332,7 @@ internal partial class GlobalManager : Node2D
 		while (_file.GetPosition() < _file.GetLength())
 		{
 			_onItem(_file.GetCsvLine());
-			BOOT_LOADING_LABEL.Text = $"{_boot} ({(int)((float)_file.GetPosition() / (float)_file.GetLength() * 100)}%)";
+			// BOOT_LOADING_LABEL.Text = $"{_boot} ({(int)((float)_file.GetPosition() / (float)_file.GetLength() * 100)}%)";
 		}
 		return Task.CompletedTask;
 	}
@@ -372,7 +342,7 @@ internal partial class GlobalManager : Node2D
 
 		for (int i = 0; i < _particleList.Length; i++)
 		{
-			BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_3")} ({i}/{_particleList.Length})";
+			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_3")} ({i}/{_particleList.Length})";
 			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_PARTICLES_PATH + _particleList[i]);
 			var _particle = (_resource as PackedScene).Instantiate() as GpuParticles2D;
 
@@ -385,9 +355,15 @@ internal partial class GlobalManager : Node2D
 			G_PARTICLES.AddResource(_particleList[i].Split('.')[0], _resource);
 		}
 	}
-	private static async Task<Resource> PRELOAD_RESOURCE(string _path)
+	/// <summary>
+	/// Function used to load resources in the background. In case of error, this function automatically quits the game.
+	/// </summary>
+	/// <param name="_path">Path to the resource.</param>
+	/// <param name="_useSubThreads">Allow resource load using multiple threads, this however, can cause noticeable game stutter.</param>
+	/// <returns></returns>
+	public static async Task<Resource> PRELOAD_RESOURCE(string _path, bool _useSubThreads = true)
 	{
-		ResourceLoader.LoadThreadedRequest(_path, "", true);
+		ResourceLoader.LoadThreadedRequest(_path, "", _useSubThreads);
 		ResourceLoader.ThreadLoadStatus _status = ResourceLoader.LoadThreadedGetStatus(_path);
 
 		// start thread and await for its response
@@ -405,6 +381,7 @@ internal partial class GlobalManager : Node2D
 			else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
 				Logger.Print(Logger.LogPriority.Error, $"PRELOAD_RESOURCE: Resource <{_path.Substring(_path.LastIndexOf('/'))}> is unable to load.");
 
+			Instance.GetTree().Root.PropagateNotification((int)NotificationWMCloseRequest);
 			Instance.GetTree().Quit(2);
 			return null;
 		}
@@ -457,44 +434,6 @@ internal partial class GlobalManager : Node2D
 		ACTIVE_PARTICLES_CACHED.Clear();
 	}
 
-	public async static Task LoadScene(SceneName _scene)
-	{
-		// hardcoded available scenes
-		string _path = _scene switch
-		{
-			SceneName.Menu => MENU_SCENE,
-			SceneName.Resort => RESORT_SCENE,
-			_ => "N/A"
-		};
-		if (_path == "N/A")
-			return;
-		IsBusy = true;
-		Scene = _scene;
-		Logger.Print(Logger.LogPriority.Log, $"GlobalManager: Loading scene <{Scene}>.");
-
-		// start the load screen, but dont wait for it, instead we use that time to load the next scene
-		LoadScreen _loading = (await PRELOAD_RESOURCE(LOADING_SCENE) as PackedScene).Instantiate() as LoadScreen;
-		Instance.GetTree().Root.AddChild(_loading);
-		_ = _loading.CreateLeaves();
-
-		// preload setup
-		SoundManager.StopSong();
-		PackedScene _packedScene = await PRELOAD_RESOURCE(_path) as PackedScene;
-		while (!_loading.IsDone)
-			await Task.Delay(1);
-		OnPreLoadScene?.Invoke(Scene);
-		SaveSystem.ProfileClassData.Clear();
-		SoundManager.CleanAllSounds();
-		CleanAllParticles();
-
-		// set scene and request ready/events
-		Instance.GetTree().ChangeSceneToPacked(_packedScene);
-		Instance.RequestReady();
-		OnPostLoadScene?.Invoke(Scene);
-
-		IsBusy = false;
-		await _loading.SweepLeaves();
-	}
 	public static void CreatePopup(string _translation_key, Node _parent)
 	{
 		Control _popup = ResourceLoader.Load<PackedScene>(POPUP_WINDOW_SCENE).Instantiate() as Control;
@@ -586,6 +525,11 @@ internal partial class GlobalManager : Node2D
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
 		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));
 
+		public static string GetTooltipText(string _id)
+		{
+			return Instance.Tr(_id + "_name") + "\n" +
+				Instance.Tr(_id + "_desc");
+		}
 		public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
 		{
 			DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);

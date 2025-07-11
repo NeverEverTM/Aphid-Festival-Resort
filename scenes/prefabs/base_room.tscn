@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6hlqyvj3a8n0"]
+
+[ext_resource type="Script" uid="uid://pohaec3n3ypy" path="res://scripts/controllers/FieldManager.cs" id="1_43ixu"]
+
+[node name="BaseRoom" type="Node2D" node_paths=PackedStringArray("ColorCube", "TopLeft", "BottomRight")]
+y_sort_enabled = true
+script = ExtResource("1_43ixu")
+ColorCube = NodePath("colorcube")
+TopLeft = NodePath("top_left")
+BottomRight = NodePath("bottom_right")
+
+[node name="colorcube" type="CanvasModulate" parent="."]
+
+[node name="top_left" type="Marker2D" parent="."]
+gizmo_extents = 272.6
+
+[node name="bottom_right" type="Marker2D" parent="."]
+position = Vector2(253, 182)
+gizmo_extents = 125.7

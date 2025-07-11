@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckqm3dpr64x3k"]
+
+[ext_resource type="Script" uid="uid://ci8tiejleua3f" path="res://scripts/entities/RoomDoor.cs" id="1_qtqe8"]
+
+[node name="room_trigger" type="Area2D" node_paths=PackedStringArray("collider")]
+script = ExtResource("1_qtqe8")
+collider = NodePath("collider/CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="collider" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="collider"]
+debug_color = Color(0.571482, 0.208344, 0.0751392, 0.42)

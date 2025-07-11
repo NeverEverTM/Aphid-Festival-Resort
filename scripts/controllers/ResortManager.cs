@@ -6,16 +6,23 @@ using Godot;
 
 public partial class ResortManager : Node2D
 {
-	// Default Parameters
+	/// <summary>
+	/// The name of this resort.
+	/// </summary>
 	[Export] public string Resort;
 	[Export] public Node2D EntityRoot, StructureRoot, SpawnPoint;
+	private static PackedScene aphidEntity;
 
 	/// <summary>
 	/// Access local aphids within this resort. To access aphids across all resorts, use GameManager.Aphids instead.
 	/// </summary>
 	public readonly List<Aphid> Aphids = [];
 	private SaveSystem.SaveModule<Savefile> SaveModule;
+	/// <summary>
+	/// Currently running instance/singleton of a resort. This instance will reference the last resort it had to load.
+	/// </summary>
 	public static ResortManager Current { get; private set; }
+	public static Savefile Data { get; set; }
 
 	public record Savefile
 	{
@@ -26,6 +33,7 @@ public partial class ResortManager : Node2D
 			public int PositionX { get; set; }
 			public int PositionY { get; set; }
 			public string Id { get; set; }
+			public string Data { get; set; }
 		}
 		public struct Structure
 		{
@@ -37,25 +45,11 @@ public partial class ResortManager : Node2D
 	}
 	public class ResortDataModule : SaveSystem.IDataModule<Savefile>
 	{
-		public Savefile Data { get; set; }
 		public void Set(Savefile _data)
 		{
 			Data = _data;
-
-			// load items
-			for (int i = 0; i < Data.Items?.Length; i++)
-				CreateItem(Data.Items[i].Id, new(Data.Items[i].PositionX, Data.Items[i].PositionY));
-
-			// clean structure root from default objects
 			if (!GameManager.IsNewGame)
-			{
-				for (int i = 0; i < Current.StructureRoot.GetChildCount(); i++)
-					Current.StructureRoot.GetChild(i).QueueFree();
-			}
-
-			// spawn structures
-			for (int i = 0; i < Data.Structures?.Length; i++)
-				CreateStructure(Data.Structures[i].Id, new(Data.Structures[i].PositionX, Data.Structures[i].PositionY), Data.Structures[i].Data);
+				Load();
 		}
 		public Savefile Get()
 		{
@@ -75,7 +69,8 @@ public partial class ResortManager : Node2D
 				{
 					Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 					PositionX = (int)_item.GlobalPosition.X,
-					PositionY = (int)_item.GlobalPosition.Y
+					PositionY = (int)_item.GlobalPosition.Y,
+					Data = (_item is IMetadata) ? (_item as IMetadata).GetData() : null
 				};
 			}
 
@@ -95,7 +90,7 @@ public partial class ResortManager : Node2D
 					Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 					PositionX = (int)_item.GlobalPosition.X,
 					PositionY = (int)_item.GlobalPosition.Y,
-					Data = (_item is IStructureData) ? (_item as IStructureData).GetData() : null
+					Data = (_item is IMetadata) ? (_item as IMetadata).GetData() : null
 				};
 			}
 
@@ -104,61 +99,56 @@ public partial class ResortManager : Node2D
 		public Savefile Default() => new();
 	}
 
-    public override void _EnterTree()
+	public override async void _EnterTree()
 	{
 		Current = this;
+		if (!IsInstanceValid(aphidEntity))
+			aphidEntity = await GlobalManager.PRELOAD_RESOURCE(GlobalManager.APHID_ENTITY) as PackedScene;
 
 		// save data setup
 		SaveModule = new(Resort + "-resort", new ResortDataModule(), 1000)
 		{
 			Extension = SaveSystem.SAVEFILE_EXTENSION,
-			RelativePath = SaveSystem.PROFILERESORTS_DIR
+			RelativePath = SaveSystem.PROFILE_RESORTS_DIR
 		};
-		SaveSystem.ProfileClassData.Add(SaveModule);
-
-		// music loop handling
-		static void FinishedSignal(GlobalManager.SceneName _)
-		{
-			SoundManager.MusicPlayer.Finished -= CheckSongToPlay;
-			GlobalManager.OnPreLoadScene -= FinishedSignal;
-		}
-		;
-		GlobalManager.OnPreLoadScene += FinishedSignal;
-
-		if (IsInstanceValid(SoundManager.MusicPlayer))
-		{
-			SoundManager.MusicPlayer.Finished += CheckSongToPlay;
-			CheckSongToPlay();
-		}
+		SaveSystem.AddSaveModule(SaveModule);
 	}
-	public override void _Ready()
+	public override void _ExitTree()
 	{
-		GameManager.StartGame();
+		SaveSystem.RemoveSaveModule(SaveModule);
 	}
-	public static async void CheckSongToPlay()
+
+	/// <summary>
+	/// Loads current resort into the game.
+	/// </summary>
+	private static void Load()
 	{
-		await Task.Delay(1000);
-		string[] _raw_files = DirAccess.GetFilesAt(GlobalManager.ABSOLUTE_SFX_PATH + "music");
+		// load items
+		for (int i = 0; i < Data.Items?.Length; i++)
+			CreateItem(Data.Items[i].Id, new(Data.Items[i].PositionX, Data.Items[i].PositionY), Data.Items[i].Data);
 
-		if (FieldManager.TimeOfDay == FieldManager.DayHours.Night)
-			_raw_files = _raw_files.Where(e => e.StartsWith("night")).ToArray();
-		else
-			_raw_files = _raw_files.Where(e => e.StartsWith("day")).ToArray();
+		// clean structure root from default objects
+		for (int i = 0; i < Current.StructureRoot.GetChildCount(); i++)
+			Current.StructureRoot.GetChild(i).QueueFree();
 
-		// for some reason, the exported project cannot get access to "music.mp3" files
-		// using DirAccess.GetFilesAt(), it will only find "music.mp3.imported" ones and return those
-		// however for some WEIRD reason, if you just reference it anyways by trimming the ".import"
-		// it will find the supposedly non-existent .mp3 file
-		// UPDATE: this is a thing for EVERY GODDAMN IMPORTED ITEM, who the fuck made this engine!
-		// more in global manager's game initalization
-		string _file = _raw_files[GlobalManager.RNG.RandiRange(0, _raw_files.Length - 1)].TrimSuffix(".import");
-		SoundManager.PlaySong($"music/{_file}");
+		// spawn structures
+		for (int i = 0; i < Data.Structures?.Length; i++)
+			CreateStructure(Data.Structures[i].Id, new(Data.Structures[i].PositionX, Data.Structures[i].PositionY), Data.Structures[i].Data);
+
+		// spawn aphids
+		foreach (KeyValuePair<Guid, AphidInstance> _pair in GameManager.Aphids)
+		{
+			string _resort = _pair.Value.Status.HomeResort;
+			if (!string.IsNullOrEmpty(_resort) && _resort == Current.Resort
+					&& _pair.Value.Status.Mode == AphidData.EntityStatus.Active)
+				SpawnAphid(_pair.Value);
+		}
 	}
 
 	// =========| Object Creation |===============
 	public static Aphid SpawnAphid(AphidInstance _instance)
 	{
-		Aphid _aphid = (ResourceLoader.Load(GlobalManager.APHID_ENTITY) as PackedScene).Instantiate() as Aphid;
+		Aphid _aphid = aphidEntity.Instantiate() as Aphid;
 
 		_aphid.Instance = _instance;
 		_aphid.GlobalPosition = new(_instance.Status.PositionX, _instance.Status.PositionY);
@@ -169,40 +159,12 @@ public partial class ResortManager : Node2D
 
 		if (GameManager.APPLY_OUTOFBOUND_PATCH)
 		{
-			float _x = _aphid.GlobalPosition.X, _y = _aphid.GlobalPosition.Y,
-				_xtp = FieldManager.Instance.TopLeft.GlobalPosition.X, _ytp = FieldManager.Instance.TopLeft.GlobalPosition.Y,
-				_xbr = FieldManager.Instance.BottomRight.GlobalPosition.X, _ybr = FieldManager.Instance.BottomRight.GlobalPosition.Y;
-			if (_x < _xtp || _x > _xbr ||
-					_y < _ytp || _y > _ybr )
-				_aphid.GlobalPosition = new();
-			else
+			if (GameManager.IsOutOfBounds(_aphid.GlobalPosition) || GameManager.IsInsideGeometry(_aphid.GlobalPosition))
 			{
-				PhysicsRayQueryParameters2D _query = new()
-				{
-					HitFromInside = false,
-					From = _aphid.GlobalPosition
-				};
-				Vector2[] _list = [
-					new(-20, -20), new(0, -20), new(20, -20),
-					new(-20, 0), /* Center */ new(20, 0),
-					new(-20, 20), new(0, 20), new(20, 20)
-				];
-
-				for (int i = 0; i < 8; i++)
-				{
-					_query.To = _aphid.GlobalPosition + _list[i];
-					var _hit = GlobalManager.Utils.Raycast(_query);
-					if (_hit.Count == 0 || !_hit.ContainsKey("collision"))
-						continue;
-					var _collision = _hit["collision"].ToString();
-					if (!_collision.Contains("ground") || !_collision.Contains("wall"))
-						continue;
-
-					_aphid.GlobalPosition = new();
-					Logger.Print(Logger.LogPriority.Info, $"ResortManager: Applied OUTOFBOUND patch to {_aphid.Instance.Genes.Name}");
-				}
+				// an offset of -1000 is done here for the real center of the resort, though this could change in the future
+				_aphid.GlobalPosition = _aphid.GlobalPosition * 0.1f + new Vector2(-1000, 0);
+				Logger.Print(Logger.LogPriority.Info, $"ResortManager: Applied OUTOFBOUND patch to {_aphid.Instance.Genes.Name}");
 			}
-			Logger.Print(Logger.LogPriority.Info, "ResortManager: OUTOFBOUND patch finalized.");
 		}
 
 		_aphid.SetReady();
@@ -230,30 +192,40 @@ public partial class ResortManager : Node2D
 		_aphid.SetReady();
 		return _aphid;
 	}
-	public static Node2D CreateItem(string _item_name, Vector2 _position)
+	public static Node2D CreateItem(string _id, Vector2 _position, string _data = null)
 	{
-		if (_item_name == null)
+		if (_id == null)
 		{
 			Logger.Print(Logger.LogPriority.Error, "ResortManager: Item name is null!");
 			return null;
 		}
 		Node2D _item;
-		string _path = $"{GlobalManager.ABSOLUTE_ITEMS_DB_PATH}/{_item_name}.tscn";
+		string _path = $"{GlobalManager.ABSOLUTE_ITEMS_DB_PATH}/{_id}.tscn";
 		if (ResourceLoader.Exists(_path))
 			// this is used if an item has a more complex structure or contains extra data, thus needing an unique node
 			_item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
 		else
 		{
 			_item = ResourceLoader.Load<PackedScene>(GlobalManager.ITEM_ENTITY).Instantiate() as Node2D;
-			(_item.GetChild(0) as Sprite2D).Texture = GlobalManager.GetIcon(_item_name);
+			(_item.GetChild(0) as Sprite2D).Texture = GlobalManager.GetIcon(_id);
 		}
 
 		_item.SetMeta(StringNames.PickupMeta, true);
-		_item.SetMeta(StringNames.IdMeta, _item_name);
-		_item.SetMeta(StringNames.TagMeta, GlobalManager.G_ITEMS[_item_name].tag);
+		_item.SetMeta(StringNames.IdMeta, _id);
+		_item.SetMeta(StringNames.TagMeta, GlobalManager.G_ITEMS[_id].tag);
 		_item.GlobalPosition = _position;
-
 		Current.EntityRoot.AddChild(_item);
+		
+		try
+		{
+			if (_data != null && _item is IMetadata)
+				(_item as IMetadata).SetData(_data);
+		}
+		catch (Exception _error)
+		{
+			Logger.Print(Logger.LogPriority.Error, "ResortManager: Failed to execute item fn of " + _id, _error);
+		}
+
 		return _item;
 	}
 	public static Node2D CreateStructure(string _id, Vector2 _position, string _data = null)
@@ -275,8 +247,8 @@ public partial class ResortManager : Node2D
 
 		try
 		{
-			if (_data != null && _structure is IStructureData)
-				(_structure as IStructureData).SetData(_data);
+			if (_data != null && _structure is IMetadata)
+				(_structure as IMetadata).SetData(_data);
 		}
 		catch (Exception _error)
 		{
@@ -285,7 +257,10 @@ public partial class ResortManager : Node2D
 		return _structure;
 	}
 
-	public interface IStructureData
+	/// <summary>
+	/// Allows to gather/set metadata to an object. Used for structures and items.
+	/// </summary>
+	public interface IMetadata
 	{
 		public void SetData(string _data);
 		public string GetData();

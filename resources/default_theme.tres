@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=26 format=3 uid="uid://c26milatu6udv"]
+[gd_resource type="Theme" load_steps=28 format=3 uid="uid://c26milatu6udv"]
 
 [ext_resource type="StyleBox" uid="uid://dr2mf5bmmc0m0" path="res://resources/button_style.tres" id="1_hijc8"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="2_1p6bo"]
@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ohodui0w0ouh" path="res://sprites/ui/checkboxes.png" id="3_603ji"]
 [ext_resource type="StyleBox" uid="uid://c5n7wtc84u08e" path="res://resources/menu_border.tres" id="4_0fmu8"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="5_h1sdp"]
-[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="5_u7cj8"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="5_u7cj8"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="6_uwdo0"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n56tp"]
@@ -90,32 +90,53 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wdiyg"]
+content_margin_left = 14.0
+bg_color = Color(0.663552, 0.038332, 0.448192, 1)
+border_width_bottom = 4
+border_color = Color(0.307615, 2.34637e-06, 0.205156, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+anti_aliasing_size = 5.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i1e6c"]
 content_margin_left = 14.0
-bg_color = Color(0.0156863, 0.25098, 0.14902, 0.607843)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0.698039, 0.152941, 1)
+bg_color = Color(0.506832, 0.0106067, 0.257587, 1)
+border_width_bottom = 4
+border_color = Color(0.1939, 0, 0.0715595, 1)
 border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_size = 1
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rg684"]
-atlas = ExtResource("3_603ji")
-region = Rect2(32, 0, 32, 32)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+anti_aliasing_size = 5.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_24aqj"]
-texture = SubResource("AtlasTexture_rg684")
-modulate_color = Color(0.711885, 0.0726658, 0.276427, 1)
+texture = ExtResource("5_u7cj8")
+expand_margin_left = 3.0
+expand_margin_right = 3.0
+modulate_color = Color(0.774264, 0.109521, 0.167824, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4yrx2"]
-texture = SubResource("AtlasTexture_rg684")
-modulate_color = Color(0.848568, 0.115803, 0.339918, 1)
+texture = ExtResource("5_u7cj8")
+expand_margin_left = 3.0
+expand_margin_right = 3.0
+modulate_color = Color(0.550896, 0.676275, 0.803248, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wdiyg"]
+texture = ExtResource("5_u7cj8")
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+modulate_color = Color(1, 0.442889, 0.70507, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_76tm7"]
+texture = ExtResource("5_u7cj8")
+texture_margin_left = 4.0
+texture_margin_right = 4.0
+modulate_color = Color(0.583339, 0.189255, 0.31911, 0.576471)
 
 [resource]
 default_font = ExtResource("5_h1sdp")
@@ -179,7 +200,10 @@ RichTextLabel/constants/shadow_offset_y = 3
 RichTextLabel/constants/shadow_outline_size = 3
 TextEdit/colors/background_color = Color(0.0745098, 0.27451, 0.176471, 0)
 TextEdit/colors/font_placeholder_color = Color(0.305882, 0.611765, 0.458824, 0.6)
+TextEdit/styles/focus = SubResource("StyleBoxFlat_wdiyg")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_i1e6c")
 VScrollBar/styles/grabber = SubResource("StyleBoxTexture_24aqj")
 VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_4yrx2")
-VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_4yrx2")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_wdiyg")
+VScrollBar/styles/scroll = SubResource("StyleBoxTexture_76tm7")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxTexture_76tm7")

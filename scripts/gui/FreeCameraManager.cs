@@ -65,7 +65,7 @@ public partial class FreeCameraManager : Control
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (CanvasManager.Menus.IsBusy)
+		if (CanvasManager.Menus.IsActive)
 		{
 			if (BuildMenu.Menu.IsOpen)
 				ProcessZoomScroll(@event);
@@ -117,9 +117,9 @@ public partial class FreeCameraManager : Control
 			return;
 
 		if (@event.IsActionPressed(InputNames.QuickAction1))
-			CanvasManager.Menus.OpenMenu(BuildMenu.Menu);
+			_ = CanvasManager.Menus.SetTo(BuildMenu.Menu);
 		else if (@event.IsActionPressed(InputNames.QuickAction2))
-			CanvasManager.Menus.OpenMenu(FurnitureShop.Instance.Menu);
+			_ = CanvasManager.Menus.SetTo(FurnitureShop.Instance.Menu);
 		else if (@event.IsActionPressed(InputNames.QuickAction3))
 			SetCameraTab();
 	}
@@ -253,8 +253,11 @@ public partial class FreeCameraManager : Control
 
 	public static void SetFreeCameraMode(bool _state)
 	{
-		if (Instance.disable_transition.IsValid())
+		if (!IsInstanceValid(Instance) || Instance.disable_transition.IsValid())
+		{
+			SoundManager.CreateSound("ui/button_fail");
 			return;
+		}
 
 		if (_state)
 		{
@@ -291,7 +294,7 @@ public partial class FreeCameraManager : Control
 			Instance.is_focusing_aphids = false;
 			Instance.is_camera_tab_open = false;
 			Instance.spectatorLabel.Hide();
-			Instance.zoomLevelSlider.SetValueNoSignal(2);
+			Instance.zoomLevelSlider.SetValueNoSignal(CameraManager.DEFAULT_CAMERA_ZOOM);
 
 			// sweep back to player
 			CameraManager.Instance.EnableFreeRoam = false;
@@ -300,12 +303,13 @@ public partial class FreeCameraManager : Control
 			Instance.disable_transition.SetEase(Tween.EaseType.Out);
 			Instance.disable_transition.SetTrans(Tween.TransitionType.Circ);
 			Instance.disable_transition.TweenProperty(CameraManager.Instance, "zoom",
-					new Vector2(2, 2), 0.2f).FromCurrent();
+					new Vector2(CameraManager.DEFAULT_CAMERA_ZOOM, CameraManager.DEFAULT_CAMERA_ZOOM), 0.2f).FromCurrent();
 			Instance.disable_transition.TweenProperty(CameraManager.Instance, "position",
 					Player.Instance.GlobalPosition, 0.2f).FromCurrent();
 			Instance.disable_transition.Finished += () =>
 			{
 				CameraManager.Focus(Player.Instance);
+				CameraManager.SetCameraZoom(CameraManager.DEFAULT_CAMERA_ZOOM);
 				Player.Instance.SetDisabled(false, true);
 			};
 		}

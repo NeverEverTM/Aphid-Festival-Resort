@@ -1,18 +1,11 @@
 ,en,es
-BOOT_0,Visualizing Icons...,Visualizando Iconos...
-BOOT_1,Loading Skins...,Cargando Skins...
-BOOT_2,Mixing SFX...,Mezclando SFX...
-BOOT_3,Spraying Particles...,Esparciendo Particulas...
-BOOT_ITEMS,Creating Items...,Creando Objectos...
-BOOT_FOOD,Tagging Food...,Etiquetando Comida...
-BOOT_RECIPES,Building Recipes...,Escribiendo Recetas...
 warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. ¿Puede que no exista?
 warning_invalid_name,"This resort name is not valid, be sure to exclude special characters.","Este nombre de complejo no es valido, asegurate de remover caracteres especiales."
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
 warning_key_duplicated,This key is already binded to another action!,¡Esta tecla ya esta conectada a otra accion!
 warning_incompatible_version,The savefile you are trying to load is from another version! Are you sure you want to load?,La partida que intentas cargar es de otra version! ¿Estas seguro que quieres cargarla?
 warning_invalid_building,Cannot place this building here!,No se puede colocar esta estructura aquí!
-warning_no_photo,There is no photos yet...,Aun no hay fotos aquí...
+warning_news_locale,"This should not be visible, but if it is, hi! This is a warning for other languages.",Esta noticia no tiene una versión traducida a este lenguaje.
 press_start,Press {0} to start!,Presiona {0} para empezar!
 new_game,New Game,Nueva Partida
 load_game,Load Game,Cargar Partida
@@ -100,7 +93,7 @@ Interact with [color=#e33d00]outlined[/color] aphids to milk them for berries.
 The happier, the bigger the reward!","El dinero crece de los Áfidos, ¡literalmente!
 Interactua con áfidos [color=#e33d00]delineados[/color] para orderñarlos por bayas.
 Cuanto más felices esten, mejor la recompensa."
-help_desc_4,"You can cook diskes at the kitchen, where you can mix and match ingredients.
+help_desc_4,"You can cook dishes at the kitchen, where you can mix and match ingredients.
 Remember that your aphids have a unique preference for certain food types!","Puedes hacer platillos unicos en la cocina, donde puedes mezclar y combinar ingredientes.
 ¡Recuerda que tus áfidos tendran una preferencia unica por ciertos tipos de comida!"
 help_desc_5,"Want to see your progress? Open the generational album with {0} and admire all of
@@ -111,7 +104,7 @@ You can easily rename an aphid by pressing the name, modyfing it and pressing En
 Puedes renombrarlos facilmente, simplemente presiona su nombre, modificalo y presiona Enter."
 help_desc_7,"Get a better view of your resort by pressing {0} and enter free camera mode!
 While in this mode, you can watch over your aphids.
-Here you can find the build menu, the furniture store, and other camera functions","¡Consigue una mejor vision del complejo presionando {0} para acceder al modo camara libre!
+Here you can find the build menu, the furniture store, and other camera functions.","¡Consigue una mejor vision del complejo presionando {0} para acceder al modo camara libre!
 En este modo, puedes supervisar tus áfidos de forma rapida.
 Puedes encontrar los menus de construcción, el catalogo de muebles, y otras funciones de camara."
 pause_resume,Resume,Reanudar
@@ -162,6 +155,7 @@ Haz doble click para marcar la ubicacion de una mascota en el mapa."
 generations_owner,Owned By,Criado por
 generations_parent,Children of,Cría de
 generations_favorite,Favorite Food:,Comida Favorita:
+generations_no_photo,There is no photos yet...,Aun no hay fotos aquí...
 trait_lazy,Lazy,Flojo
 trait_loyal,Loyal,Leal
 trait_pickyeater,Picky Eater,Paladar Quisquilloso
@@ -181,7 +175,7 @@ food_flavor_3,Bitter,Amargo
 food_flavor_4,Vile,Vil
 food_flavor_5,Bland,Soso
 food_flavor_6,Neutral,Neutral
-store_buy,Buy Item,Comprar
+store_buy,Purchase,Comprar
 store_item_name,Azzy’s Bazaar,Bazar de Azzy
 store_item_desc,"Purchase basic items for Aphid caretaking. Food, toys, eggs, and more!","Adquiere objectos basicos para el cuidado de Áfidos. Comida, juegetes, huevos y mucho más!"
 store_item_phrase,Hi!,Hola!
@@ -197,6 +191,29 @@ unknown_name,???,???
 resort_golden_name,Golden Plains,Planicies Doradas
 resort_golden_desc,"Situated at the Golden Settlement, It's the first accomodation of many.","Situada en el Asentamiento Dorado, es la primer acomodacion de muchas."
 camera_spectating,Spectating:,Espectando:
+lobby_category_aphid,Aphids,Áfidos
+lobby_category_resort,Upgrades,Mejoras
+lobby_resort_service,Aphid Caretaking Service,Servicio de Cuidado de Áfidos
+lobby_resort_eastwing,East Wing Access,Acceso al a Ala Este
+lobby_resort_membership_silver,Upgrade Membership (Silver),Mejorar Membresía (Plata)
+lobby_resort_membership_gold,Upgrade Membership (Gold),Mejorar Membresía (Oro)
+lobby_resort_membership_diamond,Upgrade Membership (Diamond),Mejorar Membresía (Diamante)
+lobby_category_stats,Statistics,Estadísticas
+lobby_stats_totalaphids,Total aphids raised,Áfidos totales críados
+lobby_stats_aphidcount,Current aphids under your care,Áfidos actuales bajo tu cuidado
+lobby_stats_savefilesboot,Times this resort has been played,Veces que este complejo se ha jugado
+lobby_stats_itemsbought,Items bought at the store,Items comprados en la tienda
+lobby_stats_itemssold,Items in your inventory sold,Items de tu inventario vendidos
+lobby_stats_aphidssold,Total aphids sold,Áfidos vendidos en total
+lobby_stats_randomnumber,Here is a random number for you,Aquí tienes un número aleatorio
+lobby_news_placeholder,"Loading latest news, this may take a bit...","Cargando noticias, esto puede tomar un rato..."
+lobby_job_aphidname,Name,Nombre
+lobby_job_active,{0} is on it!,{0} esta en ello!
+lobby_job_timerdone,Done!,Hecho!
+lobby_job_successchance,Success Chance,Probabilidad de Éxito
+lobby_job_assign,ASSIGN,ASIGNAR
+lobby_job_select,SELECT,ESCOGER
+lobby_job_finish,FINISH,COMPLETAR
 bio_name_placeholder,Aphid's Name,Nombre del Áfido
 bio_skill_stamina,Endurance,Resistencia
 bio_skill_strength,Strength,Fuerza
@@ -214,6 +231,7 @@ prompt_align_to_grid,Align (Hold),Alinear
 prompt_open_menu,Open Menu,Abrir Menu
 prompt_show_info,Show,Mostar
 prompt_close_info,Close,Cerrar
+prompt_move,Move,Mover
 game_over_0,It seems you have ran out of aphids.,Parece que te has quededo sin áfidos.
 game_over_1,"You aren't  really good at this, are you?","No eres muy bueno en esto, verdad?"
 game_over_2,Try doing better with the next one.,Intenta hacerlo mejor con el siguiente.

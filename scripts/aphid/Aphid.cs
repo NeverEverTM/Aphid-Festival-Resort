@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Godot;
 
@@ -17,7 +16,7 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 	[Export] private Area2D triggerArea;
 
 	// Aphid state
-	public enum StateEnum { Busy, Idle, Hungry, Eat, Sleep, Play, Pet, Breed, Train }
+	public enum StateEnum { Busy, Idle, Hungry, Eat, Sleep, Play, Pet, Breed }
 	public Dictionary<StateEnum, IState> ActiveStates = new() {
 		{ StateEnum.Busy, new AphidActions.BusyState() },
 		{ StateEnum.Idle, new AphidActions.IdleState() },
@@ -26,6 +25,7 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		{ StateEnum.Sleep, new AphidActions.SleepState() },
 		{ StateEnum.Pet, new AphidActions.PetState() },
 		{ StateEnum.Breed, new AphidActions.BreedState() },
+		{ StateEnum.Play, new AphidActions.PlayState() },
 	};
 	public IState State = new AphidActions.IdleState();
 	public EventArgs StateArgs = new();
@@ -58,10 +58,17 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		get
 		{
 			if (Instance.Status.IsAdult)
-				return Audio_Idle;
+				return SoundManager.GetAudioStream("aphid/idle");
 			else
-				return Audio_Idle_Baby;
+				return SoundManager.GetAudioStream("aphid/baby_idle");
 		}
+	}
+	public static AudioStream GetIdleAudio(bool _isAdult)
+	{
+		if (_isAdult)
+			return SoundManager.GetAudioStream("aphid/idle");
+		else
+			return SoundManager.GetAudioStream("aphid/baby_idle");
 	}
 	private GpuParticles2D harvest_effect;
 
@@ -81,10 +88,7 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 			if (Instance.Genes.Traits.Count == 0)
 				Instance.Genes.GenerateTraits();
 
-			// we call awake, which can set a last active state
-			// and then we check if this didnt set a state 
-			ActiveStates[Instance.Status.LastActiveState]?.Awake(this, new());
-
+			// setup triggers and decays
 			triggerArea.BodyEntered += OnTriggerEnter;
 			triggerArea.AreaEntered += OnTriggerEnter;
 			TriggerActions.Add(new AphidActions.AphidInteraction());
@@ -92,26 +96,27 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 			TriggerActions.Add(ActiveStates[StateEnum.Hungry] as ITriggerEvent);
 			DecayActions.Add(ActiveStates[StateEnum.Breed] as IDecayEvent);
 
-			// properly configures idle
-			if (State.Is(StateEnum.Idle))
-				State.Enter(this, new(), StateEnum.Idle);
+			// set state properly
+			if (ActiveStates[Instance.Status.LastActiveState].Awake(this, new()))
+				State = ActiveStates[Instance.Status.LastActiveState];
+			State.Enter(this, StateArgs, StateEnum.Idle);
 
-			SetTraits();
-
+			// setup postload
+			for (int i = 0; i < Instance.Genes.Traits.Count; i++)
+			{
+				Traits.Add(AphidTraits.GetTraitByName(Instance.Genes.Traits[i]));
+				Traits[i].Activate(this, new());
+			}
 			for (int i = 0; i < DecayActions.Count; i++)
 				DecayActions[i].Start(this, new());
-			
+
 			void set_movement_speed(int _, int _level) =>
 				MovementSpeed = 20 + 0.2f * _level;
 			Instance.Genes.Skills["speed"].OnLevelUp += set_movement_speed;
 			set_movement_speed(0, Instance.Genes.Skills["speed"].Level);
 		}
 		else
-		{
-			// properly configures idle
-			if (State.Is(StateEnum.Idle))
-				State.Enter(this, new(), StateEnum.Idle);
-		}
+			State.Enter(this, new(), StateEnum.Idle);
 	}
 	private void SetTimers()
 	{
@@ -150,19 +155,11 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		blink_timer.ProcessMode = ProcessModeEnum.Pausable;
 		squeak_timer.ProcessMode = ProcessModeEnum.Pausable;
 	}
-	private void SetTraits()
-	{
-		for (int i = 0; i < Instance.Genes.Traits.Count; i++)
-		{
-			Traits.Add(AphidTraits.GetTraitByName(Instance.Genes.Traits[i]));
-			Traits[i].Activate(this, new());
-		}
-	}
 
 	// ==========| Update Processes |===========
 	public override void _Process(double delta)
 	{
-		if (IS_FAKE)
+		if (IS_FAKE || GlobalManager.IsBusy)
 			return;
 
 		float _delta = (float)delta;
@@ -178,6 +175,9 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 	}
 	public override void _PhysicsProcess(double delta)
 	{
+		if (GlobalManager.IsBusy)
+			return;
+
 		float _delta = (float)delta;
 
 		// Set default movement state
@@ -201,7 +201,7 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		State.Process(this, StateArgs, _delta);
 		MoveAndSlide();
 	}
-	
+
 	public bool SetState(StateEnum _newState, EventArgs _specialArgs = null)
 	{
 		StateEnum _lastState = State.Type;
@@ -281,11 +281,10 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 	}
 	public void Kill()
 	{
-		GenerationsTracker.Data.Add(Instance);
+		GameManager.AddToArchive(Instance);
 		GameManager.RemoveAphid(Guid.Parse(Instance.ID));
 		Instance = null;
 		QueueFree();
-
 		GameManager.CheckForGameOver();
 	}
 
@@ -313,8 +312,8 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		// result
 		Instance.Status.HarvestBuildup = 0;
 		float _multiplier = 0.5f + (Instance.Status.Hunger + Instance.Status.Thirst) / 200;
-		Player.Data.ChangeCurrency(Mathf.CeilToInt((Instance.Status.IsAdult ? 
-				AphidData.HARVEST_VALUE_ADULT : AphidData.HARVEST_VALUE_BABY) 
+		Player.Data.AddCurrency(Mathf.CeilToInt((Instance.Status.IsAdult ?
+				AphidData.HARVEST_VALUE_ADULT : AphidData.HARVEST_VALUE_BABY)
 				* _multiplier));
 		CanvasManager.RemoveControlPrompt(Tag);
 		CanvasManager.AddControlPrompt("pet", Tag, InputNames.Interact);
@@ -331,7 +330,7 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 	{
 		AphidHatch _egg = ResortManager.CreateItem("aphid_egg", GlobalPosition + (_father.Entity.GlobalPosition - GlobalPosition) / 2) as AphidHatch;
 		_egg.given_genes = new();
-		_egg.given_genes.BreedNewAphid(_father, Instance);
+		_egg.given_genes.BreedNewAphid(_father, Instance, _alone);
 		_egg.IsNatural = true;
 
 		SetState(StateEnum.Idle);
@@ -371,17 +370,26 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 			return;
 		var _tag = (string)_node.GetMeta(StringNames.TagMeta);
 
-		var _action = TriggerActions.Find((e) => e.TriggerID == _tag);
-		_action?.OnTrigger(this, _node, StateArgs);
+		for (int i = 0; i < TriggerActions.Count; i++)
+		{
+			if (TriggerActions[i].Tag == _tag)
+				TriggerActions[i].OnTrigger(this, _node, StateArgs);
+		}
 	}
 	public void Interact() // player interaction
 	{
 		if (IsDisabled)
 			return;
 
+		if (State.Is(StateEnum.Play))
+		{
+			SetState(StateEnum.Idle);
+			return;
+		}
+
 		if (IsReadyForHarvest) // Harvest behaviour
 		{
-			if (State.Is(StateEnum.Breed) || State.Is(StateEnum.Train))
+			if (State.Is(StateEnum.Breed))
 				return;
 
 			if (State.Is(StateEnum.Sleep))
@@ -391,7 +399,7 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		}
 		else // Pet behaviour
 		{
-			if (Player.IsAphidBusy(this))
+			if (IsBusy())
 				return;
 
 			// Get ANGY if awoken
@@ -403,6 +411,21 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 			else
 				SetState(StateEnum.Pet);
 		}
+	}
+	/// <summary>
+	/// Indicates wheter the aphid is busy or not. Hardcoded.
+	/// </summary>
+	public bool IsBusy()// TODO: maybe this is something the State itself should say?
+	{
+		if (IsDisabled)
+			return true;
+		return State.Type switch
+		{
+			StateEnum.Idle or
+			StateEnum.Sleep or
+			StateEnum.Hungry => false,
+			_ => true,
+		};
 	}
 
 	public interface IState
@@ -424,9 +447,9 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		/// <summary>
 		/// Called when an aphid spawns.
 		/// </summary>
-		public void Awake(Aphid aphid, EventArgs args)
+		public bool Awake(Aphid aphid, EventArgs args)
 		{
-			return;
+			return false;
 		}
 		/// <summary>
 		/// Called when the aphid enters this state. Aphid.StateArgs must be set here beforehand.
@@ -500,15 +523,22 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 		public virtual void GivePoints(int _points, bool _noSignal = false)
 		{
 			points += _points;
+
 			if (points > 10)
 			{
-				points -= 10;
-				GiveLevel(1, _noSignal);
+				while (points > 10)
+				{
+					points -= 10;
+					GiveLevel(1, _noSignal);
+				}
 			}
 			else if (points < 0)
 			{
-				points += 10;
-				GiveLevel(-1, _noSignal);
+				while (points < 0)
+				{
+					points += 10;
+					GiveLevel(-1, _noSignal);
+				}
 			}
 			OnSkillChange?.Invoke();
 		}
@@ -519,15 +549,24 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 			Level += _level;
 		}
 	}
-	public class Relationship(Guid Aphid, 
+	public class Relationship(Guid Aphid,
 			Relationship.RelationshipLevel Level = Relationship.RelationshipLevel.Stranger, sbyte Total = 0, bool Locked = false)
 	{
-		public enum RelationshipLevel { Parent = -8, Stranger = -7,
-			Enemy = -2, Hated, Acquaintance, Friend, BestFriend, Lover }
-		 
-		public Guid Aphid { get ; set; } = Aphid;
+		public enum RelationshipLevel
+		{
+			Parent = -8, Stranger = -7,
+			Enemy = -2, Hated, Acquaintance, Friend, BestFriend, Lover
+		}
+
+		/// <summary>
+		/// GUID key of the aphid in this relationship.
+		/// </summary>
+		public Guid Aphid { get; set; } = Aphid;
 		public RelationshipLevel Level { get; set; } = Level;
 		public sbyte Total { get; set; } = Total;
+		/// <summary>
+		/// Locks current relationship level so it cannot change even when the relationship goes up or down.
+		/// </summary>
 		public bool Locked { get; set; } = Locked;
 
 		public virtual void AddToTotal(sbyte _points)
@@ -553,11 +592,14 @@ public partial class Aphid : CharacterBody2D, Player.IInteractEvent
 	}
 	public interface ITriggerEvent
 	{
-		public string TriggerID { get; }
+		public string Tag { get; }
 		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args);
 	}
 	public interface IInteractEvent
 	{
+		/// <summary>
+		/// Executes a custom behaviour function, giving the aphid that interacted with it. 
+		/// </summary>
 		public void Interact(Aphid _aphid);
 	}
 }

@@ -6,7 +6,7 @@ public partial class BuildMenu : Control
 	internal static BuildMenu Instance { get; private set; }
 	internal readonly static StringName WATER_PLACEABLE = new("allow_water"), WALL_PLACEABLE = new("allow_wallmount");
 	internal static bool DEBUG_SHOW_RECTS { get; set; }
-	internal static MenuUtil.MenuInstance Menu { get; private set; }
+	internal static MenuInstance Menu { get; private set; }
 
 	[Export] private GridContainer storageContainer;
 	[Export] public AnimationPlayer menuPlayer;
@@ -22,24 +22,31 @@ public partial class BuildMenu : Control
 
 	private Building selected_building;
 	private Vector2 mouse_offset, last_valid_position = new();
-	private int previous_light_mask;
 	private bool is_hovering_building, is_moving_building;
-	private static bool OUTOFBOUND_APPLIED = false;
 
-	public override void _Ready()
+	// last properties of current structure
+	private int previous_light_mask;
+	private Material previous_material;
+	private uint previous_collision_layer;
+
+	public override void _EnterTree()
 	{
 		Instance = this;
 		item_container = ResourceLoader.Load(ITEM_CONTAINER_SCENE) as PackedScene;
-		Menu = new MenuUtil.MenuInstance("build", menuPlayer,
-			_ => OnOpenMenu(), OnCloseMenu, false);
+		Menu = new MenuInstance("build", menuPlayer,
+			_ => OnOpenMenu(), OnCloseMenu);
 
-		buildButton.Pressed += () => CanvasManager.Menus.OpenMenu(Menu);
+		buildButton.Pressed += () => _ = CanvasManager.Menus.SetTo(Menu);
 		storageButton.Pressed += SetStorage;
 		controlPrompt.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
 
-		if (GameManager.APPLY_OUTOFBOUND_PATCH)
-				APPLY_OUTOFBOUND_PATCH();
+		SaveSystem.OnFinish += APPLY_OUTOFBOUND_PATCH;
 	}
+	public override void _ExitTree()
+	{
+		SaveSystem.OnFinish -= APPLY_OUTOFBOUND_PATCH;
+	}
+
 	public void OnOpenMenu()
 	{
 		IsStorageOpen = false;
@@ -50,10 +57,10 @@ public partial class BuildMenu : Control
 		// Sets all building rects
 		if (active_buildings.Count == 0)
 			GenerateBuildingList();
-		
+
 		UpdateStorage();
 	}
-	public bool OnCloseMenu(MenuUtil.MenuInstance _next)
+	public bool OnCloseMenu(MenuInstance _next)
 	{
 		// close storage if open first
 		if (IsStorageOpen)
@@ -70,8 +77,13 @@ public partial class BuildMenu : Control
 	}
 	public void APPLY_OUTOFBOUND_PATCH()
 	{
+		if (!GameManager.APPLY_OUTOFBOUND_PATCH)
+			return;
+
 		GenerateBuildingList();
 		ClearBuildingList();
+		GameManager.APPLY_OUTOFBOUND_PATCH = false;
+		Logger.Print(Logger.LogPriority.Info, "BuildMenu: OUTOFBOUND patch finalized.");
 	}
 
 	private void UpdateStorage(int _startIndex = 0)
@@ -85,8 +97,8 @@ public partial class BuildMenu : Control
 		{
 			TextureButton _item = item_container.Instantiate<TextureButton>();
 			string _structure = Player.Data.Storage[i];
-			_item.TooltipText = Tr($"{_structure}_name") + "\n" + Tr($"{_structure}_desc");
-			(_item.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_structure);
+			_item.TooltipText = GlobalManager.Utils.GetTooltipText(_structure);
+			(_item.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(_structure);
 			_item.Pressed += () => GrabFromStorage(_structure, _item);
 			storageContainer.AddChild(_item);
 		}
@@ -99,14 +111,12 @@ public partial class BuildMenu : Control
 			var _building = CreateBuilding(_structure as Node2D);
 
 			// patch to get structures outside the playable area
-			if (!OUTOFBOUND_APPLIED && GameManager.APPLY_OUTOFBOUND_PATCH && _building == null)
+			if (GameManager.APPLY_OUTOFBOUND_PATCH && _building == null)
 			{
 				Player.Data.Storage.Add(_structure.GetMeta(StringNames.IdMeta).ToString());
 				_structure.QueueFree();
-				Logger.Print(Logger.LogPriority.Log, "Removed Build");
 			}
 		}
-		OUTOFBOUND_APPLIED = true;
 	}
 	private void ClearBuildingList()
 	{
@@ -198,12 +208,13 @@ public partial class BuildMenu : Control
 		Vector2 _offset, _size;
 
 		// check for which type of node it is and gather data to create the Rect
-		if (_self is Sprite2D)
+		if (_self.IsClass("Sprite2D"))
 		{
-			_offset = (_self as Sprite2D).Offset;
+			Sprite2D _selfSprite = _self as Sprite2D;
+			_offset = _selfSprite.Offset;
 			_size = (_self as Sprite2D).Texture.GetSize();
 		}
-		else if (_self is AnimatedSprite2D)
+		else if (_self.IsClass("AnimatedSprite2D"))
 		{
 			_offset = (_self as AnimatedSprite2D).Offset;
 			_size = (_self as AnimatedSprite2D).SpriteFrames.GetFrameTexture(StringNames.DefaultAnim, 0).GetSize();
@@ -259,7 +270,7 @@ public partial class BuildMenu : Control
 
 		if (_mode == RemoveMode.Sell)
 		{
-			Player.Data.ChangeCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].cost / 2);
+			Player.Data.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].cost / 2);
 			SoundManager.CreateSound("ui/kaching");
 		}
 		if (_mode == RemoveMode.Store)
@@ -299,6 +310,7 @@ public partial class BuildMenu : Control
 		// Set highlights for selected item
 		previous_light_mask = selected_building.Self.LightMask;
 		selected_building.Self.LightMask = 0;
+		previous_material = selected_building.Self.Material;
 		ShaderMaterial _outline = new()
 		{
 			Shader = ResourceLoader.Load<Shader>(GlobalManager.OUTLINE_SHADER)
@@ -318,7 +330,7 @@ public partial class BuildMenu : Control
 			if (selected_building.Self != null)
 			{
 				selected_building.Self.Modulate = new Color("white");
-				selected_building.Self.Material = null;
+				selected_building.Self.Material = previous_material;
 				selected_building.Self.LightMask = previous_light_mask;
 			}
 			is_hovering_building = false;
@@ -379,8 +391,12 @@ public partial class BuildMenu : Control
 		is_moving_building = true;
 		mouse_offset = selected_building.Self.GlobalPosition - CameraManager.GetMouseToWorldPosition();
 		last_valid_position = selected_building.Self.GlobalPosition;
+
 		if (selected_building.Collider != null)
+		{
+			previous_collision_layer = selected_building.Collider.CollisionLayer;
 			selected_building.Collider.CollisionLayer = 0;
+		}
 
 		// add corresponding possible actions
 		CanvasManager.AddControlPrompt(InputNames.Sell, InputNames.Sell, InputNames.Sell);
@@ -407,7 +423,7 @@ public partial class BuildMenu : Control
 
 		// give collision back if any
 		if (selected_building.Collider != null)
-			selected_building.Collider.CollisionLayer = 1;
+			selected_building.Collider.CollisionLayer = previous_collision_layer;
 	}
 
 	private Building GetStructureUnderMouse()
@@ -417,7 +433,18 @@ public partial class BuildMenu : Control
 		for (int i = 0; i < active_buildings.Count; i++)
 		{
 			if (active_buildings[i].Rect.HasPoint(_mousePosition))
+			{
+				if (active_buildings[i].Self is IFurnitureInteractable)
+				{
+					IFurnitureInteractable _furniture = active_buildings[i].Self as IFurnitureInteractable;
+					if (_furniture.SelectedAphid != null || !_furniture.IsInterruptable)
+					{
+						SoundManager.CreateSound("ui/button_fail");
+						continue;
+					}
+				}
 				return active_buildings[i];
+			}
 		}
 		return null;
 	}
@@ -434,35 +461,39 @@ public partial class BuildMenu : Control
 		Godot.Collections.Dictionary _list = GlobalManager.Utils.RaycastBetween(_start,
 				_building.Rect.End, _building.Collider != null ? [_building.Collider.GetRid()] : null);
 
-
 		string _collider = _list.Count > 0 ? _list["collider"].ToString() : null;
+
+		// for objects that go "under" (aka, ground items like rugs/carpets)
 		if (!_building.IsCollideable)
 		{
 			if (_collider == null)
 				return false;
 			if (_collider.Contains("ground"))
 				return true;
-			if (_collider.ToString().Contains("wall"))
+			if (_collider.Contains("wall"))
 				return true;
 
+			// only checks for level geometry, otherwise ignore
 			return false;
 		}
 
+		// check for special collision types, and wheter they are exclusive to that type of terrain
 		if (_building.Area == Building.PlaceableArea.Water)
 		{
 			if (_collider == null)
 				return _building.Exclusive;
-			if (_collider.ToString().Contains("ground"))
+			if (_collider.Contains("ground"))
 				return false;
 		}
 		if (_building.Area == Building.PlaceableArea.WallMounted)
 		{
 			if (_collider == null)
 				return _building.Exclusive;
-			if (_collider.ToString().Contains("wall"))
+			if (_collider.Contains("wall"))
 				return false;
 		}
 
+		// if there was no collision of any kind, its free to go, otherwise, block
 		if (_collider == null)
 			return false;
 		else

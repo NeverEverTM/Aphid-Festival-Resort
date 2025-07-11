@@ -49,9 +49,9 @@ turbulence_initial_displacement_max = 9.6
 [node name="GPU_HeartParticles" type="GPUParticles2D"]
 z_index = 1000
 material = SubResource("CanvasItemMaterial_sih33")
-amount = 15
-process_material = SubResource("ParticleProcessMaterial_41uej")
+amount = 10
 texture = ExtResource("1_l7itr")
 lifetime = 3.0
 randomness = 0.5
 interpolate = false
+process_material = SubResource("ParticleProcessMaterial_41uej")

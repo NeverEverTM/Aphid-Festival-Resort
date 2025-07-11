@@ -14,12 +14,7 @@ public partial class LoadGameMenu : Control
 
 	private const string loadGameCategory = "load_game", continueCategory = "continue";
 
-    public override void _Process(double delta)
-    {
-        if (!Visible)
-			menuPlayer.Play("RESET"); // ??? No idea why but probably graphics bug
-    }
-    public void AddMenuAction()
+	public void AddMenuAction()
 	{
 		if (DirAccess.GetDirectoriesAt(SaveSystem.PROFILES_DIR).Length > 0)
 		{
@@ -41,7 +36,7 @@ public partial class LoadGameMenu : Control
 
 	private void OpenLoadMenu()
 	{
-		for(int i = 0; i < container.GetChildCount(); i++)
+		for (int i = 0; i < container.GetChildCount(); i++)
 			container.GetChild(i).QueueFree();
 		MainMenu.Instance.SetMenu(this);
 
@@ -49,37 +44,36 @@ public partial class LoadGameMenu : Control
 
 		// Create savefiles
 		fileNames = DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories();
+		SaveSystem.SaveModule<GameManager.GameData> _module = new(GameManager.ID, new GameManager.GameDataModule(), 0);
+
 		for (int i = 0; i < fileNames.Length; i++)
 		{
 			// Get the metdata of a savefile
 			string _profile = fileNames[i];
 			uint _version = 0;
-			
-			GameManager.ProfileSaveModule.RootPath = Path.Combine(SaveSystem.PROFILES_DIR, fileNames[i]);
-			bool _exists = false;
 
-			// patch for pre-0.1.3v files
-			if (!Godot.FileAccess.FileExists(GameManager.ProfileSaveModule.GetPath()))
+			// this whole "exists" check is to know wheter we should display info or state that is missing instead
+			// it checks if a directory has "main.data", if not, check if it has a pre-1.3 savefile instead, if neither then it does not exist
+			_module.RootPath = Path.Combine(SaveSystem.PROFILES_DIR, fileNames[i]);
+			bool _exists = false;
+			if (!Godot.FileAccess.FileExists(_module.GetPath()))
 			{
-				string _path_old = GameManager.ProfileSaveModule.GetPath(true).Replace("main.data", "game_savedata.json");
+				string _path_old = _module.GetPath(true).Replace("main.data", "game_savedata.json");
 				if (Godot.FileAccess.FileExists(_path_old))
-				{
-					File.Move(_path_old, GameManager.ProfileSaveModule.GetPath(true));
 					_exists = true;
-				}
 			}
 			else
 				_exists = true;
-			GameManager.GameData _data = GameManager.ProfileSaveModule.Load(false);
+			GameManager.GameData _data = _module.Load(false);
 			if (_exists)
-				_version = _data.Version;
+				_version = _module.GameVersion;
 
 			Control _slot = savefile_slot.Instantiate() as Control;
 
 			(_slot.FindChild("name_label") as RichTextLabel).Text = _profile;
-			(_slot.FindChild("time_label") as Label).Text = 
+			(_slot.FindChild("time_label") as Label).Text =
 					_exists ? TimeSpan.FromSeconds(_data.Playtime).ToString(@"hh\:mm\:ss") : "???";
-			(_slot.FindChild("aphid_label") as Label).Text = 
+			(_slot.FindChild("aphid_label") as Label).Text =
 					_exists ? _data.AphidCount.ToString("000") : "???";
 
 			// sets the proper string for when the game was last played
@@ -88,10 +82,10 @@ public partial class LoadGameMenu : Control
 
 			if (_exists)
 			{
-				_lastPlayedInterval = DateTime.Now - GlobalManager.Utils.UnixTimeStampToDateTime(Godot.FileAccess.GetModifiedTime(GameManager.ProfileSaveModule.GetPath()));
+				_lastPlayedInterval = DateTime.Now - GlobalManager.Utils.UnixTimeStampToDateTime(Godot.FileAccess.GetModifiedTime(_module.GetPath()));
 				if (_lastPlayedInterval.TotalDays < 1)
 					_lastPlayedTime = Tr("date_today");
-				else if(_lastPlayedInterval.TotalDays < 2)
+				else if (_lastPlayedInterval.TotalDays < 2)
 					_lastPlayedTime = Tr("date_yesterday");
 				else
 					_lastPlayedTime = string.Format(Tr("date_daysago"), (int)_lastPlayedInterval.TotalDays);
@@ -102,10 +96,10 @@ public partial class LoadGameMenu : Control
 			(_slot.FindChild("load_button") as BaseButton).Pressed += () =>
 			{
 				if (_version < GlobalManager.GAME_VERSION)
-					ConfirmationPopup.Create(() => PlayFile(_profile), null, 
+					ConfirmationPopup.Create(() => PlayFile(_profile, _data.LastRoom), null,
 							ConfirmationPopup.ConfirmationEnum.Fast, "warning_incompatible_version");
 				else
-					PlayFile(_profile);
+					PlayFile(_profile, _data.LastRoom);
 			};
 			(_slot.FindChild("delete_button") as BaseButton).Pressed += () => DeleteFile(_profile, _slot);
 
@@ -114,15 +108,12 @@ public partial class LoadGameMenu : Control
 
 		var _list = _savefiles.OrderBy(age => age.Key.TotalSeconds).ToList();
 		foreach (var _pair in _list)
-		{
 			container.AddChild(_pair.Value);
-		}
-		
+
 		menuPlayer.Play("open");
 	}
 	private void ContinueGame()
 	{
-		SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
 		if (string.IsNullOrWhiteSpace(OptionsManager.Settings.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
 			MainMenu.Instance.RemoveMenuAction(continueCategory);
@@ -130,17 +121,24 @@ public partial class LoadGameMenu : Control
 			return;
 		}
 
-		MainMenu.LoadResort();
+		SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
+        GameManager.GameSaveModule _module = new(GameManager.ID, new GameManager.GameDataModule(), 0)
+        {
+            RootPath = Path.Combine(SaveSystem.ProfilePath)
+        };
+
+		GameManager.GameData _data = _module.Load(false);
+		MainMenu.LoadResort(_data.LastRoom);
 	}
 
-	private static void PlayFile(string _profile)
+	private static void PlayFile(string _profile, string _room = "")
 	{
 		SaveSystem.SelectProfile(_profile);
-		MainMenu.LoadResort();
+		MainMenu.LoadResort(_room);
 	}
 	private static void DeleteFile(string _profile, Node _slot)
 	{
-		ConfirmationPopup.Create(() => 
+		ConfirmationPopup.Create(() =>
 		{
 			MainMenu.DeleteResort(_profile);
 			_slot.QueueFree();

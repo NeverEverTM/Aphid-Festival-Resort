@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://cn7d8wjyx78a3"]
+
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="1_2p2ve"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_lljrg"]
+
+[node name="item" type="TextureButton"]
+light_mask = 0
+custom_minimum_size = Vector2(125, 125)
+offset_right = 125.0
+offset_bottom = 125.0
+mouse_default_cursor_shape = 2
+action_mode = 0
+keep_pressed_outside = true
+stretch_mode = 5
+script = ExtResource("1_2p2ve")
+PressedColor = Color(0.590441, 0.590441, 0.590441, 1)
+FocusColor = Color(0.79542, 0.893271, 0.886074, 1)
+HoverColor = Color(0.857501, 0.857501, 0.857501, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="bg" type="NinePatchRect" parent="."]
+light_mask = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_lljrg")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="icon" type="TextureRect" parent="."]
+light_mask = 0
+use_parent_material = true
+layout_mode = 0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 113.0
+offset_bottom = 113.0
+expand_mode = 4
+stretch_mode = 5

@@ -1,4 +1,13 @@
-[gd_resource type="AudioBusLayout" format=3 uid="uid://lm4k6xpr7uhu"]
+[gd_resource type="AudioBusLayout" load_steps=2 format=3 uid="uid://lm4k6xpr7uhu"]
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_gcjdw"]
+resource_name = "Reverb"
+predelay_msec = 228.0
+room_size = 0.41
+damping = 0.2
+spread = 0.0
+dry = 0.58
+wet = 0.17
 
 [resource]
 bus/1/name = &"Music"
@@ -25,3 +34,11 @@ bus/4/mute = false
 bus/4/bypass_fx = false
 bus/4/volume_db = 0.0
 bus/4/send = &"Master"
+bus/5/name = &"EchoUI"
+bus/5/solo = false
+bus/5/mute = false
+bus/5/bypass_fx = false
+bus/5/volume_db = -1.57924
+bus/5/send = &"Sounds"
+bus/5/effect/0/effect = SubResource("AudioEffectReverb_gcjdw")
+bus/5/effect/0/enabled = true

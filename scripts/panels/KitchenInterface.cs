@@ -3,71 +3,87 @@ using Godot;
 public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 {
 	[Export] private AnimationPlayer animPlayer;
-	[Export] private PackedScene invItemContainer;
-
 	[Export] private BaseButton ingredient1Button, ingredient2Button, resultButton;
 	[Export] private CheckButton redoRecipe;
 	[Export] private TextureRect ingredient1Icon, ingredient2Icon, resultIcon, portrait;
-	[Export] private Texture2D[] portraitImages;
 	[Export] private Label resultName;
 	[Export] private RichTextLabel dialogBox;
 	[Export] private Container inventoryGrid;
+	[Export] private Texture2D[] portraitImages;
+	[Export] private Color slotColor;
+
+	private PackedScene item_container;
 
 	private string ingredient1, ingredient2;
 	private GlobalManager.Recipe resultRecipe;
 	private const string MISTAKE_RECIPE = "mistake", BIG_MISTAKE_RECIPE = "big_mistake", UNKNOWN_RECIPE = "unknown";
 
-	public MenuUtil.MenuInstance Menu { get; set; }
+	public MenuInstance Menu { get; set; }
 	public void SetMenu()
 	{
-		if (CanvasManager.Menus.CurrentMenu != Menu)
-			CanvasManager.Menus.OpenMenu(Menu);
+		if (CanvasManager.Menus.Current != Menu)
+			_ = CanvasManager.Menus.SetTo(Menu);
 	}
 
 	public override void _Ready()
 	{
+		item_container = ResourceLoader.Load("uid://cn7d8wjyx78a3") as PackedScene;
 		ingredient1Button.Pressed += () => SetIngredientSlot(null, 0);
 		ingredient2Button.Pressed += () => SetIngredientSlot(null, 1);
 		resultButton.Pressed += OnResultPressed;
 		redoRecipe.Toggled += OnRedoPressed;
-		Menu = new("kitchen", animPlayer, _ =>
-		{
-			CreateInventory();
-			SetIngredientSlot(null, 0);
-			SetIngredientSlot(null, 1);
-			SetResultSlot(null);
-			ingredient1Button.GrabFocus();
-			dialogBox.Text = "kitchen_desc";
-			portrait.Texture = portraitImages[0];
-			redoRecipe.SetPressedNoSignal(false);
-			ingredient1Button.Disabled = ingredient2Button.Disabled = false;
-		}, null, false);
+		Menu = new("kitchen", animPlayer, _ => ClearInterface(), null, _ => ClearInterface());
+	}
+	private void ClearInterface()
+	{
+		CreateInventory();
+		SetIngredientSlot(null, 0);
+		SetIngredientSlot(null, 1);
+		SetResultSlot(null);
+		ingredient1Button.GrabFocus();
+		dialogBox.Text = "kitchen_desc";
+		portrait.Texture = portraitImages[0];
+		redoRecipe.SetPressedNoSignal(false);
+		ingredient1Button.Disabled = ingredient2Button.Disabled = false;
 	}
 	private void CreateInventory()
 	{
 		for (int i = 0; i < inventoryGrid.GetChildCount(); i++)
 			inventoryGrid.GetChild(i).QueueFree();
 
-		for (int i = 0; i < Player.Data.Inventory.Count; i++)
+		for (int i = 0; i < Player.Data.InventoryMaxCapacity; i++)
 		{
-			TextureButton _item = invItemContainer.Instantiate() as TextureButton;
+			TextureButton _item = item_container.Instantiate() as TextureButton;
+			(_item.GetChild(0) as Control).SelfModulate = slotColor;
+
+			if (Player.Data.Inventory.Count <= i)
+			{
+				inventoryGrid.AddChild(_item);
+				continue;
+			}
+
+			// set metadata
 			var _item_name = Player.Data.Inventory[i];
 			_item.SetMeta(StringNames.IdMeta, _item_name);
+			_item.TooltipText = GlobalManager.Utils.GetTooltipText(_item_name);
 
 			// check for available icon
-			(_item.GetChild(0) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
+			(_item.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);
 
 			// press function
 			_item.Pressed += () => AddIngredient(_item_name);
 			inventoryGrid.AddChild(_item);
 		}
 	}
-	
+
 	private void SetIngredientSlot(string _item_name, int _index)
 	{
 		bool _isNull = _item_name == null;
 		if (!_isNull && GlobalManager.G_ITEMS[_item_name].tag != "food")
+		{
+			SoundManager.CreateSound("ui/button_fail");
 			return; // if is not a food item, dont bother
+		}
 
 		ref TextureRect _icon = ref (_index == 0) ? ref ingredient1Icon : ref ingredient2Icon;
 		ref string _ingredient = ref (_index == 0) ? ref ingredient1 : ref ingredient2;

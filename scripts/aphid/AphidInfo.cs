@@ -26,47 +26,15 @@ public partial class AphidInfo : Control
 		Instance = this;
 		Available = false;
 		Enabled = false;
+
+		name_label.FocusExited += SetName;
+		SceneManager.OnPostLoad += ConnectEvents;
 	}
 	public override void _ExitTree()
 	{
 		Instance = null;
 		Available = false;
 		Enabled = false;
-	}
-
-	public override void _Ready()
-	{
-		name_label.FocusExited += SetName;
-
-		Player.Instance.OnPickup += (_tag, _node) =>
-		{
-			if (_tag == Aphid.Tag)
-			{
-				nearby_aphids.Remove(_node);
-				SetAphid(Player.Instance.HeldPickup.aphid);
-			}
-		};
-		Player.Instance.OnDrop += (_tag, _node) =>
-		{
-			if (_tag == Aphid.Tag)
-				SetAphid(null);
-		};
-		Player.Instance.OnInteractableEnter += (_tag, _node) =>
-		{
-			if (_tag == Aphid.Tag && !nearby_aphids.Contains(_node))
-			{
-				nearby_aphids.Add(_node);
-                SetControlPrompt();
-			}
-		};
-		Player.Instance.OnInteractableExit += (_tag, _node) =>
-		{
-			if (_tag == Aphid.Tag)
-			{
-				nearby_aphids.Remove(_node);
-                SetControlPrompt();
-			}
-		};
 	}
 	public override void _Process(double delta)
 	{
@@ -95,6 +63,39 @@ public partial class AphidInfo : Control
 		// limit for name length
 		if (name_label.Text.Length > 20)
 			AcceptEvent();
+	}
+	private void ConnectEvents(string _, bool _s)
+	{
+		Player.Instance.OnPickup += (_tag, _node) =>
+		{
+			if (_tag == Aphid.Tag)
+			{
+				nearby_aphids.Remove(_node);
+				SetAphid(Player.Instance.HeldPickup.AphidEntity);
+			}
+		};
+		Player.Instance.OnDrop += (_tag, _node) =>
+		{
+			if (_tag == Aphid.Tag)
+				SetAphid(null);
+		};
+		Player.Instance.OnInteractableEnter += (_tag, _node) =>
+		{
+			if (_tag == Aphid.Tag && !nearby_aphids.Contains(_node))
+			{
+				nearby_aphids.Add(_node);
+                SetControlPrompt();
+			}
+		};
+		Player.Instance.OnInteractableExit += (_tag, _node) =>
+		{
+			if (_tag == Aphid.Tag)
+			{
+				nearby_aphids.Remove(_node);
+                SetControlPrompt();
+			}
+		};
+		SceneManager.OnPostLoad -= ConnectEvents;
 	}
 
 	private void SetName()

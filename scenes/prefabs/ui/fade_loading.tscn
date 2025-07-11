@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://cxt1r6y5y6260"]
+
+[ext_resource type="Script" uid="uid://dep3tr77x7a82" path="res://scripts/gui/FadeLoadScreen.cs" id="1_4rajv"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="1_padqf"]
+
+[sub_resource type="Curve" id="Curve_5okvy"]
+_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="loading_screen" type="CanvasLayer" node_paths=PackedStringArray("screen")]
+process_mode = 3
+layer = 10
+script = ExtResource("1_4rajv")
+screen = NodePath("TextureRect")
+curve = SubResource("Curve_5okvy")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0, 0, 0, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_padqf")

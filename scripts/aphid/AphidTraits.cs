@@ -116,7 +116,7 @@ public static class AphidTraits
 
         public class PlayerInteractionTrigger : ITriggerEvent
         {
-            public string TriggerID => "player";
+            public string Tag => "player";
             private const float interaction_cd = 6.35f;
             private Timer interaction_timer;
 

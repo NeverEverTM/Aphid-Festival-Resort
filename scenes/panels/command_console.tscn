@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://xhg54cgj8fbp"]
+[gd_scene load_steps=10 format=3 uid="uid://xhg54cgj8fbp"]
 
-[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/ui/just_a_white_rectangle_lmao.png" id="1_3k45m"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="1_3k45m"]
 [ext_resource type="Script" uid="uid://vtrta7n0ro7y" path="res://scripts/utils/DebugConsole.cs" id="1_qd4sp"]
+[ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="3_hnrex"]
 
 [sub_resource type="FontFile" id="FontFile_6itwx"]
 cache/0/16/0/ascent = 0.0
@@ -96,7 +97,7 @@ visible = false
 script = ExtResource("1_qd4sp")
 command_line_input = NodePath("command_window/console/TextEdit")
 log_print_text = NodePath("command_window/console/Label2")
-debug_status = NodePath("command_window/stats2/stats")
+debug_status = NodePath("command_window/stats_aphid/stats")
 
 [node name="command_window" type="Control" parent="."]
 layout_mode = 3
@@ -116,9 +117,9 @@ grow_vertical = 2
 self_modulate = Color(0, 0, 0, 0.388235)
 layout_mode = 0
 offset_left = 130.0
-offset_top = 258.0
+offset_top = 250.0
 offset_right = 625.0
-offset_bottom = 371.0
+offset_bottom = 363.0
 texture = ExtResource("1_3k45m")
 
 [node name="Label2" type="Label" parent="command_window/keybinds"]
@@ -136,7 +137,7 @@ horizontal_alignment = 2
 autowrap_mode = 3
 justification_flags = 161
 
-[node name="stats2" type="TextureRect" parent="command_window"]
+[node name="stats_aphid" type="TextureRect" parent="command_window"]
 self_modulate = Color(0, 0, 0, 0.388235)
 show_behind_parent = true
 layout_mode = 0
@@ -146,7 +147,7 @@ offset_right = -279.0
 offset_bottom = 338.0
 texture = ExtResource("1_3k45m")
 
-[node name="stats" type="Label" parent="command_window/stats2"]
+[node name="stats" type="Label" parent="command_window/stats_aphid"]
 layout_mode = 0
 offset_left = 23.0
 offset_top = 22.0
@@ -191,3 +192,31 @@ offset_bottom = 555.0
 theme_override_fonts/font = SubResource("FontFile_8ifad")
 theme_override_font_sizes/font_size = 20
 placeholder_text = "Type 'help' for a list of commands."
+
+[node name="stats_food" type="TextureRect" parent="command_window"]
+visible = false
+self_modulate = Color(0.583914, 0.264587, 0.379145, 1)
+layout_mode = 0
+offset_left = 36.0
+offset_top = -313.0
+offset_right = 536.0
+offset_bottom = 187.0
+pivot_offset = Vector2(250, 250)
+texture = ExtResource("1_3k45m")
+
+[node name="TextureRect" type="TextureRect" parent="command_window/stats_food"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 15.0
+offset_bottom = 15.0
+pivot_offset = Vector2(20, 20)
+texture = ExtResource("3_hnrex")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="command_window/stats_food"]
+layout_mode = 0
+offset_right = 10.0
+offset_bottom = 10.0
+texture = ExtResource("3_hnrex")
+expand_mode = 1

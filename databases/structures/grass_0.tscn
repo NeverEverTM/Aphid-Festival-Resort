@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c4tp2on2bbuuo"]
 
 [ext_resource type="Texture2D" uid="uid://dpfehwe1cpfw3" path="res://sprites/props/grass_0.png" id="1_cuq2t"]
-[ext_resource type="Script" uid="uid://bqocmgjvpnlmx" path="res://scripts/props/Grass.cs" id="2_gloa5"]
+[ext_resource type="Script" uid="uid://bqocmgjvpnlmx" path="res://scripts/entities/Grass.cs" id="2_gloa5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pyor7"]
 radius = 4.12311

@@ -1,24 +1,38 @@
 ,en,es
 intro_welcome,">Welcome (name), to Aphid Festival Resort!
-This is an early version and does not reflect future ones.
+This is an early version of the game and does not reflect future updates.
 >Press Escape to access the [color=red]Help and Controls[/color] information panels!
 Otherwise, talk to some of the characters to know more!
 >You can check updates at the Itch.io page of the game!
 Any feedback is appreciated.",">Bienvenido (name), a Aphid Festival Resort!
-Esta es una version temprana y no refleja actualizaciones futuras.
+Esta es una version temprana del juego y no refleja actualizaciones futuras.
 >Presiona Escape para acceder a paneles de informacion sobre [color=red]Ayuda y Controles[/color]!
 O conversa con los personjes para saber más!
 >Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
 Cualquier feedback es agradecido."
-welcome_1,,
 joy_welcome_0,">Hello!(...) You are (name), right? Come on in!(...)
 I'll give you a quick tour around!",">Hola!(...) Tu tienes que ser (name), ¿no? Adelante!(...)
 Te dare un paseo!"
 joy_welcome_1,">Here it is. The aphid resort!(...)
 So,(...) what do you think?
->Things are shaping up as we grow so please bear with me, [wave amp=25.0 freq=5.0 connected=1]we will get there[/wave].",">Y aqui esta, el complejo de áfidos!
+>It's not a lot, but you can go ahead and play around it!(...)
+As a premium member, it is your right to do so, after all.
+>Here in the kitchen you can turn ingredients into full course meals if you want
+your aphids to grow even stronger!
+>To the side we have the lobby! 
+Here you can check on the latest changes we do, exchange aphids with other guests
+and even send them to needed jobs and get a cut out of it.
+>The owner is not around for the moment but be sure to say hello if
+you see him! Otherwise, we have plenty of guests you can interact with.
+>That over there is the resort's shop, you can use your berries to buy supplies and toys
+for the little ones!
+>We would also offer hats but... those have not reached us yet(...)
+Sorry for the incoveniences.
+>Well! If you need me, I'll be just here on watch duty!(...)
+Don't be afraid to talk to any of us if you need help with something(...)
+They may even know a few things about aphids!",">Y aqui esta, el complejo de áfidos!
 Agradable, ¿no?
->Las cosas se estan haciendo."
+>No es mucho... ¡pero puedes arreglar cosas a tu gusto!"
 joy_flavor_0,">Quite a cozy place, isn’t it (name)?(...)
 It’s such a joy to work as a keeper for the lil buddies. (...)
 [wave amp=50.0 freq=5.0 connected=1]They even let me have my own one![/wave]
@@ -43,13 +57,15 @@ Asi que lo siento por el monton de cajas! No me dejan tocarlas.
 >Yo tampoco lo se, aquella polilla en la entrada me dijo que no podia.
 >Cuando me acerque a una, me devolvio una mirada asesina(...)
 Desde entonces no me acerco..."
-joy_flavor_2,">Aphid breeding has been on the rise more and more recently.(...)
-Looks like bugs outside the Golden Settlement are requiring more and more aphids.
->Makes me wonder why...
->You should be able to help sooner or later, I heard they pay well!",">La crianza de afidos ha estado en la alza utlimamente.(...)
-Parece que bichos fuera del Asentamiento estan necesitando más y más áfidos.
->Me pregunto porque...
->Podras ayudar con eso en algun punto, ¡He escuchado que pagan bien!"
+joy_flavor_2,">Aphid breeding has been on the rise lately.(...)
+Towns outside the Golden Settlement are requiring more and more aphids for all sorts of things.(...)
+Makes me wonder why...
+>You can pay a visit to the lobby to know more!
+Wheter that is selling some to them, or just for a quick job.",">La crianza de afidos ha estado en la alza utlimamente.(...)
+Pueblos fuera del Asentamiento estan necesitando cada vez más y más áfidos para usos diversos. (...)
+Me pregunto el motivo...
+>Puedes pasarte por el lobby para saber más!
+Ya seá para vender unos cuantos, o para un encargo rápido."
 joy_flavor_3,">Remember to treat your Aphids with respect!
 They need love and care if you want them to grow big and strong.",">Recuerda tratar tus Áfidos con amor y cariño!
 Necesitaran de todo el cuidado del mundo si quieres verlos crecer
@@ -89,12 +105,12 @@ It takes the entire queen's wealth and much more!
 Aparentemente solía irse de aventura con frecuencia en el pasado.
 >No me sorprende teniendo en cuenta el costo de mantenimiento de este sitio.(...)
 Requiere la entera riqueza de la reina misma y mucho más!"
-azzy_flavor_2,">I wonder how  things are up there with the Wasps?...
+azzy_flavor_2,">I wonder how  things are up there with the Wasps?(...)
 I left that place [wave amp=25.0 freq=5.0 connected=1]loooong[/wave] ago but I 'ear some stuff recently.
 >Maybe it was for the best. I enjoy life 'ere in the settlement anyways.
 Even met my partner thanks to it. So bless Venus and allat.
 >Oh sorry, there goes me rambling again...(...)
-What'cha need, (name)?",">Me pregunto que estaran haciendo las Avispas en el norte?...
+What'cha need, (name)?",">Me pregunto que estaran haciendo las Avispas en el norte?(...)
 Deje ese lugar hace [wave amp=25.0 freq=5.0 connected=1]baaastante[/wave] rato, pero he oido cosas recientemente.
 >Creo que fue lo mejor. Disfruto la vida aquí en el asentamiento.
 Incluso conoci a mi pareja aqui. Así que, gracias a Venus y demas charla.
@@ -122,22 +138,25 @@ Los mejores clientes que uno puede pedir.
 [wave amp=25.0 freq=5.0 connected=1]Un ambiente asi me inspira.[/wave]"
 kut_flavor_1,">Mmpfh...(...)
 Should I try spice it up(...) or(...) should I make it sickly sweet.
->Oh, you're(...), (name)?
-Did you came to see a culinary master in action?",">Mmpfh...(...)
+>...(...)Oh, you're...(...[0.7]) (name)?(...)
+Have you come to see a culinary expert in action?",">Mmpfh...(...)
 ¿Deberia intentar añadirle picor(...) o hacerlo amargamente dulce?.
->Oh, tu eres(...), (name)?
+>...(...)Oh, tu eres...(...[0.7]) (name)?(...)
 ¿Has venido a ver a un maestro culinario en acción?"
 kut_flavor_2,">...What would I recommend? (...)
 That is up to your little one.
 >They all have an unique afinity to a particular flavour.
 Some more...(...) different than others.
 >Sour(...), Sweet(...), Salty(...) and Bitter.(...)
-And all depends on their ingredients you use.",">¿Que es lo que recomendaria?(...)
+All depends on the ingredients you use.",">¿Que es lo que recomendaria?(...)
 Eso lo dicta tu pequeñin.
 >Todos tiene una afinidad a un sabor particular.
 Algunos más...(...) diferentes que otros.
 >Agrio(...), Dulce(...), Salado(...) y Amargo.(...)
-Y todo depende de los ingredientes que uses."
+Todo depende en los ingredientes que uses."
+kut_flavor_3,">Don't keep me waiting and bring me some ingredients.
+Go on!",">No me dejes esperando y traéme ingredientes.
+Vamos!"
 crystal_flavor_0,>Fi,>Fi
 crystal_flavor_1,>Fi Fi,>Fi Fi
 crystal_flavor_2,>[wave amp=25.0 freq=5.0 connected=1][color='grey']squeak,>[wave amp=25.0 freq=5.0 connected=1][color='grey']chi chi
@@ -153,33 +172,95 @@ It would be a good idea if you read it, don't you think.",">...(...)¿Que es lo 
 ¿No te parezco ocupade?
 >¿Estas perdid(o/a) o qué?
 >...(...[0.7])Oh(...), lo estas, no es cierto.
->Estoy segure que te dieron una guía de [color=red]ayuda[/color](...)
+>Estoy segure que te han dado una guía de [color=red]ayuda[/color](...)
 Sería una buena idea leerlo ahora, no te parece."
-echo_flavor_1,">Where is the bridge?(...)
-Bridge's gone.(...) Not fixing that now.(...)
-I am busy standing here.",">¿Donde esta el puente?(...)
-Desaparecio.(...) No puedo arreglarlo ahorra.(...)
-Estoy ocupade parandome aquí."
-echo_flavor_2,">...[font_size=20]Did I really have to join her for this...[/font_size]...(...)
-Erhm, hello?
->Could you mind your own business?",">...[font_size=20]De verdad tenia que formar parte de esto por ella...[/font_size]...(...)
-Huh, ¿hola?
->¿Te importa?"
+echo_flavor_1,">No.(...) You cannot take the aphids outside.
+>...(...)Yes. [i]You[/i] can go outside. I'm not your mother.",">No. No puedes llevarte a los áfidos afuera.
+>...(...)Si, [i]tu[/i] puedes salir, no soy tu madre."
+echo_flavor_2,">[font_size=20]...Did I really have to join her for this...[/font_size]
+>Erhm, hello?(...)
+Could you mind your own business?",">[font_size=20]...De verdad tenia que formar parte de esto por ella...[/font_size]
+>Huh, ¿hola?(...)
+¿Te importa?"
 echo_flavor_3,">Have you ever seen the Giant's Lair?(...)
-Me either(...), but I heard exciting things.
+Me neither(...), but I heard exciting things.
 >A pretty fun adventure, in and out. (...)Mostly in.(...)
-Out was the hard part.",">¿Alguna vez has visto la Tierra de los Gigantes?
-Yo tampoco.(...) Pero he escuchade cosas sorprendentes.
+Out was the hard part.",">¿Alguna vez has visto la Tierra de los Gigantes?(...)
+Yo tampoco.(...) Pero he escuchado cosas sorprendentes.
 >Una aventura de locos, de ida y vuelta. (...)Mayormente ida.(...)
 Vuelta era la parte dificíl."
 echo_flavor_4,">Don't cause trouble. I am watching you.(...)
 All four of my eyes are.",">No causes problemas, te estoy vigilando.(...)
 Mis cuatro ojos lo hacen."
 echo_flavor_5,">They hired me to guard the resort 
-but all I do is watch for these [i]dumb[/i] boxes.
+but all I do is watch for these [shake rate=20.0 level=6 connected=0]dumb[/shake] boxes.
 >There is no way anything bigger than a seedling is gonna come knocking the door.(...)
 But I sure wished...",">Me contrataron para hacer de guardia en el complejo,
-pero todo lo que hago es solo mirar estas [i]estupidas[/i] cajas.
+pero todo lo que hago es solo mirar estas [shake rate=20.0 level=6 connected=0]estupidas[/shake] cajas.
 >No hay manera que cualquier cosa más grande que un áfido sea capaz
 de venir a tocar la puerta.(...)
-Solo puedo esperar..."
+Solo puedo rezar..."
+tanjy_flavor_0,">Whatcha looking at?
+>Does my horn have something on it?(...)
+Ough!
+>Why are you giggling!",">¿Que miras?
+>¿Mi cuerno tiene algo?(...)
+Ough!
+>¡Por qué te ries!"
+tanjy_flavor_1,">I come from [wave amp=50.0 freq=5.0 connected=0]very faaaar away[/wave](...)
+You can tell because I'm not like anyone else!
+>I'm strong(...), fast(...), intelligent(...), and strong!",">Vengo de [wave amp=50.0 freq=5.0 connected=0]muuuuuy lejos[/wave](...)
+Puedes notarlo porque no soy como los demas!
+>Soy fuerte(...), veloz(...), intelligente(...) y fuerte!"
+tanjy_flavor_2,">They said the hats would come today, but I don't see them!
+How dare they!
+>Until then, your aphids will be hatless(...)
+Sad!",">Dijeron que los sombreros vendrían hoy, ¡pero no los veo!
+¡Cómo se atreven!
+>Hasta entonces, tus áfidos estan calvos.(...)
+¡Que pena!"
+job_easy_0,"I require the assistance of brave, intrepid aphids, to mow grass!
+This tufts are invading my yard and I need them OUT.","Necesito la assistencia de intrepidos y valerosos áfidos, para cortar hierba!
+Estos mates estan invadiendo mi jardín y los quiero FUERA."
+job_easy_1,"Needing a few aphids for supply transportation.
+Preferably, with five years of entry experience.","Necesito un par de áfidos para transporte de suministros.
+Preferiblemente con cinco años de experiencia como practicante."
+job_easy_2,"Doing some research in lesser bugs.
+We need some with a basic understanding of commands.",WIP
+job_easy_3,"Needing some advertising on the go!
+No skills required, just a lot of enthusiasm!",WIP
+job_easy_4,"Need a delivery aphid. Lots of packages.
+And they need to be sent FAST.",WIP
+job_easy_5,"Looking to rent an aphid for a children's class.
+Please, no aggressive ones!",WIP
+job_easy_6,"Need a distraction for no reason in particular.
+I just need it to be quick, again, no reason in particular.",WIP
+job_medium_0,"Requesting aphids for general therapy and support services.
+Only particular need is for them to understand orders.",WIP
+job_medium_1,"Local construction workers needing a hand for land renovation!
+Sapling, grass and rock eaters welcome.",WIP
+job_medium_2,"Having a problem with some unwanted guests!
+Requesting some aphids that can slice the life out of this weeds.",WIP
+job_medium_3,"We need a hand for berry transport.
+We'll even give you a part of the supply as thanks! (Just don't tell the queen)",WIP
+job_medium_4,"Getting lost is killing the economy over here.
+We'll pay handsomly to a aphid guide who can help turists arrive safely.",WIP
+job_medium_5,"The mines yearn for more workers.
+All hands help, even the little ones!",WIP
+job_hard_0,"Help Wanted! The theater requires actors, great and handsome actors!
+Respond to this request if you think you have what I want.",WIP
+job_hard_1,"Requesting assistance for bridge repair operation.
+The stronger, the better.",WIP
+job_hard_2,"Good day resort members, if one could bring one of their aphids for revision,
+I would be thankful. Don't worry, they'll be fine.
+Chompy doesn't bite.",WIP
+job_hard_3,"Her majesty has requested to see one the aphids from the resort.
+Bring one of great mind alike!",WIP
+job_hard_4,"The chomp infestation is getting out of hands.
+Requesting the strongest guards the settlement can send.",WIP
+job_expert_0,"On a hunt for golden seedlings. Thus I need an aphid that is tougher than the toughies, 
+smarter than the smarties, and sharper than the sharpies",WIP
+job_master_0,"Our crops are getting wilted by deadlanders.
+We plead for you to send one you see fit to handle such task.",WIP
+job_master_1,"Adventuring deeper on unknown areas, and as the paths become more puzzling,
+we need a companion who can wiggle us out of trouble.",WIP

@@ -1,10 +1,10 @@
 [gd_scene load_steps=10 format=3 uid="uid://d0yn37lf538vo"]
 
 [ext_resource type="Script" uid="uid://7tuds0dv1fbo" path="res://scripts/controllers/ResortManager.cs" id="1_rh1j6"]
-[ext_resource type="PackedScene" uid="uid://cwqplcbrf0lqj" path="res://scenes/entities/camera.tscn" id="2_gpa5i"]
+[ext_resource type="PackedScene" uid="uid://cwqplcbrf0lqj" path="res://scenes/prefabs/camera.tscn" id="2_gpa5i"]
 [ext_resource type="Script" uid="uid://pohaec3n3ypy" path="res://scripts/controllers/FieldManager.cs" id="2_y7kfg"]
 [ext_resource type="Script" uid="uid://co6jq3ny35gqg" path="res://scripts/debug/test_camera.cs" id="3_lrt1v"]
-[ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/entities/player.tscn" id="4_8q6jh"]
+[ext_resource type="PackedScene" uid="uid://b2tg0d8sg4vd0" path="res://scenes/prefabs/player.tscn" id="4_8q6jh"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_gpa5i"]
 

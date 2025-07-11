@@ -9,8 +9,8 @@ public partial class SoundManager : Node
 	public static AudioStreamPlayer2D SFXPlayer2D { get; private set; }
 	public static AudioBusLayout AudioBus { get; private set; }
 
-	private static readonly List<AudioStreamPlayer> sound_entities = new();
-	private static readonly List<AudioStreamPlayer2D> sound2d_entities = new();
+	private static readonly List<AudioStreamPlayer> sound_entities = [];
+	private static readonly List<AudioStreamPlayer2D> sound2d_entities = [];
 	private static Tween transitionTween;
 
 	public override void _Ready()
@@ -26,17 +26,26 @@ public partial class SoundManager : Node
 		};
 		SFXPlayer2D = new()
 		{
-			MaxDistance = 300,
-			Attenuation = 0.5f,
+			MaxDistance = 400,
+			Attenuation = 2.0f,
 			MaxPolyphony = 20,
 			Bus = "Sounds"
 		};
-		
+
 		AudioBus = ResourceLoader.Load<AudioBusLayout>("uid://lm4k6xpr7uhu");
 		ProcessMode = ProcessModeEnum.Always;
 
 		Instance.AddChild(MusicPlayer);
-		MusicPlayer.Finished += () => MusicPlayer.Stream = null;
+		MusicPlayer.Finished += () =>
+		{
+			if (GlobalManager.IsInGame)
+				SetRandomSong();
+		};
+		SceneManager.OnPostLoad += (_scene, _switch) =>
+		{
+			if (_switch && _scene != "menu")
+				SetRandomSong();
+		};
 	}
 	public override void _Process(double delta)
 	{
@@ -67,6 +76,16 @@ public partial class SoundManager : Node
 		sound2d_entities.Clear();
 	}
 
+	public static void SetRandomSong()
+	{
+		string _song;
+		if (FieldManager.TimeOfDay == FieldManager.DayHours.Night)
+			_song = "night_" + GlobalManager.RNG.RandiRange(0, 0);
+		else
+			_song = "day_" + GlobalManager.RNG.RandiRange(0, 1);
+
+		PlaySong("music/" + _song);
+	}
 	public static void ResumeSong()
 	{
 		if (IsInstanceValid(transitionTween))
@@ -90,11 +109,10 @@ public partial class SoundManager : Node
 		};
 		return tween;
 	}
-	/// <param name="_full_name">Must be relative file name path to SFX (ex. "misc/title.wav")</param>
-	public static void PlaySong(string _full_name)
+	/// <param name="_file">Must be a relative file name path (ex. "misc/title.wav")</param>
+	public static void PlaySong(string _file)
 	{
-		AudioStream _music = ResourceLoader.Load<AudioStream>(GlobalManager.ABSOLUTE_SFX_PATH + _full_name);
-		MusicPlayer.Stream = _music;
+		MusicPlayer.Stream = GetAudioStream(_file);
 		MusicPlayer.Play();
 	}
 	public static void PauseSong()
@@ -108,74 +126,92 @@ public partial class SoundManager : Node
 		transitionTween.Finished += () => MusicPlayer.StreamPaused = true;
 	}
 
-	public static AudioStream GetAudioStream(string _name)
+	// MARK: SOUND
+	/// <summary>
+	/// Fetches an AudioStream from the globally loaded sound effect dictionary.
+	/// </summary>
+	/// <param name="_key">Key to the audio stream. Key must be a relative path from the SFX folder, Ex. "ui/button_fail"</param>
+	/// <returns>The audio stream requested. If key was invalid it will return the default fail sound.</returns>
+	public static AudioStream GetAudioStream(string _key)
 	{
-		if (GlobalManager.G_AUDIO.TryGetValue(_name, out AudioStream value))
+		if (GlobalManager.G_AUDIO.TryGetValue(_key, out AudioStream value))
 			return value;
 		else
 			return GlobalManager.G_AUDIO["ui/button_fail"];
 	}
 	/// <summary>
-	/// Creates a global sound to be heard, duplicating the given audioplayer and handed back for further manipulation.
-	/// To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.
+	/// <para>Creates a sound that will be heard globally.</para>
+	/// <para>To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.</para>
 	/// </summary>
 	/// <param name="_audioplayer">The base audio player from which duplicate</param>
+	/// <returns>The duplicated player acting as the current sound source for the audio.</returns>
 	public static AudioStreamPlayer CreateSound(AudioStream _stream, AudioStreamPlayer _audioplayer, bool _pitchRand = true)
 	{
 		AudioStreamPlayer _player = _audioplayer.Duplicate() as AudioStreamPlayer;
-		GlobalManager.Instance.AddChild(_player);
+		_player.Stream = _stream;
 		if (_pitchRand)
 			_player.PitchScale += GlobalManager.RNG.RandfRange(-0.15f, 0.15f);
-		_player.Stream = _stream;
-		_player.Play();
+
+		GlobalManager.Instance.AddChild(_player);
 		sound_entities.Add(_player);
-		return _audioplayer;
+		_player.Play();
+		return _player;
 	}
 	/// <summary>
-	/// Creates a global sound to be heard, handed back for further manipulation.
-	/// To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.
+	/// <para>Creates a sound that will be heard globally.</para>
+	/// <para>To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.</para>
 	/// </summary>
+	/// <returns>The duplicated player acting as the current sound source for the audio.</returns>
 	public static AudioStreamPlayer CreateSound(AudioStream _stream, bool _pitchRand = true) =>
-        CreateSound(_stream, SFXPlayer, _pitchRand);
+		CreateSound(_stream, SFXPlayer, _pitchRand);
 	/// <summary>
-	/// Creates a global sound to be heard, handed back for further manipulation.
-	/// To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.
+	/// <para>Creates a sound that will be heard globally.</para>
+	/// <para>To create a sound that can only be heard positionally in 2D, use CreateSound2D instead.</para>
 	/// </summary>
+	/// <returns>The duplicated player acting as the current sound source for the audio.</returns>
 	public static AudioStreamPlayer CreateSound(string _name, bool _pitchRand = true) =>
-        CreateSound(GetAudioStream(_name), SFXPlayer, _pitchRand);
+		CreateSound(GetAudioStream(_name), SFXPlayer, _pitchRand);
 
+	// MARK: 2D SOUND
 	/// <summary>
-	/// Creates a sound at a given location that can be heard positionally. Duplicating the given audioplayer as a base.
-	/// For audio that needs to be heard globally, use CreateSound instead.
+	/// <para>Creates a sound that can be heard positionally at a given location.</para>
+	///	<para>For a sound that needs to be heard globally, use CreateSound instead.</para>
 	/// </summary>
+	/// <returns>The duplicated player acting as the current sound source for this audio.</returns>
 	public static AudioStreamPlayer2D CreateSound2D(AudioStream _stream, AudioStreamPlayer2D _audioplayer, Vector2 _position, bool _pitchRand = true)
 	{
 		AudioStreamPlayer2D _player = _audioplayer.Duplicate() as AudioStreamPlayer2D;
-
-		GlobalManager.Instance.AddChild(_player);
-		if (_pitchRand)
-			_player.PitchScale += GlobalManager.RNG.RandfRange(-0.15f,0.15f);
 		_player.Stream = _stream;
 		_player.GlobalPosition = _position;
-		_player.Play();
+		if (_pitchRand)
+			_player.PitchScale += GlobalManager.RNG.RandfRange(-0.15f, 0.15f);
+
+		GlobalManager.Instance.AddChild(_player);
 		sound2d_entities.Add(_player);
+		_player.Play();
 		return _player;
 	}
+	/// <summary>
+	/// <para>Creates a sound that can be heard positionally at a given location.</para>
+	/// <para>For a sound that needs to be heard globally, use CreateSound instead.</para>
+	/// </summary>
+	/// <returns>The duplicated player acting as the current sound source for this audio.</returns>
 	public static AudioStreamPlayer2D CreateSound2D(string _name, AudioStreamPlayer2D _player, Vector2 _position, bool _pitchRand = true) =>
 		CreateSound2D(GetAudioStream(_name), _player, _position, _pitchRand);
-
 	/// <summary>
-	/// Creates a sound at a given location that can be heard positionally.
-	/// For audio that needs to be heard globally, use CreateSound instead.
+	/// <para>Creates a sound that can be heard positionally at a given location.</para>
+	/// <para>For a sound that needs to be heard globally, use CreateSound instead.</para>
 	/// </summary>
+	/// <returns>The duplicated player acting as the current sound source for this audio.</returns>
 	public static AudioStreamPlayer2D CreateSound2D(AudioStream _stream, Vector2 _position, bool _pitchRand = true, string _bus = "Sounds") =>
 		CreateSound2D(_stream, SFXPlayer2D, _position, _pitchRand);
 
 	/// <summary>
-	/// Creates a sound at a given location that can be heard positionally.
-	/// For audio that needs to be heard globally, use CreateSound instead.
+	/// <para>Creates a sound that can be heard positionally at a given location.</para>
+	/// <para>For a sound that needs to be heard globally, use CreateSound instead.</para>
 	/// </summary>
+	/// <returns>The duplicated player acting as the current sound source for this audio.</returns>
 	public static AudioStreamPlayer2D CreateSound2D(string _name, Vector2 _position, bool _pitchRand = true, string _bus = "Sounds") =>
 		CreateSound2D(GetAudioStream(_name), SFXPlayer2D, _position, _pitchRand);
-	
+
 }

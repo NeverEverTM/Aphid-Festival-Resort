@@ -8,10 +8,13 @@ internal static class OptionsManager
 {
     public static Savefile Settings { get; set; }
 
-    internal static SaveSystem.SaveModule<Savefile> Module = new("settings", new DataModule()){
+    internal static SaveSystem.SaveModule<Savefile> Module = new("settings", new DataModule())
+    {
         RelativePath = SaveSystem.CONFIG_DIR,
         Extension = SaveSystem.CONFIGFILE_EXTENSION,
     };
+    internal const string DEFAULT_LOCALE = "en_US";
+    internal const DisplayServer.WindowMode DEFAULT_DISPLAY_MODE = DisplayServer.WindowMode.Maximized;
     internal class DataModule : SaveSystem.IDataModule<Savefile>
     {
         public void Set(Savefile _data)
@@ -58,8 +61,8 @@ internal static class OptionsManager
         {
             VolumeMaster = 0.6f;
             VolumeMusic = VolumeSound = VolumeUI = VolumeAmbience = 0.4f;
-            DisplayMode = DisplayServer.WindowMode.Maximized;
-            Locale = "en_US";
+            DisplayMode = DEFAULT_DISPLAY_MODE;
+            Locale = DEFAULT_LOCALE;
             ResetBinds = false;
         }
     }

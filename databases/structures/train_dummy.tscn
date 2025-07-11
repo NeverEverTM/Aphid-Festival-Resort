@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://csuqgi5r4w5pi"]
+
+[ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillInteractable.cs" id="1_vy0x5"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0dms6"]
+load_path = "res://.godot/imported/hot_bathtub.png-1d02dc58ccafe26e93b4f787713d310d.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5spxb"]
+atlas = SubResource("CompressedTexture2D_0dms6")
+region = Rect2(0, 0, 64, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yx58p"]
+size = Vector2(94, 29)
+
+[node name="train_dummy" type="Sprite2D" node_paths=PackedStringArray("resting_position")]
+modulate = Color(0.949059, 0, 0.417556, 1)
+texture = SubResource("AtlasTexture_5spxb")
+offset = Vector2(0, -11)
+script = ExtResource("1_vy0x5")
+skill = 1
+timer = 10.0
+resting_position = NodePath("Marker2D")
+metadata/id = "test2"
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(0, -11)
+collision_layer = 3
+collision_mask = 0
+monitoring = false
+metadata/tag = "interactable"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(1, 3.5)
+shape = SubResource("RectangleShape2D_yx58p")
+debug_color = Color(0.740182, 0.394256, 0.653542, 0.42)
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(0, -7)
+gizmo_extents = 39.5

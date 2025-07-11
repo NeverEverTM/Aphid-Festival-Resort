@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="JobData" load_steps=2 format=3 uid="uid://da3khg5svub8"]
+
+[ext_resource type="Script" uid="uid://bh2k0jtgro60" path="res://scripts/resources/JobData.cs" id="1_bkqyx"]
+
+[resource]
+script = ExtResource("1_bkqyx")
+Skills = Dictionary[int, int]({})
+BaseTime = 0.0
+BaseReward = 0
+metadata/_custom_type_script = "uid://bh2k0jtgro60"

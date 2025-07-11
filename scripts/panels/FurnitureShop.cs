@@ -28,7 +28,6 @@ public partial class FurnitureShop : ShopInterface
 			if (_next == null)
 				FreeCameraManager.SetFreeCameraHud(true);
 			CleanShelf();
-			return true;
 		};
 		open_button.Pressed += SetMenu;
 	}

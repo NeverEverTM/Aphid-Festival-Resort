@@ -10,18 +10,12 @@ public partial class NewGameMenu : Control
 	[Export] private Control popup_anchor;
 
 	private const int resort_char_limit = 40, name_char_limit = 15, pronouns_char_limit = 25;
-	private const string defaultName = "Mello";
+	public const string DEFAULT_NAME = "Mello";
 	
-
 	public override void _Ready()
 	{
-		player_name_input.Text = defaultName;
+		player_name_input.Text = DEFAULT_NAME;
 		new_game_button.Pressed += CreateResort;
-	}
-	public override void _Process(double delta)
-	{
-		if (!Visible)
-			menuPlayer.Play("RESET");
 	}
 	public override void _Input(InputEvent @event)
 	{
@@ -70,6 +64,7 @@ public partial class NewGameMenu : Control
 			pronouns_input.Text = string.Empty;
 			player_name_input.GrabFocus();
 			MainMenu.Instance.SetMenu(this);
+			menuPlayer.Play("RESET");
 			menuPlayer.Play("open");
 		});
 		MainMenu.Instance.SetCategory(newGameCategory);
@@ -113,14 +108,14 @@ public partial class NewGameMenu : Control
 		// Start the game
 		GameManager.IsNewGame = true;
 		Player.NewName = !string.IsNullOrWhiteSpace(player_name_input.Text) ? 
-				player_name_input.Text : defaultName;
+				player_name_input.Text : DEFAULT_NAME;
 		if (!string.IsNullOrWhiteSpace(pronouns_input.Text))
 		{
 			Player.NewPronouns = pronouns_input.Text.Split("/");
 			Player.NewPronouns[0].Capitalize();
 		} 
 		else
-			Player.NewPronouns = new string[] { Tr("pronouns_they"), Tr("pronouns_them") };
+			Player.NewPronouns = [Tr("pronouns_they"), Tr("pronouns_them")];
 		await SaveSystem.CreateProfile();
 		MainMenu.LoadResort();
 	}

@@ -1,13 +1,10 @@
 using System;
 
-public class AphidInstance(Guid GUID)
+public record AphidInstance(Guid GUID)
 {
-    public AphidData.Status Status = new();
-    public AphidData.Genes Genes = new();
+    public AphidData.Status Status { get; set; } = new();
+    public AphidData.Genes Genes { get; set; } = new();
     public Aphid Entity;
-    public Guid GUID { get; private set; } = GUID;
-    public string ID { get; private set; } = GUID.ToString();
-
-    public enum EntityStatus { Active, Passive }
-    public EntityStatus Mode = EntityStatus.Active;
+    public Guid GUID { get; set; } = GUID;
+    public string ID { get; set; } = GUID.ToString();
 }

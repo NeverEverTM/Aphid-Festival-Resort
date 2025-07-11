@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -19,36 +20,34 @@ public static class SaveSystem
 	public const string
 	USERROOT_DIR = "user://",
 	PROFILES_DIR = "user://profiles",
+	TEMP_CACHE_DIR = "user://_cache/",
+	PROFILE_BACKUP_DIR = "/backup",
+	PROFILE_APHIDS_DIR = "aphids",
+	PROFILE_RESORTS_DIR = "resorts",
+	PROFILE_ALBUM_DIR = "/screenshots/",
 	CONFIG_DIR = "config",
-	PROFILEBACKUP_DIR = "/backup",
 	DEFAULT_PROFILE = "default",
-	ProfileAlbumDir = "/screenshots/",
-	PROFILEAPHIDS_DIR = "/aphids/",
-	PROFILERESORTS_DIR = "resorts",
 	CONFIGFILE_EXTENSION = ".cfg",
 	JSONFILE_EXTENSION = ".json",
 	SAVEFILE_EXTENSION = ".data";
 
-	public static readonly List<SaveMetadata> ProfileClassData = [];
+	private static readonly List<SaveMetadata> ProfileSaveModules = [];
+	public delegate void SaveEvent();
+	public static event SaveEvent OnFinish;
 
 	public static void CreateBaseDirectories()
 	{
+		DirAccess.MakeDirAbsolute(TEMP_CACHE_DIR);
 		DirAccess.MakeDirAbsolute(PROFILES_DIR);
 		DirAccess.MakeDirAbsolute(System.IO.Path.Combine(USERROOT_DIR + CONFIG_DIR));
 	}
 
-	// ==========| Resort Saving Methods |============
+	// MARK: Profile Saving
 	public static async Task SaveProfile()
 	{
-		string _backupFolder = ProfilePath + PROFILEBACKUP_DIR;
-
-		// Save Aphid Data
-		await SaveAllAphids(_backupFolder, false);
-		await SaveAllAphids(ProfilePath);
-
 		// Save serialized classes
-		for (int i = 0; i < ProfileClassData.Count; i++)
-			await SaveClassData(ProfileClassData[i]);
+		for (int i = 0; i < ProfileSaveModules.Count; i++)
+			await SaveClassData(ProfileSaveModules[i]);
 
 		Logger.Print(Logger.LogPriority.Log, $"ProfileSave: Saved profile <{Profile}> to <{ProfilePath}>.");
 	}
@@ -58,8 +57,8 @@ public static class SaveSystem
 		{
 			_class.RootPath = ProfilePath;
 			_class.CallSave();
-			_class.RootPath += PROFILEBACKUP_DIR;
-			_class.CallSave();
+			_class.RootPath += PROFILE_BACKUP_DIR;
+			_class.CallSave(true);
 		}
 		catch (Exception _e)
 		{
@@ -68,74 +67,19 @@ public static class SaveSystem
 		return Task.CompletedTask;
 	}
 
-	private static Task SaveAllAphids(string _path, bool _logSave = true)
+	// MARK: Profile Loading
+	public static Task LoadProfile()
 	{
-		try
-		{
-			using var _stream = FileAccess.Open($"{_path + PROFILEAPHIDS_DIR}/aphids.json", FileAccess.ModeFlags.Write);
-
-			foreach (KeyValuePair<Guid, AphidInstance> _pair in GameManager.Aphids)
-			{
-				var _guid = _pair.Key.ToString();
-				if (!SaveAphid(_stream, _pair.Value))
-					continue;
-				else if (_logSave)
-					Logger.Print(Logger.LogPriority.Log, $"Succesfully saved aphid. ID: {_guid}.");
-			}
-
-			_stream.Close();
-		}
-		catch (Exception _err)
-		{
-			Logger.Print(Logger.LogPriority.Error, "ProfileLoad: Failed to load aphids. " + _err);
-		}
-		return Task.CompletedTask;
-	}
-	private static bool SaveAphid(FileAccess _stream, AphidInstance _data)
-	{
-		try
-		{
-			// Open the stream and write both the status and genes inside of it
-			_stream.StorePascalString(_data.ID);
-			_stream.StorePascalString(JsonSerializer.Serialize(_data.Status));
-			_stream.StorePascalString(JsonSerializer.Serialize(_data.Genes));
-			_stream.Flush();
-		}
-		catch (Exception _err)
-		{
-			Logger.Print(Logger.LogPriority.Error, $"SaveAphid: Error on saving aphid <{_data?.ID}>:\n", _err);
-			return false;
-		}
-		return true;
-	}
-
-	// ==========| Resort Loading Methods |===========
-	public static async Task LoadProfile()
-	{
-		string _backupFolder = ProfilePath + PROFILEBACKUP_DIR;
-		List<SaveMetadata> _profileList = [.. ProfileClassData.OrderByDescending(_profile => _profile.LoadOrderPriority)];
-		GameManager.Aphids.Clear();
+		string _backupFolder = ProfilePath + PROFILE_BACKUP_DIR;
+		List<SaveMetadata> _profileList = [.. ProfileSaveModules.OrderByDescending(_profile => _profile.LoadOrderPriority)];
 
 		// Load all save data classes
 		for (int i = 0; i < _profileList.Count; i++)
 			LoadClassData(_profileList[i]);
 
-		// Load Aphid Data
-		try { await LoadAllAphids(ProfilePath); }
-		catch (Exception _e)
-		{
-			try
-			{
-				await LoadAllAphids(_backupFolder);
-				Logger.Print(Logger.LogPriority.Error, _e);
-			}
-			catch (Exception _OH_FUCK)
-			{
-				Logger.Print(Logger.LogPriority.Error, Logger.GameTermination.Major, _OH_FUCK);
-			}
-		}
-
+		OnFinish?.Invoke();
 		Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: Loaded profile <{Profile}> to memory.");
+		return Task.CompletedTask;
 	}
 	private static bool LoadClassData(SaveMetadata _class)
 	{
@@ -163,67 +107,44 @@ public static class SaveSystem
 		}
 	}
 
-	private static Task LoadAllAphids(string _path)
+	// MARK: Profile Managment
+	public static void AddSaveModule(SaveMetadata _module)
 	{
-		using var _stream = FileAccess.Open(_path + PROFILEAPHIDS_DIR + "aphids" + JSONFILE_EXTENSION, FileAccess.ModeFlags.Read);
-
-		while (_stream?.GetPosition() < _stream?.GetLength())
-		{
-			if (!LoadAphid(_stream, out AphidInstance _instance))
-				continue;
-
-			GameManager.AddAphid(_instance);
-			ResortManager.SpawnAphid(_instance);
-			Logger.Print(Logger.LogPriority.Log, $"Succesfully loaded aphid. ({_instance.ID})");
-		}
-
-		return Task.CompletedTask;
+		if (!ProfileSaveModules.Contains(_module))
+			ProfileSaveModules.Add(_module);
 	}
-	private static bool LoadAphid(FileAccess _stream, out AphidInstance _instance)
+	public static void RemoveSaveModule(SaveMetadata _module)
 	{
-		string _id = _stream.GetPascalString();
-		try
-		{
-			string _status = _stream.GetPascalString(), _genes = _stream.GetPascalString();
-
-			// TODO: create aphid patcher
-			if (GameManager.ProfileData.Version < 210)
-			{
-				_status = _status.Replace("MilkBuildup", "HarvestBuildup");
-
-				_genes = _genes.Replace("\"Skills\":[", "\"Skills\":{");
-				_genes = _genes.Replace("\"Level\":0}],", "\"Level\":0}},");
-
-				_genes = _genes.Replace("{\"Name\":\"stamina\"", "\"stamina\":{\"Name\":\"stamina\"");
-				_genes = _genes.Replace("{\"Name\":\"strength\"", "\"strength\":{\"Name\":\"strength\"");
-				_genes = _genes.Replace("{\"Name\":\"intelligence\"", "\"intelligence\":{\"Name\":\"intelligence\"");
-				_genes = _genes.Replace("{\"Name\":\"speed\"", "\"speed\":{\"Name\":\"speed\"");
-			}
-
-            _instance = new(Guid.Parse(_id))
-            {
-                Status = JsonSerializer.Deserialize<AphidData.Status>(_status),
-                Genes = JsonSerializer.Deserialize<AphidData.Genes>(_genes)
-            };
-        }
-		catch (Exception _err)
-		{
-			Logger.Print(Logger.LogPriority.Error, Logger.GameTermination.Major, $"Failed to load aphid {_id}", _err);
-			_instance = null;
-			return false;
-		}
-		return true;
+		_module.CallDispose();
+		if (!ProfileSaveModules.Remove(_module))
+			Logger.Print(Logger.LogPriority.Error, string.Format("SaveSystem: Failed on removing {0}", _module.ID));
 	}
+	public static void RemoveSaveModule(string _id)
+	{
+		if (ProfileSaveModules.Exists((m) => m.ID.Equals(_id)))
+		{
+			SaveMetadata _module = ProfileSaveModules.Find((m) => m.ID.Equals(_id));
+			_module.CallDispose();
+			ProfileSaveModules.Remove(_module);
+		}
+		else
+			Logger.Print(Logger.LogPriority.Error, string.Format("SaveSystem: Failed on removing {0}", _id));
+	}
+	public static bool HasSaveModule(string _id) =>
+		ProfileSaveModules.Exists((m) => m.ID == _id);
+	public static void ClearSaveModules() =>
+		ProfileSaveModules.Clear();
 
-	// ==========| Profile Managment Methods |==========
-	// Used for new games to set default vaules to all serializeables
+	/// <summary>
+	/// Used for new games to set default vaules to all serializeables
+	/// </summary>
 	public static Task SetProfileData()
 	{
 		// Load all save data classes
-		for (int i = 0; i < ProfileClassData.Count; i++)
+		for (int i = 0; i < ProfileSaveModules.Count; i++)
 		{
-			ProfileClassData[i].RootPath = ProfilePath;
-			ProfileClassData[i].CallSet();
+			ProfileSaveModules[i].RootPath = ProfilePath;
+			ProfileSaveModules[i].CallSet();
 		}
 		return Task.CompletedTask;
 	}
@@ -237,7 +158,7 @@ public static class SaveSystem
 	{
 		// Create directories for current profile
 		await CreateProfileDir(ProfilePath);
-		await CreateProfileDir(ProfilePath + PROFILEBACKUP_DIR);
+		await CreateProfileDir(ProfilePath + PROFILE_BACKUP_DIR);
 
 		Logger.Print(Logger.LogPriority.Info, $"ProfileCreate: Succesfully created profile of <{Profile}>.");
 	}
@@ -275,23 +196,29 @@ public static class SaveSystem
 		Logger.Print(Logger.LogPriority.Info, $"ProfileDelete: Succesfully deleted profile <{_profile}>.");
 		return Task.CompletedTask;
 	}
-	public static Task FlushProfile()
-	{
-		ProfileClassData.Clear();
-		GameManager.Aphids.Clear();
-		return Task.CompletedTask;
-	}
 
 	// ==================================================================
 	// MARK: Interfaces And Bases
-	public abstract class SaveMetadata(string ID, int LoadPriority = 0) : IGlobalSaveCall
+	public abstract class SaveMetadata(string ID, int LoadPriority = 0) : IEqualityComparer<SaveMetadata>
 	{
 		public readonly string ID = ID;
-		internal int LoadOrderPriority = LoadPriority; // Higher numbers means higher priority.
+		/// <summary>
+		/// Higher number means higher load priority.
+		/// </summary>
+		internal int LoadOrderPriority = LoadPriority;
+		/// <summary>
+		/// Source directory. Usually by modified functions for dynamic pahts (such as, for savefile data). 
+		/// </summary>
 		public string RootPath = USERROOT_DIR;
+		/// <summary>
+		/// Relative path from root. If left empty, file will be stored directly at the root.
+		/// </summary>
 		public string RelativePath = string.Empty;
-		public string Extension = JSONFILE_EXTENSION;
-		public uint GameVersion { get; protected set;} = GlobalManager.GAME_VERSION;
+		/// <summary>
+		/// File extension. Defaults to ".data"
+		/// </summary>
+		public string Extension = SAVEFILE_EXTENSION;
+		public uint GameVersion { get; protected set; } = GlobalManager.GAME_VERSION;
 
 		/// <summary>
 		/// Choose to either save the content as plain text or with a bit of encoding.
@@ -300,17 +227,24 @@ public static class SaveSystem
 		protected enum SaveMode { PlainText, Obfuscated }
 		protected SaveMode Mode = SaveMode.PlainText;
 
-        /// <summary>
-        /// Returns the path to the saved contents.
-        /// </summary>
-        /// <param name="_global">Return this path as a global OS file path instead of a Godot file path?</param>
-        public string GetPath(bool _global = false) => !_global ?
+		/// <summary>
+		/// Returns the path to the saved contents.
+		/// </summary>
+		/// <param name="_global">Return this path as a global OS file path instead of a Godot file path?</param>
+		public string GetPath(bool _global = false) => !_global ?
 				System.IO.Path.Join(RootPath, RelativePath, ID + Extension)
 				: ProjectSettings.GlobalizePath(System.IO.Path.Join(RootPath, RelativePath, ID + Extension));
 
-		public abstract void CallSave();
+		public abstract void CallSave(bool _disallowPrint = false);
 		public abstract void CallLoad();
 		public abstract void CallSet();
+		public abstract void CallDispose();
+
+		public bool Equals(SaveMetadata x, SaveMetadata y) =>
+			x.ID == y.ID;
+
+		public int GetHashCode([DisallowNull] SaveMetadata obj) =>
+			ID.GetHashCode();
 	}
 	/// <summary>
 	/// Used tp handle data manipulation separately from the SaveModule.
@@ -320,36 +254,35 @@ public static class SaveSystem
 	{
 		public void Set(T _data);
 		public T Get();
+		/// <summary>
+		/// Fetch the default value of this object.
+		/// </summary>
 		public T Default();
-	}
-	/// <summary>
-	/// Used as a compability layer to globally call save methods.
-	/// </summary>/
-	protected interface IGlobalSaveCall
-	{
-		public void CallSave();
-		public void CallLoad();
+		/// <summary>
+		/// Initialize this function to get rid of unneeded data.
+		/// </summary>
+		public void Dispose() {}
 	}
 	// ==================================================================
+
+	// TODO: test saving a packedbytedata to see if load speed and storage size is reduced
+	// add a CallDispose() to dispose of current usunued data
+	// get rid of savemodulegd and see if it can be integrated with SaveModule<Generic>
+
 	// MARK: SaveData Module
 	/// <summary>
 	/// Core component to save runtime data to system via Json serialization.
 	/// This class is NOT meant to be the data holder. Instead, it requires the class type of the data to serialize.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class SaveModule<T> : SaveMetadata
+	public class SaveModule<T>(string ID, IDataModule<T> _module, int LoadPriority = 0) : SaveMetadata(ID, LoadPriority)
 	{
 		public JsonSerializerOptions JsonOptions = null;
+		protected IDataModule<T> Data = _module;
 
-		public SaveModule(string ID, IDataModule<T> _module, int LoadPriority = 0) : base(ID, LoadPriority)
-		{
-			Data = _module;
-			Data.Set(Data.Default());
-		}
-
-		protected IDataModule<T> Data;
-
-		public virtual Task Save()
+		/// <param name="_disallowPrint">[DEBUG] Disallow printing to console.</param>
+		/// <returns></returns>
+		public virtual Task Save(bool _disallowPrint = false)
 		{
 			string _path = GetPath();
 			using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Write);
@@ -363,7 +296,8 @@ public static class SaveSystem
 			// Save most recent game version this file was saved in
 			_file.Store32(GlobalManager.GAME_VERSION);
 
-			Logger.Print(Logger.LogPriority.Log, "ProfileSave: Saved succesfully - path: " + _path);
+			if (!_disallowPrint)
+				Logger.Print(Logger.LogPriority.Log, $"ProfileSave: Saved succesfully - Version: {GameVersion} Path: {_path}.");
 			return Task.CompletedTask;
 		}
 		public virtual T Load(bool loadToClass = true)
@@ -386,44 +320,49 @@ public static class SaveSystem
 				}
 				catch (Exception _error)
 				{
-					GameVersion = GlobalManager.GAME_VERSION;
-					Logger.Print(Logger.LogPriority.Error,"ProfileLoad: Unable to load game version", _error);
+					GameVersion = 0;
+					Logger.Print(Logger.LogPriority.Error, "ProfileLoad: Unable to load game version", _error);
 				}
 
 				_data = PostLoad(_raw_data);
 			}
 			else
-				Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: {ID} was not found. Creating new instance. Path: " + RootPath + RelativePath + ID + Extension);
+				Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: {ID} was not found. Creating new instance. - Version: {GameVersion} Path: " + RootPath + RelativePath + ID + Extension);
 
 			if (loadToClass)
 				Data.Set(_data);
 
-			Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: Loaded succesfully(toClass={loadToClass}) - LP: "
-				+ LoadOrderPriority + " path: " + _path);
+			Logger.Print(Logger.LogPriority.Log, $"ProfileLoad: Loaded succesfully(toClass={loadToClass}) - Version: {GameVersion} LP: "
+				+ LoadOrderPriority + " Path: " + _path);
 			return _data;
 		}
 
 		/// <summary>
-		/// Method that deserializes raw data back into runtime data.
+		/// Method that deserializes raw data back into runtime data. Runs after data has been loaded from the filestream.
 		/// </summary>
 		public virtual T PostLoad(string _raw_data)
 		{
 			return JsonSerializer.Deserialize<T>(_raw_data);
 		}
+		/// <summary>
+		/// Method that returns the file's path. Used to patch-in alternative paths for backwards compatibilites.
+		/// </summary>
+		/// <returns></returns>
 		public virtual string PreLoad()
 		{
 			string _path = GetPath(), _path_old = _path.Replace(".data", "_data.json");
-			
+
 			// patch for 0.1.3v savefiles, renames file with "_data" and replace it with ".data"
 			if (!FileAccess.FileExists(_path) && FileAccess.FileExists(_path_old))
 				System.IO.File.Move(ProjectSettings.GlobalizePath(_path_old), ProjectSettings.GlobalizePath(_path));
-			
+
 			return _path;
 		}
 
-		public override void CallSave() => Save();
+		public override void CallSave(bool _disallowPrint) => Save(_disallowPrint);
 		public override void CallLoad() => Load();
 		public override void CallSet() => Data.Set(Data.Default());
+		public override void CallDispose() => Data.Dispose();
 	}
 
 	/// <summary>
@@ -432,17 +371,11 @@ public static class SaveSystem
 	/// Requires more setup to translate generic T type back into a Variant.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class SaveModuleGD : SaveMetadata
+	public class SaveModuleGD(string ID, IDataModule<Variant> _module, int LoadPriority = 0) : SaveMetadata(ID, LoadPriority)
 	{
-		public SaveModuleGD(string ID, IDataModule<Variant> _module, int LoadPriority = 0) : base(ID, LoadPriority)
-		{
-			Data = _module;
-			Data.Set(Data.Default());
-		}
+		protected IDataModule<Variant> Data = _module;
 
-		protected IDataModule<Variant> Data;
-
-		public virtual Task Save()
+		public virtual Task Save(bool _disallowPrint = false)
 		{
 			string _path = GetPath();
 			using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Write);
@@ -456,7 +389,8 @@ public static class SaveSystem
 			// Save most recent game version this file was saved in
 			_file.Store32(GlobalManager.GAME_VERSION);
 
-			Logger.Print(Logger.LogPriority.Log, "ProfileSave: Saved succesfully. path: " + _path);
+			if (!_disallowPrint)
+				Logger.Print(Logger.LogPriority.Log, "ProfileSave: Saved succesfully. path: " + _path);
 			return Task.CompletedTask;
 		}
 		public virtual Variant Load(bool loadToClass = true)
@@ -482,8 +416,8 @@ public static class SaveSystem
 				}
 				catch (Exception _error)
 				{
-					GameVersion = GlobalManager.GAME_VERSION;
-					Logger.Print(Logger.LogPriority.Error,"ProfileLoad: Unable to load game version", _error);
+					GameVersion = 0;
+					Logger.Print(Logger.LogPriority.Error, "ProfileLoad: Unable to load game version", _error);
 				}
 
 				_data = PostLoad(_raw_data);
@@ -513,8 +447,9 @@ public static class SaveSystem
 			return GetPath();
 		}
 
-		public override void CallSave() => Save();
+		public override void CallSave(bool _disallowPrint) => Save(_disallowPrint);
 		public override void CallLoad() => Load();
 		public override void CallSet() => Data.Set(Data.Default());
+		public override void CallDispose() => Data.Dispose();
 	}
 }

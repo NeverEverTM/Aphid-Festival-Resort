@@ -1,6 +1,7 @@
+using System.Text.Json;
 using Godot;
 
-public partial class AphidHatch : Area2D
+public partial class AphidHatch : Area2D, ResortManager.IMetadata
 {
 	public bool IsNatural;
 	private Timer hatch;
@@ -37,4 +38,15 @@ public partial class AphidHatch : Area2D
 		AddChild(hatch);
 		hatch.Start(5);
 	}
+
+    public void SetData(string _data)
+    {
+		given_genes = JsonSerializer.Deserialize<AphidData.Genes>(_data);
+    }
+
+    public string GetData()
+    {
+		return JsonSerializer.Serialize(given_genes);
+    }
+
 }

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c4b2x5elxg4i7"]
 
 [ext_resource type="Texture2D" uid="uid://66bis73g2x7n" path="res://sprites/props/image_sign.png" id="1_h2uk8"]
-[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/props/ImageSign.cs" id="2_3vroc"]
+[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSign.cs" id="2_3vroc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3vroc"]
 size = Vector2(62, 6)

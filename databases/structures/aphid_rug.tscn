@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://3t5isinmf7ij"]
+
+[ext_resource type="Texture2D" uid="uid://b0whlhmjldgy8" path="res://sprites/props/wide_rug.png" id="1_1umqi"]
+
+[node name="aphid_rug" type="Sprite2D"]
+texture = ExtResource("1_1umqi")
+offset = Vector2(0, 32)
+metadata/id = "aphid_rug"

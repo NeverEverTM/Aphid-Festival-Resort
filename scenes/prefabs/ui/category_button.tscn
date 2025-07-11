@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://384velp8ulli"]
+
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="1_4fj1c"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="2_m57tj"]
+[ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="3_m57tj"]
+
+[node name="category_news" type="TextureButton"]
+light_mask = 0
+custom_minimum_size = Vector2(350, 125)
+script = ExtResource("1_4fj1c")
+PressedColor = Color(0.505344, 0.505344, 0.505344, 1)
+FocusColor = Color(0.755561, 0.856312, 0.881656, 1)
+HoverColor = Color(0.840325, 0.840326, 0.840326, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="category_bg" type="NinePatchRect" parent="."]
+self_modulate = Color(0.826962, 0.454596, 0.388835, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_m57tj")
+patch_margin_left = 30
+patch_margin_top = 30
+patch_margin_right = 30
+patch_margin_bottom = 30
+
+[node name="category_label" type="Label" parent="."]
+light_mask = 0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 32.0
+offset_bottom = 80.0
+grow_horizontal = 2
+text = "News"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="category_icon" type="TextureRect" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = 23.0
+offset_top = 16.0
+offset_right = 100.0
+offset_bottom = 95.0
+texture = ExtResource("3_m57tj")
+stretch_mode = 5

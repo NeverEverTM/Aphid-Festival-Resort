@@ -1,0 +1,154 @@
+[gd_scene load_steps=8 format=3 uid="uid://cr7ypl2glxegu"]
+
+[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="1_lu87u"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="2_lu87u"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="3_ap2gs"]
+[ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="4_kjhgs"]
+[ext_resource type="Texture2D" uid="uid://d0rlw1lt7bukx" path="res://sprites/ui/aphid_template.png" id="4_n6se3"]
+[ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="5_wtscx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_thxrm"]
+atlas = ExtResource("5_wtscx")
+region = Rect2(0, 48, 16, 16)
+
+[node name="job_slot" type="TextureButton"]
+editor_description = "Do not modify node structure."
+self_modulate = Color(1, 1, 1, 0)
+light_mask = 0
+custom_minimum_size = Vector2(175, 175)
+offset_right = 175.0
+offset_bottom = 175.0
+pivot_offset = Vector2(87, 87)
+size_flags_vertical = 4
+texture_normal = ExtResource("3_ap2gs")
+script = ExtResource("2_lu87u")
+PressedColor = Color(0.442911, 0.442911, 0.442911, 1)
+FocusColor = Color(0.47887, 0.553207, 0.568807, 1)
+HoverColor = Color(0.886262, 0.886261, 0.886262, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="slot_bg" type="TextureRect" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = 8.0
+offset_top = 9.0
+offset_right = 170.0
+offset_bottom = 167.0
+texture = ExtResource("1_lu87u")
+stretch_mode = 6
+
+[node name="slot_frame" type="NinePatchRect" parent="."]
+self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_ap2gs")
+draw_center = false
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="slot_aphid" type="TextureRect" parent="slot_frame"]
+layout_mode = 0
+offset_right = 175.0
+offset_bottom = 175.0
+texture = ExtResource("4_n6se3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="slot_bg_icon_0" type="TextureRect" parent="."]
+visible = false
+self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
+texture_filter = 1
+custom_minimum_size = Vector2(60, 50)
+layout_mode = 2
+offset_left = -8.0
+offset_top = -2.0
+offset_right = 55.0
+offset_bottom = 48.0
+texture = ExtResource("4_kjhgs")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_0"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 7.0
+offset_right = 47.0
+offset_bottom = 43.0
+texture = SubResource("AtlasTexture_thxrm")
+stretch_mode = 5
+
+[node name="slot_bg_icon_1" type="TextureRect" parent="."]
+visible = false
+self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
+texture_filter = 1
+custom_minimum_size = Vector2(60, 50)
+layout_mode = 2
+offset_left = 120.0
+offset_top = -2.0
+offset_right = 183.0
+offset_bottom = 48.0
+texture = ExtResource("4_kjhgs")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_1"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 7.0
+offset_right = 47.0
+offset_bottom = 43.0
+texture = SubResource("AtlasTexture_thxrm")
+stretch_mode = 5
+
+[node name="slot_bg_icon_2" type="TextureRect" parent="."]
+visible = false
+self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
+texture_filter = 1
+custom_minimum_size = Vector2(60, 50)
+layout_mode = 2
+offset_left = -6.0
+offset_top = 124.0
+offset_right = 57.0
+offset_bottom = 174.0
+texture = ExtResource("4_kjhgs")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_2"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 7.0
+offset_right = 47.0
+offset_bottom = 43.0
+texture = SubResource("AtlasTexture_thxrm")
+stretch_mode = 5
+
+[node name="slot_bg_icon_3" type="TextureRect" parent="."]
+visible = false
+self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
+texture_filter = 1
+custom_minimum_size = Vector2(60, 50)
+layout_mode = 2
+offset_left = 120.0
+offset_top = 124.0
+offset_right = 183.0
+offset_bottom = 174.0
+texture = ExtResource("4_kjhgs")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_3"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 7.0
+offset_right = 47.0
+offset_bottom = 43.0
+texture = SubResource("AtlasTexture_thxrm")
+stretch_mode = 5

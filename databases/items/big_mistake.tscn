@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ddw72xf4o5h3x"]
 
-[ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/entities/item.tscn" id="1_xdrh8"]
-[ext_resource type="Texture2D" uid="uid://dackluogv1m7p" path="res://sprites/icons/big_mistake.tres" id="4_ag2rd"]
+[ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/prefabs/item.tscn" id="1_xdrh8"]
+[ext_resource type="Texture2D" uid="uid://c2g04r8pruiek" path="res://sprites/icons/big_mistake.tres" id="4_ag2rd"]
 
 [node name="big_mistake" instance=ExtResource("1_xdrh8")]
 metadata/food_type = 4

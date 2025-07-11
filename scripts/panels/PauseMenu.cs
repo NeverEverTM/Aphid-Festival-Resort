@@ -1,10 +1,11 @@
 using Godot;
 using System;
+using System.Threading.Tasks;
 
 public partial class PauseMenu : Control
 {
 	public static PauseMenu Instance { get; private set; }
-	private MenuUtil.MenuInstance menu;
+	private MenuInstance menu;
 
 	[Export] private AnimationPlayer menu_player;
 	[Export] private Control panel, options_panel, controls_panel, help_panel;
@@ -29,8 +30,7 @@ public partial class PauseMenu : Control
 
 		for (int i = 0; i < actions.Length; i++)
 		{
-			// dumb C# behaviour references the same index for all actions for some UNKNOWN REASON
-			var new_index = i; // <- just do this
+			int new_index = i;
 			buttons[i].Pressed += () =>
 			{
 				lastButtonIndex = new_index;
@@ -40,31 +40,33 @@ public partial class PauseMenu : Control
 			(buttons[i].GetChild(0) as Label).Text = $"pause_{buttons[i].Name}";
 		}
 
-		menu = new("pause", menu_player, null, null, false);
+		menu = new("pause", menu_player);
 	}
 	public override void _ExitTree()
 	{
 		GetTree().Paused = false;
 	}
 
-	public void SetPauseMenu(bool _state)
+	public async Task SetPauseMenu(bool _state)
 	{
 		if (_state)
 		{
-			if (FreeCameraManager.Enabled || CanvasManager.Menus.IsBusy || DialogManager.IsActive)
+			if (FreeCameraManager.Enabled || CanvasManager.Menus.IsActive || DialogManager.IsActive)
 				return;
 
-			SoundManager.PauseSong();
-			CanvasManager.Menus.OpenMenu(menu);
-			buttons[0].GrabFocus();
-			GetTree().Paused = true;
-			SoundManager.CreateSound(switch_sound);
+			if (await CanvasManager.Menus.SetTo(menu))
+			{
+				buttons[0].GrabFocus();
+				GetTree().Paused = true;
+				SoundManager.PauseSong();
+				SoundManager.CreateSound(switch_sound);
+			}
 		}
 		else
 		{
-			SoundManager.ResumeSong();
-			CanvasManager.Menus.GoBack();
 			GetTree().Paused = false;
+			SoundManager.ResumeSong();
+			await CanvasManager.Menus.GoBack();
 		}
 	}
 	public void SetSubMenu(Control _menu)
@@ -91,11 +93,11 @@ public partial class PauseMenu : Control
 				if (current_menu != null)
 					ExitSubMenu();
 				else
-					SetPauseMenu(false);
+					_ = Instance.SetPauseMenu(false);
 			}
 		} // opening pause menu
-		else if (@event.IsActionPressed(InputNames.Escape) && !CanvasManager.Menus.IsBusy)
-			SetPauseMenu(true);
+		else if (@event.IsActionPressed(InputNames.Escape) && !CanvasManager.Menus.IsActive)
+			_ = Instance.SetPauseMenu(true);
 	}
 
 	private void OnButtonPress(Action _action)
@@ -107,7 +109,7 @@ public partial class PauseMenu : Control
 		SoundManager.CreateSound(select_sound);
 	}
 	private void ResumeButton() =>
-		SetPauseMenu(false);
+		_ = Instance.SetPauseMenu(false);
 	private void OptionsButton() =>
 		SetSubMenu(options_panel);
 	private void ControlsButton() =>
@@ -117,7 +119,7 @@ public partial class PauseMenu : Control
 	private async void BackToMenuButton()
 	{
 		await SaveSystem.SaveProfile();
-		await GlobalManager.LoadScene(GlobalManager.SceneName.Menu);
+		await SceneManager.Switch("menu", false, false);
 	}
 	private void ExitButton()
 	{

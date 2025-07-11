@@ -1,24 +1,26 @@
-using System.Threading.Tasks;
 using Godot;
 
 public partial class FieldManager : Node2D
 {
 	public static FieldManager Instance { get; set; }
-	[Export] private CanvasModulate globalFilter;
+
+	[Export] private CanvasModulate ColorCube;
+	[Export] public bool IsInside = false;
 	[Export] public Node2D TopLeft, BottomRight;
+	[Export] public RoomDoor[] Doors = [];
 
 	public enum DayHours { Morning, Noon, Sunset, Night }
 	public static DayHours TimeOfDay { get; set; }
 	public static readonly Color[] DayFilters =
-    [
-        new(0.706f, 0.933f, 0.992f),
+	[
+		new(0.706f, 0.933f, 0.992f),
 		new(1, 1, 1),
 		new(0.984f, 0.62f, 0.553f),
 		new(0.133f, 0.298f, 0.592f)
 	];
 	public readonly static Color[] WeatherColors =
-    [
-        new(0.22f, 0.608f, 0.898f), // Morning
+	[
+		new(0.22f, 0.608f, 0.898f), // Morning
 		new(0.984f, 0.796f, 0.039f), // Noon
 		new(0.987f, 0.371f, 0), // Sunset
 		new(0.435f, 0.33f, 0.823f) // Night
@@ -30,7 +32,6 @@ public partial class FieldManager : Node2D
 	public override void _EnterTree()
 	{
 		Instance = this;
-		SetTime(null, true);
 	}
 
 	public override void _Ready()
@@ -41,7 +42,7 @@ public partial class FieldManager : Node2D
 		};
 		_timeloop.Timeout += () =>
 		{
-			SetTime();
+			SetTime(false);
 			StartWeatherPopup();
 
 			// start timeloop to popup after every change of hour
@@ -56,6 +57,8 @@ public partial class FieldManager : Node2D
 		CameraManager.Instance.LimitBottom = (int)BottomRight.GlobalPosition.Y;
 		CameraManager.Instance.LimitLeft = (int)TopLeft.GlobalPosition.X;
 		CameraManager.Instance.LimitRight = (int)BottomRight.GlobalPosition.X;
+
+		SetTime(true, null);
 	}
 
 	// opens weather overlay and creates timer to hide it automatically
@@ -77,7 +80,7 @@ public partial class FieldManager : Node2D
 
 	}
 	// sets the atmosphere according to time and weather and triggers hour change events
-	public void SetTime(Godot.Collections.Dictionary _date = null, bool _instantTransition = false)
+	public void SetTime(bool _instantTransition, Godot.Collections.Dictionary _date = null)
 	{
 		_date ??= Time.GetDatetimeDictFromSystem();
 
@@ -93,14 +96,17 @@ public partial class FieldManager : Node2D
 			else // 4PM to 8PM is Sunset
 				timeDay = DayHours.Sunset;
 		}
-		if (!_instantTransition)
+		if (!IsInside)
 		{
-			Tween _tween = GetTree().CreateTween();
-			_tween.BindNode(globalFilter);
-			_tween.TweenProperty(globalFilter, "color", DayFilters[(int)timeDay], 3);
+			if (!_instantTransition)
+			{
+				Tween _tween = GetTree().CreateTween();
+				_tween.BindNode(ColorCube);
+				_tween.TweenProperty(ColorCube, "color", DayFilters[(int)timeDay], 3);
+			}
+			else
+				ColorCube.Color = DayFilters[(int)timeDay];
 		}
-		else
-			globalFilter.Color = DayFilters[(int)timeDay];
 		TimeOfDay = timeDay;
 		OnTimeChange?.Invoke();
 	}

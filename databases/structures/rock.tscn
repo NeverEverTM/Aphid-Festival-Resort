@@ -8,7 +8,7 @@ size = Vector2(43, 22)
 [node name="rock" type="Sprite2D"]
 texture = ExtResource("1_4ccj8")
 offset = Vector2(0, -21)
-metadata/id = "largebox_0"
+metadata/id = "rock"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

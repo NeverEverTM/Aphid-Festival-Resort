@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://d4dvpjanw12f6"]
+
+[ext_resource type="Texture2D" uid="uid://drk8wpmebk08k" path="res://sprites/props/bottle_cap_0.png" id="1_lfuwu"]
+[ext_resource type="Script" uid="uid://g2000tj46ocw" path="res://scripts/entities/BedBehaviour.cs" id="2_tmysc"]
+[ext_resource type="Texture2D" uid="uid://brq8lu86w2f0s" path="res://sprites/props/bottle_cap_1.png" id="3_5dmnv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5dmnv"]
+radius = 64.9384
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tmysc"]
+size = Vector2(63, 24)
+
+[node name="bottle_cap" type="Sprite2D" node_paths=PackedStringArray("restingPosition")]
+texture = ExtResource("1_lfuwu")
+offset = Vector2(0, -22)
+script = ExtResource("2_tmysc")
+restingPosition = NodePath("Marker2D")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(0, -7)
+gizmo_extents = 59.6
+
+[node name="Area2D" type="Area2D" parent="."]
+metadata/tag = "interactable"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -11)
+shape = SubResource("CircleShape2D_5dmnv")
+debug_color = Color(0.773594, 0.386691, 0.567934, 0.42)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(1.5, -11)
+shape = SubResource("RectangleShape2D_tmysc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+show_behind_parent = true
+z_index = -5
+z_as_relative = false
+texture = ExtResource("3_5dmnv")
+offset = Vector2(-13, -16)

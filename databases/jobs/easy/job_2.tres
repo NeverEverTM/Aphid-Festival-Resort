@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="JobData" load_steps=3 format=3 uid="uid://djybyeexvq6qc"]
+
+[ext_resource type="Texture2D" uid="uid://juwk50iu2h4d" path="res://sprites/ui/portraits/landscape_desert.png" id="1_8fomi"]
+[ext_resource type="Script" uid="uid://bh2k0jtgro60" path="res://scripts/resources/JobData.cs" id="2_1voal"]
+
+[resource]
+script = ExtResource("2_1voal")
+Skills = Dictionary[int, int]({
+2: 4
+})
+BaseTime = 200.0
+BaseReward = 15
+Background = ExtResource("1_8fomi")

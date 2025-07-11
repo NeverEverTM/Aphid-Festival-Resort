@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://fcq0g0f37t00"]
 
 [ext_resource type="Texture2D" uid="uid://cb3wpt5sr1iv8" path="res://sprites/props/grass_1.png" id="1_enask"]
-[ext_resource type="Script" uid="uid://bqocmgjvpnlmx" path="res://scripts/props/Grass.cs" id="2_q4lul"]
+[ext_resource type="Script" uid="uid://bqocmgjvpnlmx" path="res://scripts/entities/Grass.cs" id="2_q4lul"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dxc3j"]
 size = Vector2(16, 6)

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdgdkol3ca6oh"]
+
+[ext_resource type="Texture2D" uid="uid://bovn773irmul6" path="res://sprites/props/poster_mothiva.png" id="1_y1mc1"]
+
+[node name="poster_mothiva" type="Sprite2D"]
+z_index = -1
+texture = ExtResource("1_y1mc1")
+offset = Vector2(0, -80)
+metadata/allow_wallmount = true

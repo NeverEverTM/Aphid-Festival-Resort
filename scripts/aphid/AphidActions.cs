@@ -118,8 +118,8 @@ public class AphidActions
 			// Grow up into an adult
 			if (!aphid.Instance.Status.IsAdult)
 			{
-				if (aphid.State.Is(StateEnum.Idle) &&
-						aphid.Instance.Status.Age > AphidData.Age_Adulthood)
+				if (aphid.Instance.Status.Age > AphidData.Age_Adulthood &&
+					aphid.State.Is(StateEnum.Idle))
 				{
 					aphid.Instance.Status.IsAdult = true;
 					aphid.skin.SetSkin("idle");
@@ -127,7 +127,15 @@ public class AphidActions
 			}
 			// Die at the old age of old years old
 			else if (aphid.Instance.Status.Age > AphidData.Age_Death)
+			{
+				switch (aphid.State.Type)
+				{
+					case StateEnum.Busy:
+					case StateEnum.Eat:
+						return;
+				}
 				aphid.PrepareToDie();
+			}	
 		}
 	}
 
@@ -144,7 +152,7 @@ public class AphidActions
 
 	public class AphidInteraction : ITriggerEvent
 	{
-		public string TriggerID => StringNames.InteractableTag;
+		public string Tag => StringNames.InteractableTag;
 
 		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
 		{
@@ -158,7 +166,7 @@ public class AphidActions
 	}
 	public class AphidFriendhsip : ITriggerEvent
 	{
-		public string TriggerID => "aphid";
+		public string Tag => "aphid";
 		private readonly static float[] aphid_interaction_weights = [50, 50];
 
 		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
@@ -294,7 +302,7 @@ public class AphidActions
 		public StateEnum Type => StateEnum.Hungry;
 		public StateEnum[] TransitionList => [StateEnum.Idle, StateEnum.Hungry, StateEnum.Eat, StateEnum.Pet];
 		public bool Locked { get; set; }
-		public string TriggerID => "food";
+		public string Tag => "food";
 
 		// Eating Params
 		private const float food_pursue_duration = 5f;
@@ -546,18 +554,22 @@ public class AphidActions
 			public bool heavysleeper = false;
 		}
 
-		public void Awake(Aphid aphid, EventArgs args)
+		public bool Awake(Aphid _aphid, EventArgs args)
 		{
-			aphid.SetState(StateEnum.Sleep);
+			return true;
 		}
 
 		public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
 		{
+			if (args is SleepArgs)
+				aphid.StateArgs = args as SleepArgs;
+			else
+				aphid.StateArgs = new SleepArgs();
+
 			aphid.skin.SetEyesSkin("sleep");
 			aphid.skin.SetLegsSkin("sleep");
 			sleep_effect = GlobalManager.EmitParticles("sleep", aphid.GlobalPosition);
 			aphid.skin.Position = new(0, 2);
-			aphid.StateArgs = new SleepArgs();
 		}
 
 		public void Exit(Aphid aphid, EventArgs args, StateEnum _next)
@@ -638,7 +650,7 @@ public class AphidActions
 		public StateEnum[] TransitionList => [StateEnum.Idle];
 		public bool Locked { get; set; }
 
-		public string TriggerID => Tag;
+		public string Tag => Aphid.Tag;
 		public float TimeLeft { get; set; }
 
 		private readonly float[] breeding_weights = [70, 30];
@@ -651,18 +663,23 @@ public class AphidActions
 
 		public class BreedArgs : EventArgs
 		{
-			public Vector2 position;
-			public bool is_in_final_stage;
+			public Vector2 position = new();
+			public bool is_in_final_stage = false;
+			public bool is_awake = false;
 		}
 
-		public void Awake(Aphid aphid, EventArgs args)
+		public bool Awake(Aphid aphid, EventArgs args)
 		{
-			SetBreed(aphid, aphid.Instance.Status.BreedMode);
+			aphid.StateArgs = new BreedArgs();
+			return true;
 		}
 
 		public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
 		{
-			aphid.StateArgs = args is BreedArgs ? args : new BreedArgs();
+			if (args is BreedArgs)
+				SetBreed(aphid, aphid.Instance.Status.BreedMode);
+			else
+				aphid.StateArgs = new BreedArgs();
 		}
 
 		public void Exit(Aphid aphid, EventArgs args, StateEnum _next)
@@ -690,16 +707,15 @@ public class AphidActions
 			if (aphid.Instance.Status.BreedBuildup < AphidData.Breed_Cooldown)
 				aphid.Instance.Status.BreedBuildup += _delta;
 			else if (aphid.State.Is(StateEnum.Idle))
+			{
+				aphid.SetState(StateEnum.Breed);
 				SetBreed(aphid);
+			}
 		}
 		public async void SetBreed(Aphid aphid, BreedEnum _mode = BreedEnum.Starting)
 		{
 			if (_mode == BreedEnum.Inactive)
 				return;
-
-			// Set breed state
-			aphid.SetState(StateEnum.Breed);
-			GlobalManager.EmitParticles("mating", aphid.GlobalPosition).OneShot = true;
 
 			// Set a new breed mode, setting to 0 or 1 means we are the mother
 			// otherwise -1 means we are just a partner, thus do nothing
@@ -731,6 +747,7 @@ public class AphidActions
 		public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
 		{
 			Aphid _partner = _node as Aphid;
+			
 			if (breed_partner != null)
 				return;
 
@@ -740,9 +757,9 @@ public class AphidActions
 				_partner.Instance.Status.Thirst < 10)
 				return;
 
-			if (_aphid.Instance.Genes.Relationships.TryGetValue(_partner.Instance.GUID, out var _relation) &&
-					_relation.Total < -10)
-			return;
+			if (!_aphid.Instance.Genes.Relationships.TryGetValue(_partner.Instance.GUID, out var _relation) ||
+					_relation.Total < -20)
+				return;
 
 			if (!_partner.State.Is(StateEnum.Idle))
 				return;
@@ -824,61 +841,36 @@ public class AphidActions
 			}
 		}
 	}
-	
-	public class TrainState : IState
-	{
-		public StateEnum Type => StateEnum.Train;
-		public StateEnum[] TransitionList => [StateEnum.Idle];
-		public bool Locked { get; set; }
-
-		public class TrainArgs : EventArgs
-		{
-			public int point_gain;
-			public float gain_rate;
-		}
-
-		public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
-		{
-			aphid.StateArgs = new();
-			// start chase
-		}
-
-		public void Exit(Aphid aphid, EventArgs args, StateEnum _next)
-		{
-
-		}
-
-		public void Process(Aphid aphid, EventArgs args, float delta)
-		{
-			// if far from it
-			// chase
-			// else
-			// snap to it and start anim & training
-
-			// if training
-			// gain points at rate
-			// check for exhaustion, if so, cancel
-		}
-	}
 	public class PlayState : IState
 	{
-		public StateEnum Type => throw new NotImplementedException();
-		public StateEnum[] TransitionList => throw new NotImplementedException();
+		public StateEnum Type => StateEnum.Play;
+		public StateEnum[] TransitionList => [ StateEnum.Hungry ];
+		public bool TransitionToAnything { get; set; } = true;
 		public bool Locked { get; set; }
+		public PlayArgs Current;
+
+		public class PlayArgs(IFurnitureInteractable Interactable, bool IsInterruptable) : EventArgs
+		{
+			public IFurnitureInteractable Interactable = Interactable;
+			public bool IsInterruptable = IsInterruptable;
+		}
 
 		public void Enter(Aphid aphid, EventArgs args, StateEnum _previous)
 		{
-			throw new NotImplementedException();
+			aphid.skin.SetSkin("idle");
+			Current = args as PlayArgs;
+			Current.Interactable.Enter(args);
 		}
 
 		public void Exit(Aphid aphid, EventArgs args, StateEnum _next)
 		{
-			throw new NotImplementedException();
+			Current.Interactable.Exit(args);
+			Current.Interactable.SelectedAphid = null;
 		}
 
 		public void Process(Aphid aphid, EventArgs args, float delta)
 		{
-			throw new NotImplementedException();
+			Current.Interactable.Process(args, delta);
 		}
 	}
 }
