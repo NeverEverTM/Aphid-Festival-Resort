@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Godot;
 
-public partial class AphidHatch : Area2D, ResortManager.IMetadata
+public partial class AphidHatch : InteractableArea2D, SaveSystem.IDataModule
 {
 	public bool IsNatural;
 	private Timer hatch;
@@ -21,15 +21,16 @@ public partial class AphidHatch : Area2D, ResortManager.IMetadata
 			{
 				given_genes = new()
 				{
-					AntennaColor = colors[0],
-					EyeColor = colors[1],
-					BodyColor = colors[2],
-					LegColor = colors[3],
+					AntennaColor = AphidData.Genes.LerpColor(colors[0],colors[0]),
+					EyeColor = AphidData.Genes.LerpColor(colors[1],colors[1]),
+					BodyColor = AphidData.Genes.LerpColor(colors[2],colors[2]),
+					LegColor = AphidData.Genes.LerpColor(colors[3],colors[3]),
 					AntennaType = parts_ids[0],
 					EyeType = parts_ids[1],
 					BodyType = parts_ids[2],
 					LegType = parts_ids[3]
 				};
+				;
 				given_genes.GenerateNewAphid();
 			}
 			ResortManager.CreateAphid(new(GlobalPosition.X, GlobalPosition.Y), given_genes);
@@ -39,12 +40,12 @@ public partial class AphidHatch : Area2D, ResortManager.IMetadata
 		hatch.Start(5);
 	}
 
-    public void SetData(string _data)
+    public void Set(string _data)
     {
 		given_genes = JsonSerializer.Deserialize<AphidData.Genes>(_data);
     }
 
-    public string GetData()
+    public string Get()
     {
 		return JsonSerializer.Serialize(given_genes);
     }

@@ -31,7 +31,7 @@ public partial class GameManager : Node
 		{
 			if (GameVersion < GlobalManager.GAME_VERSION)
 			{
-				Logger.Print(Logger.LogPriority.Warning, "GameManager: Applied Out of Bounds Patch ");
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, "GameManager: Applied Out of Bounds Patch ");
 				APPLY_OUTOFBOUND_PATCH = true;
 			}
 			return base.PostLoad(_raw_data);
@@ -52,7 +52,7 @@ public partial class GameManager : Node
 			Data.LastTimeLoaded = _currentTime;
 
 			Data.AphidCount = Aphids.Count;
-			Data.LastRoom = SceneManager.Current;
+			Data.LastRoom = SceneManager.CurrentScene;
 			return Data;
 		}
 		public GameData Default() => new();
@@ -88,7 +88,16 @@ public partial class GameManager : Node
 	public class AphidDataModule : SaveSystem.IDataModule<Dictionary<Guid, AphidInstance>>
 	{
 		public Dictionary<Guid, AphidInstance> Default() => [];
-		public void Set(Dictionary<Guid, AphidInstance> _data) => Aphids = _data;
+		public void Set(Dictionary<Guid, AphidInstance> _data)
+		{
+			Aphids = _data;
+			foreach (var aphid in Aphids)
+            {
+				if (aphid.Value.Status.Mode != AphidData.EntityStatusType.Busy)
+					aphid.Value.Status.Mode = AphidData.EntityStatusType.Passive;
+				aphid.Value.PassiveEntity = new(aphid.Value);
+            }
+		}
 		public Dictionary<Guid, AphidInstance> Get() => Aphids;
 	}
 	public class GenerationsSaveModule(string ID, SaveSystem.IDataModule<Dictionary<Guid, AphidData.Genes>> _module, int LoadPriority = 0) : SaveSystem.SaveModule<Dictionary<Guid, AphidData.Genes>>(ID, _module, LoadPriority)
@@ -139,6 +148,8 @@ public partial class GameManager : Node
 		public int SavefileBoots { get; set; } = 0;
 	}
 
+	public Timer autoSaveTimer;
+
 	// MARK: Body
 	public override void _EnterTree()
 	{
@@ -149,14 +160,15 @@ public partial class GameManager : Node
 			RelativePath = SaveSystem.PROFILE_APHIDS_DIR
 		};
 		GenerationsModule = new("generations", new GenerationsDataModule(), 2038)
-        {
-            Extension = SaveSystem.SAVEFILE_EXTENSION,
-            RelativePath = SaveSystem.PROFILE_APHIDS_DIR
-        };
+		{
+			Extension = SaveSystem.SAVEFILE_EXTENSION,
+			RelativePath = SaveSystem.PROFILE_APHIDS_DIR
+		};
 		SaveSystem.AddSaveModule(GameModule);
 		SaveSystem.AddSaveModule(AphidModule);
 		SaveSystem.AddSaveModule(GenerationsModule);
-		SceneManager.OnGameInit += StartGame;
+		SceneManager.AddEventListener(StartGame, SceneManager.EventEnum.OnGameInit);
+		SceneManager.AddEventListener((_) => Instance.autoSaveTimer?.QueueFree(), SceneManager.EventEnum.OnGameFinish);
 	}
 	public override async void _Notification(int what)
 	{
@@ -164,8 +176,18 @@ public partial class GameManager : Node
 		if (what == NotificationWMCloseRequest && GlobalManager.IsInGame)
 			await SaveSystem.SaveProfile();
 	}
+	public override void _Process(double delta)
+	{
+		float _delta = (float)delta;
+		foreach (var aphid in Aphids)
+		{
+			// processes the passive behaviour of the aphid while is gone
+			if (aphid.Value.Status.Mode == AphidData.EntityStatusType.Passive)
+				aphid.Value.PassiveEntity.Process(_delta);
+		}
+	}
 
-	public static async void StartGame(string _c, bool _s)
+	public static async void StartGame(SceneManager.SceneArgs _args)
 	{
 		// On New game, put intro cutscene, otherwise just load normally
 		if (!IsNewGame)
@@ -199,6 +221,11 @@ public partial class GameManager : Node
 			Player.Instance.SetDisabled(false);
 			IsNewGame = false;
 		}
+
+		Instance.autoSaveTimer = new();
+		Instance.autoSaveTimer.Timeout += () => _ = SaveSystem.SaveProfile(true);
+		Instance.AddChild(Instance.autoSaveTimer);
+		Instance.autoSaveTimer.Start(300);
 		Data.SavefileBoots++;
 	}
 	public static void CheckForGameOver()
@@ -207,10 +234,10 @@ public partial class GameManager : Node
 		int _maxCost = 0;
 		for (int i = 0; i < Player.Data.Inventory.Count; i++)
 		{
-			int _cost = GlobalManager.G_ITEMS[Player.Data.Inventory[i]].cost / 2;
+			int _cost = GlobalManager.G_ITEMS[Player.Data.Inventory[i]].Cost / 2;
 			_maxCost += _cost;
 		}
-		// TODO: check for dropped items too
+
 		if (Aphids.Count == 0 && Player.Data.Currency + _maxCost < 50)
 			GameOver.OhNo();
 	}
@@ -260,37 +287,42 @@ public partial class GameManager : Node
 
 	// MARK: Utils Functions
 	/// <summary>
-	/// Adds an aphid permanently to the savefile. Requires an already configured aphid in order to work.
+	/// Adds an aphid to the current generation.
 	/// </summary>
 	/// <param name="_buddy">Aphid Instance to add to the game</param>
 	public static void AddAphid(AphidInstance _buddy)
 	{
 		if (Aphids.ContainsKey(_buddy.GUID))
 		{
-			Logger.Print(Logger.LogPriority.Warning, $"GameManager: The aphid '{_buddy.Genes.Name}'<{_buddy.GUID}> was already present in the list.");
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"GameManager: The aphid '{_buddy.Genes.Name}'<{_buddy.GUID}> was already present in the list.");
 			return;
 		}
 		Aphids.Add(_buddy.GUID, _buddy);
 	}
+	/// <summary>
+	/// Adds an aphid to the generational archive, normally done when an aphid dies.
+	/// </summary>
+	/// <param name="_instance"></param>
+	/// <returns></returns>
 	public static bool AddToArchive(AphidInstance _instance)
 	{
 		if (AphidArchive.ContainsKey(new Guid(_instance.ID)))
 		{
-			Logger.Print(Logger.LogPriority.Warning, $"GameManager: <{_instance.ID}> already exists in archive. Name: {_instance.Genes.Name}.>");
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"GameManager: <{_instance.ID}> already exists in archive. Name: {_instance.Genes.Name}.>");
 			return false;
 		}
 		AphidArchive.Add(new(_instance.ID), _instance.Genes);
 		return true;
 	}
 	/// <summary>
-	/// Removes an aphid from the game permanently using its GUID key. Does NOT automatically add and aphid to the Generations List.
+	/// Removes an aphid from the current generation. It does NOT add them to the generations archive, this must be done manually.
 	/// </summary>
 	/// <param name="_guid">The key of the aphid to remove.</param>
 	public static void RemoveAphid(Guid _guid)
 	{
 		if (!Aphids.TryGetValue(_guid, out AphidInstance value))
 		{
-			Logger.Print(Logger.LogPriority.Error, $"GameManager: Cannot delete <{_guid}> as it does not exist.");
+			DebugLogger.Print(DebugLogger.LogPriority.Error, $"GameManager: Cannot delete <{_guid}> as it does not exist.");
 			return;
 		}
 		if (IsInstanceValid(ResortManager.Current))

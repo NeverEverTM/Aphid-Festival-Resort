@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://dihhh1nui58uq"]
+
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_ykono"]
+[ext_resource type="Script" uid="uid://6i3tudnehp8v" path="res://scripts/utils/LumiButton.cs" id="2_hhg3x"]
+
+[node name="upgrade_service" type="NinePatchRect"]
+self_modulate = Color(0.725554, 0.303773, 0.299841, 1)
+custom_minimum_size = Vector2(493, 131)
+mouse_filter = 1
+texture = ExtResource("1_ykono")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+script = ExtResource("2_hhg3x")
+
+[node name="upgrade_name" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 12.0
+offset_right = 479.0
+offset_bottom = 65.0
+text = "rather long name for an upgrade intit"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="upgrade_cost" type="Label" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 72.0
+offset_right = 479.0
+offset_bottom = 125.0
+text = "500"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

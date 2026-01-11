@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 
-public partial class JobMenu : Control, MenuTrigger.ITrigger
+public partial class JobMenu : Control
 {
     public static JobMenu Instance { get; private set; }
     private MenuInstance menu;
 
+    [Export] private InteractableArea2D interactArea;
     [Export] private AnimationPlayer animation_player;
     [Export] private GridContainer slot_container;
     [Export] private PackedScene slot_prefab;
@@ -29,6 +30,12 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
     private AphidInstance current_aphid;
     private bool is_displaying_aphids = false;
     private bool is_current_done;
+    private double last_time_tick;
+
+    private const int BASE_SKILL_GAIN = 5;
+    private const int MIN_HUNGER = 20;
+    private const int MIN_THIRST = 20;
+    private const int MAX_TIREDNESS = 80;
 
     // Save Data
     internal static Savefile Data { get; set; } = new();
@@ -84,11 +91,10 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
         public Savefile Get()
         {
             for (int i = 0; i < Data.Current.Count; i++)
-                Data.Current[i].LastTimeAnchor = GameManager.Data.Playtime;
+                Data.Current[i].LastTimeLoaded = GameManager.Data.Playtime;
 
             return Data;
         }
-
 
         public void Dispose()
         {
@@ -99,6 +105,7 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
     public override void _EnterTree()
     {
         Instance = this;
+        last_time_tick = Time.GetUnixTimeFromSystem();
         menu = new("jobs", animation_player,
         Open: (_) =>
         {
@@ -117,7 +124,8 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
                 return false;
             }
         },
-        Close: (_) => ClearInterface(true));
+        null,
+        Dispose: () => ClearInterface(true));
 
         SaveModule = new("jobs", new JobDataModule(), 500);
         SaveSystem.AddSaveModule(SaveModule);
@@ -129,6 +137,7 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
         }
         timer_default_color = timer_label.SelfModulate;
         assign_button.Pressed += OnAssignPressed;
+        interactArea.OnInteractOnly.Add(SetMenu);
     }
     public override void _ExitTree()
     {
@@ -137,31 +146,26 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
     }
     public override void _Process(double delta)
     {
-        double _currentTime = Time.GetUnixTimeFromSystem();
+        // ticks down time left while active
+        double _tick = Time.GetUnixTimeFromSystem() - last_time_tick;
         for (int i = 0; i < Data.Current.Count; i++)
         {
             if (Data.Current[i].IsDone)
                 continue;
 
-            Data.Current[i].TimeLeft -= _currentTime - Data.Current[i].LastTimeAnchor;
-            Data.Current[i].LastTimeAnchor = _currentTime;
+            Data.Current[i].TimeLeft -= _tick;
             if (Data.Current[i].TimeLeft <= 0)
                 Data.Current[i].IsDone = true;
         }
+        last_time_tick = _tick;
 
+        // show information for the currently selected slot
         if (current_request != null && IsInstanceValid(current_request.Slot))
         {
             if (!current_request.IsDone)
                 timer_label.Text = current_request.GetFormattedTimeLeft();
             else if (!is_current_done)
-            {
-                assign_button.Show();
-                timer_label.SelfModulate = new Color("gold");
-                timer_label.Text = "lobby_job_timerdone";
-                assign_label.Text = "lobby_job_finish";
-                current_request.Slot.GetChild<Control>(1).Material = job_completion_material;
-                is_current_done = true;
-            }
+                ShowAssignAsFinished(current_request);
         }
     }
     public override void _Notification(int what)
@@ -170,9 +174,7 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
             return;
 
         // updates job times back to present after resuming from pausing
-        double _currentTime = Time.GetUnixTimeFromSystem();
-        for (int i = 0; i < Data.Current.Count; i++)
-            Data.Current[i].LastTimeAnchor = _currentTime;
+        last_time_tick = Time.GetUnixTimeFromSystem();
     }
 
     public void SetMenu() =>
@@ -189,6 +191,14 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
                 return;
             }
 
+            // too tired to do
+            if (current_aphid.Status.Hunger < MIN_HUNGER || current_aphid.Status.Thirst < MIN_THIRST ||
+                current_aphid.Status.Tiredness > MAX_TIREDNESS)
+            {
+                SoundManager.CreateSound("aphid/hurt");
+                return;
+            }
+
             AssignRequestToAphid();
             CreateRequestGrid(false);
             DisplayRequest(current_request);
@@ -201,12 +211,12 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
             {
                 CreateRequestGrid();
                 SoundManager.CreateSound("ui/button_fail");
+                GlobalManager.CreatePopup("lobby_job_noaphids", this);
                 return;
             }
             DisplayAphid(current_aphid.GUID);
             SoundManager.CreateSound("ui/button_select");
         }
-        // if is a finished request, then complete it
         else if (current_request.IsDone)
         {
             FulfillRequest(current_request);
@@ -222,12 +232,20 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
 
         foreach (var _pair in GameManager.Aphids)
         {
-            if (_pair.Value.Status.Mode == AphidData.EntityStatus.Passive)
+            if (_pair.Value.Status.Mode != AphidData.EntityStatusType.Passive)
                 continue;
+                
             var _pair_clone = _pair;
             if (current_aphid == null)
                 current_aphid = _pair_clone.Value;
-            slot_container.AddChild(CanvasManager.CreateAphidSlot(_pair_clone.Key, false, DisplayAphid));
+            var _slot = CanvasManager.CreateAphidSlot(_pair_clone.Key, false, DisplayAphid);
+            slot_container.AddChild(_slot);
+
+            // mark as tired
+            if (current_aphid.Status.Hunger < MIN_HUNGER || current_aphid.Status.Thirst < MIN_THIRST ||
+                current_aphid.Status.Tiredness > MAX_TIREDNESS)
+                _slot.SelfModulate = new Color("darkred");
+
             _wasGenerated = true;
         }
         is_displaying_aphids = _wasGenerated;
@@ -256,6 +274,28 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
         if (_clearRequest)
             current_request = null;
     }
+    private void ShowAssignAsFinished(JobRequest _request)
+    {
+        assign_button.Show();
+        timer_label.SelfModulate = new Color("gold");
+        timer_label.Text = "lobby_job_timerdone";
+        assign_label.Text = "lobby_job_finish";
+        _request.Slot.GetChild<Control>(1).Material = job_completion_material;
+        is_current_done = true;
+    }
+    /// <summary>
+    /// Display the given aphid on the top of the information board.
+    /// </summary>
+    /// <param name="_key"></param>
+    private void ShowAphidInTop(Guid _key)
+    {
+        // set aphid in framed window
+        if (aphid_node.GetChildCount() > 0)
+            aphid_node.GetChild(0).QueueFree();
+        var _node = CanvasManager.CreateAphidSlot(_key, true);
+        _node.SelfModulate = new Color(0);
+        aphid_node.AddChild(_node);
+    }
 
     /// <summary>
     /// Generate a quota of jobs according to the number of current requests available and ongoing.
@@ -263,13 +303,12 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
     /// <param name="_difficulty"></param>
     private void FillRequestQuota(JobDifficulty _difficulty)
     {
-        // max amount of requests of this type, can can be raised via upgrades
         int _maxAmount = Data.MaxAmounts[_difficulty];
-        // we count both available and ongoing requests for the total
-        int _count = Data.Available.Count((j) => j.Difficulty == _difficulty)
-                + Data.Current.Count((j) => j.Difficulty == _difficulty);
 
-        for (int i = _count; i < _maxAmount; i++)
+        // we count both available and ongoing requests for the total
+        for (int _count = Data.Available.Count((j) => j.Difficulty == _difficulty)
+                    + Data.Current.Count((j) => j.Difficulty == _difficulty);
+                _count < _maxAmount; _count++)
         {
             JobRequest _request = GenerateRandomRequest(_difficulty);
             Data.Available.Add(_request);
@@ -315,13 +354,19 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
     }
     private JobRequest GenerateRandomRequest(JobDifficulty _difficulty)
     {
-        JobData _job = FetchRandomJob(_difficulty, out int _id);
+        int _id = 0;
+        JobData _job = FetchRandomJob(_difficulty, out _id);
+
+        // attempt to fetch a data pack that doesnt exist in the board already
+        while (Data.Available.Exists(r => r.Difficulty == _difficulty && r.DataID == _id))
+            _job = FetchRandomJob(_difficulty, out _id);
+
         JobRequest _request = new()
         {
             DataID = _id,
             Skills = new string[_job.Skills.Count],
             MinimumLevels = new int[_job.Skills.Count],
-            TimeLeft = GlobalManager.RNG.RandiRange((int)(_job.BaseTime * 0.85f), (int)(_job.BaseTime * 1.15f)),
+            TimeLeft = GlobalManager.RNG.RandiRange((int)(_job.BaseTime * 0.91f), (int)(_job.BaseTime * 1.09f)),
             Difficulty = _difficulty,
             ChanceToSucceed = 1,
             Data = _job
@@ -369,11 +414,11 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
     {
         if (current_request == null || current_aphid == null)
             return;
+
         Data.Available.Remove(current_request);
-        current_request.LastTimeAnchor = Time.GetUnixTimeFromSystem();
         current_request.AssignedAphid = current_aphid.GUID;
         current_request.IsCurrent = true;
-        current_aphid.Status.Mode = AphidData.EntityStatus.Passive;
+        current_aphid.Status.Mode = AphidData.EntityStatusType.Busy;
 
         Data.Current.Add(current_request);
     }
@@ -381,7 +426,12 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
     {
         if (Data.Current.Remove(_request))
         {
-            GameManager.Aphids[_request.AssignedAphid].Status.Mode = AphidData.EntityStatus.Active;
+            AphidInstance _aphid = GameManager.Aphids[_request.AssignedAphid];
+            _aphid.Status.Mode = AphidData.EntityStatusType.Passive;
+            _aphid.AddHunger(-20);
+            _aphid.AddThirst(-20);
+            _aphid.AddTiredness(-20);
+
             _request.Fulfill();
             _request.Slot.QueueFree();
             FillRequestQuota(_request.Difficulty);
@@ -403,13 +453,7 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
 
             // mark it as done if is finised, otherwise, keep default look
             if (_request.IsDone)
-            {
-                assign_button.Show();
-                timer_label.SelfModulate = new Color("gold");
-                timer_label.Text = "lobby_job_timerdone";
-                assign_label.Text = "lobby_job_finish";
-                _request.Slot.GetChild<Control>(1).Material = job_completion_material;
-            }
+                ShowAssignAsFinished(_request);
             else
             {
                 assign_button.Hide();
@@ -425,7 +469,7 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
         {
             timer_label.SelfModulate = timer_default_color;
             timer_label.Text = _request.GetFormattedTimeLeft();
-            assign_label.Text = "lobby_job_assign";
+            assign_label.Text = "lobby_job_select";
             description_label.Text = Tr($"job_{_request.Difficulty.ToString().ToLower()}_{_request.DataID}");
             assign_button.Show();
             if (aphid_node.GetChildCount() > 0)
@@ -482,7 +526,7 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
         }
 
         // set all labels
-        assign_label.Text = "lobby_job_select";
+        assign_label.Text = "lobby_job_assign";
         string[] _list = [$"{Tr("lobby_job_aphidname")}: {GameManager.Aphids[_key].Genes.Name}",
                 $"{Tr("lobby_job_successchance")}: {(int)(current_request.ChanceToSucceed * 100)}%"];
         description_label.Text = string.Join("\n", _list);
@@ -507,19 +551,6 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
             job_skills[i].Visible = true;
         }
     }
-    /// <summary>
-    /// Display the given aphid on the top of the information board.
-    /// </summary>
-    /// <param name="_key"></param>
-    private void ShowAphidInTop(Guid _key)
-    {
-        // set aphid in framed window
-        if (aphid_node.GetChildCount() > 0)
-            aphid_node.GetChild(0).QueueFree();
-        var _node = CanvasManager.CreateAphidSlot(_key, true);
-        _node.SelfModulate = new Color(0);
-        aphid_node.AddChild(_node);
-    }
 
     public class JobRequest
     {
@@ -536,7 +567,7 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
         /// <summary>
         /// Last playtime registered for this request, do not uses real time, instead is based on played time.
         /// </summary>
-        public double LastTimeAnchor { get; set; }
+        public double LastTimeLoaded { get; set; }
         public bool IsDone { get; set; }
 
         // Runtime variables, these are not serialized on save, and are reassigned on startup
@@ -549,8 +580,8 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
             if (IsDone)
                 return;
 
-            TimeLeft -= GameManager.Data.Playtime - LastTimeAnchor;
-            LastTimeAnchor = Time.GetUnixTimeFromSystem();
+            TimeLeft -= GameManager.Data.Playtime - LastTimeLoaded;
+            LastTimeLoaded = GameManager.Data.Playtime;
 
             if (TimeLeft <= 0)
                 IsDone = true;
@@ -561,26 +592,20 @@ public partial class JobMenu : Control, MenuTrigger.ITrigger
         {
             float _rollForInitiative = GlobalManager.RNG.Randf();
             AphidInstance _aphid = GameManager.Aphids[AssignedAphid];
-            bool _succeded = _rollForInitiative < ChanceToSucceed;
 
-            if (_succeded)
+            if (_rollForInitiative <= ChanceToSucceed)
             {
-                Player.Data.AddCurrency(Data.BaseReward);
+                PlayerData.AddCurrency(Data.BaseReward);
                 SoundManager.CreateSound("ui/kitchen_success");
             }
             else
-            {
-                Player.Data.AddCurrency(Mathf.FloorToInt(Data.BaseReward / 2f));
                 SoundManager.CreateSound("ui/kitchen_fail");
-            }
 
             // rewarded skill points, for every skill involved in this request
-            // if failed, the skill reward is doubled but it still is less efficient than training
-            // if the aphid is higher level, then decrease the amount gained from this low level request
-            int _baseSkillGain = _succeded ? 5 : 10;
+            // if the aphid is higher level, then decrease the amount gained from a low level request
             for (int i = 0; i < Skills.Length; i++)
-                _aphid.Genes.Skills[Skills[i]].GivePoints(_baseSkillGain *
-                        Mathf.Min(1, (MinimumLevels[i] + 1) / (_aphid.Genes.Skills[Skills[i]].Level + 1)));
+                _aphid.Genes.Skills[Skills[i]].GivePoints(BASE_SKILL_GAIN * /* Multiply by 1 or less */
+                        Mathf.Min(1, (MinimumLevels[i] + 1) / (_aphid.Genes.Skills[Skills[i]].Level + 1))); 
         }
     }
 }

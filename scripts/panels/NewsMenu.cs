@@ -3,12 +3,14 @@ using Godot.Collections;
 using System;
 using System.Text.RegularExpressions;
 
-public partial class NewsMenu : Control, MenuTrigger.ITrigger
+public partial class NewsMenu : Control
 {
-    private MenuInstance menu;
-
-    [Export] private AnimationPlayer player;
+    [Export] private InteractableArea2D interactArea;
+    [Export] private AnimationPlayer animator;
     [Export] private RichTextLabel newsBody;
+    [Export] private Container blogContainer;
+    [Export] private PackedScene blogPost;
+    [Export] private Sprite2D glow;
 
     private const string PC_WEB_BLOGS = "https://neverevertm.github.io/ProjectColor/blogs/"; // Redirects to the github-hosted page for project color
     [GeneratedRegex(@"<[^>]*>")]
@@ -36,64 +38,126 @@ public partial class NewsMenu : Control, MenuTrigger.ITrigger
     private static partial Regex IMG_SRC_RECOVERY();
 
     private bool is_busy;
+    private MenuInstance menu;
+    private readonly System.Collections.Generic.List<Dictionary> blogs = [];
 
     public override void _EnterTree()
     {
-        menu = new("news", player, (_) =>
+        menu = new("news", animator,
+        (_) => GenerateBlogs(),
+        (_) =>
         {
-            if (!is_busy)
+            if (is_busy || animator.IsPlaying())
+                return false;
+
+            if (newsBody.Visible)
             {
-                newsBody.Text = Tr("lobby_news_placeholder");
-                RequestGetJson(PC_WEB_BLOGS + "lookUp.json", (_data) => DisplayWebPage(3));
+                animator.Play("close_blog");
+                return false;
             }
-        }, null);
+            return true;
+        },
+        null,
+        () =>
+        {
+            for (int i = 0; i < blogContainer.GetChildCount(); i++)
+                blogContainer.GetChild(i).QueueFree();
+        }
+        );
+        GetAvailableBlogs();
+        interactArea.OnInteractOnly.Add(SetMenu);
+        Tween _glow = glow.CreateTween();
+        _glow.TweenProperty(glow, "self_modulate", new Color(1, 1, 1, 0), 1);
+        _glow.TweenProperty(glow, "self_modulate", new Color(1, 1, 1, 0.5f), 1);
+        _glow.SetLoops();
+        _glow.Play();
+        animator.AnimationFinished += (_animation) =>
+        {
+            if (_animation == "close_blog")
+                newsBody.Text = string.Empty;
+        };
     }
     public void SetMenu() =>
         _ = CanvasManager.Menus.SetTo(menu);
 
-    private void DisplayWebPage(int _index)
+    private void GenerateBlogs()
     {
-        newsBody.Text = "";
-        is_busy = true;
+        for (int i = 0; i < blogContainer.GetChildCount(); i++)
+            blogContainer.GetChild(i).QueueFree();
+
+        for (int i = 0; i < blogs.Count; i++)
+        {
+            int index = i;
+            Control _blog = blogPost.Instantiate() as Control;
+            _blog.GetChild<Label>(0).Text = blogs[i]["title"].AsString();
+            _blog.GetChild<Label>(1).Text = blogs[i]["date"].AsString();
+            _blog.GetChild<BaseButton>(2).Pressed += () => DisplayBlog(index);
+            blogContainer.AddChild(_blog);
+        }
+    }
+    private void GetAvailableBlogs()
+    {
         RequestGetJson(PC_WEB_BLOGS + "lookUp.json", (_data) =>
         {
-            Dictionary _blog = Json.ParseString(_data[_index]).AsGodotDictionary();
-            newsBody.Text += $"[color=coral][font_size=60]{_blog["title"].AsString()}[/font_size][/color]";
-            newsBody.Text += $"\n[color=cyan]{DateTime.Parse(_blog["date"].AsString()):dd/MM/yy}[/color]";
-            if (OptionsManager.Settings.Locale != OptionsManager.DEFAULT_LOCALE)
-                newsBody.Text += $"\n[bgcolor=red]{Tr("warning_news_locale")}[/bgcolor]\n";
-            RequestGetWebPage(PC_WEB_BLOGS + _blog["name"].AsString() + "-content.html", (_data) =>
+            for (int i = 0; i < _data.Length; i++)
             {
-                var _matches = IMG_SRC_RECOVERY().Matches(_data);
+                if (i == 2) // i dont know why this one doesnt read correctly, nor i know why it wont stop logging even if i catch it
+                    continue;
 
-                _data = CONVERTER_LEFT().Replace(_data, "[");
-                _data = CONVERTER_RIGHT().Replace(_data, "]");
-                _data = CONVERTER_H2_LEFT().Replace(_data, "[font_size=50][color=pink]");
-                _data = CONVERTER_H2_RIGHT().Replace(_data, "[/color][/font_size]");
-                _data = CONVERTER_IMG().Replace(_data, "[center][img=800]IMG_PLACEHOLDER[/img][/center]");
+                Dictionary _blog = Json.ParseString(_data[i]).AsGodotDictionary();
+                if (_blog["icon"].AsString() == "aphid")
+                    blogs.Add(_blog);
+            }
+        });
+    }
 
-                for (int i = 0; i < _matches.Count; i++)
+    // Web Request Methods
+    private void DisplayBlog(int _index)
+    {
+        newsBody.Text = Tr("lobby_news_placeholder");
+        animator.Play("open_blog");
+        is_busy = true;
+
+        // display the given blog post
+        Dictionary _blog = blogs[_index];
+        RequestGetWebPage(PC_WEB_BLOGS + _blog["name"].AsString() + "-content.html", (_data) =>
+        {
+            var _matches = IMG_SRC_RECOVERY().Matches(_data);
+
+            _data = CONVERTER_LEFT().Replace(_data, "[");
+            _data = CONVERTER_RIGHT().Replace(_data, "]");
+            _data = CONVERTER_H2_LEFT().Replace(_data, "[font_size=50][color=pink]");
+            _data = CONVERTER_H2_RIGHT().Replace(_data, "[/color][/font_size]");
+            _data = CONVERTER_IMG().Replace(_data, "[center][img=800]IMG_PLACEHOLDER[/img][/center]");
+
+            for (int i = 0; i < _matches.Count; i++)
+            {
+                int index = _data.IndexOf("IMG_PLACEHOLDER");
+                string _url = _matches[i].Value.Split('/')[1],
+                    _filename = _url.Split('.')[0] + ".res";
+
+                _data = _data.Remove(index, "IMG_PLACEHOLDER".Length);
+                if (IsValidImage(_url))
                 {
-                    int index = _data.IndexOf("IMG_PLACEHOLDER");
-                    string _url = _matches[i].Value.Split('/')[1],
-                        _filename = _url.Split('.')[0] + ".res";
-
-                    _data = _data.Remove(index, "IMG_PLACEHOLDER".Length);
-                    if (IsValidImage(_url))
-                    {
-                        _data = _data.Insert(index, SaveSystem.TEMP_CACHE_DIR + _filename);
-                        RequestGetImage(_url, _filename);
-                    }
-                    else
-                        _data = _data.Insert(index, "uid://pgscnb8dl5jr");
+                    _data = _data.Insert(index, SaveSystem.TEMP_CACHE_DIR + _filename);
+                    RequestGetImage(_url, _filename);
                 }
+                else
+                    _data = _data.Insert(index, "uid://pgscnb8dl5jr");
+            }
 
-                _data = HTML_REMOVE().Replace(_data, string.Empty);
-                _data = FORMATTER().Replace(_data, "\n");
+            _data = HTML_REMOVE().Replace(_data, string.Empty);
+            _data = FORMATTER().Replace(_data, "\n");
 
-                newsBody.Text += _data;
-                is_busy = false;
-            });
+            newsBody.Text = string.Empty;
+            newsBody.AppendText($"[color=coral][font_size=60]{_blog["title"].AsString()}[/font_size][/color]");
+            newsBody.AppendText($"\n[color=cyan]{DateTime.Parse(_blog["date"].AsString()):dd/MM/yy}[/color]");
+            if (OptionsManager.Settings.Locale != OptionsManager.DEFAULT_LOCALE)
+                newsBody.AppendText($"\n[bgcolor=red]{Tr("warning_news_locale")}[/bgcolor]\n");
+            newsBody.AppendText(_data);
+            newsBody.ScrollToLine(0);
+
+            is_busy = false;
         });
     }
     private HttpRequest GetHttpRequest(string _url, HttpRequest.RequestCompletedEventHandler _on_request_completed)
@@ -124,6 +188,11 @@ public partial class NewsMenu : Control, MenuTrigger.ITrigger
     }
     private void RequestGetImage(string _urlname, string _filename)
     {
+        if (FileAccess.FileExists(SaveSystem.TEMP_CACHE_DIR + _filename))
+        {
+            newsBody.AppendText(string.Empty); // update text
+            return;
+        }
         GetHttpRequest("https://neverevertm.github.io/ProjectColor/img/" + _urlname,
            (_result, _response_code, _headers, _body) =>
            {
@@ -132,12 +201,12 @@ public partial class NewsMenu : Control, MenuTrigger.ITrigger
 
                if (error != Error.Ok)
                {
-                   Logger.Print(Logger.LogPriority.Warning, $"NewsMenu: <{_urlname}> could not be loaded.");
+                   DebugLogger.Print(DebugLogger.LogPriority.Warning, $"NewsMenu: <{_urlname}> could not be loaded.");
                    return;
                }
                ImageTexture texture = ImageTexture.CreateFromImage(image);
                ResourceSaver.Save(texture, SaveSystem.TEMP_CACHE_DIR + _filename);
-               newsBody.Text += string.Empty;
+               newsBody.AppendText(string.Empty); // update text
            });
     }
 

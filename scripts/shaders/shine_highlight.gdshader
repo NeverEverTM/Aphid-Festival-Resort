@@ -1,3 +1,5 @@
+// SHINE HIGHLIGHT FOR UI ELEMENTS
+// (NOT ORIGINALLY MINE, NEED TO REFIND THE GODOT SHADER PAGE)
 shader_type canvas_item;
 
 uniform vec4 shine_color : source_color = vec4(1.0);

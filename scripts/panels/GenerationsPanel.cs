@@ -85,7 +85,12 @@ public partial class GenerationsPanel : Control
     }
     public override void _Input(InputEvent @event)
     {
-        if (Menu.IsOpen && is_album_open)
+        if (!Menu.IsOpen)
+            return;
+
+        if (@event.IsActionPressed(InputNames.OpenGenerations))
+            InputAction_OpenGenerations();
+        else if (is_album_open)
         {
             if (@event.IsActionPressed(InputNames.Right))
                 _ = ShowPage(current_page + 1, true);
@@ -264,7 +269,7 @@ public partial class GenerationsPanel : Control
         }
         catch (Exception _error)
         {
-            Logger.Print(Logger.LogPriority.Error, "GenerationsTracker: Error on creating photo album.", _error);
+            DebugLogger.Print(DebugLogger.LogPriority.Error, "GenerationsTracker: Error on creating photo album.", _error);
         }
         if (_playPageAnim)
         {

@@ -1,248 +1,71 @@
-[gd_scene load_steps=24 format=3 uid="uid://cwhom1s0n5b5c"]
+[gd_scene load_steps=9 format=3 uid="uid://cwhom1s0n5b5c"]
 
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
-[ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/entities/TVPropBehaviour.cs" id="2_3qsjy"]
-[ext_resource type="PackedScene" uid="uid://buq2rosblx438" path="res://sprites/aphid_model.glb" id="2_bvgcb"]
-[ext_resource type="Script" uid="uid://dxismvv0c5pp7" path="res://scripts/entities/SpinAphid.cs" id="3_gmdqp"]
-[ext_resource type="Texture2D" uid="uid://c3i6cmitj5cow" path="res://sprites/props/tv_bg_1.png" id="4_dl1sk"]
-[ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="5_2b0vm"]
-[ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/misc/aphidtastic.wav" id="6_uxujw"]
-[ext_resource type="VideoStream" uid="uid://rd7wmdl0s4l1" path="res://mov/Market.ogv" id="7_talqc"]
+[ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/entities/TVScreenBehaviour.cs" id="2_3qsjy"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_buikv"]
+[ext_resource type="PackedScene" uid="uid://dka1ip2cyn76r" path="res://scenes/tv_channels/channel_off.tscn" id="5_sxrii"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="8_uml7d"]
 
-[sub_resource type="Environment" id="Environment_87q0j"]
-background_mode = 1
-background_color = Color(1, 1, 1, 1)
-ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 16.0
-
-[sub_resource type="World3D" id="World3D_r6dqu"]
-environment = SubResource("Environment_87q0j")
-
-[sub_resource type="Animation" id="Animation_talqc"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(9.18631, -1.90318, -1.5901)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(-0.00296061, -0.405072, -0.00160068)]
-}
-
-[sub_resource type="Animation" id="Animation_a8ccj"]
-resource_name = "sneak"
-length = 10.0
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1, 1.8, 2.23333, 2.76667, 3.56667, 10),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector3(9.18631, -1.90318, -1.5901), Vector3(2.41449, -1.90318, -2.11207), Vector3(2.41449, -1.90318, -2.11207), Vector3(1.76069, -1.90318, -2.80804), Vector3(1.76069, -1.90318, -2.80804), Vector3(-8.94831, -1.90318, -2.80804), Vector3(-8.94831, -1.90318, -2.80804)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 1, 1.8, 2.23333, 2.76667, 3.56667, 10),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector3(-0.00296061, -0.405072, -0.00160068), Vector3(-0.00296061, 0.195217, -0.00160068), Vector3(-0.00296061, 0.195217, -0.00160068), Vector3(-0.00296061, 0.599173, -0.00160068), Vector3(-0.00296061, 0.599173, -0.00160068), Vector3(-0.00296061, 0.0303006, -0.00160068), Vector3(-0.00296061, 0.0303006, -0.00160068)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_j4cf7"]
-_data = {
-&"RESET": SubResource("Animation_talqc"),
-&"sneak": SubResource("Animation_a8ccj")
-}
-
-[sub_resource type="Animation" id="Animation_18fqy"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 1.51086, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_brmh7"]
-resource_name = "dance"
-length = 0.6
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5),
-"transitions": PackedFloat32Array(0, 0, 0, 0),
-"update": 0,
-"values": [Vector3(0, 1.51086, 0), Vector3(0, 2.22282, 0), Vector3(0, 1.51086, 0), Vector3(0, 0.938935, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_we5vn"]
-_data = {
-&"RESET": SubResource("Animation_18fqy"),
-&"dance": SubResource("Animation_brmh7")
-}
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
-size = Vector2(96, 8.42106)
+size = Vector2(103.97, 8.42106)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_talqc"]
-size = Vector2(95.5892, 23.4365)
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
-light_mode = 1
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_4hgie"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_talqc"]
-light_mode = 1
+size = Vector2(7.18176, 7.89994)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_opwmt"]
 cull_mode = 1
-polygon = PackedVector2Array(-44.7192, -5.70451, 57.4314, -6.07149, 50.5351, -66.0207, -37.426, -65.796)
+polygon = PackedVector2Array(-47.8521, -5.81926, 53.9165, -5.62422, 55.1646, -8.67532, 51.2505, -66.769, -47.525, -68.7967, -48.8082, -7.62907)
 
-[node name="tv" type="Sprite2D" node_paths=PackedStringArray("viewport_display", "background_display", "light", "stereo", "player")]
+[node name="tv" type="Sprite2D" node_paths=PackedStringArray("changeChannelButton", "powerButton", "light", "contentAnchor")]
 texture = ExtResource("1_dcqxn")
-offset = Vector2(0, -32.08)
+offset = Vector2(0, -32)
 script = ExtResource("2_3qsjy")
-backgrounds = Array[Texture2D]([ExtResource("5_2b0vm"), ExtResource("4_dl1sk")])
-viewport_display = NodePath("viewport_display")
-background_display = NodePath("background")
+changeChannelButton = NodePath("switchChannel")
+powerButton = NodePath("powerButton")
 light = NodePath("light")
-stereo = NodePath("stereo")
-player = NodePath("VideoStreamPlayer")
+contentAnchor = NodePath("anchor")
 
-[node name="SubViewport" type="SubViewport" parent="."]
-own_world_3d = true
-world_3d = SubResource("World3D_r6dqu")
-transparent_bg = true
-handle_input_locally = false
-size = Vector2i(1080, 720)
+[node name="collider" type="StaticBody2D" parent="."]
+collision_layer = 7
+collision_mask = 7
 
-[node name="BF Aphid-Test2" parent="SubViewport" instance=ExtResource("2_bvgcb")]
-transform = Transform3D(-0.233934, -0.000927079, 0.972247, -0.00160067, 0.284998, 0.0029606, -0.972251, -0.000246143, -0.233938, -5.35899, -1.90318, -7.42575)
-
-[node name="BF Aphid-Test4" parent="SubViewport" instance=ExtResource("2_bvgcb")]
-transform = Transform3D(0.919071, 0.00263787, -0.394083, -0.00160067, 0.999994, 0.00296061, 0.394089, -0.00209021, 0.91907, 9.18631, -1.90318, -1.5901)
-
-[node name="AnimationPlayer2" type="AnimationPlayer" parent="SubViewport/BF Aphid-Test4"]
-libraries = {
-&"": SubResource("AnimationLibrary_j4cf7")
-}
-autoplay = "sneak"
-
-[node name="BF Aphid-Test" parent="SubViewport" instance=ExtResource("2_bvgcb")]
-transform = Transform3D(0.0599005, 0, 0.998204, 0, 1, 0, -0.998205, 0, 0.0599005, 0.137221, -1.94989, -7.5758)
-
-[node name="AnimationPlayer2" type="AnimationPlayer" parent="SubViewport/BF Aphid-Test"]
-libraries = {
-&"": SubResource("AnimationLibrary_we5vn")
-}
-autoplay = "dance"
-
-[node name="BF Aphid-Test3" parent="SubViewport" instance=ExtResource("2_bvgcb")]
-transform = Transform3D(0.425953, 0, 0.904745, 0, 1, 0, -0.904746, 0, 0.425953, 5.46968, -2.04524, -6.77875)
-script = ExtResource("3_gmdqp")
-
-[node name="Camera3D" type="Camera3D" parent="SubViewport"]
-cull_mask = 1047553
-fov = 76.5
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-collision_layer = 3
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-0.390244, -4.21052)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="collider"]
+position = Vector2(-2.85355, -4.21052)
 shape = SubResource("RectangleShape2D_1namf")
 
-[node name="Area2D" type="Area2D" parent="."]
-metadata/tag = "interactable"
+[node name="switchChannel" type="Area2D" parent="."]
+position = Vector2(-58.4907, -2.66216)
+monitoring = false
+script = ExtResource("3_buikv")
+Tag = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(-0.146744, 12.3973)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="switchChannel"]
+position = Vector2(-0.821625, -1.42693)
 shape = SubResource("RectangleShape2D_talqc")
 debug_color = Color(0.78378, 0.378687, 0.561617, 0.42)
 metadata/tag = "interactable"
 
-[node name="background" type="Sprite2D" parent="."]
-show_behind_parent = true
-light_mask = 0
-material = SubResource("CanvasItemMaterial_qug4s")
-position = Vector2(0.120862, -32.1568)
-scale = Vector2(1.01078, 1.00881)
-texture = ExtResource("5_2b0vm")
+[node name="powerButton" type="Area2D" parent="."]
+position = Vector2(54.291, -2.56063)
+monitoring = false
+script = ExtResource("3_buikv")
+Tag = 2
 
-[node name="viewport_display" type="Sprite2D" parent="."]
-visible = false
-show_behind_parent = true
-light_mask = 0
-material = SubResource("CanvasItemMaterial_qug4s")
-position = Vector2(-0.128552, -32.5946)
-scale = Vector2(0.0821664, 0.0786517)
-texture = SubResource("ViewportTexture_4hgie")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="powerButton"]
+position = Vector2(-0.821625, -1.42693)
+shape = SubResource("RectangleShape2D_talqc")
+debug_color = Color(0.78378, 0.378687, 0.561617, 0.42)
+metadata/tag = "interactable"
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+[node name="anchor" type="Node2D" parent="."]
 show_behind_parent = true
-light_mask = 0
-material = SubResource("CanvasItemMaterial_talqc")
-offset_left = -44.0
-offset_top = -61.0
-offset_right = 45.0
-offset_bottom = -3.0
-mouse_filter = 2
-stream = ExtResource("7_talqc")
-volume_db = -10.93
-expand = true
-loop = true
-bus = &"Sounds"
+position = Vector2(0, -32)
 
-[node name="stereo" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("6_uxujw")
-volume_db = 10.0
-max_distance = 400.0
-attenuation = 2.82843
-panning_strength = 3.0
-bus = &"Sounds"
+[node name="background" parent="anchor" instance=ExtResource("5_sxrii")]
 
 [node name="light" type="PointLight2D" parent="."]
-scale = Vector2(0.3, 0.213589)
+position = Vector2(7.73342, 36.4954)
+scale = Vector2(1.19126, 1.51598)
 enabled = false
 color = Color(0.434652, 0.644625, 0.189987, 1)
 shadow_enabled = true

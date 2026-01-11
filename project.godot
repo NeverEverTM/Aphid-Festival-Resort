@@ -13,6 +13,7 @@ config_version=5
 config/name="Aphid Festival Resort"
 config/description="Aphid Festival Demo"
 config/version="0.2.1.0"
+config/tags=PackedStringArray("2d", "earlyaccess")
 run/main_scene="res://scenes/rooms/menu.tscn"
 config/project_settings_override="user://settings.godot"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
@@ -48,6 +49,7 @@ project/assembly_name="Aphid Festival"
 
 [editor]
 
+movie_writer/movie_file="E:/GodotProjects/AFR APP/sample.avi"
 export/convert_text_resources_to_binary=false
 
 [editor_plugins]
@@ -58,8 +60,12 @@ enabled=PackedStringArray("res://addons/exportimages/plugin.cfg", "res://addons/
 
 folder_colors={
 "res://databases/": "blue",
+"res://databases/food/": "red",
 "res://databases/items/": "orange",
+"res://databases/jobs/": "gray",
+"res://databases/recipes/": "pink",
 "res://databases/skins/": "teal",
+"res://databases/structures/": "purple",
 "res://resources/": "green",
 "res://scenes/": "gray",
 "res://scripts/": "red",
@@ -243,7 +249,27 @@ quick_action_3={
 locale/translations=PackedStringArray("res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation", "res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation")
 locale/test="en"
 
+[layer_names]
+
+2d_physics/layer_1="All"
+2d_physics/layer_2="AphidOnly"
+2d_physics/layer_3="PlayerOnly"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+2d/shadow_atlas/size=1024
 anti_aliasing/screen_space_roughness_limiter/enabled=false
+
+[shader_globals]
+
+wind={
+"type": "float",
+"value": 5.0
+}
+noise={
+"type": "sampler2D",
+"value": "res://resources/wind_noise.tres"
+}

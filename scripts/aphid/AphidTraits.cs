@@ -4,21 +4,81 @@ using System.Collections.Generic;
 using System.Linq;
 
 using static AphidActions;
-using static Aphid;
+using static AphidData;
 
-public static class AphidTraits
+public partial class AphidTraits : Aphid
 {
-    public static readonly Dictionary<string, Type> G_TRAITS = new()
+    public interface ITrait
+	{
+        public string ID { get; }
+		public string[] IncompatibleTraits { get; }
+
+        /// <summary>
+        /// Called when an active aphid is instantiated.
+        /// </summary>
+		public virtual void OnEnter(Aphid _aphid) {
+            return;
+        }
+        /// <summary>
+        /// Called when an aphid changes state.
+        /// </summary>
+		public virtual void OnStateChange(Aphid _aphid, StateEnum _previousState) {
+            return;
+        }
+        /// <summary>
+        /// Process method. Must be called manually by aphid.
+        /// </summary>
+		public virtual void OnProcess(Aphid _aphid, float _delta) {
+            return;
+        }
+
+		public bool IsIncompatibleWith(string _ID)
+		{
+			if (IncompatibleTraits == null)
+				return false;
+			return IncompatibleTraits.Contains(_ID);
+		}
+	}
+    /// <summary>
+    /// An optional version of ITrait that allows changing behaviours on passive aphids.
+    /// </summary>
+    public interface ITraitPassive
     {
-        { "affectionate", typeof(Affectionate) },
-        { "fertile", typeof(Fertile) },
-        { "glutton", typeof(Glutton) },
-        { "heavysleeper", typeof(HeavySleeper) },
-        { "hyperactive", typeof(HyperActive) },
-        { "lazy", typeof(Lazy) },
-        { "loyal", typeof(Loyal) },
-        { "pickyeater", typeof(PickyEater) },
-    };
+        /// <summary>
+        /// Called when an active aphid is instantiated.
+        /// </summary>
+		public virtual void OnEnter(AphidPassive _aphid) {
+            return;
+        }
+        /// <summary>
+        /// Called when an aphid changes state.
+        /// </summary>
+		public virtual void OnStateChange(AphidPassive _aphid, StateEnum _previousState) {
+            return;
+        }
+        /// <summary>
+        /// Process method. Must be called manually by aphid.
+        /// </summary>
+		public virtual void OnProcess(AphidPassive _aphid, float _delta) {
+            return;
+        }
+    }
+
+    internal static readonly Dictionary<string, Type> G_TRAITS = [];
+    public static readonly List<ITrait> TRAITS =
+    [
+        new HeavySleeper(),
+        new HyperActive(),
+        new Affectionate(),
+        new Lazy(),
+        new PickyEater(),
+        new Glutton(),
+        new Loyal(),
+        new Fertile(),
+        new MoneyMaker(),
+        new FastLearner()
+    ];
+    
     public static ITrait GetTraitByName(string _name)
     {
         Type _type = G_TRAITS[_name];
@@ -33,96 +93,76 @@ public static class AphidTraits
     
     public class HeavySleeper : ITrait
     {
+        public string ID => "heavysleeper";
         public string[] IncompatibleTraits => null;
 
-        public void Activate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
             if (!aphid.State.Is(StateEnum.Sleep))
                 return;
 
-            (aphid.StateArgs as SleepState.SleepArgs).gain_rate++;
-            (aphid.StateArgs as SleepState.SleepArgs).heavysleeper = true;
+            aphid.BoolFlags[BoolFlagsEnum.IsHeavySleeper] = true;
+            aphid.ValueFlags[ValueFlagsEnum.RestTimeMultitplier] += 1;
         }
-        public void Deactivate(Aphid aphid, EventArgs args)
-        {
-            return;
-        }
-        public void OnStateChange(Aphid aphid, EventArgs args, StateEnum _previous)
-        {
-            if (!aphid.State.Is(StateEnum.Sleep))
-                return;
-
-            (aphid.StateArgs as SleepState.SleepArgs).gain_rate++;
-            (aphid.StateArgs as SleepState.SleepArgs).heavysleeper = true;
-        }
-        
     }
     public class HyperActive : ITrait
     {
         public string[] IncompatibleTraits => null;
-        private float timer;
+        public string ID => "hyperactive";
 
-        public void Activate(Aphid aphid, EventArgs args)
-        {
-            timer = aphid.rng.RandfRange(2f, 4f);
+        private LittleWiddleJumpTimer little_widdle_jump_timer;
 
-            if (!aphid.State.Is(StateEnum.Idle))
-                return;
-            (aphid.StateArgs as IdleState.IdleArgs).decay_rate++;
-        }
-        public void Deactivate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
-            return;
+            little_widdle_jump_timer = new(2);
+            aphid.Timers.Add(little_widdle_jump_timer);
+
+            aphid.ValueFlags[ValueFlagsEnum.IdleTimeMultiplier] -= 0.5f;
         }
-        public void OnStateChange(Aphid aphid, EventArgs args, StateEnum _previousState)
-        {
-            if (!aphid.State.Is(StateEnum.Idle))
-                return;
-            (aphid.StateArgs as IdleState.IdleArgs).decay_rate++;
-        }
-        public void OnProcess(Aphid aphid, EventArgs args, float delta)
+
+        public void OnProcess(Aphid aphid, float _delta)
         {
             if (!aphid.State.Is(StateEnum.Idle))
                 return;
+        }
 
-            if (timer > 0)
-                timer -= delta;
-            else
+        public class LittleWiddleJumpTimer(float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true) : CustomBaseTimer<Aphid>(BaseTime, TimeLeft, OneShot, autostart)
+        {
+            public override void Finish(Aphid aphid)
             {
-                aphid.skin.DoJumpAnim(false);
-                timer = aphid.rng.RandfRange(2f, 4f);
+                if (aphid.State.Type == StateEnum.Idle)
+                    aphid.skin.DoHop(false);
+            }
+            public override float GetTimerTime()
+            {
+                return MISC_RNG.RandfRange(BaseTime, BaseTime * 1.5f);
             }
         }
     }
     public class Affectionate : ITrait
     {
         public string[] IncompatibleTraits => null;
+        public string ID => "affectionate";
 
-        public void Activate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
-            aphid.TriggerActions.Add(new PlayerInteractionTrigger());
+            aphid.AreaEvents.Add(new PlayerInteractionTrigger());
         }
-
-        public void Deactivate(Aphid aphid, EventArgs args)
-        {
-            return;
-        }
-
-        public void OnStateChange(Aphid aphid, EventArgs args, StateEnum _previousState)
+        public void OnStateChange(Aphid aphid, StateEnum _previousState)
         {
             if (_previousState == StateEnum.Pet && aphid.Instance.Status.Affection < 90)
-                aphid.Instance.Status.AddBondship(1);
+                aphid.Instance.AddBondship(1);
         }
 
-        public class PlayerInteractionTrigger : ITriggerEvent
+        public class PlayerInteractionTrigger : IAreaEvent
         {
-            public string Tag => "player";
+            public StringNames.GlobalTags Tag => StringNames.GlobalTags.Player;
             private const float interaction_cd = 6.35f;
             private Timer interaction_timer;
 
-            public void OnTrigger(Aphid _aphid, Node2D _node, EventArgs _args)
+            public void OnNodeEntered(Aphid _aphid, Node2D _node)
             {
-                if (!GameManager.IsInstanceValid(interaction_timer))
+                if (!IsInstanceValid(interaction_timer))
                 {
                     interaction_timer = new();
                     _aphid.AddChild(interaction_timer);
@@ -132,7 +172,7 @@ public static class AphidTraits
                     return;
 
                 interaction_timer.Start(interaction_cd);
-                switch (_aphid.rng.RandiRange(0, 1))
+                switch (MISC_RNG.RandiRange(0, 1))
                 {
                     case 0:
                         _aphid.CallTowards(Player.Instance.GlobalPosition);
@@ -144,46 +184,31 @@ public static class AphidTraits
                         break;
                 }
             }
+
+            public void OnNodeExited(Aphid _aphid, Node2D _node)
+            {
+                return;
+            }
         }
     }
     public class Lazy : ITrait
     {
-        public string[] IncompatibleTraits => null;
+        public string[] IncompatibleTraits => [ "hyperactive" ];
+        public string ID => "lazy";
+
         bool lazy_emote_active = false;
 
-        public void Activate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
-            if (!aphid.State.Is(StateEnum.Idle))
-                return;
-            (aphid.StateArgs as IdleState.IdleArgs).decay_rate -= 0.5f;
-        }
-        public void Deactivate(Aphid aphid, EventArgs args)
-        {
-            return;
-        }
-        public void OnStateChange(Aphid aphid, EventArgs args, StateEnum _previousState)
-        {
-            if (!aphid.State.Is(StateEnum.Idle))
-            {
-                if (lazy_emote_active)
-                {
-                    lazy_emote_active = false;
-                    aphid.skin.SetLegsSkin("idle");
-                    aphid.skin.Position = new(0, 0);
-                }
-                return;
-            }
-            (aphid.StateArgs as IdleState.IdleArgs).decay_rate -= 0.5f;
+            aphid.ValueFlags[ValueFlagsEnum.IdleTimeMultiplier] += 0.5f;
         }
 
-        public void OnProcess(Aphid aphid, EventArgs args, float delta)
+        public void OnProcess(Aphid aphid, float delta)
         {
             if (!aphid.State.Is(StateEnum.Idle))
                 return;
 
-            IdleState.IdleArgs _args = args as IdleState.IdleArgs;
-
-            if (_args.stand_time > 0)
+            if (aphid.MovementDirection.IsEqualApprox(Vector2.Zero))
             {
                 if (!lazy_emote_active)
                 {
@@ -205,72 +230,70 @@ public static class AphidTraits
     }
     public class PickyEater : ITrait
     {
+        public string ID => "pickyeater";
         public string[] IncompatibleTraits => null;
 
-        public void Activate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
-            (aphid.ActiveStates[StateEnum.Hungry] as HungryState).only_favorites = true;
-        }
-
-        public void Deactivate(Aphid aphid, EventArgs args)
-        {
-            return;
+            aphid.BoolFlags[BoolFlagsEnum.IsPicky] = true;
         }
     }
     public class Glutton : ITrait
     {
+        public string ID => "glutton";
         public string[] IncompatibleTraits => null;
 
-        public void Activate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
-            (aphid.ActiveStates[StateEnum.Hungry] as HungryState).allow_overconsume = true;
-        }
-
-        public void Deactivate(Aphid aphid, EventArgs args)
-        {
-            return;
+            aphid.BoolFlags[BoolFlagsEnum.CanOvereat] = true;
         }
     }
     public class Loyal : ITrait
     {
+        public string ID => "loyal";
         public string[] IncompatibleTraits => null;
 
-        public void Activate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
-            aphid.DecayActions.Remove(aphid.DecayActions.Find((d) => d is BondshipDecay));
-        }
-
-        public void Deactivate(Aphid aphid, EventArgs args)
-        {
-            return;
+            aphid.Timers.Remove(aphid.Timers.Find((d) => d is BondshipDecay));
         }
     }
     public class Fertile : ITrait
     {
+        public string ID => "fertile";
         public string[] IncompatibleTraits => null;
-        private float timer;
 
-        public void Activate(Aphid aphid, EventArgs args)
+        public void OnEnter(Aphid aphid)
         {
-            return;
-        }
-
-        public void Deactivate(Aphid aphid, EventArgs args)
-        {
-            return;
-        }
-
-        public void OnProcess(Aphid aphid, EventArgs _args, float _delta)
-        {
-            if (!aphid.Instance.Status.IsAdult)
-                return;
-            
-            timer += _delta;
-            if (timer > 5)
-            {
-                timer = 0;
-                aphid.Instance.Status.BreedBuildup += 0.5f;
-            }
+            aphid.ValueFlags[ValueFlagsEnum.BreedTimeMultiplier] -= 0.1f;
         }
     }
+    public class MoneyMaker : ITrait
+    {
+        public string ID => "moneymaker";
+        public string[] IncompatibleTraits => null;
+
+        public void OnEnter(Aphid _aphid)
+        {
+            return;
+        }
+    }
+    public class FastLearner : ITrait
+    {
+        public string ID => "fastlearner";
+        public string[] IncompatibleTraits => null;
+
+        public void OnEnter(Aphid _aphid)
+        {
+            return;
+        }
+    }
+
+    // trait idea list quick sketch final_v2.0
+    // bioluminiscence
+    // Shy
+    // Weird
+    // lightsleeper
+    // mad/Grumpy
+
 }

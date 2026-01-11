@@ -1,8 +1,144 @@
-[gd_scene load_steps=10 format=3 uid="uid://7oo48cet73pb"]
+[gd_scene load_steps=14 format=3 uid="uid://7oo48cet73pb"]
 
 [ext_resource type="Script" uid="uid://doi3mfn603vc7" path="res://scripts/aphid/Aphid.cs" id="1_acxg7"]
 [ext_resource type="Script" uid="uid://iy6e0bhh0det" path="res://scripts/aphid/AphidSkin.cs" id="2_xeinf"]
+[ext_resource type="Texture2D" uid="uid://c1jtpm68uqgx1" path="res://databases/skins/0/legs_idle.tres" id="3_cj77s"]
 [ext_resource type="Script" uid="uid://bhd8cxo87lh2a" path="res://scripts/aphid/AphidHover.cs" id="3_d51lm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
+size = Vector2(35, 10)
+
+[sub_resource type="Animation" id="Animation_8juvd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anchor/body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("anchor/body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anchor/eyes:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("anchor/antenna:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anchor/antenna:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_e10hc"]
+resource_name = "attack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("anchor/body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.633333, 0.833333),
+"transitions": PackedFloat32Array(2, 0.5, 0.5, 1),
+"update": 0,
+"values": [0.0, -0.12106, 0.119493, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("anchor/body:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.633333, 0.833333),
+"transitions": PackedFloat32Array(2, 0.5, 0.5, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(3, 1), Vector2(-1, -1), Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("anchor/eyes:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.633333, 0.833333),
+"transitions": PackedFloat32Array(2, 0.5, 0.5, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1, 3), Vector2(0, -3), Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("anchor/antenna:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.633333, 0.833333),
+"transitions": PackedFloat32Array(2, 0.5, 0.5, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(2, 3), Vector2(0, -1), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("anchor/antenna:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.633333, 0.833333),
+"transitions": PackedFloat32Array(2, 0.5, 0.5, 1),
+"update": 0,
+"values": [0.0, -0.0536669, 0.0567, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5sdqm"]
+_data = {
+&"RESET": SubResource("Animation_8juvd"),
+&"attack": SubResource("Animation_e10hc")
+}
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_aeaon"]
 load_path = "res://.godot/imported/legs_idle.png-d9cdd6c74f01dbb3076c7f959a753f9c.ctex"
@@ -16,21 +152,29 @@ load_path = "res://.godot/imported/eyes_idle.png-0a2df93b13bd78a8b78ac77a5908e76
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_daav4"]
 load_path = "res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9f87e.ctex"
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
-size = Vector2(35, 10)
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_7a8x1"]
 radius = 77.0584
 
-[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "triggerArea")]
-collision_layer = 3
+[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "interactArea")]
+collision_layer = 7
 collision_mask = 3
 motion_mode = 1
 script = ExtResource("1_acxg7")
 skin = NodePath("anchor")
-triggerArea = NodePath("TriggerArea")
+interactArea = NodePath("TriggerArea")
 metadata/pickup = true
-metadata/tag = "aphid"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+light_mask = 0
+z_index = -10
+position = Vector2(0.5, -3)
+shape = SubResource("RectangleShape2D_5soec")
+debug_color = Color(0.212894, 0.44259, 0.625621, 0.666667)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_5sdqm")
+}
 
 [node name="anchor" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
 process_mode = 1
@@ -58,18 +202,12 @@ offset = Vector2(0, -16)
 
 [node name="front_legs" type="Sprite2D" parent="anchor"]
 use_parent_material = true
-texture = SubResource("CompressedTexture2D_aeaon")
+texture = ExtResource("3_cj77s")
 offset = Vector2(0, -16)
 
 [node name="antenna" type="Sprite2D" parent="anchor"]
 texture = SubResource("CompressedTexture2D_daav4")
 offset = Vector2(0, -16)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-z_index = -10
-position = Vector2(0.5, -3)
-shape = SubResource("RectangleShape2D_5soec")
-debug_color = Color(0.212894, 0.44259, 0.625621, 0.666667)
 
 [node name="TriggerArea" type="Area2D" parent="." node_paths=PackedStringArray("aphid")]
 position = Vector2(0, -8)
@@ -78,6 +216,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("3_d51lm")
 aphid = NodePath("..")
+Tag = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerArea"]
 shape = SubResource("CircleShape2D_7a8x1")

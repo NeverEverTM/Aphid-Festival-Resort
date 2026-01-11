@@ -53,12 +53,10 @@ metadata/id = "paper_lantern"
 
 [node name="light" type="PointLight2D" parent="."]
 process_priority = 100
-position = Vector2(-1.19209e-07, -5)
-scale = Vector2(1.00342, 0.632324)
 color = Color(1, 0.862745, 0.647059, 1)
-energy = 0.0
+blend_mode = 2
 range_z_min = -2000
 range_z_max = 2000
 texture = ExtResource("4_22s0n")
-texture_scale = 0.4
+texture_scale = 3.0
 height = 10.0

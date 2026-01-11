@@ -6,50 +6,27 @@ public partial class FadeLoadScreen : LoadScreen
     [Export] private TextureRect screen;
     [Export] private Curve curve;
 
-    private float progress;
     private bool state;
 
-    public override void _EnterTree()
+    public override async Task RunIN()
     {
-        SetProcess(false);
+        await StartAnim();
     }
 
-    public override async Task Start()
+    public override async Task RunOUT()
     {
-        progress = 0;
-        SetProcess(true);
-        while (!IsDone)
-        {
-            await Task.Delay(1);
-        }
-    }
-
-    public override async Task Finish()
-    {
-        IsDone = false;
         state = true;
-        progress = 0;
-        while (!IsDone)
-        {
-            await Task.Delay(1);
-        }
+        await StartAnim();
         QueueFree();
     }
 
-    public override void _Process(double delta)
+    protected override Task Tick(float progress)
     {
-        if (IsDone)
-			return;
-
-		// timer shenanigans
-		if (progress < 2)
-			progress += (float)delta * 3;	
-		else
-			IsDone = true;
-
-        screen.Modulate = new(0,0,0,
-            state ? 
-            1 - curve.Sample(progress / 2) :
-            curve.Sample(progress / 2));
+        // timer shenanigans
+        screen.Modulate = new(0, 0, 0,
+            state ?
+            1 - curve.Sample(progress) :
+            curve.Sample(progress));
+        return Task.CompletedTask;
     }
 }

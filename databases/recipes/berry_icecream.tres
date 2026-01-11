@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_p48mm"]
+[ext_resource type="Resource" path="res://databases/food/icecream.tres" id="2_6dby6"]
+[ext_resource type="Resource" path="res://databases/food/berry.tres" id="3_bif4o"]
+[ext_resource type="Resource" path="res://databases/food/shaved_ice.tres" id="4_ad4dy"]
+[ext_resource type="Resource" path="res://databases/food/berry_icecream.tres" id="5_mm75p"]
+[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="6_axg28"]
+
+[resource]
+script = ExtResource("6_axg28")
+Owner = ExtResource("5_mm75p")
+Combinations = Array[Array]([Array[ExtResource("1_p48mm")]([ExtResource("2_6dby6"), ExtResource("3_bif4o")]), Array[ExtResource("1_p48mm")]([ExtResource("4_ad4dy"), ExtResource("3_bif4o")])])

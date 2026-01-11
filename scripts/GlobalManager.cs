@@ -36,51 +36,22 @@ internal partial class GlobalManager : Node2D
 		ABSOLUTE_ICONS_PATH = "res://sprites/icons/",
 		ABSOLUTE_DATABASES_PATH = "res://databases/",
 		ABSOLUTE_SKINS_PATH = "res://databases/skins/",
-		ABSOLUTE_ITEMS_DB_PATH = "res://databases/items",
-		ABSOLUTE_STRUCTURES_DB_PATH = "res://databases/structures",
-		ABSOLUTE_JOBS_DB_PATH = "res://databases/jobs/";
+		ABSOLUTE_ITEMS_DB_PATH = "res://databases/items/",
+		ABSOLUTE_STRUCTURES_DB_PATH = "res://databases/structures/",
+		ABSOLUTE_JOBS_DB_PATH = "res://databases/jobs/",
+		ABSOLUTE_RECIPES_DB_PATH = "res://databases/recipes/",
+		ABSOLUTE_FOODS_DB_PATH = "res://databases/food/";
 
-	// =========| GLOBAL LOADED VALUES |===========
-	public static readonly Dictionary<string, Item> G_ITEMS = [];
-	public static readonly Dictionary<string, Food> G_FOOD = [];
-	public static readonly List<Recipe> G_RECIPES = [];
+	// =========| GLOBALLY LOADED VALUES |===========
+	public static readonly Dictionary<string, ItemData> G_ITEMS = [];
+	public static readonly Dictionary<string, ItemData> G_STRUCTURES = [];
+	public static readonly Dictionary<string, FoodData> G_FOOD = [];
+	public static readonly List<RecipeData> G_RECIPES = [];
 
-	// todo: replace G_ICONS and G_AUDIO with ResourcePreloaders, add G_SKINS while you are at it
 	public static readonly Dictionary<string, Texture2D> G_ICONS = [];
 	public static readonly Dictionary<string, AudioStream> G_AUDIO = [];
-	public static readonly ResourcePreloader G_PARTICLES = new();
 	public static readonly Dictionary<string, Texture2D> G_SKINS = [];
-
-	public readonly struct Item(int cost, int unlockableLevel, string tag, string shopTag)
-	{
-		public readonly int cost = cost;
-		/// <summary>
-		/// Currently unusued.
-		/// </summary>
-		public readonly int unlockableLevel = unlockableLevel;
-		/// <summary>
-		/// General functionality meta tag.
-		/// </summary>
-		public readonly string tag = tag;
-		/// <summary>
-		/// Shop it belongs to.
-		/// </summary>
-		public readonly string shopTag = shopTag;
-	}
-	public readonly struct Food(AphidData.FoodType type, float food_value, float drink_value, string[] skill_list, int[] skill_values)
-	{
-		public readonly AphidData.FoodType type = type;
-		public readonly float food_value = food_value;
-		public readonly float drink_value = drink_value;
-		public readonly string[] skill_list = skill_list;
-		public readonly int[] skill_values = skill_values;
-	}
-	public readonly struct Recipe(string result, string ingredient1, string ingredient2)
-	{
-		public readonly string Result = result;
-		public readonly string Ingredient1 = ingredient1;
-		public readonly string Ingredient2 = ingredient2;
-	}
+	public static readonly ResourcePreloader G_PARTICLES = new();
 
 	public static Texture2D GetIcon(string _key)
 	{
@@ -108,9 +79,9 @@ internal partial class GlobalManager : Node2D
 		Instance = this;
 		SaveSystem.CreateBaseDirectories();
 #if DEBUG
-		Logger.LogMode = Logger.LogPriorityMode.All;
+		DebugLogger.LogMode = DebugLogger.LogPriorityMode.All;
 #else
-		Logger.LogMode = Logger.LogPriorityMode.Default;
+		DebugLogger.LogMode = DebugLogger.LogPriorityMode.Default;
 #endif
 	}
 	public override void _Ready()
@@ -118,6 +89,10 @@ internal partial class GlobalManager : Node2D
 		spaceState = GetWorld2D().DirectSpaceState;
 		ControlsManager.InputBinds.Load();
 		OptionsManager.Module.Load();
+
+		// due to an issue with storing shader globals (https://github.com/godotengine/godot/issues/93164)
+		// we must manually set this value manually on startup
+		RenderingServer.GlobalShaderParameterSet("noise", ResourceLoader.Load("uid://bxle0qlu7wodf"));
 	}
 	public override void _Process(double delta)
 	{
@@ -143,11 +118,14 @@ internal partial class GlobalManager : Node2D
 		try
 		{
 			await LOAD_ICONS();
-			await LOAD_STRUCTURE_ICONS();
 			await LOAD_SKINS();
 			await LOAD_SFX();
-			await LOAD_DATA();
+			await LOAD_ITEMS();
+			await LOAD_FOOD();
+			await LOAD_RECIPES();
+			await LOAD_STRUCTURES();
 			await LOAD_PARTICLES();
+			await LOAD_TRAITS();
 			IsBusy = false;
 		}
 		catch (Exception _err)
@@ -164,37 +142,10 @@ internal partial class GlobalManager : Node2D
 			string _fileName = _icons[i].Replace(".import", string.Empty), _id = _fileName.Split('.')[0];
 			if (G_ICONS.ContainsKey(_id))
 				continue;
-			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (1/2) ({i + 1}/{_icons.Length})";
 
 			// Wait until it yields
 			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_ICONS_PATH + _fileName);
 			G_ICONS.Add(_id, _resource as Texture2D);
-		}
-	}
-	private static async Task LOAD_STRUCTURE_ICONS()
-	{
-		string[] _structures = DirAccess.GetFilesAt(ABSOLUTE_STRUCTURES_DB_PATH);
-
-		for (int i = 0; i < _structures.Length; i++)
-		{
-			if (!_structures[i].EndsWith(".tscn"))
-				continue;
-
-			// first we check if we loaded a structure icon with the same name before
-			string _structureName = _structures[i].Replace(".tscn", string.Empty);
-			if (G_ICONS.ContainsKey(_structureName))
-				continue;
-
-			string _path = $"{ABSOLUTE_STRUCTURES_DB_PATH}/{_structures[i]}";
-			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_0")} (2/2) ({i + 1})";
-
-			// we load and create an icon directly from the resources sprite
-			Node2D _packedScene = (await PRELOAD_RESOURCE(_path) as PackedScene).Instantiate() as Node2D;
-			if (_packedScene is Sprite2D)
-				G_ICONS.Add(_structureName, (_packedScene as Sprite2D).Texture);
-			else if (_packedScene is AnimatedSprite2D)
-				G_ICONS.Add(_structureName, (_packedScene as AnimatedSprite2D).SpriteFrames.GetFrameTexture("default", 0));
-			_packedScene.QueueFree();
 		}
 	}
 	private static async Task LOAD_SKINS()
@@ -226,24 +177,13 @@ internal partial class GlobalManager : Node2D
 		string[] _directories = DirAccess.GetDirectoriesAt(ABSOLUTE_SFX_PATH);
 		for (int i = 0; i < _directories.Length; i++)
 			await SEARCH_SFX_FOLDER(_directories[i]);
-
-		/// replace all of this since SoundManager now has direct access to the sound cache
-		// Load aphid SFX
-		string aphidPath = $"{ABSOLUTE_SFX_PATH}aphid/";
-		Aphid.Audio_Nom = ResourceLoader.Load<AudioStream>(aphidPath + "nom.wav");
-		Aphid.Audio_Idle = ResourceLoader.Load<AudioStream>(aphidPath + "idle.wav");
-		Aphid.Audio_Idle_Baby = ResourceLoader.Load<AudioStream>(aphidPath + "baby_idle.wav");
-		Aphid.Audio_Step = ResourceLoader.Load<AudioStream>(aphidPath + "step.wav");
-		Aphid.Audio_Jump = ResourceLoader.Load<AudioStream>(aphidPath + "jump.wav");
-		Aphid.Audio_Hurt = ResourceLoader.Load<AudioStream>(aphidPath + "hurt.wav");
-		Aphid.Audio_Boing = ResourceLoader.Load<AudioStream>(aphidPath + "boing.wav");
 	}
 	private static async Task SEARCH_SFX_FOLDER(string _directory)
 	{
 		string[] _files = DirAccess.GetFilesAt(ABSOLUTE_SFX_PATH + _directory);
 		for (int i = 0; i < _files.Length; i++)
 		{
-			// _filename = audio_example.wav
+			// _filename = ui/audio_example.wav
 			// _id = ui/audio_example
 			string _fileName = _directory + "/" + _files[i].Replace(".import", string.Empty),
 					_id = _fileName.Split('.')[0];
@@ -251,88 +191,106 @@ internal partial class GlobalManager : Node2D
 			if (G_AUDIO.ContainsKey(_id))
 				continue;
 
-			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_2")} ({_directory}[{i}/{_files.Length}])";
 			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(ABSOLUTE_SFX_PATH + _fileName) as AudioStream);
 		}
 	}
-	private static async Task LOAD_DATA()
+	private static Task LOAD_ITEMS()
 	{
-		await LOAD_DATABASE("items", _info =>
+		string[] _items = DirAccess.GetFilesAt(ABSOLUTE_ITEMS_DB_PATH);
+
+		for (int i = 0; i < _items.Length; i++)
 		{
-			if (G_ITEMS.ContainsKey(_info[0]))
+			string _filename = _items[i].Replace(".import", string.Empty);
+			if (_filename.EndsWith(".tscn"))
+				continue;
+			string _id = _filename.Split('.')[0];
+
+			if (G_ITEMS.ContainsKey(_id))
 			{
-				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> is duplicated.");
-				return;
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> is duplicated.");
+				continue;
 			}
-			if (Instance.Tr(_info[0] + "_name") == _info[0] + "_name")
-			{
-				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> has no name.");
-#if !DEBUG
-				return;
-#endif
-			}
-			if (Instance.Tr(_info[0] + "_desc") == _info[0] + "_desc")
-			{
-				Logger.Print(Logger.LogPriority.Warning, $"ItemDatabase: <{_info[0]}> has no description.");
-#if !DEBUG
-				return;
-#endif
-			}
-			G_ITEMS.Add(_info[0], new(
-				cost: int.Parse(_info[1]),
-				unlockableLevel: int.Parse(_info[2]),
-				tag: _info[3].ToString(),
-				shopTag: _info[4].ToString()
-			));
-		});
-		await LOAD_DATABASE("foods", _info =>
-		{
-			if (G_FOOD.ContainsKey(_info[0]))
-			{
-				Logger.Print(Logger.LogPriority.Warning, $"FoodDatabase: <{_info[0]}> is duplicated.");
-				return;
-			}
-			if (!G_ITEMS.ContainsKey(_info[0]))
-			{
-				Logger.Print(Logger.LogPriority.Warning, $"FoodDatabase: <{_info[0]}> does not exist as an item.");
-				return;
-			}
-			G_FOOD.Add(_info[0], new(
-				type: (AphidData.FoodType)int.Parse(_info[1]),
-				food_value: float.Parse(_info[2]),
-				drink_value: float.Parse(_info[3]),
-				skill_list: string.IsNullOrWhiteSpace(_info[4]) ? null : _info[4].Split(','),
-				skill_values: string.IsNullOrWhiteSpace(_info[5]) ? null
-						: Array.ConvertAll(_info[5].Split(','), s => int.Parse(s))
-			));
-		});
-		await LOAD_DATABASE("recipes", _info =>
-		{
-			if (!string.IsNullOrWhiteSpace(_info[1]) && !G_ITEMS.ContainsKey(_info[1]))
-			{
-				Logger.Print(Logger.LogPriority.Warning, $"RecipeDatabase: Ingredient <{_info[1]}> does not exist as an item and cannot be an ingredient.");
-				return;
-			}
-			if (!string.IsNullOrWhiteSpace(_info[2]) && !G_ITEMS.ContainsKey(_info[2]))
-			{
-				Logger.Print(Logger.LogPriority.Warning, $"RecipeDatabase: Ingredient <{_info[2]}> does not exist as an item and cannot be an ingredient.");
-				return;
-			}
-			G_RECIPES.Add(new Recipe(
-				_info[0],
-				_info[1],
-				_info[2]
-			));
-		});
+			if (Instance.Tr(_id + "_name") == _id + "_name")
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> has no name.");
+			if (Instance.Tr(_id + "_desc") == _id + "_desc")
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> has no description.");
+
+			G_ITEMS.Add(_id, ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _filename));
+		}
+		return Task.CompletedTask;
 	}
-	private static Task LOAD_DATABASE(string _fileName, Action<string[]> _onItem)
+	private static async Task LOAD_STRUCTURES()
 	{
-		FileAccess _file = FileAccess.Open(ABSOLUTE_DATABASES_PATH + _fileName + ".csv", FileAccess.ModeFlags.Read);
-		string _header = _file.GetCsvLine()[0], _boot = Instance.Tr($"BOOT_{_header}");
-		while (_file.GetPosition() < _file.GetLength())
+		string[] _structures = DirAccess.GetFilesAt(ABSOLUTE_STRUCTURES_DB_PATH);
+
+		for (int i = 0; i < _structures.Length; i++)
 		{
-			_onItem(_file.GetCsvLine());
-			// BOOT_LOADING_LABEL.Text = $"{_boot} ({(int)((float)_file.GetPosition() / (float)_file.GetLength() * 100)}%)";
+			string _filename = _structures[i].Replace(".import", string.Empty);
+			if (_filename.EndsWith(".tscn"))
+				continue;
+			string _id = _filename.Split('.')[0];
+
+			if (G_STRUCTURES.ContainsKey(_id))
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> is duplicated.");
+				continue;
+			}
+			if (Instance.Tr(_id + "_name") == _id + "_name")
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> has no name.");
+			if (Instance.Tr(_id + "_desc") == _id + "_desc")
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> has no description.");
+
+			Node _node = (await PRELOAD_RESOURCE(ABSOLUTE_STRUCTURES_DB_PATH + _id + ".tscn") as PackedScene).Instantiate<Node>();
+
+			// load current texture if an icon doesnt exist already
+			if (!G_ICONS.ContainsKey(_id))
+			{
+				if (_node.IsClass("Sprite2D") && (_node as Sprite2D) != null)
+					G_ICONS.Add(_id, (_node as Sprite2D).Texture);
+				else if (_node.IsClass("AnimatedSprite2D") && (_node as AnimatedSprite2D) != null)
+					G_ICONS.Add(_id, (_node as AnimatedSprite2D).SpriteFrames.GetFrameTexture("default", 0));
+				else
+					DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> does not have a valid icon, nor could one be set up.");
+			}
+
+			G_STRUCTURES.Add(_id, ResourceLoader.Load<ItemData>(ABSOLUTE_STRUCTURES_DB_PATH + _filename));
+			_node.QueueFree();
+		}
+	}
+	private static Task LOAD_FOOD()
+	{
+		string[] _foods = DirAccess.GetFilesAt(ABSOLUTE_FOODS_DB_PATH);
+
+		for (int i = 0; i < _foods.Length; i++)
+		{
+			string _filename = _foods[i].Replace(".import", string.Empty);
+			string _id = _filename.Split('.')[0];
+
+			if (G_FOOD.ContainsKey(_id))
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"FoodDatabase: <{_id}> is duplicated.");
+				continue;
+			}
+			if (!G_ITEMS.ContainsKey(_id))
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"FoodDatabase: <{_id}> does not exist as an item.");
+				continue;
+			}
+
+			G_FOOD.Add(_id, ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _filename));
+		}
+		return Task.CompletedTask;
+	}
+	private static Task LOAD_RECIPES()
+	{
+		string[] _recipes = DirAccess.GetFilesAt(ABSOLUTE_RECIPES_DB_PATH);
+
+		for (int i = 0; i < _recipes.Length; i++)
+		{
+			string _filename = _recipes[i].Replace(".import", string.Empty);
+
+			RecipeData _recipe = ResourceLoader.Load<RecipeData>(ABSOLUTE_RECIPES_DB_PATH + _filename);
+			G_RECIPES.Add(_recipe);
 		}
 		return Task.CompletedTask;
 	}
@@ -355,55 +313,132 @@ internal partial class GlobalManager : Node2D
 			G_PARTICLES.AddResource(_particleList[i].Split('.')[0], _resource);
 		}
 	}
-	/// <summary>
-	/// Function used to load resources in the background. In case of error, this function automatically quits the game.
-	/// </summary>
-	/// <param name="_path">Path to the resource.</param>
-	/// <param name="_useSubThreads">Allow resource load using multiple threads, this however, can cause noticeable game stutter.</param>
-	/// <returns></returns>
-	public static async Task<Resource> PRELOAD_RESOURCE(string _path, bool _useSubThreads = true)
+	private static Task LOAD_TRAITS()
 	{
-		ResourceLoader.LoadThreadedRequest(_path, "", _useSubThreads);
-		ResourceLoader.ThreadLoadStatus _status = ResourceLoader.LoadThreadedGetStatus(_path);
-
-		// start thread and await for its response
-		while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
-		{
-			await Task.Delay(1);
-			_status = ResourceLoader.LoadThreadedGetStatus(_path);
-		}
-
-		// action states
-		if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
-		{
-			if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
-				Logger.Print(Logger.LogPriority.Error, $"PRELOAD_RESOURCE: Resource <{_path.Substring(_path.LastIndexOf('/'))}> is not a valid resource or request.");
-			else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
-				Logger.Print(Logger.LogPriority.Error, $"PRELOAD_RESOURCE: Resource <{_path.Substring(_path.LastIndexOf('/'))}> is unable to load.");
-
-			Instance.GetTree().Root.PropagateNotification((int)NotificationWMCloseRequest);
-			Instance.GetTree().Quit(2);
-			return null;
-		}
-
-		return ResourceLoader.LoadThreadedGet(_path);
-	}
-	public static void THROW_CRASH(Exception _err)
-	{
-		AcceptDialog _dialog = new()
-		{
-			DialogText = "Critical Error: " + _err.Message,
-			PopupWindow = true,
-			Title = "The game has given up on you"
-		};
-		_dialog.Canceled += () => Instance.GetTree().Quit(1);
-		_dialog.Confirmed += () => Instance.GetTree().Quit(1);
-		Instance.AddChild(_dialog);
-		_dialog.PopupCentered();
-		Logger.Print(Logger.LogPriority.Error, _err);
+		for (int i = 0; i < AphidTraits.TRAITS.Count; i++)
+			AphidTraits.G_TRAITS.Add(AphidTraits.TRAITS[i].ID, AphidTraits.TRAITS[i].GetType());
+		return Task.CompletedTask;
 	}
 
-	// MARK: Dedicated Functions
+	// # MARK: Debug
+	public static string[][] FETCH_CSV_DATABASE(string _path)
+	{
+		using FileAccess _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
+		List<string[]> _document = [];
+
+		while (_file.GetPosition() < _file.GetLength())
+			_document.Add(_file.GetCsvLine());
+
+		return [.. _document];
+	}
+	public static Task EXPORT_ITEM_DATABASE(string[][] _document)
+	{
+		for (int i = 1; i < _document.Length; i++)
+		{
+			string[] _info = _document[i];
+			string _tag = _info[3], _id = _info[0];
+
+			int _cost = int.Parse(_info[1]),
+				_unlockableLevel = int.Parse(_info[2]);
+			StringNames.GlobalTags _itemTag = _tag switch
+			{
+				"item" => StringNames.GlobalTags.Item,
+				"food" => StringNames.GlobalTags.Food,
+				"decoration" => StringNames.GlobalTags.Decoration,
+				"equipment" => StringNames.GlobalTags.Equipment,
+				"playground" => StringNames.GlobalTags.Playground,
+				"interactable" => StringNames.GlobalTags.Interactable,
+				_ => throw new Exception()
+			};
+			ItemData.ShopOwner _shop = _info[4] switch
+			{
+				"item" => ItemData.ShopOwner.Item,
+				"furniture" => ItemData.ShopOwner.Furniture,
+				_ => ItemData.ShopOwner.NoShop
+			};
+			ItemData _data = new()
+			{
+				ID = _id,
+				Cost = _cost,
+				LevelRequirement = _unlockableLevel,
+				Tag = _itemTag,
+				Shop = _shop,
+				ShopOrderPriority = i
+			};
+
+			bool _isItem = _itemTag == StringNames.GlobalTags.Item || _itemTag == StringNames.GlobalTags.Food;
+			string _resourcePath = (_isItem ? ABSOLUTE_ITEMS_DB_PATH : ABSOLUTE_STRUCTURES_DB_PATH) + _id;
+			ResourceSaver.Save(_data, _resourcePath + ".tres");
+		}
+		return Task.CompletedTask;
+	}
+	public static Task EXPORT_FOOD_DATABASE(string[][] _document)
+	{
+		for (int i = 1; i < _document.Length; i++)
+		{
+			string[] _info = _document[i];
+
+			Dictionary<string, int> _converter = new() { { "speed", 0 }, { "strength", 1 }, { "intelligence", 2 }, { "stamina", 3 } };
+			string[] _skills_names = string.IsNullOrWhiteSpace(_info[4]) ? [] : _info[4].Split(','),
+			_skills_values = string.IsNullOrWhiteSpace(_info[5]) ? [] : _info[5].Split(',');
+
+			var _keys = Array.ConvertAll(_skills_names, s => (AphidData.SkillEnum)_converter[s]);
+			var _values = Array.ConvertAll(_skills_values, int.Parse);
+
+			Godot.Collections.Dictionary<AphidData.SkillEnum, int> _dict = [];
+			for (int s = 0; s < _keys.Length; s++)
+				_dict.Add(_keys[s], _values[s]);
+
+			FoodData _data = new()
+			{
+				Item = ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _info[0] + ".tres"),
+				Type = (AphidData.FoodType)int.Parse(_info[1]),
+				FoodValue = int.Parse(_info[2]),
+				DrinkValue = int.Parse(_info[3]),
+				Skills = _dict
+			};
+
+			ResourceSaver.Save(_data, ABSOLUTE_FOODS_DB_PATH + _info[0] + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
+		}
+
+		return Task.CompletedTask;
+	}
+	public static Task EXPORT_RECIPES_DATABASE(string[][] _document)
+	{
+		Dictionary<string, List<string[]>> _recipes = [];
+		for (int i = 1; i < _document.Length; i++)
+		{
+			string[] _info = _document[i];
+
+			if (!_recipes.ContainsKey(_info[0]))
+				_recipes.Add(_info[0], [[_info[1], _info[2]]]);
+			else
+				_recipes[_info[0]].Add([_info[1], _info[2]]);
+		}
+
+		foreach (var _pair in _recipes)
+		{
+			RecipeData _data = new(Owner: ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Key + ".tres"),
+				Combinations: []);
+
+			for (int i = 0; i < _pair.Value.Count; i++)
+			{
+				GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres");
+				GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres");
+				Godot.Collections.Array<FoodData> _combination = [];
+				_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres"));
+				if (!string.IsNullOrWhiteSpace(_pair.Value[i][1]))
+					_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres"));
+
+				_data.Combinations.Add(_combination);
+			}
+
+			ResourceSaver.Save(_data, ABSOLUTE_RECIPES_DB_PATH + _pair.Key + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
+		}
+		return Task.CompletedTask;
+	}
+
+	// MARK: Dedicated Util Functions
 	/// <summary>
 	/// Spawns a set of particles and manages its place in memory. Used to handle long-lasting particles in memory automatically.
 	/// </summary>
@@ -433,7 +468,53 @@ internal partial class GlobalManager : Node2D
 			ACTIVE_PARTICLES_CACHED[i].QueueFree();
 		ACTIVE_PARTICLES_CACHED.Clear();
 	}
+	/// <summary>
+	/// Function used to load resources in the background. In case of error, this function automatically quits the game.
+	/// </summary>
+	/// <param name="_path">Path to the resource.</param>
+	/// <param name="_useSubThreads">Allow resource load using multiple threads, this however, can cause noticeable game stutter.</param>
+	/// <returns></returns>
+	public static async Task<Resource> PRELOAD_RESOURCE(string _path, bool _useSubThreads = true)
+	{
+		ResourceLoader.LoadThreadedRequest(_path, "", _useSubThreads);
+		ResourceLoader.ThreadLoadStatus _status = ResourceLoader.LoadThreadedGetStatus(_path);
 
+		// start thread and await for its response
+		while (_status == ResourceLoader.ThreadLoadStatus.InProgress)
+		{
+			await Task.Delay(1);
+			_status = ResourceLoader.LoadThreadedGetStatus(_path);
+		}
+
+		// action states
+		if (_status != ResourceLoader.ThreadLoadStatus.Loaded)
+		{
+			if (_status == ResourceLoader.ThreadLoadStatus.InvalidResource)
+				DebugLogger.Print(DebugLogger.LogPriority.Error, $"PRELOAD_RESOURCE: Resource <{_path.Substring(_path.LastIndexOf('/'))}> is not a valid resource or request.");
+			else if (_status == ResourceLoader.ThreadLoadStatus.Failed)
+				DebugLogger.Print(DebugLogger.LogPriority.Error, $"PRELOAD_RESOURCE: Resource <{_path.Substring(_path.LastIndexOf('/'))}> is unable to load.");
+
+			Instance.GetTree().Root.PropagateNotification((int)NotificationWMCloseRequest);
+			Instance.GetTree().Quit(2);
+			return null;
+		}
+
+		return ResourceLoader.LoadThreadedGet(_path);
+	}
+	public static void THROW_CRASH(Exception _err)
+	{
+		AcceptDialog _dialog = new()
+		{
+			DialogText = "Critical Error: " + _err.Message,
+			PopupWindow = true,
+			Title = "The game has given up on you"
+		};
+		_dialog.Canceled += () => Instance.GetTree().Quit(1);
+		_dialog.Confirmed += () => Instance.GetTree().Quit(1);
+		Instance.AddChild(_dialog);
+		_dialog.PopupCentered();
+		DebugLogger.Print(DebugLogger.LogPriority.Error, _err);
+	}
 	public static void CreatePopup(string _translation_key, Node _parent)
 	{
 		Control _popup = ResourceLoader.Load<PackedScene>(POPUP_WINDOW_SCENE).Instantiate() as Control;
@@ -509,7 +590,7 @@ internal partial class GlobalManager : Node2D
 				if (_array_cursor >= _random_cap)
 					return i;
 			}
-			Logger.Print(Logger.LogPriority.Error, "GlobalManager: Weighted RNG. It did happen :pensive:");
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "GlobalManager: Weighted RNG. It did happen :pensive:");
 			return 0; // Should in theory, never happen
 		}
 
@@ -534,6 +615,44 @@ internal partial class GlobalManager : Node2D
 		{
 			DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 			return dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+		}
+		/// <summary>
+		/// Calls the listeners on the refered list with the given arguments, can optionally clear the list of all listeners after doing so.
+		/// </summary>
+		public static Task InvokeAwaitableEventListeners<T>(ref List<Action<T>> _list, T _args, bool _clearOnFinish = false)
+		{
+			for (int i = 0; i < _list.Count; i++)
+			{
+				try
+				{
+					_list[i](_args);
+				}
+				catch (Exception _error)
+				{
+					DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
+				}
+			}
+
+			if (_clearOnFinish)
+				_list.Clear();
+			return Task.CompletedTask;
+		}
+		public static void InvokeEventListeners<T>(ref List<Action<T>> _list, T _args, bool _clearOnFinish = false)
+		{
+			for (int i = 0; i < _list.Count; i++)
+			{
+				try
+				{
+					_list[i](_args);
+				}
+				catch (Exception _error)
+				{
+					DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
+				}
+			}
+
+			if (_clearOnFinish)
+				_list.Clear();
 		}
 	}
 }

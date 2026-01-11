@@ -4,8 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://c2g04r8pruiek" path="res://sprites/icons/big_mistake.tres" id="4_ag2rd"]
 
 [node name="big_mistake" instance=ExtResource("1_xdrh8")]
-metadata/food_type = 4
-metadata/food_value = 20.0
 
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("4_ag2rd")

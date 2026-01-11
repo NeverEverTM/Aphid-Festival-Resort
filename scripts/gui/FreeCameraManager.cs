@@ -65,6 +65,7 @@ public partial class FreeCameraManager : Control
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
+		// besides zoom scroll, no other input action is done when a sub-menu is open
 		if (CanvasManager.Menus.IsActive)
 		{
 			if (BuildMenu.Menu.IsOpen)
@@ -72,17 +73,7 @@ public partial class FreeCameraManager : Control
 			return;
 		}
 
-		if (@event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.ChangeCamera))
-		{
-			if (CameraManager.FocusedAphid != null)
-			{
-				AphidInfo.SetAphid(null);
-				CameraManager.UnFocus();
-			}
-			else
-				SetFreeCameraMode(false);
-			return;
-		}
+		InputAction_Escape(@event);
 
 		// pings aphids location
 		if (@event.IsActionPressed(InputNames.ChangeMode))
@@ -93,8 +84,8 @@ public partial class FreeCameraManager : Control
 				StopTrack();
 		}
 
-		if (@event.IsActionPressed(InputNames.Pull) && AphidInfo.Enabled)
-			AphidInfo.SetAphid();
+		if (@event.IsActionPressed(InputNames.Pull))
+			AphidInfo.Instance.Display(!AphidInfo.Instance.IsBeingDisplayed, true);
 
 		// changes focus mode
 		if (@event.IsActionPressed(InputNames.OpenInventory))
@@ -152,32 +143,33 @@ public partial class FreeCameraManager : Control
 		else if (@event.IsActionPressed(InputNames.Right))
 			FocusAphid(focused_aphid_index + 1);
 	}
-	public static void FocusAphid(Aphid _aphid)
+	public void FocusAphid(Aphid _aphid)
 	{
 		int _index = ResortManager.Current.Aphids.FindIndex(0, (a) => a.Equals(_aphid));
 		FocusAphid(_index);
 	}
-	public static void FocusAphid(int _index)
+	public void FocusAphid(int _index)
 	{
-		if (Instance.disable_transition.IsValid() || ResortManager.Current.Aphids.Count == 0)
+		if (disable_transition.IsValid() || ResortManager.Current.Aphids.Count == 0)
 			return;
 
 		_index = _index < 0 ? ResortManager.Current.Aphids.Count - 1 : _index;
 		_index = _index == ResortManager.Current.Aphids.Count ? 0 : _index;
-		Instance.focused_aphid_index = _index;
+		focused_aphid_index = _index;
 
-		Instance.is_focusing_aphids = true;
-		Instance.spectatorLabel.Show();
+		is_focusing_aphids = true;
+		spectatorLabel.Show();
 
-		CameraManager.Focus(ResortManager.Current.Aphids[Instance.focused_aphid_index]);
-		Instance.spectatorLabel.Text = $"{Instance.Tr("camera_spectating")}\n<| {CameraManager.FocusedAphid.Instance.Genes.Name} |>";
-		AphidInfo.SetAphid(null);
+		CameraManager.Focus(ResortManager.Current.Aphids[focused_aphid_index]);
+		spectatorLabel.Text = $"{Tr("camera_spectating")}\n<| {CameraManager.FocusedAphid.Instance.Genes.Name} |>";
+		AphidInfo.Instance.SelectAphid(ResortManager.Current.Aphids[focused_aphid_index]);
 		SoundManager.CreateSound("ui/button_select");
 	}
 	public static void StopFocus()
 	{
 		Instance.is_focusing_aphids = false;
 		CameraManager.UnFocus();
+		AphidInfo.Instance.Display(false, false);
 		Instance.spectatorLabel.Hide();
 	}
 	public void TrackAphid(Aphid _aphid)
@@ -249,6 +241,23 @@ public partial class FreeCameraManager : Control
 		else // if is far away, point at its direction
 			current_tracker.GlobalPosition = CameraManager.SCREEN_CENTER_CANVAS + CameraManager.SCREEN_CENTER_CANVAS.DirectionTo(_aphidPos) * 100;
 
+	}
+	private void InputAction_Escape(InputEvent @event)
+	{
+		if (@event.IsActionPressed(InputNames.ChangeCamera))
+			SetFreeCameraMode(false);
+
+		if (@event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape))
+		{
+			if (CameraManager.FocusedAphid != null)
+			{
+				AphidInfo.Instance.Display(false, true);
+				AphidInfo.Instance.SelectAphid(null);
+				CameraManager.UnFocus();
+			}
+			else
+				SetFreeCameraMode(false);
+		}
 	}
 
 	public static void SetFreeCameraMode(bool _state)
@@ -331,9 +340,10 @@ public partial class FreeCameraManager : Control
 				Instance.animator.Play(StringNames.OpenAnim);
 			else
 				Instance.animator.Play(StringNames.CloseAnim);
-
-			AphidInfo.SetAphid(null);
 		}
+		AphidInfo.Instance.Display(false, true);
+		AphidInfo.Instance.SelectAphid(null);
+
 		Instance.is_hud_visible = _state;
 		Instance.is_camera_tab_open = false;
 	}

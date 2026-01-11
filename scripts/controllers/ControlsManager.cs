@@ -6,12 +6,12 @@ using System.Collections.Generic;
 /// </summary>
 public static class ControlsManager
 {
-	public class DataModule : SaveSystem.IDataModule<Variant>
+	public class DataModule : SaveSystem.IDataModule<Dictionary<string, string>>
 	{
-		public void Set(Variant _data)
+		public void Set(Dictionary<string, string> _data)
 		{
 			ResetToDefault();
-			foreach (KeyValuePair<string, string> _pair in (Godot.Collections.Dictionary<string, string>)_data)
+			foreach (KeyValuePair<string, string> _pair in _data)
 			{
 				string[] _keyValues = _pair.Value.Split(":");
 				// dont bind non assigned variables
@@ -35,9 +35,9 @@ public static class ControlsManager
 				}
 			}
 		}
-		public Variant Get()
+		public Dictionary<string, string> Get()
 		{
-			Godot.Collections.Dictionary<string, string> _binds = [];
+			Dictionary<string, string> _binds = [];
 			foreach (KeyValuePair<string, InputEvent> _pair in Binds)
 			{
 				if (_pair.Key.Contains("ui"))
@@ -50,9 +50,9 @@ public static class ControlsManager
 			}
 			return _binds;
 		}
-		public Variant Default()
+		public Dictionary<string, string> Default()
 		{
-			return new Godot.Collections.Dictionary<string, string>();
+			return [];
 		}
 	}
 
@@ -61,7 +61,7 @@ public static class ControlsManager
 	public static event ControlEventHandler OnControlChanged;
 
 	internal static Godot.Collections.Dictionary<string, InputEvent> Binds = [];
-	internal readonly static SaveSystem.SaveModuleGD InputBinds = new("controls", new DataModule())
+	internal readonly static SaveSystem.SaveModule<Dictionary<string, string>> InputBinds = new("controls", new DataModule())
 	{
 		RelativePath = SaveSystem.CONFIG_DIR,
 		Extension = SaveSystem.CONFIGFILE_EXTENSION
@@ -103,11 +103,11 @@ public static class ControlsManager
 	/// <summary>
 	/// Returns the human-friendly name for an action. Intended for UI display.
 	/// </summary>
-	public static string GetActionName(string _action_name)
+	public static string GetLocalizedActionName(string _action_name)
 	{
 		if (!Binds.TryGetValue(_action_name, out InputEvent _bind))
 		{
-			Logger.Print(Logger.LogPriority.Warning, "ControlsManager: The following bind is not present in the control list: " + _action_name);
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, "ControlsManager: The following bind is not present in the control list: " + _action_name);
 			return _action_name;
 		}
 		return GetActionName(_bind);
@@ -136,7 +136,7 @@ public static class ControlsManager
 		{
 			if (Binds.ContainsKey(_action))
 				Binds.Remove(_action);
-			Logger.Print(Logger.LogPriority.Warning, $"ControlsManager: <{_action}> does not exist as an action. Game version is {GlobalManager.GAME_VERSION}");
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ControlsManager: <{_action}> does not exist as an action. Game version is {GlobalManager.GAME_VERSION}");
 			return;
 		}
 		InputMap.ActionEraseEvents(_action);

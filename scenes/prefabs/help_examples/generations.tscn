@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://byd0gpwlwrcg2"]
+
+[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="1_dkypd"]
+[ext_resource type="Texture2D" uid="uid://drtx08aejoe38" path="res://sprites/help_examples/album.PNG" id="2_olyd2"]
+
+[node name="generations" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="album_img" type="TextureRect" parent="."]
+light_mask = 0
+material = ExtResource("1_dkypd")
+layout_mode = 0
+offset_left = 95.0
+offset_top = 255.0
+offset_right = 564.0
+offset_bottom = 534.0
+texture = ExtResource("2_olyd2")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="album" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 59.0
+offset_right = 1054.0
+offset_bottom = 243.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+metadata/controls = PackedStringArray("open_generations")
+
+[node name="album2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 617.0
+offset_top = 245.0
+offset_right = 1014.0
+offset_bottom = 570.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false

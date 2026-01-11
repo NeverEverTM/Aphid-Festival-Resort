@@ -8,6 +8,7 @@ size = Vector2(14.5, 10)
 [node name="ant_flag" type="Sprite2D"]
 texture = ExtResource("1_apv0g")
 offset = Vector2(0, -35)
+metadata/id = "ant_flag"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

@@ -1,24 +1,61 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public partial class StartMenu : Control
 {
-	[Export] private TextureButton aphidButton, secretButton, githubButton, itchioButton;
-	[Export] private TextureRect titleAphid, titleFestival;
-	[Export] private RichTextLabel startText;
-	[Export] private Material trans_rights;
-	public bool IsReady;
-	private int isASecreeeeet;
+	public static StartMenu Instance { get; private set; }
 
-	public void SetPanel()
+	[Export] private AnimationPlayer anim_player;
+	[Export] private RichTextLabel wheel_label, start_label;
+	[Export] private Control options_panel, controls_panel;
+	[Export] private AnimationPlayer credits_player;
+	[ExportGroup("Cosmetics")]
+	[Export] private TextureRect titleAphid, titleFestival;
+	[Export] private TextureButton aphidButton, secretButton, githubButton, itchioButton;
+	[Export] private Material trans_rights, aro_flag; // the woke left? without saying goodbye?
+
+	public bool IsReady;
+	private bool is_busy;
+
+	private int isASecreeeeet;
+	private MenuInstance menu, credits_menu;
+
+	public enum WheelCategories
 	{
+		NewGame,
+		LoadGame,
+		Continue,
+		Controls,
+		Options,
+		Credits,
+		Exit
+	}
+	public enum WheelDirection { Left, Right }
+	public readonly MenuHandler Menus = new();
+	private Dictionary<WheelCategories, Action> wheel_actions = [];
+	private WheelCategories current_category, last_category;
+	private int wheel_index;
+
+	public override void _EnterTree()
+	{
+		Instance = this;
+
+		// set menu interface
+		menu = new("start", anim_player);
+		_ = Menus.SetTo(menu);
+		credits_menu = new MenuInstance("credits", credits_player, null, null, null, true);
+
+		// miscellaneous
 		aphidButton.Pressed += () =>
 		{
-			CreateBoingTween(titleAphid);
+			anim_player.Play("squish_aphid");
 			SoundManager.CreateSound("aphid/baby_idle");
 		};
 		secretButton.Pressed += () =>
 		{
-			CreateBoingTween(titleFestival);
+			anim_player.Play("boing_festival");
 			if (DebugConsole.IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt)
 				DebugConsole.LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair = true;
 			SoundManager.CreateSound("aphid/boing");
@@ -26,37 +63,151 @@ public partial class StartMenu : Control
 			if (isASecreeeeet < 7)
 				isASecreeeeet++;
 			else
-				titleFestival.Material = trans_rights;
+			{
+				if (GD.Randf() > 0.5f)
+					titleFestival.Material = trans_rights;
+				else
+					titleFestival.Material = aro_flag;
+			}
 		};
 
-		string _translation = string.Format(Tr("press_start"),
-			ControlsManager.GetActionName(InputNames.Interact));
-		startText.Text = $"[wave amp=50.0 freq=5.0 connected=1][center]{_translation}[/center][/wave]";
+		if (DateTime.Now.Month == 6) // pride month!!!
+		{
+			if (GD.Randf() > 0.5f)
+				titleFestival.Material = trans_rights;
+			else
+				titleFestival.Material = aro_flag;
+		}
 
 		githubButton.Pressed += () =>
 			OS.ShellOpen("https://github.com/NeverEverTM/Aphid-Festival");
 		itchioButton.Pressed += () =>
 			OS.ShellOpen("https://neverevertm.itch.io/aphid-festival-resort");
 	}
-	private void CreateBoingTween(Control _element)
+	public override void _Ready()
 	{
-		Tween _tween = _element.CreateTween();
-		_tween.SetTrans(Tween.TransitionType.Spring);
-		_tween.TweenProperty(_element, "scale", Vector2.One * 1.1f, 0.2).FromCurrent();
-		_tween.TweenProperty(_element, "scale", Vector2.One * 0.95f, 0.1).FromCurrent();
-		_tween.TweenProperty(_element, "scale", Vector2.One, 0.1).FromCurrent();
-		_tween.Play();
-		_tween.Finished += () => _tween.Kill();
+		// create continue button
+		if (!string.IsNullOrEmpty(OptionsManager.Settings.LastPlayedResort))
+		{
+			SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
+			if (DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
+			{
+				CreateWheelAction(WheelCategories.Continue, MainMenu.Instance.ContinueGame);
+				SetWheelCategory(WheelCategories.Continue, true);
+			}
+		}
+
+		CreateWheelAction(WheelCategories.Options, (options_panel as IMenuInstance).Create());
+		CreateWheelAction(WheelCategories.Controls, (controls_panel as IMenuInstance).Create());
+		CreateWheelAction(WheelCategories.Credits, credits_menu);
+		CreateWheelAction(WheelCategories.Exit, MainMenu.Instance.ExitGame);
+		wheel_actions = wheel_actions.OrderBy(a => a.Key).ToDictionary();
+
+		string _translation = string.Format(Tr("press_start"),
+			ControlsManager.GetLocalizedActionName(InputNames.Interact));
+		start_label.Text = $"[wave][center]{_translation}[/center][/wave]";
 	}
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		if (GlobalManager.IsBusy || Menus.Processing || !MainMenu.IsReady || is_busy)
+			return;
+
+		// Press To Start - Pressed
+		if (!IsReady)
+		{
+			if (Input.IsActionJustPressed(InputNames.Interact))
+				ReadyUp();
+			return;
+		}
+
+		// Exit current menu
+		if (Menus.Current != null && Menus.Current.Name != "start")
+		{
+			if (@event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.Cancel))
+				GoBack();
+			return;
+		}
+
+		// wheel interactions
+		if (@event is InputEventMouseButton && (@event as InputEventMouseButton).Pressed)
+		{
+			InputEventMouseButton _mouse = @event as InputEventMouseButton;
+			if (_mouse.ButtonIndex == MouseButton.WheelUp)
+				ScrollThroughWheel(WheelDirection.Left);
+			else if (_mouse.ButtonIndex == MouseButton.WheelDown)
+				ScrollThroughWheel(WheelDirection.Right);
+		}
+		else
+		{
+			if (@event.IsActionPressed(InputNames.Left) || @event.IsActionPressed("ui_left"))
+				ScrollThroughWheel(WheelDirection.Left);
+			else if (@event.IsActionPressed(InputNames.Right) || @event.IsActionPressed("ui_right"))
+				ScrollThroughWheel(WheelDirection.Right);
+		}
+
+		if (@event.IsActionPressed(InputNames.Interact))
+		{
+			wheel_actions[current_category]();
+			SoundManager.CreateSound("ui/button_select");
+		}
+	}
+
 	public void ReadyUp()
 	{
-		startText.Hide();
-
-		if (MainMenu.Instance.currentCategory == "continue" && !MainMenu.Instance.menuActions.ContainsKey("continue"))
-			MainMenu.Instance.currentCategory = "new_game"; // Hotfix
-
-		MainMenu.Instance.SetButtonWheel(() => MainMenu.Instance.menuActions[MainMenu.Instance.currentCategory](), MainMenu.Instance.SwitchCategories);
-		SoundManager.CreateSound(Aphid.Audio_Idle);
 		IsReady = true;
+		start_label.Hide();
+		wheel_label.Show();
+		SetWheelText();
+		SoundManager.CreateSound("aphid/idle");
 	}
+
+	// MARK: UI Handling
+	public static void CreateWheelAction(WheelCategories _key, MenuInstance _menu) =>
+		Instance.wheel_actions.Add(_key, () => _ = Instance.Menus.SetTo(_menu));
+	public static void CreateWheelAction(WheelCategories _key, Action _action) =>
+		Instance.wheel_actions.Add(_key, _action);
+	public static void RemoveWheelAction(WheelCategories _key)
+	{
+		Instance.wheel_actions.Remove(_key);
+		if (_key == Instance.current_category)
+			Instance.SetWheelCategory(WheelCategories.NewGame, true);
+	}
+	public void GoBack()
+	{
+		_ = Menus.GoBack();
+		SetWheelCategory(last_category);
+		SoundManager.CreateSound("ui/button_select");
+	}
+	public void ScrollThroughWheel(WheelDirection _direction)
+	{
+		if (is_busy)
+			return;
+		is_busy = true;
+
+		if (_direction == WheelDirection.Left)
+			wheel_index--;
+		else
+			wheel_index++;
+
+		if (wheel_index < 0)
+			wheel_index = wheel_actions.Count - 1;
+		else if (wheel_index >= wheel_actions.Count)
+			wheel_index = 0;
+		current_category = wheel_actions.Keys.ToList()[wheel_index];
+
+		SetWheelCategory(current_category);
+		SoundManager.CreateSound("ui/button_switch");
+		is_busy = false;
+	}
+	public void SetWheelCategory(WheelCategories _category, bool _setIndex = false)
+	{
+		last_category = current_category;
+		current_category = _category;
+		SetWheelText();
+
+		if (_setIndex)
+			wheel_index = wheel_actions.Keys.ToList().IndexOf(current_category);
+	}
+	public void SetWheelText() =>
+		wheel_label.Text = $"[center]<| [wave]{Tr("start_" + current_category.ToString().ToLower())}[/wave] |>[/center]";
 }

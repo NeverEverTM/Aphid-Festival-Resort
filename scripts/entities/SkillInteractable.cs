@@ -1,55 +1,103 @@
 using Godot;
 using System;
 
-public partial class SkillInteractable : Node2D, IFurnitureInteractable, Player.IInteractEvent
+public partial class SkillInteractable : Sprite2D, IStructureAphid, SaveSystem.IDataModule
 {
-    [Export] private AphidData.SkillEnum skill = AphidData.SkillEnum.Speed;
-    [Export] private float timer = 1;
-    [Export] private int points_given = 1;
-    [Export] private Marker2D resting_position;
-    [Export] private AnimationPlayer anim_player;
+    [Export] private AphidData.SkillEnum trainingSkill = AphidData.SkillEnum.Speed;
+    [Export] private float trainingTime = 10;
+    [Export] private int trainingPoints = 1;
+    [Export] private Marker2D restingPosition;
+    [Export] private AnimationPlayer animator;
 
     public bool IsInterruptable { get; set; } = true;
     public Aphid SelectedAphid { get; set; }
+    public Guid SelectedAphidID { get; set; } = Guid.Empty;
 
-    private float train_timer;
-    private string skill_name;
+    private bool walking;
 
-    public void Enter(EventArgs args)
+    // Animation Methods
+    public void FlipAphidToTheLeft()
     {
         SelectedAphid.skin.SetFlipDirection(Vector2.Left);
-        SelectedAphid.GlobalPosition = resting_position.GlobalPosition;
-        skill_name = skill.ToString().ToLower();
-        train_timer = timer;
-        //anim_player.Play("start");
+    }
+    public void FlipAphidToTheRight()
+    {
+        SelectedAphid.skin.SetFlipDirection(Vector2.Right);
+    }
+    public void JumpAphid() =>
+        SelectedAphid.skin.DoJump();
+    public void HopAphid() =>
+        SelectedAphid.skin.DoHop(false);
+    public void SetWalk()
+    {
+        walking = !walking;
+        SelectedAphid.skin.OverrideMovementAnim = walking;
     }
 
-    public void Exit(EventArgs args)
+    public override void _Process(double delta)
     {
-        SelectedAphid.GlobalPosition = resting_position.GlobalPosition + new Vector2(0, 20);
-        SelectedAphid = null;
+        if (SelectedAphid != null)
+            Process((float)delta);
     }
-    public void Process(EventArgs args, float delta)
-    {
-        SelectedAphid.GlobalPosition = resting_position.GlobalPosition + new Vector2(0, 20);
 
-        if (SelectedAphid.Instance.Status.Tiredness > 80)
+    public void Enter()
+    {
+        SelectedAphid.Instance.Status.CurrentTraining = new()
         {
-            SelectedAphid.SetState(Aphid.StateEnum.Idle);
+            Skill = trainingSkill,
+            PointGain = trainingPoints,
+            BaseTime = trainingTime
+        };
+        SelectedAphid.SetState(Aphid.StateEnum.Train);
+
+        SelectedAphid.GlobalPosition = restingPosition.GlobalPosition;
+        animator.Play("start");
+    }
+    public void Exit()
+    {
+        SelectedAphid.GlobalPosition = GlobalPosition + new Vector2(0, 20);
+        SelectedAphid.skin.DoSquish();
+        SelectedAphid = null;
+
+        walking = false;
+        animator.Play("RESET");
+    }
+    public void Process(float delta)
+    {
+        if (!SelectedAphid.State.Is(Aphid.StateEnum.Train))
+        {
+            Exit();
             return;
         }
 
-        if (train_timer > 0)
-            train_timer -= delta;
-        else
+        SelectedAphid.GlobalPosition = restingPosition.GlobalPosition;
+
+        if (walking)
+            SelectedAphid.skin.DoWalkAnim();
+    }
+    
+    public void Interact()
+    {
+        if (Player.Instance.HeldPickup.Entity != null && Player.Instance.HeldPickup.Entity_Aphid.Instance.Status.Tiredness > AphidData.MAX_TIREDNESS_SLEEP)
         {
-            train_timer = timer;
-            SelectedAphid.Instance.Genes.Skills[skill_name].GivePoints(points_given);
-            SoundManager.CreateSound2D("aphid/skill_gain", GlobalPosition);
-            SelectedAphid.skin.DoJumpAnim();
+            SoundManager.CreateSound("ui/button_fail");
+            return;
+        }
+        (this as IStructureAphid).InteractWithAnAphid();
+    }
+
+    public void Set(string _data)
+    {
+        SelectedAphidID = new Guid(_data);
+        if (SelectedAphidID != Guid.Empty && GameManager.Aphids[SelectedAphidID].Status.Mode == AphidData.EntityStatusType.Active)
+        {
+            SelectedAphid = GameManager.Aphids[SelectedAphidID].Entity; 
+            Enter();
         }
     }
 
-    public void Interact() =>
-        (this as IFurnitureInteractable).TriggerPlayerInteraction();
+    public string Get()
+    {
+        return SelectedAphidID.ToString();
+    }
 }

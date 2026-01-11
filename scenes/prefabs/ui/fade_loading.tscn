@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="1_padqf"]
 
 [sub_resource type="Curve" id="Curve_5okvy"]
-_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 3.05542, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="loading_screen" type="CanvasLayer" node_paths=PackedStringArray("screen")]
@@ -13,6 +13,7 @@ layer = 10
 script = ExtResource("1_4rajv")
 screen = NodePath("TextureRect")
 curve = SubResource("Curve_5okvy")
+timer = 1.0
 
 [node name="TextureRect" type="TextureRect" parent="."]
 modulate = Color(0, 0, 0, 0)

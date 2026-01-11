@@ -1,3 +1,4 @@
+// HIGHLIGHT SHADER FOR INVENTORY ITEMS
 shader_type canvas_item;
 uniform float speed = 2;
 uniform vec4 flashing_color  : source_color = vec4(1.0);

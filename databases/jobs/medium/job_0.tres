@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("2_f2qmi")
 Skills = Dictionary[int, int]({
-2: 7
+2: 10
 })
 BaseTime = 200.0
 BaseReward = 14

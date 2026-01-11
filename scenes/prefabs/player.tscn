@@ -1,7 +1,8 @@
-[gd_scene load_steps=50 format=3 uid="uid://b2tg0d8sg4vd0"]
+[gd_scene load_steps=51 format=3 uid="uid://b2tg0d8sg4vd0"]
 
 [ext_resource type="Script" uid="uid://c6r7uhrq81xi1" path="res://scripts/Player.cs" id="1_02bb8"]
 [ext_resource type="Texture2D" uid="uid://dfb4jxh2jixgv" path="res://sprites/atlases/characters/player_0.png" id="2_muo8i"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_n0leu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mrbma"]
 atlas = ExtResource("2_muo8i")
@@ -379,9 +380,9 @@ animations = [{
 size = Vector2(19, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c4xmv"]
-size = Vector2(68, 37)
+size = Vector2(68, 38)
 
-[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("interactionArea", "animatorNode")]
+[node name="player" type="CharacterBody2D" node_paths=PackedStringArray("droppingPoint", "interactionArea", "animatorNode")]
 collision_layer = 5
 collision_mask = 5
 collision_priority = 10.0
@@ -389,12 +390,11 @@ motion_mode = 1
 platform_on_leave = 2
 platform_floor_layers = 4294967040
 script = ExtResource("1_02bb8")
+droppingPoint = NodePath("droppingPoint")
 interactionArea = NodePath("interaction_area")
 animatorNode = NodePath("animator")
-metadata/tag = "player"
 
 [node name="animator" type="AnimatedSprite2D" parent="."]
-scale = Vector2(-1, 1)
 sprite_frames = SubResource("SpriteFrames_mupq7")
 animation = &"idle"
 autoplay = "idle"
@@ -409,7 +409,14 @@ shape = SubResource("RectangleShape2D_r3o6d")
 y_sort_enabled = true
 collision_layer = 0
 monitorable = false
+script = ExtResource("3_n0leu")
+Tag = 9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="interaction_area"]
-position = Vector2(0, -4.5)
+position = Vector2(0, -5)
 shape = SubResource("RectangleShape2D_c4xmv")
+debug_color = Color(0.862762, 0.284043, 0.565326, 0.42)
+
+[node name="droppingPoint" type="Marker2D" parent="."]
+position = Vector2(22, 0)
+gizmo_extents = 10.6

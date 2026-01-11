@@ -115,7 +115,6 @@ public partial class GameOver : Control, CutsceneManager.ICutscene
         Instance.label.Visible = false;
 
         Instance.GetTree().Paused = false;
-        await CanvasManager.Menus.CloseCurrent();
 
         if (FreeCameraManager.Enabled)
             FreeCameraManager.SetFreeCameraMode(false);

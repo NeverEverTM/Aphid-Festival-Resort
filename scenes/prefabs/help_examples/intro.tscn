@@ -1,0 +1,65 @@
+[gd_scene load_steps=4 format=3 uid="uid://bwlju5rebi5do"]
+
+[ext_resource type="Shader" uid="uid://dw8sws2xkkyr6" path="res://scripts/shaders/outline.gdshader" id="1_8onc8"]
+[ext_resource type="Texture2D" uid="uid://dknqeho1jsf5o" path="res://sprites/help_examples/aphid_egg.PNG" id="1_r33lg"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_640cs"]
+shader = ExtResource("1_8onc8")
+shader_parameter/color = Color(0.465524, 0.0281535, 0.169077, 1)
+shader_parameter/ignore_modulate = true
+shader_parameter/width = 8.0
+shader_parameter/pattern = 2
+shader_parameter/inside = false
+shader_parameter/add_margins = true
+shader_parameter/number_of_images = Vector2(1, 1)
+
+[node name="intro" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="welcome" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -473.0
+offset_top = -223.0
+offset_right = 447.0
+offset_bottom = -10.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "First, we need an aphid, and if you didn't know, they hatch from eggs!
+Press {open_inventory} to open your inventory, and click on one of the eggs to hold it.
+Now wit it in your hands, press {pickup} to drop it, [wave]and[/wave] to pick it up back again if needed."
+scroll_active = false
+metadata/controls = PackedStringArray("open_inventory", "pickup")
+
+[node name="welcome2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -425.0
+offset_top = -50.0
+offset_right = 41.0
+offset_bottom = 224.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "Tip: You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img]
+ symbol and clicking on any item you want to sell."
+scroll_active = false
+horizontal_alignment = 2
+vertical_alignment = 2
+metadata/controls = PackedStringArray("pull")
+
+[node name="open_inv_image" type="TextureRect" parent="."]
+light_mask = 0
+material = SubResource("ShaderMaterial_640cs")
+layout_mode = 0
+offset_left = 79.0
+offset_top = -29.0
+offset_right = 445.0
+offset_bottom = 224.0
+texture = ExtResource("1_r33lg")
+expand_mode = 1
+stretch_mode = 4

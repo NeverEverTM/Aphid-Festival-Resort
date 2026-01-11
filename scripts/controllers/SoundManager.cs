@@ -41,11 +41,11 @@ public partial class SoundManager : Node
 			if (GlobalManager.IsInGame)
 				SetRandomSong();
 		};
-		SceneManager.OnPostLoad += (_scene, _switch) =>
+		SceneManager.AddEventListener((_args) =>
 		{
-			if (_switch && _scene != "menu")
+			if (_args.IsSwitching && _args.NextCurrentScene != "menu")
 				SetRandomSong();
-		};
+		}, SceneManager.EventEnum.OnGameInit);
 	}
 	public override void _Process(double delta)
 	{
@@ -79,7 +79,7 @@ public partial class SoundManager : Node
 	public static void SetRandomSong()
 	{
 		string _song;
-		if (FieldManager.TimeOfDay == FieldManager.DayHours.Night)
+		if (FieldManager.TimeOfDay == FieldManager.DayHourMode.Night)
 			_song = "night_" + GlobalManager.RNG.RandiRange(0, 0);
 		else
 			_song = "day_" + GlobalManager.RNG.RandiRange(0, 1);

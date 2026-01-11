@@ -9,11 +9,23 @@ public partial class CanvasManager : CanvasLayer
 	public static MenuHandler Menus { get; private set; } = new();
 	public const string APHID_SLOT_PREFAB = "uid://d7m5e6tlxyve";
 
+	/// <summary>
+	/// Colors for the weather popup
+	/// </summary>
+	public readonly static Color[] WeatherColors =
+	[
+		new(0.22f, 0.608f, 0.898f), // Morning
+			new(0.984f, 0.796f, 0.039f), // Noon
+			new(0.987f, 0.371f, 0), // Afternoon
+			new(0.8f, 0.1f, 0.8f), // Sunset
+			new(0.435f, 0.33f, 0.823f) // Night
+	];
+
 	[Export] private Control hud_element;
 	[Export] private TextureRect photo_display;
 	[Export] private AnimationPlayer photo_anim_player;
 	[Export] private Label currency_text;
-	[Export] private TextureButton screenshot_button, menu_button;
+	[Export] private TextureButton screenshot_button;
 	[Export] private Container prompt_grid;
 	[Export] private PackedScene prompt_element;
 	[ExportGroup("Weather")]
@@ -29,13 +41,17 @@ public partial class CanvasManager : CanvasLayer
 	{
 		Instance = this;
 		screenshot_button.Pressed += TakeScreenshot;
-		menu_button.Pressed += () => _ = PauseMenu.Instance.SetPauseMenu(true);
 		Menus.OnSwitch.Add(OnSwitchMenu);
+
 	}
 	public override void _ExitTree()
 	{
 		Menus = new();
 		Instance = null;
+	}
+	public override void _Ready()
+	{
+		FieldManager.Instance.OnTimeChange.Add(StartWeatherPopup);
 	}
 
 	public override void _Input(InputEvent @event)
@@ -45,7 +61,7 @@ public partial class CanvasManager : CanvasLayer
 
 		if (Menus.IsActive && (@event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape)))
 		{
-			Task.Run(Menus.GoBack);
+			_ = Menus.GoBack();
 			GetViewport().SetInputAsHandled();
 		}
 	}
@@ -112,7 +128,7 @@ public partial class CanvasManager : CanvasLayer
 		}
 		catch (Exception _err)
 		{
-			Logger.Print(Logger.LogPriority.Warning, _err, "Failed to take screenshot");
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, _err, "Failed to take screenshot");
 			SoundManager.CreateSound("ui/button-fail");
 		}
 
@@ -145,6 +161,41 @@ public partial class CanvasManager : CanvasLayer
 			Instance.currency_text.Text = Player.Data.Currency.ToString("000");
 	}
 
+	// opens weather overlay and creates timer to hide it automatically
+	public void StartWeatherPopup(FieldManager.DayHourMode _hour)
+	{
+		OpenWeather(_hour);
+		Timer _timer = new()
+		{
+			OneShot = true
+		};
+		_timer.Timeout += () =>
+		{
+			CloseWeather();
+			_timer.QueueFree();
+		};
+		AddChild(_timer);
+		_timer.Start(5);
+	}
+	public void OpenWeather(FieldManager.DayHourMode _hour)
+	{
+		weather_bg.SelfModulate = WeatherColors[(int)_hour];
+		if (_hour == FieldManager.DayHourMode.Night)
+			weather_bg.Texture = weather_sprites[1];
+		else
+			weather_bg.Texture = weather_sprites[0];
+
+		var _date = Time.GetDatetimeDictFromSystem();
+		weather_text.Text = ((int)_date["hour"]).ToString("00") + ":" + ((int)_date["minute"]).ToString("00");
+		weather_player.Play(StringNames.OpenAnim);
+	}
+	public void CloseWeather()
+	{
+		if (weather_bg.Visible)
+			weather_player.Play(StringNames.CloseAnim);
+	}
+
+
 	/// <summary>
 	/// Adds a control prompt ui element to point out interactables nearby and possible interactions.
 	/// </summary>
@@ -158,7 +209,7 @@ public partial class CanvasManager : CanvasLayer
 
 		Control _node = Instance.prompt_element.Instantiate<Control>();
 		_node.Modulate = new(1, 1, 1, 0);
-		(_node.GetChild(0) as RichTextLabel).Text = ControlsManager.GetActionName(_action_key);
+		(_node.GetChild(0) as RichTextLabel).Text = ControlsManager.GetLocalizedActionName(_action_key);
 		(_node.GetChild(1) as RichTextLabel).Text = "prompt_" + _tr_key;
 		Tween tween = _node.CreateTween();
 		tween.SetEase(Tween.EaseType.Out);
@@ -185,23 +236,6 @@ public partial class CanvasManager : CanvasLayer
 		Instance.PromptList.Clear();
 	}
 
-	public static void OpenWeather(Color _color)
-	{
-		Instance.weather_bg.SelfModulate = _color;
-		if (FieldManager.TimeOfDay == FieldManager.DayHours.Night)
-			Instance.weather_bg.Texture = Instance.weather_sprites[1];
-		else
-			Instance.weather_bg.Texture = Instance.weather_sprites[0];
-
-		var _date = Time.GetDatetimeDictFromSystem();
-		Instance.weather_text.Text = ((int)_date["hour"]).ToString("00") + ":" + ((int)_date["minute"]).ToString("00");
-		Instance.weather_player.Play("open");
-	}
-	public static void CloseWeather()
-	{
-		if (Instance.weather_bg.Visible)
-			Instance.weather_player.Play("close");
-	}
 
 	/// <summary>
 	/// Generates a TextureButton that displays an aphid's current skin.
@@ -247,7 +281,7 @@ public partial class CanvasManager : CanvasLayer
 				if (_isFromCurrentGeneration) // alive aphids
 					SoundManager.CreateSound(Aphid.GetIdleAudio(_isAdult)).Bus = "UI";
 				else // dead aphids
-					SoundManager.CreateSound(Aphid.Audio_Idle).Bus = "EchoUI";
+					SoundManager.CreateSound("aphid/idle").Bus = "EchoUI";
 			};
 		}
 

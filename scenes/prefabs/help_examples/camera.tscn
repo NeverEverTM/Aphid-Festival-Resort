@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3x44vhenjq3p"]
+
+[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="1_1lcfc"]
+[ext_resource type="Texture2D" uid="uid://cufn20y8grbrn" path="res://sprites/help_examples/bar.PNG" id="3_ylcut"]
+
+[node name="camera" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="camera_label" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 63.0
+offset_top = 76.0
+offset_right = 1011.0
+offset_bottom = 165.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+metadata/controls = PackedStringArray("change_camera")
+
+[node name="camera_label2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 63.0
+offset_top = 196.0
+offset_right = 1011.0
+offset_bottom = 416.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
+Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
+¡Tambien puedes usar el mismo boton para recoger!"
+scroll_active = false
+metadata/controls = PackedStringArray("change_camera")
+
+[node name="build_img2" type="TextureRect" parent="."]
+light_mask = 0
+material = ExtResource("1_1lcfc")
+layout_mode = 0
+offset_left = 162.0
+offset_top = 416.0
+offset_right = 915.0
+offset_bottom = 551.0
+texture = ExtResource("3_ylcut")
+expand_mode = 1
+stretch_mode = 5

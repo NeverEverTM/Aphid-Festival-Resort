@@ -2,6 +2,14 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Godot.Running;
+using BenchmarkDotNet.Godot.Attributes;
+using BenchmarkDotNet.Godot.Attributes.Jobs;
+using BenchmarkDotNet.Order;
+using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 public partial class DebugConsole : CanvasLayer
 {
@@ -35,6 +43,8 @@ public partial class DebugConsole : CanvasLayer
 			}
 			GetViewport().SetInputAsHandled();
 		};
+
+		//await GodotBenchmarkRunner.RunWithBBCodeAsync<TestForClassMatch>(onFinish: (s) => GD.PrintRich(s));
 	}
 	public override void _Process(double delta)
 	{
@@ -47,10 +57,10 @@ public partial class DebugConsole : CanvasLayer
 				"Food: " + validAphid.Instance.Status.Hunger,
 				"Water: " + validAphid.Instance.Status.Thirst,
 				"Bondship: " + validAphid.Instance.Status.Bondship,
-				"Health: " + validAphid.Instance.Status.Health,
+				"EntityMode: " + validAphid.Instance.Status.Mode.ToString(),
 				"Age: " + (int)validAphid.Instance.Status.Age + "/" + AphidData.Age_Death,
 				$"BreedBuildup: {(int)validAphid.Instance.Status.BreedBuildup}/{AphidData.Breed_Cooldown}",
-				"BreedMode: " + validAphid.Instance.Status.BreedMode,
+				"BreedMode: " + validAphid.Instance.Status.BreedMode.ToString(),
 				$"HarvestBuildup: {(int)validAphid.Instance.Status.HarvestBuildup}/{AphidData.Harvest_Cooldown}",
 				"FoodPreference: " + validAphid.Instance.Genes.FoodPreference.ToString(),
 				"Traits:",
@@ -70,13 +80,13 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (@event.IsActionPressed(InputNames.Debug1))
 			{
-				Logger.Print(Logger.LogPriority.Debug, "IsActive: ", CanvasManager.Menus.IsActive);
-				Logger.Print(Logger.LogPriority.Debug, "Processing: ", CanvasManager.Menus.Processing);
-				
-				Logger.Print(Logger.LogPriority.Debug, "Current: " + CanvasManager.Menus.Current?.Name);
-				Logger.Print(Logger.LogPriority.Debug, "Current|IsOpen: " + CanvasManager.Menus.Current?.IsOpen);
-				Logger.Print(Logger.LogPriority.Debug, "Pending: " +  CanvasManager.Menus.Pending?.Name);
-				Logger.Print(Logger.LogPriority.Debug, "Available: ", CanvasManager.Menus.Available.Count);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "IsActive: ", StartMenu.Instance.Menus.IsActive);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Processing: ", StartMenu.Instance.Menus.Processing);
+
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Current: " + StartMenu.Instance.Menus.Current?.Name);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Current|IsOpen: " + StartMenu.Instance.Menus.Current?.IsOpen);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Pending: " + StartMenu.Instance.Menus.Pending?.Name);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Available: ", StartMenu.Instance.Menus.Available.Count);
 				return;
 			}
 
@@ -148,7 +158,7 @@ public partial class DebugConsole : CanvasLayer
 			Instance.command_line_input.Text = string.Empty;
 			return true;
 		}
-		Logger.Print(Logger.LogPriority.Debug, $"Command '{_commandLines[0]}' does not exist. Type help for a complete list.");
+		DebugLogger.Print(DebugLogger.LogPriority.Debug, $"Command '{_commandLines[0]}' does not exist. Type help for a complete list.");
 		return false;
 	}
 
@@ -165,9 +175,14 @@ public partial class DebugConsole : CanvasLayer
 		{ "gamerule", new GameRules() },
 		{ "aphid", new AphidPrognosis() },
 		{ "give", new GrabBag() },
-		{ "dialog", new VisualNovel() },
+		{ "speak", new VisualNovel() },
 		{ "build", new IKEA() },
-		{ "tp", new FlyMeToTheMoon() }
+		{ "tp", new Jaunt() },
+		{ "move", new Doors() },
+		{ "jobs", new WhiteCollar() },
+		{ "print", new Printer() },
+		{ "quit", new ExitWithoutSaving() },
+		{ "run", new Run() }
 	};
 
 	public static void Print(string _message) =>
@@ -234,18 +249,17 @@ public partial class DebugConsole : CanvasLayer
 
 		public void Execute(string[] args)
 		{
-			if (args.Length > 0)
+			if (GetArg(0, args, out string _command))
 			{
-				if (commands.ContainsKey(args[0]))
-					Logger.Print(Logger.LogPriority.Log, "HelpCommand: ", commands[args[0]], " = ", commands[args[0]].HelpText);
+				if (commands.TryGetValue(_command, out IConsoleCommand value))
+					DebugLogger.Print(DebugLogger.LogPriority.Log, "HelpCommand: ", value.GetType().ToString(), " = ", value.HelpText);
 				else
-					Logger.Print(Logger.LogPriority.Log, "This command does not exist. Type 'help' to find all available commands");
+					DebugLogger.Print(DebugLogger.LogPriority.Log, "This command does not exist. Type 'help' to find all available commands");
 			}
 			else
 			{
-				Logger.Print(Logger.LogPriority.Log, "The format for a command is:\n<name of the command> [required parameters] (optional parameters) ('option 1'/'option 2').");
-				Logger.Print(Logger.LogPriority.Log, "The available commands are:");
-				commands.Keys.ToList().ForEach(Print);
+				DebugLogger.Print(DebugLogger.LogPriority.Log, "The format for a command is:\n<name of the command> [required parameters] (optional parameters) ('option 1'/'option 2').");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, "The available commands are:", commands.Keys.ToArray().Join(", "));
 			}
 		}
 	}
@@ -257,16 +271,16 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (!GlobalManager.IsInGame)
 			{
-				Logger.Print(Logger.LogPriority.Log, $"Motherload: No game currently running.");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"Motherload: No game currently running.");
 				return;
 			}
 			int _amount = GetInt(0, args, 0);
-			Player.Data.AddCurrency(_amount);
+			PlayerData.AddCurrency(_amount);
 
 			if (_amount < 0)
-				Logger.Print(Logger.LogPriority.Log, $"Motherload: Removed ${_amount} from your current game.");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"Motherload: Removed ${_amount} from your current game.");
 			else
-				Logger.Print(Logger.LogPriority.Log, $"Motherload: Added ${_amount} from current game.");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"Motherload: Added ${_amount} from current game.");
 		}
 	}
 	private class DeLorean : IConsoleCommand
@@ -282,7 +296,7 @@ public partial class DebugConsole : CanvasLayer
 			_date["minute"] = args[1];
 			FieldManager.Instance.SetTime(false, _date);
 
-			Logger.Print(Logger.LogPriority.Log, $"In-Game Time is now {args[0]}:{args[1]}");
+			DebugLogger.Print(DebugLogger.LogPriority.Log, $"In-Game Time is now {args[0]}:{args[1]}");
 		}
 	}
 	private class GameRules : IConsoleCommand
@@ -293,49 +307,49 @@ public partial class DebugConsole : CanvasLayer
 			{ "time_scale", (args) =>
 				{
 					Engine.TimeScale = GetFloat(1, args, 1);
-					Logger.Print(Logger.LogPriority.Info, $"GameRules: Time scale is now: <{Engine.TimeScale}>");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: Time scale is now: <{Engine.TimeScale}>");
 				}
 			},
 			{ "physics_scale", (args) =>
 				{
 					Engine.PhysicsTicksPerSecond = GetInt(1, args, 60);
-					Logger.Print(Logger.LogPriority.Info, $"GameRules: Physics Tics are now: <{Engine.PhysicsTicksPerSecond}/s>");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: Physics Tics are now: <{Engine.PhysicsTicksPerSecond}/s>");
 				}
 			},
 			{ "harvest_cooldown", (args) =>
 				{
 					AphidData.Harvest_Cooldown = GetInt(1, args, harvest_default);
-					Logger.Print(Logger.LogPriority.Info, $"GameRules: Harvest Cooldown is now <{AphidData.Harvest_Cooldown}>");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: Harvest Cooldown is now <{AphidData.Harvest_Cooldown}>");
 				}
 			},
 			{ "breed_cooldown", (args) =>
 				{
 					AphidData.Breed_Cooldown = GetInt(1, args, breed_default);
-					Logger.Print(Logger.LogPriority.Info, $"GameRules: Breed Cooldown is now <{AphidData.Breed_Cooldown} seconds>");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: Breed Cooldown is now <{AphidData.Breed_Cooldown} seconds>");
 				}
 			},
 			{ "age_adulthood", (args) =>
 				{
 					AphidData.Age_Adulthood = GetInt(1, args, adult_default);
-					Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for adulthood is now <{AphidData.Age_Adulthood} seconds>");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: The age for adulthood is now <{AphidData.Age_Adulthood} seconds>");
 				}
 			},
 			{ "age_death", (args) =>
 				{
 					AphidData.Age_Death = GetInt(1, args, death_default);
-					Logger.Print(Logger.LogPriority.Info, $"GameRules: The age for death is now <{AphidData.Age_Death} seconds>");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: The age for death is now <{AphidData.Age_Death} seconds>");
 				}
 			},
 			{ "log_mode", (args) =>
 				{
-					Logger.LogMode = (Logger.LogPriorityMode)GetInt(1, args, 2);
-					Logger.Print(Logger.LogPriority.IgnorePriority, $"GameRules: Log mode is now <{Logger.LogMode}>");
+					DebugLogger.LogMode = (DebugLogger.LogPriorityMode)GetInt(1, args, 2);
+					DebugLogger.Print(DebugLogger.LogPriority.IgnorePriority, $"GameRules: Log mode is now <{DebugLogger.LogMode}>");
 				}
 			},
 			{ "show_build_rect", (args) =>
 				{
 					BuildMenu.DEBUG_SHOW_RECTS = GetBool(1, args, false);
-					Logger.Print(Logger.LogPriority.Info, $"GameRules: ", BuildMenu.DEBUG_SHOW_RECTS ?
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: ", BuildMenu.DEBUG_SHOW_RECTS ?
 						"Enabled rect visualization for furniture." : "Disabled rect visualization for furniture.");
 				}
 			},
@@ -355,7 +369,7 @@ public partial class DebugConsole : CanvasLayer
 			if (GetArg(0, args, out string _name) && game_rules.TryGetValue(_name, out Action<string[]> _rule))
 				_rule(args);
 			else
-				Logger.Print(Logger.LogPriority.Info, $"GameRules: The rule {_name} does not exist.");
+				DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: The rule {_name} does not exist.");
 		}
 	}
 	private class AphidPrognosis : IConsoleCommand
@@ -399,19 +413,19 @@ public partial class DebugConsole : CanvasLayer
 						if (!IsInstanceValid(validAphid))
 						{
 							Instance.debug_status.Hide();
-							Logger.Print(Logger.LogPriority.Info, $"AphidDebug: No aphid was found.");
+							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: No aphid was found.");
 						}
 						else
 						{
 							Instance.debug_status.Show();
-							Logger.Print(Logger.LogPriority.Info, $"AphidDebug: Your current aphid is: <{validAphid.Instance?.Genes.Name ?? "UNKNOWN"}>.");
+							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: Your current aphid is: <{validAphid.Instance?.Genes.Name ?? "UNKNOWN"}>.");
 						}
 					}
 					else
 					{
 						validAphid = ResortManager.Current.Aphids.Find((a) => a.Instance.Genes.Name == _name);
 						if (!IsInstanceValid(validAphid))
-							Logger.Print(Logger.LogPriority.Info, $"AphidDebug: No aphid was found with the name <{_name}>.");
+							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: No aphid was found with the name <{_name}>.");
 					}
 					break;
 				case "unload":
@@ -447,15 +461,15 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (!GetArg(0, args, out string _id))
 				return;
-			if (GlobalManager.G_ITEMS.TryGetValue(_id, out GlobalManager.Item value) && value.shopTag != "furniture")
+			if (GlobalManager.G_ITEMS.TryGetValue(_id, out ItemData value))
 			{
 				int _amount = GetInt(1, args, 1);
 				for (int i = 0; i < _amount; i++)
 					PlayerInventory.StoreItem(_id);
-				Logger.Print(Logger.LogPriority.Log, $"GiveItem: {_id}({_amount}x) was added to your inventory.");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"GiveItem: {_id}({_amount}x) was added to your inventory.");
 			}
 			else
-				Logger.Print(Logger.LogPriority.Log, $"GiveItem: {_id} is not a valid item.");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"GiveItem: {_id} is not a valid item.");
 		}
 	}
 	private class IKEA : IConsoleCommand
@@ -471,30 +485,34 @@ public partial class DebugConsole : CanvasLayer
 			{
 				ResortManager.CreateStructure(_id, CameraManager.GetMouseToWorldPosition(),
 						GetArg(1, args, null));
-				Logger.Print(Logger.LogPriority.Log, $"SpawnStructure: {_id} was created.");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"SpawnStructure: {_id} was created.");
 			}
 			else
-				Logger.Print(Logger.LogPriority.Log, $"SpawnStructure: {_id} is not a valid item.");
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"SpawnStructure: {_id} is not a valid item.");
 		}
 	}
 	private class VisualNovel : IConsoleCommand
 	{
-		public string HelpText => "Visualize a dialog string in the console. <dialog [id]>";
+		public string HelpText => "Visualize a dialog string in the console. <speak [id] (nodisplay)>";
 
 		public void Execute(string[] args)
 		{
-			if (!GetArg(0, args, out string _id))
+			if (!GetArg(0, args, out string _key))
 				return;
-			if (_id.Equals(Instance.Tr(_id)))
+
+			if (_key.Equals(Instance.Tr(_key)))
 			{
-				Logger.Print(Logger.LogPriority.IgnorePriority, $"DialogSim: ID <{_id}> does not exist in the translation files.");
+				DebugLogger.Print(DebugLogger.LogPriority.IgnorePriority, $"DialogSim: ID <{_key}> does not exist in the translation files.");
 				return;
 			}
-			Logger.Print(Logger.LogPriority.IgnorePriority, $"DialogSim: Displaying <{_id}>:");
-			Logger.Print(Logger.LogPriority.IgnorePriority, "[color=cyan]", Instance.Tr(_id), "[/color]");
+
+			if (GetArg(1, args) == "nodisplay")
+				DebugLogger.Print(DebugLogger.LogPriority.IgnorePriority, $"DialogSim: Displaying <{_key}>:", Instance.Tr(_key));
+			else
+				_ = DialogManager.Instance.OpenDialogBox(_key);
 		}
 	}
-	private class FlyMeToTheMoon : IConsoleCommand
+	private class Jaunt : IConsoleCommand
 	{
 		public string HelpText => "Teleports the player to the provided position. <tp [x] [y]>/<tp [safe]>";
 
@@ -508,15 +526,265 @@ public partial class DebugConsole : CanvasLayer
 					Player.Instance.GlobalPosition =
 							FieldManager.Instance.Doors[0].GlobalPosition
 							+ (-FieldManager.Instance.Doors[0].entryDirection) * 5;
-					Logger.Print(Logger.LogPriority.Info, "PlayerTeleport: Unstucked player.");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, "PlayerTeleport: Unstucked player.");
 				}
 				else
-					Logger.Print(Logger.LogPriority.Info, "PlayerTeleport: Player was supposedly in a valid position.");
+					DebugLogger.Print(DebugLogger.LogPriority.Info, "PlayerTeleport: Player was supposedly in a valid position.");
 				return;
 			}
 
 			Player.Instance.GlobalPosition = new Vector2(GetFloat(0, args, 0), GetFloat(1, args, 0));
-			Logger.Print(Logger.LogPriority.Info, $"PlayerTeleport: Teleported to coordinates[{Player.Instance.GlobalPosition}]");
+			DebugLogger.Print(DebugLogger.LogPriority.Info, $"PlayerTeleport: Teleported to coordinates[{Player.Instance.GlobalPosition}]");
+		}
+	}
+	private class Doors : IConsoleCommand
+	{
+		public string HelpText => "Moves the player to a new room. <room [name_id] [entry_index]>";
+
+		public async void Execute(string[] args)
+		{
+			try
+			{
+				string _roomName = GetArg(0, args);
+				int _entryIndex = GetInt(1, args, 0);
+				await SceneManager.Load(_roomName, new SceneManager.RoomData(_roomName, _entryIndex, Vector2.Zero, Player.Instance.GlobalPosition));
+			}
+			catch (Exception _error)
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
+			}
+		}
+	}
+	private class WhiteCollar : IConsoleCommand
+	{
+		public string HelpText => "Interfaces with the job system (room where a job board is must be loaded in). <jobs (reset/complete*) (index*)>";
+
+		public void Execute(string[] args)
+		{
+			switch (GetArg(0, args))
+			{
+				case "reset":
+					JobMenu.Data.Available.Clear();
+					JobMenu.Data.Current.Clear();
+					JobMenu.Instance.SaveModule.CallSet();
+					DebugLogger.Print(DebugLogger.LogPriority.Info, "DebugJob: Reseted jobs.");
+					break;
+				case "complete":
+					int _index = GetInt(1, args, 0);
+					JobMenu.Data.Current[_index].Fulfill();
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"DebugJob: Completed job {_index}");
+					break;
+			}
+		}
+	}
+	private class Printer : IConsoleCommand
+	{
+		public string HelpText => "Prints a statement on the console. Beware of leaking BBC tags.";
+
+		public void Execute(string[] args)
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.IgnorePriority, args);
+		}
+	}
+	private class ExitWithoutSaving : IConsoleCommand
+	{
+		public string HelpText => "Quits the game without saving.";
+
+		public void Execute(string[] args)
+		{
+			Instance.GetTree().Quit(69);
+		}
+	}
+
+	// UNIT TESTS
+	public class Run : IConsoleCommand
+	{
+		public string HelpText => "Runs unit tests. Development only.";
+		public Dictionary<string, IRunCommand> Commands = new(){
+			{ "ut_train", new UnitTest_SkillGain() },
+			{ "ut_save", new UnitTest_SaveAndLoad() },
+			{ "ut_balance", new UnitTest_FoodBalance() }
+		};
+
+		public void Execute(string[] args)
+		{
+			if (!GetArg(0, args, out string _id) || !Commands.TryGetValue(_id, out IRunCommand value))
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Info, "RunCommand: Command not found");
+				return;
+			}
+			string[] _args = new string[args.Length - 1];
+			if (_args.Length > 0)
+				Array.Copy(args, 1, _args, 0, _args.Length);
+			value.Run(_args);
+		}
+	}
+	public interface IRunCommand
+	{
+		public void Run(string[] args);
+	}
+	public class UnitTest_SkillGain : IRunCommand
+	{
+		public void Run(string[] args)
+		{
+			int _tiredness = 0,
+				_totalWaste = 0,
+				_maxTired = GetInt(0, args, AphidData.MAX_TIREDNESS_SLEEP),
+				_minTired = GetInt(1, args, AphidData.MIN_TIREDNESS_WAKEUP),
+				_maxAge = GetInt(3, args, AphidData.Age_Death),
+				_baseWasteTime = GetInt(2, args, 0),
+				_wasteTime = _baseWasteTime,
+				_baseSleepDecay = (int)(AphidData.BASE_SLEEP_DECAY * 10),
+				_sleepLossTimer = _baseSleepDecay,
+				_baseTrainTime = 10 * 10,
+				y = 0;
+
+			double _pointsGained = 0, _sleepGainTimer = AphidData.BASE_SLEEP_GAIN,
+				_trainTimer = 100, _activeTime = 0, _sleepTime = 0;
+			bool _sleeping = false;
+
+			List<double[]> cycles = [];
+
+			for (int i = 0; i < _maxAge * 10; i++)
+			{
+				if (_baseWasteTime > 0)
+				{
+					if (_wasteTime > 0)
+						_wasteTime--;
+					else
+					{
+						_wasteTime = _baseWasteTime;
+						_totalWaste++;
+						i += 10;
+					}
+				}
+				if (_sleeping)
+				{
+					_sleepTime += 0.1f;
+					if (_tiredness > _minTired)
+					{
+						if (_sleepGainTimer > 0)
+							_sleepGainTimer -= 0.1f;
+						else
+						{
+							_sleepGainTimer = AphidData.BASE_SLEEP_GAIN;
+							_tiredness--;
+						}
+					}
+					else
+					{
+						cycles.Add([_activeTime, _sleepTime, _activeTime + _sleepTime, _pointsGained, y]);
+						_pointsGained = _activeTime = _sleepTime = 0;
+						_trainTimer = 10;
+						_sleeping = false;
+					}
+				}
+				else
+				{
+					_activeTime++;
+					_trainTimer--;
+
+					if (_trainTimer == 0)
+					{
+						_trainTimer = _baseTrainTime;
+						if (i <= AphidData.Age_Adulthood * 10)
+							_pointsGained += 0.2f;
+						else
+							_pointsGained += 0.1f;
+					}
+
+					if (_tiredness < _maxTired)
+					{
+						if (_sleepLossTimer > 0)
+							_sleepLossTimer--;
+						else
+						{
+							_sleepLossTimer = _baseSleepDecay;
+							_tiredness++;
+						}
+					}
+					else
+					{
+						y = i;
+						_sleeping = true;
+					}
+				}
+			}
+
+			double _totalTime = cycles.Count > 0 ? cycles[0][2] : 1, _totalPoints = 0;
+			cycles.Add([_activeTime, _sleepTime, _activeTime + _sleepTime, _pointsGained, (_activeTime + _sleepTime) / _totalTime]);
+			cycles.ForEach(a => _totalPoints += a[3]);
+
+			DebugLogger.Print(DebugLogger.LogPriority.Debug, string.Format("in the conditions: {4}s ({0}% max and {1}% min, {2}% difference, {3}s of waste time)", [ 100 - _minTired, 100 - _maxTired,
+				Mathf.Max(_maxTired, _minTired) - Mathf.Min(_maxTired, _minTired), _totalWaste, _maxAge]));
+
+			DebugLogger.Print(DebugLogger.LogPriority.Debug, string.Format("An aphid sleeps after {0}s and wakes up after {1}s with a gain of {2} levels, one cycle is in total {3}s for a max of {4} cycles with a lifetime gain of {5} levels",
+				[(cycles[0][0] / 10).ToString("0.0"), cycles[0][1].ToString("0.0"), cycles[0][3].ToString("0.0"), cycles[0][2].ToString("0.0"), (cycles.Count - 1 + cycles[^1][4]).ToString("0.0"), _totalPoints.ToString("0.0")]));
+		}
+	}
+	public class UnitTest_SaveAndLoad : IRunCommand
+	{
+		public class MyClass
+		{
+			public int class_value_1 { get; set; } = 1;
+			public float class_value_2 { get; set; } = 2;
+			public string class_value_3 { get; set; } = "3";
+		}
+
+		public void Run(string[] args)
+		{
+			var _array = new JsonArray
+			{
+				GlobalManager.GAME_VERSION,
+				new MyClass()
+				{
+					class_value_1 = 69
+				}
+			};
+			WritePretty(_array);
+			var _prettyArray = ReadPretty();
+			GD.Print(_prettyArray[0].ToString());
+			GD.Print(_prettyArray[1].ToString());
+		}
+
+		public void WritePretty(JsonArray _array)
+		{
+			using FileAccess _stream = FileAccess.Open("user://test_one.data", FileAccess.ModeFlags.Write);
+			_stream.StoreString(JsonSerializer.Serialize(_array, new JsonSerializerOptions() { WriteIndented = true }));
+			_stream.Close();
+		}
+		public JsonArray ReadPretty()
+		{
+			using FileAccess _stream = FileAccess.Open("user://test_one.data", FileAccess.ModeFlags.Read);
+			return JsonSerializer.Deserialize<JsonArray>(_stream.GetAsText());
+		}
+	}
+	public class UnitTest_FoodBalance : IRunCommand
+	{
+		public void Run(string[] args)
+		{
+			var _list = GlobalManager.G_FOOD.OrderByDescending(f => f.Value.Type).ToDictionary();
+
+			foreach (var _pair in _list)
+				GD.Print(string.Format("|{0,5}|{1,5}|", _pair.Key, _pair.Value.Type.ToString()));
+		}
+	}
+
+	[Orderer(SummaryOrderPolicy.FastestToSlowest)]
+	public partial class TestForClassMatch : Node
+	{
+		[GodotBenchmark]
+		public bool IsClass()
+		{
+			Sprite2D _sprite = new();
+			return _sprite.IsClass("Node2D");
+		}
+
+		[Benchmark]
+		public bool AsClass()
+		{
+			Sprite2D _sprite = new();
+			return _sprite is Node2D;
 		}
 	}
 }

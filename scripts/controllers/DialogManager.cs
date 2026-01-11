@@ -74,6 +74,7 @@ public partial class DialogManager : Control
 	/// Opens the dialog box and formats, writes and displays the result.
 	/// </summary>
 	/// <param name="_dialog_key">The TranslationKey from which read, no further formatting is needed.</param>
+	/// <param name="_id">The id of the character who is talking.</param>
 	/// <param name="_voice">The voice to start the dialogue with. Can be changed midway through with dialogue commands.</param>
 	/// <returns></returns>
 	public async Task OpenDialogBox(string _dialog_key, string _id = null, AudioStream _voice = null)
@@ -131,7 +132,7 @@ public partial class DialogManager : Control
 		}
 		catch (Exception _err)
 		{
-			Logger.Print(Logger.LogPriority.Error, "DialogManager: Failed to complete dialog of key: ", _dialog_key, _err);
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "DialogManager: Failed to complete dialog of key: ", _dialog_key, _err);
 		}
 
 		CloseDialog();

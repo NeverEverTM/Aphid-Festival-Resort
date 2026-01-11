@@ -1,8 +1,9 @@
 using Godot;
 
-public partial class KitchenInterface : Control, MenuTrigger.ITrigger
+public partial class KitchenInterface : Control
 {
 	[Export] private AnimationPlayer animPlayer;
+	[Export] private InteractableArea2D interactArea2D;
 	[Export] private BaseButton ingredient1Button, ingredient2Button, resultButton;
 	[Export] private CheckButton redoRecipe;
 	[Export] private TextureRect ingredient1Icon, ingredient2Icon, resultIcon, portrait;
@@ -13,17 +14,11 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 	[Export] private Color slotColor;
 
 	private PackedScene item_container;
-
 	private string ingredient1, ingredient2;
-	private GlobalManager.Recipe resultRecipe;
+	private RecipeData current_recipe;
 	private const string MISTAKE_RECIPE = "mistake", BIG_MISTAKE_RECIPE = "big_mistake", UNKNOWN_RECIPE = "unknown";
 
 	public MenuInstance Menu { get; set; }
-	public void SetMenu()
-	{
-		if (CanvasManager.Menus.Current != Menu)
-			_ = CanvasManager.Menus.SetTo(Menu);
-	}
 
 	public override void _Ready()
 	{
@@ -32,11 +27,28 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		ingredient2Button.Pressed += () => SetIngredientSlot(null, 1);
 		resultButton.Pressed += OnResultPressed;
 		redoRecipe.Toggled += OnRedoPressed;
-		Menu = new("kitchen", animPlayer, _ => ClearInterface(), null, _ => ClearInterface());
+		Menu = new("kitchen", animPlayer, 
+		Open: (_) =>
+		{
+			SoundManager.CreateSound("ui/kitchen_open");
+			CreateInventory();
+		},
+		TryClose: null,
+		Close: null,
+		Dispose: ClearInterface);
+		interactArea2D.OnInteractOnly.Add(SetMenu);
+		ClearInterface(); // To make sure is empty
 	}
+
+	public void SetMenu()
+	{
+		if (CanvasManager.Menus.Current != Menu)
+			_ = CanvasManager.Menus.SetTo(Menu);
+	}
+
 	private void ClearInterface()
 	{
-		CreateInventory();
+		CleanInventory();
 		SetIngredientSlot(null, 0);
 		SetIngredientSlot(null, 1);
 		SetResultSlot(null);
@@ -46,12 +58,15 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		redoRecipe.SetPressedNoSignal(false);
 		ingredient1Button.Disabled = ingredient2Button.Disabled = false;
 	}
-	private void CreateInventory()
+	private void CleanInventory()
 	{
 		for (int i = 0; i < inventoryGrid.GetChildCount(); i++)
 			inventoryGrid.GetChild(i).QueueFree();
-
-		for (int i = 0; i < Player.Data.InventoryMaxCapacity; i++)
+	}
+	private void CreateInventory()
+	{
+		CleanInventory();
+		for (int i = 0; i < PlayerInventory.MAX_CAPACITY; i++)
 		{
 			TextureButton _item = item_container.Instantiate() as TextureButton;
 			(_item.GetChild(0) as Control).SelfModulate = slotColor;
@@ -79,7 +94,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 	private void SetIngredientSlot(string _item_name, int _index)
 	{
 		bool _isNull = _item_name == null;
-		if (!_isNull && GlobalManager.G_ITEMS[_item_name].tag != "food")
+		if (!_isNull && GlobalManager.G_ITEMS[_item_name].Tag != StringNames.GlobalTags.Food)
 		{
 			SoundManager.CreateSound("ui/button_fail");
 			return; // if is not a food item, dont bother
@@ -101,7 +116,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		resultIcon.Texture = _result != null ? GlobalManager.GetIcon(_result) : null;
 		resultName.Text = _result != null ? _result + "_name" : "---";
 		if (_result == null)
-			resultRecipe = default;
+			current_recipe = default;
 	}
 
 	private void AddIngredient(string _item_name)
@@ -120,7 +135,7 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		if (_toggle)
 		{
 			// Cancel toggle if not result is being displayed or the recipe is still unknown
-			if (resultRecipe.Result == null || !Player.Data.RecipesDiscovered.Contains(resultRecipe.Result))
+			if (current_recipe == null || !Player.Data.RecipesDiscovered.Contains(current_recipe.Owner.Item.ID))
 			{
 				redoRecipe.SetPressedNoSignal(false);
 				return;
@@ -147,23 +162,24 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 			return;
 
 		Player.Data.Inventory.Remove(ingredient1);
-		Player.Data.Inventory.Remove(ingredient2);
+		if (ingredient1 != ingredient2) // do not remove duplicates
+			Player.Data.Inventory.Remove(ingredient2);
 
 		// store item
-		if (PlayerInventory.StoreItem(resultRecipe.Result))
+		if (PlayerInventory.StoreItem(current_recipe.Owner.Item.ID))
 			CreateInventory();
 		else // cant fit it, drop it in the floor
-			ResortManager.CreateItem(resultRecipe.Result, Player.Instance.GlobalPosition);
+			ResortManager.CreateItem(current_recipe.Owner.Item.ID, Player.Instance.GlobalPosition);
 
 		PlayAnim("cook");
-		if (!Player.Data.RecipesDiscovered.Contains(resultRecipe.Result))
-			Player.Data.RecipesDiscovered.Add(resultRecipe.Result);
+		if (!Player.Data.RecipesDiscovered.Contains(current_recipe.Owner.Item.ID))
+			Player.Data.RecipesDiscovered.Add(current_recipe.Owner.Item.ID);
 
 		SoundManager.CreateSound("ui/steam_sizzle");
 		// set interface to clear, dont clear if redo is active
 		if (!redoRecipe.ButtonPressed)
 		{
-			if (GlobalManager.G_FOOD[resultRecipe.Result].type == AphidData.FoodType.Vile)
+			if (GlobalManager.G_FOOD[current_recipe.Owner.Item.ID].Type == AphidData.FoodType.Vile)
 			{
 				dialogBox.Text = "kitchen_fail";
 				SoundManager.CreateSound("ui/kitchen_fail");
@@ -207,38 +223,39 @@ public partial class KitchenInterface : Control, MenuTrigger.ITrigger
 		// mistakes and big mistakes used as ingredients yields bad results
 		if (ingredient1 == MISTAKE_RECIPE || ingredient2 == MISTAKE_RECIPE || ingredient1 == BIG_MISTAKE_RECIPE || ingredient2 == BIG_MISTAKE_RECIPE)
 		{
-			resultRecipe = new(BIG_MISTAKE_RECIPE, ingredient1, ingredient2);
+			current_recipe = new(BIG_MISTAKE_RECIPE, ingredient1, ingredient2);
 			return BIG_MISTAKE_RECIPE;
 		}
 
 		bool _single = ingredient1 == null || ingredient2 == null; // we assume ATLEAST ONE INGREDIENT EXISTS
 
 		// look for a recipe that matches all ingredients
-		resultRecipe = GlobalManager.G_RECIPES.Find((GlobalManager.Recipe _r) =>
+		current_recipe = GlobalManager.G_RECIPES.Find(_recipe =>
 		{
-			if (_r.Ingredient1 == ingredient1 || _r.Ingredient1 == ingredient2)
+			for (int i = 0; i < _recipe.Combinations.Count; i++)
 			{
-				if (_r.Ingredient2 == ingredient1 || _r.Ingredient2 == ingredient2)
-					return true;
-
-				// single item recipes
-				if (_r.Ingredient2 == "")
+				if (_recipe.Combinations[i][0].Item.ID == ingredient1 || _recipe.Combinations[i][0].Item.ID == ingredient2)
 				{
-					// check if there was only one ingredient to check
-					if (_single)
-						return true;
-					// else if both ingredients are the same then go ahead anyways
-					if (ingredient1 == ingredient2)
+					// single item recipes
+					if (_recipe.Combinations[i].Count == 1)
+					{
+						// check if there was only one ingredient to check
+						if (_single)
+							return true;
+						// else if both ingredients are the same then go ahead anyways
+						if (ingredient1 == ingredient2)
+							return true;
+					}
+					else if (_recipe.Combinations[i][1].Item.ID == ingredient1 || _recipe.Combinations[i][1].Item.ID == ingredient2)
 						return true;
 				}
 			}
 			return false;
 		});
 
-		if (resultRecipe.Result == null)
-			resultRecipe = new(MISTAKE_RECIPE, ingredient1, ingredient2);
+		current_recipe ??= new(MISTAKE_RECIPE, ingredient1, ingredient2);
 
-		return resultRecipe.Result;
+		return current_recipe.Owner.Item.ID;
 	}
 	private void PlayAnim(string _anim)
 	{

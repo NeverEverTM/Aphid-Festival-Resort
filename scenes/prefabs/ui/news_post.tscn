@@ -1,0 +1,54 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwbrrndkneyjs"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="1_07qy0"]
+[ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="2_psety"]
+[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="3_bd6ij"]
+
+[node name="news_post" type="NinePatchRect"]
+self_modulate = Color(0.968126, 0.534085, 0.715276, 1)
+light_mask = 0
+custom_minimum_size = Vector2(100, 150)
+texture = ExtResource("1_07qy0")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 137.0
+offset_top = 26.0
+offset_right = 957.0
+offset_bottom = 117.0
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 35
+text = "My Title: The titlest of them all. And How I Met Your Mother. Chapter 1 and all things"
+autowrap_mode = 2
+text_overrun_behavior = 3
+
+[node name="date" type="Label" parent="."]
+self_modulate = Color(0.92, 0.046, 0.1334, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 537.0
+offset_top = 99.0
+offset_right = 970.0
+offset_bottom = 135.0
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 25
+text = "15 December 2025"
+horizontal_alignment = 2
+
+[node name="go" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 31.0
+offset_right = 115.0
+offset_bottom = 124.0
+texture_normal = ExtResource("2_psety")
+stretch_mode = 5
+script = ExtResource("3_bd6ij")
+PressedColor = Color(0.688595, 0.688595, 0.688595, 1)
+FocusColor = Color(0.857501, 0.857501, 0.857501, 1)
+HoverColor = Color(0.734652, 0.874614, 0.91717, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"

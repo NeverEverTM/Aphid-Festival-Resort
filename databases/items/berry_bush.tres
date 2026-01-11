@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_g2ii5"]
+
+[resource]
+script = ExtResource("1_g2ii5")
+Cost = 40
+LevelRequirement = 0
+ItemTag = 0
+StructureTag = 4
+Shop = 2
+ShopOrderPriority = 0

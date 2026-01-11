@@ -42,6 +42,7 @@ public partial class ResortManager : Node2D
 			public string Id { get; set; }
 			public string Data { get; set; }
 		}
+
 	}
 	public class ResortDataModule : SaveSystem.IDataModule<Savefile>
 	{
@@ -61,7 +62,7 @@ public partial class ResortManager : Node2D
 
 				if (!_item.HasMeta(StringNames.IdMeta))
 				{
-					Logger.Print(Logger.LogPriority.Error, $"ResortManager: The object {_item.Name}({_item.GetClass()}) did not have a valid id.");
+					DebugLogger.Print(DebugLogger.LogPriority.Error, $"ResortManager: The object {_item.Name}({_item.GetClass()}) did not have a valid id.");
 					continue;
 				}
 
@@ -70,7 +71,7 @@ public partial class ResortManager : Node2D
 					Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 					PositionX = (int)_item.GlobalPosition.X,
 					PositionY = (int)_item.GlobalPosition.Y,
-					Data = (_item is IMetadata) ? (_item as IMetadata).GetData() : null
+					Data = (_item is SaveSystem.IDataModule) ? (_item as SaveSystem.IDataModule).Get() : null
 				};
 			}
 
@@ -81,7 +82,7 @@ public partial class ResortManager : Node2D
 
 				if (!_item.HasMeta(StringNames.IdMeta))
 				{
-					Logger.Print(Logger.LogPriority.Error, $"ResortManager: The object {_item.Name}({_item.GetClass()}) did not have a valid id.");
+					DebugLogger.Print(DebugLogger.LogPriority.Error, $"ResortManager: The object {_item.Name}({_item.GetClass()}) did not have a valid id.");
 					continue;
 				}
 
@@ -90,7 +91,7 @@ public partial class ResortManager : Node2D
 					Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 					PositionX = (int)_item.GlobalPosition.X,
 					PositionY = (int)_item.GlobalPosition.Y,
-					Data = (_item is IMetadata) ? (_item as IMetadata).GetData() : null
+					Data = (_item is SaveSystem.IDataModule) ? (_item as SaveSystem.IDataModule).Get() : null
 				};
 			}
 
@@ -140,7 +141,7 @@ public partial class ResortManager : Node2D
 		{
 			string _resort = _pair.Value.Status.HomeResort;
 			if (!string.IsNullOrEmpty(_resort) && _resort == Current.Resort
-					&& _pair.Value.Status.Mode == AphidData.EntityStatus.Active)
+					&& _pair.Value.Status.Mode != AphidData.EntityStatusType.Busy)
 				SpawnAphid(_pair.Value);
 		}
 	}
@@ -148,6 +149,7 @@ public partial class ResortManager : Node2D
 	// =========| Object Creation |===============
 	public static Aphid SpawnAphid(AphidInstance _instance)
 	{
+		_instance.Status.Mode = AphidData.EntityStatusType.Active;
 		Aphid _aphid = aphidEntity.Instantiate() as Aphid;
 
 		_aphid.Instance = _instance;
@@ -163,7 +165,7 @@ public partial class ResortManager : Node2D
 			{
 				// an offset of -1000 is done here for the real center of the resort, though this could change in the future
 				_aphid.GlobalPosition = _aphid.GlobalPosition * 0.1f + new Vector2(-1000, 0);
-				Logger.Print(Logger.LogPriority.Info, $"ResortManager: Applied OUTOFBOUND patch to {_aphid.Instance.Genes.Name}");
+				DebugLogger.Print(DebugLogger.LogPriority.Info, $"ResortManager: Applied OUTOFBOUND patch to {_aphid.Instance.Genes.Name}");
 			}
 		}
 
@@ -196,34 +198,42 @@ public partial class ResortManager : Node2D
 	{
 		if (_id == null)
 		{
-			Logger.Print(Logger.LogPriority.Error, "ResortManager: Item name is null!");
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "ResortManager: Item name is null!");
 			return null;
 		}
+
 		Node2D _item;
-		string _path = $"{GlobalManager.ABSOLUTE_ITEMS_DB_PATH}/{_id}.tscn";
-		if (ResourceLoader.Exists(_path))
-			// this is used if an item has a more complex structure or contains extra data, thus needing an unique node
+		string _path = GlobalManager.ABSOLUTE_ITEMS_DB_PATH + _id + ".tscn";
+
+		if (ResourceLoader.Exists(_path)) // has a template already made
 			_item = ResourceLoader.Load<PackedScene>(_path).Instantiate() as Node2D;
-		else
+		else // create a new item from scratch
 		{
 			_item = ResourceLoader.Load<PackedScene>(GlobalManager.ITEM_ENTITY).Instantiate() as Node2D;
 			(_item.GetChild(0) as Sprite2D).Texture = GlobalManager.GetIcon(_id);
 		}
 
+		ItemData _itemData = GlobalManager.G_ITEMS[_id];
 		_item.SetMeta(StringNames.PickupMeta, true);
 		_item.SetMeta(StringNames.IdMeta, _id);
-		_item.SetMeta(StringNames.TagMeta, GlobalManager.G_ITEMS[_id].tag);
+		_item.SetMeta(StringNames.TagMeta, (int)_itemData.Tag);
 		_item.GlobalPosition = _position;
 		Current.EntityRoot.AddChild(_item);
-		
+
 		try
 		{
-			if (_data != null && _item is IMetadata)
-				(_item as IMetadata).SetData(_data);
+			if (_item is SaveSystem.IDataModule)
+			{
+				var _itemMetadata = _item as SaveSystem.IDataModule;
+				if (!string.IsNullOrWhiteSpace(_data))
+					_itemMetadata.Set(_data);
+				else
+					_itemMetadata.Default();
+			}
 		}
 		catch (Exception _error)
 		{
-			Logger.Print(Logger.LogPriority.Error, "ResortManager: Failed to execute item fn of " + _id, _error);
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "ResortManager: Failed to execute item fn of " + _id, _error);
 		}
 
 		return _item;
@@ -233,10 +243,10 @@ public partial class ResortManager : Node2D
 		string _path = GlobalManager.ABSOLUTE_STRUCTURES_DB_PATH + $"/{_id}.tscn";
 		if (!ResourceLoader.Exists(_path))
 		{
-			if (string.IsNullOrEmpty(_id))
-				Logger.Print(Logger.LogPriority.Error, $"ResortManager: This id does not exist!");
+			if (string.IsNullOrWhiteSpace(_id))
+				DebugLogger.Print(DebugLogger.LogPriority.Error, $"ResortManager: Invalid string id!");
 			else
-				Logger.Print(Logger.LogPriority.Error, $"ResortManager: {_id} is not a valid id.");
+				DebugLogger.Print(DebugLogger.LogPriority.Error, $"ResortManager: {_id} is not a valid id.");
 			return null;
 		}
 
@@ -247,22 +257,19 @@ public partial class ResortManager : Node2D
 
 		try
 		{
-			if (_data != null && _structure is IMetadata)
-				(_structure as IMetadata).SetData(_data);
+			if (_structure is SaveSystem.IDataModule)
+			{
+				var _structureMetadata = _structure as SaveSystem.IDataModule;
+				if (!string.IsNullOrWhiteSpace(_data))
+					_structureMetadata.Set(_data);
+				else
+					_structureMetadata.Default();
+			}
 		}
 		catch (Exception _error)
 		{
-			Logger.Print(Logger.LogPriority.Error, "ResortManager: Failed to execute structure fn of " + _id, _error);
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "ResortManager: Failed to execute structure fn of " + _id, _error);
 		}
 		return _structure;
-	}
-
-	/// <summary>
-	/// Allows to gather/set metadata to an object. Used for structures and items.
-	/// </summary>
-	public interface IMetadata
-	{
-		public void SetData(string _data);
-		public string GetData();
 	}
 }

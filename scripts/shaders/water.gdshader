@@ -1,3 +1,4 @@
+// SHADER USED FOR THE IN-GAME WATER
 shader_type canvas_item;
 uniform sampler2D noise: repeat_enable;
 
@@ -14,7 +15,7 @@ uniform vec4 reflection_color : source_color = vec4(1.0);
 varying vec2 vert;
 
 void vertex() {
-	VERTEX += vec2(0, buoyancy - sin(TIME) * buoyancy);
+	VERTEX += vec2(0, 2.0 + (buoyancy - sin(TIME) * buoyancy));
 	vert = VERTEX * 0.5;
 }
 

@@ -1,8 +1,12 @@
 ====| Pixabay |=====
+Wind Ambience by Traian1984
+River Ambience by freesound_community
 Steam Sizzle by floraphonic
 Camera Flash by irinairinafomicheva
 Leaves Sweep by Kinoton (Freesound)
 Backpack Sounds by j1987 (Freesound)
 Store Bell by David Dumais (DavidDrumaisAudio)
 Paper folder by bojan_t95 (Freesound)
-====| All other sounds were made with JSFXR |====
+cutting board chops scrapes by TRP (Freesound)
+big kitchen knife by blarz (Freesound)
+====| All other sounds were made with either LLMS or JSFXR |====

@@ -1,0 +1,185 @@
+[gd_scene load_steps=16 format=3 uid="uid://btetrcmn3t8t"]
+
+[ext_resource type="Texture2D" uid="uid://c3i6cmitj5cow" path="res://sprites/props/tv_bg_1.png" id="1_np2i3"]
+[ext_resource type="PackedScene" uid="uid://buq2rosblx438" path="res://sprites/aphid_model.glb" id="2_3ccjc"]
+[ext_resource type="AudioStream" uid="uid://dbk2ohrppee8r" path="res://sfx/misc/aphidtastic.wav" id="2_4yicn"]
+[ext_resource type="Script" uid="uid://dxismvv0c5pp7" path="res://scripts/entities/SpinAphid.cs" id="3_k3050"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_074p6"]
+light_mode = 1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5g2ci"]
+viewport_path = NodePath("viewport_display/SubViewport")
+
+[sub_resource type="Environment" id="Environment_87q0j"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 16.0
+
+[sub_resource type="World3D" id="World3D_r6dqu"]
+environment = SubResource("Environment_87q0j")
+
+[sub_resource type="Animation" id="Animation_talqc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(9.18631, -1.90318, -1.5901)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.00296061, -0.405072, -0.00160068)]
+}
+
+[sub_resource type="Animation" id="Animation_a8ccj"]
+resource_name = "sneak"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 1.8, 2.23333, 2.76667, 3.56667, 10),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(9.18631, -1.90318, -1.5901), Vector3(2.41449, -1.90318, -2.11207), Vector3(2.41449, -1.90318, -2.11207), Vector3(1.76069, -1.90318, -2.80804), Vector3(1.76069, -1.90318, -2.80804), Vector3(-8.94831, -1.90318, -2.80804), Vector3(-8.94831, -1.90318, -2.80804)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 1.8, 2.23333, 2.76667, 3.56667, 10),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.00296061, -0.405072, -0.00160068), Vector3(-0.00296061, 0.195217, -0.00160068), Vector3(-0.00296061, 0.195217, -0.00160068), Vector3(-0.00296061, 0.599173, -0.00160068), Vector3(-0.00296061, 0.599173, -0.00160068), Vector3(-0.00296061, 0.0303006, -0.00160068), Vector3(-0.00296061, 0.0303006, -0.00160068)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_j4cf7"]
+_data = {
+&"RESET": SubResource("Animation_talqc"),
+&"sneak": SubResource("Animation_a8ccj")
+}
+
+[sub_resource type="Animation" id="Animation_18fqy"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 1.51086, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_brmh7"]
+resource_name = "dance"
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5),
+"transitions": PackedFloat32Array(0, 0, 0, 0),
+"update": 0,
+"values": [Vector3(0, 1.51086, 0), Vector3(0, 2.22282, 0), Vector3(0, 1.51086, 0), Vector3(0, 0.938935, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_we5vn"]
+_data = {
+&"RESET": SubResource("Animation_18fqy"),
+&"dance": SubResource("Animation_brmh7")
+}
+
+[node name="background" type="Sprite2D"]
+clip_children = 2
+light_mask = 0
+material = SubResource("CanvasItemMaterial_qug4s")
+texture = ExtResource("1_np2i3")
+
+[node name="stereo" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(0.223229, 0.100138)
+scale = Vector2(0.0840232, 0.0797033)
+stream = ExtResource("2_4yicn")
+volume_db = 10.0
+autoplay = true
+max_distance = 400.0
+attenuation = 2.82843
+panning_strength = 3.0
+bus = &"Sounds"
+
+[node name="viewport_display" type="Sprite2D" parent="."]
+show_behind_parent = true
+light_mask = 0
+material = SubResource("CanvasItemMaterial_074p6")
+position = Vector2(-1.5027, 0.100138)
+scale = Vector2(0.0840232, 0.0797033)
+texture = SubResource("ViewportTexture_5g2ci")
+
+[node name="SubViewport" type="SubViewport" parent="viewport_display"]
+own_world_3d = true
+world_3d = SubResource("World3D_r6dqu")
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1080, 720)
+
+[node name="BF Aphid-Test2" parent="viewport_display/SubViewport" instance=ExtResource("2_3ccjc")]
+transform = Transform3D(-0.233934, -0.000927079, 0.972247, -0.00160067, 0.284998, 0.0029606, -0.972251, -0.000246143, -0.233938, -5.35899, -1.90318, -7.42575)
+
+[node name="BF Aphid-Test4" parent="viewport_display/SubViewport" instance=ExtResource("2_3ccjc")]
+transform = Transform3D(0.919071, 0.00263787, -0.394083, -0.00160067, 0.999994, 0.00296061, 0.394089, -0.00209021, 0.91907, 9.18631, -1.90318, -1.5901)
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="viewport_display/SubViewport/BF Aphid-Test4"]
+libraries = {
+&"": SubResource("AnimationLibrary_j4cf7")
+}
+autoplay = "sneak"
+
+[node name="BF Aphid-Test" parent="viewport_display/SubViewport" instance=ExtResource("2_3ccjc")]
+transform = Transform3D(0.0599005, 0, 0.998204, 0, 1, 0, -0.998205, 0, 0.0599005, 0.137221, -1.94989, -7.5758)
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="viewport_display/SubViewport/BF Aphid-Test"]
+libraries = {
+&"": SubResource("AnimationLibrary_we5vn")
+}
+autoplay = "dance"
+
+[node name="BF Aphid-Test3" parent="viewport_display/SubViewport" instance=ExtResource("2_3ccjc")]
+transform = Transform3D(0.425953, 0, 0.904745, 0, 1, 0, -0.904746, 0, 0.425953, 5.46968, -2.04524, -6.77875)
+script = ExtResource("3_k3050")
+
+[node name="Camera3D" type="Camera3D" parent="viewport_display/SubViewport"]
+cull_mask = 1047553
+fov = 76.5

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_b8wwa"]
+[ext_resource type="Resource" path="res://databases/food/leaf.tres" id="2_4mix1"]
+[ext_resource type="Resource" path="res://databases/food/leaf_salad.tres" id="3_qx5wo"]
+[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="4_80c0u"]
+
+[resource]
+script = ExtResource("4_80c0u")
+Owner = ExtResource("3_qx5wo")
+Combinations = Array[Array]([Array[ExtResource("1_b8wwa")]([ExtResource("2_4mix1")])])

@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="JobData" load_steps=3 format=3 uid="uid://c2oxpeyqtbago"]
 
-[ext_resource type="Texture2D" uid="uid://clx1ig1xwjor6" path="res://sprites/ui/portraits/landscape_grass.png" id="1_kb2td"]
+[ext_resource type="Texture2D" uid="uid://bg2al8t8mcn70" path="res://sprites/ui/portraits/landscape_tallgrass.png" id="1_kb2td"]
 [ext_resource type="Script" uid="uid://bh2k0jtgro60" path="res://scripts/resources/JobData.cs" id="2_7a4tb"]
 
 [resource]

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_jcngn"]
+[ext_resource type="Resource" path="res://databases/food/shroom.tres" id="2_y7oyn"]
+[ext_resource type="Resource" path="res://databases/food/cooked_shroom.tres" id="3_525iy"]
+[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="4_62oby"]
+
+[resource]
+script = ExtResource("4_62oby")
+Owner = ExtResource("3_525iy")
+Combinations = Array[Array]([Array[ExtResource("1_jcngn")]([ExtResource("2_y7oyn")])])

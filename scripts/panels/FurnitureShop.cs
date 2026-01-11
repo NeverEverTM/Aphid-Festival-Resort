@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 public partial class FurnitureShop : ShopInterface
@@ -9,7 +10,13 @@ public partial class FurnitureShop : ShopInterface
 	protected override void Purchase()
 	{
 		base.Purchase();
-		Player.Data.Storage.Add(currentItem);
+		Player.Data.Storage.Add(current_item.ID);
+	}
+	protected override void FetchItemList()
+	{
+		// Fetch item datas and order them
+		current_list = [.. GlobalManager.G_STRUCTURES.Values.Where(i => i.Shop == shopTag)];
+		current_list = [.. current_list.OrderBy(i => i.ShopOrderPriority)];
 	}
 
 	public override void _Ready()

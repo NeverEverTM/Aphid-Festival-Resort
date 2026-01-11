@@ -1,19 +1,14 @@
 using Godot;
 
-public partial class AphidHover : Area2D
+public partial class AphidHover : InteractableArea2D
 {
     [Export] private Aphid aphid;
     private bool mouseIshovering;
-    public override void _Ready()
-    {
-        if (aphid.IS_FAKE)
-            QueueFree();
-    }
+
     public override void _Process(double delta)
     {
         QueueRedraw();
     }
-
     public override void _MouseEnter()
     {
         mouseIshovering = true;
@@ -41,12 +36,14 @@ public partial class AphidHover : Area2D
         {
             if (!aphid.Equals(CameraManager.FocusedAphid))
             {
-                AphidInfo.SetAphid(aphid);
+                AphidInfo.Instance.SelectAphid(aphid);
+                AphidInfo.Instance.Display(true, true);
                 CameraManager.Focus(aphid);
             }
             else
             {
-                AphidInfo.SetAphid(null);
+                AphidInfo.Instance.SelectAphid(null);
+                AphidInfo.Instance.Display(false, true);
                 CameraManager.UnFocus();
             }
             GetViewport().SetInputAsHandled();

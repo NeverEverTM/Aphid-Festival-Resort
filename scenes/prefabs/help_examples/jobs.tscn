@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=3 uid="uid://vrlyu0hgpxx8"]
+
+[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="1_ysnvk"]
+[ext_resource type="Texture2D" uid="uid://iw4rtrdoh3a6" path="res://sprites/help_examples/job_board.png" id="2_ysnvk"]
+
+[node name="jobs" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="job_label_0" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -458.0
+offset_top = -231.0
+offset_right = 530.0
+offset_bottom = 84.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "First, we need an aphid, and if you didn't know, they hatch from eggs!
+Press {open_inventory} to open your inventory, and click on one of the eggs to hold it.
+Now wit it in your hands, press {pickup} to drop it, [wave]and[/wave] to pick it up back again if needed."
+scroll_active = false
+metadata/controls = PackedStringArray("open_inventory", "pickup")
+
+[node name="job_label_1" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_top = 84.0
+offset_right = 507.0
+offset_bottom = 255.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "Tip: You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img]
+ symbol and clicking on any item you want to sell."
+scroll_active = false
+horizontal_alignment = 2
+metadata/controls = PackedStringArray("pull")
+
+[node name="job_board_img" type="TextureRect" parent="."]
+light_mask = 0
+material = ExtResource("1_ysnvk")
+layout_mode = 0
+offset_left = -407.0
+offset_top = 29.0
+offset_right = -34.0
+offset_bottom = 234.0
+texture = ExtResource("2_ysnvk")
+expand_mode = 1
+stretch_mode = 4

@@ -5,7 +5,6 @@ public partial class AphidSkin : Node2D
 {
 	[Export] public Sprite2D eyes, antenna, body, back_legs, front_legs;
 	private AphidInstance Instance;
-	private Aphid MyAphid;
 
 	/// <summary>
 	/// Used to keep track of eye expressions after blink.
@@ -28,12 +27,11 @@ public partial class AphidSkin : Node2D
         TickFlip((float)delta);
     }
 
-	public void SetInstance(AphidInstance _instance, Aphid _aphid)
+	public void SetInstance(AphidInstance _instance)
 	{
 		Instance = _instance;
 		front_legs_position = front_legs.Position;
 		back_legs_position = back_legs.Position;
-		MyAphid = _aphid;
 	}
 
 	// ==================| SKINS |======================
@@ -120,66 +118,73 @@ public partial class AphidSkin : Node2D
 		front_legs.Position = front_legs_position + (legsStep ? new Vector2(0, -1) : Vector2.Zero);
 		back_legs.Position = back_legs_position + (legsStep ? Vector2.Zero : new Vector2(0, -1));
 
-		var _sound = SoundManager.CreateSound2D(Aphid.Audio_Step, MyAphid.GlobalPosition);
-		_sound.VolumeDb = -10;
+		SoundManager.CreateSound2D("aphid/step", GlobalPosition).VolumeDb = -10;
 	}
 	/// <summary>
 	/// Properly handles walking during movement. 
 	/// if you want to play the animation by itself, set OverrideMovementAnim to true and use DoWalkAnim instead.
 	/// </summary>
-	public void StartWalk()
+	public void StartWalk(Vector2 _currentWalkingDirection)
 	{
 		if (OverrideMovementAnim)
 			return;
 
-		if (MyAphid.MovementDirection.IsEqualApprox(Vector2.Zero))
+		if (_currentWalkingDirection.IsEqualApprox(Vector2.Zero))
 		{
 			// Reset back to idle standing
 			front_legs.Position = front_legs_position;
 			back_legs.Position = back_legs_position;
-			return;
 		}
-
-		DoWalkAnim();
+		else
+			DoWalkAnim();
 	}
 
-	public void DoJumpAnim(bool _playSound = true)
+	public void DoJump(float _dropIntensity = 1)
+	{
+		Tween _jump = CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Cubic, "position", new Vector2(0, -20), 0.15f);
+		_jump.TweenInterval(0.05);
+		_jump.TweenSubtween(CreateAnimationTween(Tween.EaseType.In, Tween.TransitionType.Cubic, "position", new Vector2(0, 0), 0.25f * _dropIntensity));
+	}
+	public void DoHop(bool _playSound = true)
 	{
 		Tween tween = CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, -5), 0.15f);
-		tween.Finished += () => {
-			CreateAnimationTween(Tween.EaseType.In, Tween.TransitionType.Bounce, "position", new Vector2(0, 0), 0.15f);
-		};
+		tween.Finished += () =>  CreateAnimationTween(Tween.EaseType.In, Tween.TransitionType.Bounce, "position", new Vector2(0, 0), 0.15f);
 		if (_playSound)
-			SoundManager.CreateSound2D(Aphid.Audio_Jump, MyAphid.GlobalPosition, true);
+			SoundManager.CreateSound2D("aphid/jump", GlobalPosition, true);
 	}
-	public async Task DoDanceAnim()
+	public async Task DoDance()
 	{
 		for (int i = 0; i < 3; i++)
 		{
 			SetFlipDirection(IsFlipped ? Vector2.Right : Vector2.Left);
-			DoJumpAnim();
+			DoHop();
 			await Task.Delay(400);
 		}
 		int _ticks = 60;
+		OverrideMovementAnim = true;
 		while(_ticks > 0)
 		{
 			DoWalkAnim();
 			_ticks--;
 			await Task.Delay(16);
 		}
+		OverrideMovementAnim = false;
 	}
-	public void DoSquishAnim()
+	public Tween DoSquish(float _durationMultiplier = 1f, bool _playSound = true)
 	{
-		// scale
-		CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "scale", new Vector2(IsFlipped ? 1: -1, 0.5f), 0.15f)
-		.Finished += () => {
-			CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "scale", new Vector2(IsFlipped ? 1: -1, 1), 0.6f);
-		};
-		// position
-		CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, 2.2f), 0.2f)
-		.Finished += () => {
-			CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, 0), 0.5f);
-		};
-		SoundManager.CreateSound2D(Aphid.Audio_Boing, MyAphid.GlobalPosition, true);
+		// start of animation
+		Tween _squish = CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "scale", new Vector2(IsFlipped ? 1 : -1, 0.5f), 0.15f * _durationMultiplier);
+		_squish.SetParallel();
+		_squish.TweenSubtween(CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, 2.2f), 0.2f * _durationMultiplier));
+		_squish.SetParallel(false);
+
+		// end of animation
+		_squish.TweenSubtween(CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "scale", new Vector2(IsFlipped ? 1 : -1, 1), 0.6f * _durationMultiplier));
+		_squish.SetParallel();
+		_squish.TweenSubtween(CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, 0), 0.5f * _durationMultiplier));
+
+		if (_playSound)
+			SoundManager.CreateSound2D("aphid/boing", GlobalPosition, true);
+		return _squish;
 	}
 }

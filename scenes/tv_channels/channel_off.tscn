@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://dka1ip2cyn76r"]
+
+[ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="1_am37t"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
+light_mode = 1
+
+[node name="background" type="Sprite2D"]
+clip_children = 2
+light_mask = 0
+material = SubResource("CanvasItemMaterial_qug4s")
+texture = ExtResource("1_am37t")

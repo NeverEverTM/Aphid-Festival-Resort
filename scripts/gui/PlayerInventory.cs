@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Godot;
 
 public partial class PlayerInventory : Control
@@ -8,6 +7,7 @@ public partial class PlayerInventory : Control
 	private bool enabled;
 	private PackedScene item_container;
 	private const string ITEM_CONTAINER_PREFAB = "uid://cn7d8wjyx78a3";
+	public const int MAX_CAPACITY = 15;
 
 	[Export] private AnimationPlayer animator;
 	[Export] private HBoxContainer grid;
@@ -22,8 +22,8 @@ public partial class PlayerInventory : Control
 		Instance = this;
 		item_container = ResourceLoader.Load(ITEM_CONTAINER_PREFAB) as PackedScene;
 
-		modeControlLabel.Text = ControlsManager.GetActionName(InputNames.ChangeMode);
-		inventoryControlLabel.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
+		modeControlLabel.Text = ControlsManager.GetLocalizedActionName(InputNames.ChangeMode);
+		inventoryControlLabel.Text = ControlsManager.GetLocalizedActionName(InputNames.OpenInventory);
 		inventoryButton.Pressed += () => SetTo(!enabled);
 		modeButton.Pressed += ChangeInventoryMode;
 		ControlsManager.OnControlChanged += ChangeControlPrompt;
@@ -62,7 +62,7 @@ public partial class PlayerInventory : Control
 		for (int i = 0; i < Instance.grid.GetChildCount(); i++)
 			Instance.grid.GetChild(i).QueueFree();
 
-		for (int i = 0; i < Player.Data.InventoryMaxCapacity; i++)
+		for (int i = 0; i < MAX_CAPACITY; i++)
 		{
 			TextureButton _item = Instance.item_container.Instantiate() as TextureButton;
 			(_item.GetChild(0) as Control).SelfModulate = Instance.slotColor;
@@ -70,7 +70,7 @@ public partial class PlayerInventory : Control
 			Instance.grid.AddChild(_item);
 		}
 		Instance.inventoryCountLabel.Text = Instance.IsSelling ?
-				"$$$" : Player.Data.Inventory.Count + "/" + Player.Data.InventoryMaxCapacity;
+				"$$$" : Player.Data.Inventory.Count + "/" + MAX_CAPACITY;
 	}
 	private void SetInventorySlot(TextureButton _node, string _item_name)
 	{
@@ -101,7 +101,7 @@ public partial class PlayerInventory : Control
 			return;
 		}
 
-		Player.Data.AddCurrency(GlobalManager.G_ITEMS[_item_name].cost / 2);
+		PlayerData.AddCurrency(GlobalManager.G_ITEMS[_item_name].Cost / 2);
 		Update();
 
 		GameManager.Data.ItemsSold++;
@@ -117,9 +117,9 @@ public partial class PlayerInventory : Control
 	private void ChangeControlPrompt(string _, StringName _action)
 	{
 		if (_action == InputNames.OpenInventory)
-			inventoryControlLabel.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
+			inventoryControlLabel.Text = ControlsManager.GetLocalizedActionName(InputNames.OpenInventory);
 		else if (_action == InputNames.ChangeMode)
-			modeControlLabel.Text = ControlsManager.GetActionName(InputNames.ChangeMode);
+			modeControlLabel.Text = ControlsManager.GetLocalizedActionName(InputNames.ChangeMode);
 	}
 
 	// =======| Functional |========
@@ -135,7 +135,7 @@ public partial class PlayerInventory : Control
 		if (Player.Data.Inventory.Remove(_item_name))
 		{
 			Node2D _item = ResortManager.CreateItem(_item_name, Player.Instance.GlobalPosition);
-			Player.Instance.PickupNoAnim(_item, _item.GetMeta(StringNames.TagMeta).ToString());
+			Player.Instance.PickupNoAnim(_item, (StringNames.GlobalTags)(int)_item.GetMeta(StringNames.TagMeta));
 			Update();
 			SoundManager.CreateSound("ui/backpack_open");
 			return true;
@@ -158,13 +158,26 @@ public partial class PlayerInventory : Control
 	/// <returns></returns>
 	public static bool StoreItem(string _id, bool _byPassCheck = false)
 	{
-		if (!_byPassCheck && !CanBeStored(_id))
+		return StoreItem(_id, 1, _byPassCheck);
+	}
+
+	/// <summary>
+	/// Stores an item in the player's inventory.
+	/// </summary>
+	/// <param name="_id">The ID of the object.</param>
+	/// <param name="_amount">The amount of items to be stored.</param>
+	/// <param name="_byPassCheck">Skip the check of CanBeStored(). Only set this to true if you already done it yourself.</param>
+	/// <returns></returns>
+	public static bool StoreItem(string _id, int _amount, bool _byPassCheck = false)
+	{
+		if (!_byPassCheck && !CanBeStored(_id, _amount))
 		{
 			SoundManager.CreateSound("ui/button_fail");
 			return false;
 		}
 
-		Player.Data.Inventory.Add(_id);
+		for (int i = 0; i < _amount; i++)
+			Player.Data.Inventory.Add(_id);
 		Update();
 		return true;
 	}
@@ -176,18 +189,13 @@ public partial class PlayerInventory : Control
 	/// <returns>Wheter it could store the item.</returns>
 	public static bool StoreCurrentItem(bool _okayWithEmpty = false)
 	{
-		if (Player.Instance.HeldPickup.Item == null)
+		if (Player.Instance.HeldPickup == null)
 			return _okayWithEmpty;
 			
-		if (Player.Instance.HeldPickup.Tag == Aphid.Tag)
+		if (Player.Instance.HeldPickup.Tag == StringNames.GlobalTags.Aphid)
 			return false;
 
-		var _id = Player.Instance.HeldPickup.Item.GetMeta(StringNames.IdMeta).ToString();
-		if (_id == "aphid_egg") // aphid eggs cannot be stored back for now
-		{
-			SoundManager.CreateSound("ui/button_fail");
-			return false;
-		}
+		var _id = Player.Instance.HeldPickup.Entity.GetMeta(StringNames.IdMeta).ToString();
 
 		if (StoreItem(_id))
 		{
@@ -213,13 +221,19 @@ public partial class PlayerInventory : Control
 	}
 
 	// MARK: Verifier Methods
-	public static bool IsExceedingCapacity(int _amount = 1)
+	/// <summary>
+    /// Checks if the inventory would be full with another item added.
+    /// </summary>
+    /// <param name="_amount">If two or more items need to be stored, check against this value instead.</param>
+    /// <returns></returns>
+	public static bool WouldInventoryBeFullWith(int _amount = 1)
 	{
 		if (_amount <= 0)
 			return false;
 		else
-			return Player.Data.Inventory.Count + _amount > Player.Data.InventoryMaxCapacity;
+			return Player.Data.Inventory.Count + _amount > MAX_CAPACITY;
 	}
+	
 	/// <summary>
 	/// Checks wheter it is allowed to store this item or not.
 	/// </summary>
@@ -230,11 +244,11 @@ public partial class PlayerInventory : Control
 	{
 		if (string.IsNullOrEmpty(_id))
 		{
-			Logger.Print(Logger.LogPriority.Error, "PlayerInventory: This object is empty/null and cannot be stored.");
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "PlayerInventory: This object is empty/null and cannot be stored.");
 			return false;
 		}
 
-		if (IsExceedingCapacity(_amount))
+		if (WouldInventoryBeFullWith(_amount))
 			return false;
 
 		return true;

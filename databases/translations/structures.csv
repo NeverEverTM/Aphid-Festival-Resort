@@ -50,13 +50,13 @@ hot_bathtub_desc,A fancy bath of warm water that will refresh back up any aphid 
 trampoline_name,Trampoline,Trampolín
 trampoline_desc,"Fun for all ages, now with extra spring on your step.","Diversion para todas las edades, ahora con más salto por cada paso que des."
 train_dummy_name,Train Dummy,Muñeco de Entrenamiento
-train_dummy_desc,Let it all against this outrageous looking fella that feels weirdly good to punch. Trains strength.,"Dalo tu todo contra este muñeco de entrenamiento, golpearlo se siente extrañamente relajante. Entrena fuerza."
+train_dummy_desc,Let it all against this outrageous looking fella that feels weirdly good to punch. Trains [img width=40]res://sprites/icons/strength.tres[/img].,"Dalo tu todo contra este muñeco de entrenamiento, golpearlo se siente extrañamente relajante. Entrena [img width=40]res://sprites/icons/strength.tres[/img]."
 runmill_name,Runmill,Cinta de Correr
-runmill_desc,"Give it your all and run a marathon, all while in the comfort of your own home. Trains speed.",Corre un maratón en el comfort de tu propio hogar. Entrena agilidad.
+runmill_desc,"Give it your all and run a marathon, all while in the comfort of your own home. Trains [img width=40]res://sprites/icons/speed.tres[/img].",Corre un maratón en el comfort de tu propio hogar. Entrena [img width=40]res://sprites/icons/speed.tres[/img].
 kindergarten_name,Kindergarten,Jardin de áfidos
-kindergarten_desc,"Where you can learn the basics of math, and Waspnish for some reason. Trains intelligence. ","Donde puedes aprender las bases de matematicas, y Bugnish por alguna razon. Entrena inteligencia."
+kindergarten_desc,"Where you can learn the basics of math, and Waspnish for some reason. Trains [img width=40]res://sprites/icons/intelligence.tres[/img].","Donde puedes aprender las bases de matematicas, y Bugnish por alguna razon. Entrena [img width=40]res://sprites/icons/intelligence.tres[/img]."
 jump_rope_name,Jump Rope,Cuerda de Saltar
-jump_rope_desc,Who needs wings when you can jump as high as a grasshopper. Trains stamina.,Quien necesita alas cuando puedes saltar como un salatamontes. Entrena resistencia.
+jump_rope_desc,Who needs wings when you can jump as high as a grasshopper. Trains [img width=40]res://sprites/icons/stamina.tres[/img].,Quien necesita alas cuando puedes saltar como un salatamontes. Entrena [img width=40]res://sprites/icons/stamina.tres[/img].
 pot_grass_name,Grass Pot,Maceta de Hierba
 pot_grass_desc,Why have grass in the ground when you could have it in this luxurious cheap pot.,"Para que tener una planta en el suelo, cuando podrias tenerla en esta lujosa maceta de segunda mano."
 poster_mothiva_name,Mothiva Show Poster,Mothiva Poster

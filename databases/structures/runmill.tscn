@@ -12,12 +12,10 @@ region = Rect2(0, 0, 64, 32)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yx58p"]
 size = Vector2(94, 29)
 
-[node name="runmill" type="Sprite2D" node_paths=PackedStringArray("resting_position")]
+[node name="runmill" type="Sprite2D"]
 texture = SubResource("AtlasTexture_5spxb")
 offset = Vector2(0, -11)
 script = ExtResource("1_yrewt")
-timer = 10.0
-resting_position = NodePath("Marker2D")
 
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2(0, -11)

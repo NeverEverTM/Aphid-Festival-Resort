@@ -1,6 +1,4 @@
 New aphid skins and items can be drawn and implemented rather easily using the atlas packager as a tool.
-
-TODO: It nees now an update for the gui version...
 ### Step 1
 [For Skins]
 You need to open the default template for aphid skins in [documentation/aphid_skin.kra] (it only opens in Krita but you can copy the template's structure to another program afterwards) and save the file as a brand new file.

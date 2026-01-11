@@ -17,7 +17,7 @@ void vertex() {
 void fragment() {
 	vec2 _size = node_size;
 	_size.y = node_size.y * (1.0 + (abs(LOCAL_UV.y - 0.5) / 0.5));
-	
+
 	vec2 full_uv = UV * (1.0 / _size);
 	vec2 scroll = full_uv + (-direction) * TIME * speed;
 	vec4 _sample = texture(TEXTURE, scroll);

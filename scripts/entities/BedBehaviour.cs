@@ -1,28 +1,29 @@
 using Godot;
 using System;
 
-public partial class BedBehaviour : Sprite2D, IFurnitureInteractable, Player.IInteractEvent
+public partial class BedBehaviour : Sprite2D, IStructureAphid
 {
     [Export] private Marker2D restingPosition;
     [Export] private float staminaRecoveryCooldown = -1;
 
     public bool IsInterruptable { get; set; } = true;
     public Aphid SelectedAphid { get; set; }
+    public Guid SelectedAphidID { get; set; }
 
     private float stamina_recovery_timer;
 
-    public void Enter(EventArgs args)
+    public void Enter()
     {
         SelectedAphid.skin.SetFlipDirection(Vector2.Left);
         SelectedAphid.GlobalPosition = restingPosition.GlobalPosition;
         stamina_recovery_timer = staminaRecoveryCooldown;
     }
 
-    public void Exit(EventArgs args)
+    public void Exit()
     {
         SelectedAphid.GlobalPosition = restingPosition.GlobalPosition + new Vector2(0, 20);
     }
-    public void Process(EventArgs args, float delta)
+    public void Process(float delta)
     {
         if (staminaRecoveryCooldown < 0) // is disabled?
             return;
@@ -32,10 +33,25 @@ public partial class BedBehaviour : Sprite2D, IFurnitureInteractable, Player.IIn
         else
         {
             stamina_recovery_timer = staminaRecoveryCooldown;
-            SelectedAphid.Instance.Status.AddTiredness(-1);
+            SelectedAphid.Instance.AddTiredness(-1);
         }
     }
 
     public void Interact() =>
-        (this as IFurnitureInteractable).TriggerPlayerInteraction();
+        (this as IStructureAphid).InteractWithAnAphid();
+
+    public void Set(string _data)
+    {
+        SelectedAphidID = new Guid(_data);
+        if (SelectedAphidID != Guid.Empty && GameManager.Aphids[SelectedAphidID].Status.Mode == AphidData.EntityStatusType.Active)
+        {
+            SelectedAphid = GameManager.Aphids[SelectedAphidID].Entity; 
+            Enter();
+        }
+    }
+
+    public string Get()
+    {
+        return SelectedAphidID.ToString();
+    }
 }

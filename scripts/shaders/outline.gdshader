@@ -1,3 +1,5 @@
+// GENERATES AN OUTLINE AROUND SPRITES
+// (NOT ORIGINALLY MINE)
 shader_type canvas_item;
 render_mode unshaded;
 

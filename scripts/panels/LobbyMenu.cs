@@ -1,11 +1,12 @@
 using Godot;
 using System;
 using System.Linq;
+using System.Text;
 
-public partial class LobbyMenu : Control, MenuTrigger.ITrigger
+public partial class LobbyMenu : Control
 {
-    private MenuInstance menu;
-    [Export] private AnimationPlayer player;
+    [Export] private InteractableArea2D interactArea;
+    [Export] private AnimationPlayer animator;
     [Export] private TextureButton[] categoryButtons;
     [Export] private Control[] categoryNodes;
     [ExportGroup("Aphid")]
@@ -17,18 +18,18 @@ public partial class LobbyMenu : Control, MenuTrigger.ITrigger
     [Export] private RichTextLabel statsDisplay, pronounsLabel, nameLabel;
     [Export] private Label pronounsDisplay, nameDisplay;
 
-    private enum Categories { Aphid, Resort, Stats }
-    private Categories Category;
-
+    private enum CategoriesEnum { Aphid, Resort, Stats }
+    private CategoriesEnum Category;
     private Guid current_key;
     private Control current_slot;
-
     private Color default_category_color;
+
+    private MenuInstance menu;
 
     public override void _EnterTree()
     {
         // create menu
-        menu = new("lobby", player, (_) =>
+        menu = new("lobby", animator, (_) =>
         {
             UpdateAphidPanel();
             UpdateStats();
@@ -38,20 +39,22 @@ public partial class LobbyMenu : Control, MenuTrigger.ITrigger
         for (int i = 0; i < categoryButtons.Length; i++)
         {
             int index = i;
-            (categoryButtons[i].GetChild(1) as Label).Text = "lobby_category_" + ((Categories)index).ToString().ToLower();
-            categoryButtons[i].Pressed += () => SetCategory((Categories)index);
+            (categoryButtons[i].GetChild(1) as Label).Text = "lobby_category_" + ((CategoriesEnum)index).ToString().ToLower();
+            categoryButtons[i].Pressed += () => SetCategory((CategoriesEnum)index);
         }
         
         // set default values
         default_category_color = categoryButtons[0].GetChild<Control>(0).SelfModulate;
-        SetCategory(Categories.Aphid, true);
+        SetCategory(CategoriesEnum.Aphid, true);
         sellAphidButton.Pressed += () => ConfirmationPopup.Create(SellAphid, null,
             ConfirmationPopup.ConfirmationEnum.Fast);
+
+        interactArea.OnInteractOnly.Add(SetMenu);
     }
 
     public void SetMenu() =>
         _= CanvasManager.Menus.SetTo(menu);
-    private void SetCategory(Categories _category, bool _force = false)
+    private void SetCategory(CategoriesEnum _category, bool _force = false)
     {
         if (_category.Equals(Category) && !_force)
             return;
@@ -75,6 +78,14 @@ public partial class LobbyMenu : Control, MenuTrigger.ITrigger
             var _pair_clone = _pair;
             aphidContainer.AddChild(CanvasManager.CreateAphidSlot(_pair_clone.Key, false, SetAphidIcon));
         }
+
+        if (GameManager.Aphids.Count == 0)
+            aphidName.Text = Tr("lobby_aphid_noaphids");
+        else
+        {
+            aphidContainer.GetChild<Control>(0).GrabFocus();
+            SetAphidIcon(GameManager.Aphids.First().Value.GUID);
+        }
     }
     private void ClearAphidPanel()
     {
@@ -86,7 +97,7 @@ public partial class LobbyMenu : Control, MenuTrigger.ITrigger
 
         current_key = Guid.Empty;
 
-        aphidName.Hide();
+        aphidName.Text = string.Empty;
         aphidCost.Hide();
         moveAphidButton.Hide();
         sellAphidButton.Hide();
@@ -105,7 +116,6 @@ public partial class LobbyMenu : Control, MenuTrigger.ITrigger
         aphidName.Text = _aphid.Genes.Name;
         aphidNode.AddChild(CanvasManager.CreateAphidSlot(_key, true));
 
-        aphidName.Show();
         aphidCost.Show();
         moveAphidButton.Show();
         sellAphidButton.Show();
@@ -113,7 +123,7 @@ public partial class LobbyMenu : Control, MenuTrigger.ITrigger
     private void SellAphid()
     {
         int _value = GetAphidValue(GameManager.Aphids[current_key]);
-        Player.Data.AddCurrency(_value);
+        PlayerData.AddCurrency(_value);
         GameManager.RemoveAphid(current_key);
         GameManager.Data.AphidsSold++;
         SoundManager.CreateSound("ui/kaching");
@@ -130,19 +140,21 @@ public partial class LobbyMenu : Control, MenuTrigger.ITrigger
     }
     private void UpdateStats()
     {
-        nameLabel.Text = $"[bgcolor=darkred]{Tr("new_game_player_name")}[/bgcolor]";
+        nameLabel.Text = $"[bgcolor=coral]{Tr("new_game_player_name")}[/bgcolor]";
         nameDisplay.Text = Player.Data.Name;
-        pronounsLabel.Text = $"[bgcolor=darkred]{Tr("new_game_pronouns")}[/bgcolor]";
+        pronounsLabel.Text = $"[bgcolor=coral]{Tr("new_game_pronouns")}[/bgcolor]";
         pronounsDisplay.Text = Player.Data.Pronouns.Join("/");
+        double _playtime = GameManager.Data.Playtime + (Time.GetUnixTimeFromSystem() - GameManager.Data.LastTimeLoaded);
+        
         string[] _stats = [
         $"[color=gold]{Tr("lobby_stats_totalaphids")}:[/color] {GameManager.Aphids.Count + GameManager.AphidArchive.Count}",
-        $"[color=crimson]{Tr("lobby_stats_aphidcount")}:[/color] {GameManager.Aphids.Count}",
-        $"[color=crimson]{Tr("lobby_stats_aphidssold")}:[/color] {GameManager.Data.AphidsSold}",
-        $"[color=crimson]{Tr("lobby_stats_savefilesboot")}:[/color] {GameManager.Data.SavefileBoots}",
-        $"[color=crimson]{Tr("lobby_stats_itemsbought")}:[/color] {GameManager.Data.ItemsBought}",
-        $"[color=crimson]{Tr("lobby_stats_itemssold")}:[/color] {GameManager.Data.ItemsSold}",
-        $"[color=crimson]{Tr("lobby_stats_randomnumber")}:[/color] {GD.Randi()}",
+        $"[color=gold]{Tr("lobby_stats_aphidcount")}:[/color] {GameManager.Aphids.Count}",
+        $"[color=gold]{Tr("lobby_stats_aphidssold")}:[/color] {GameManager.Data.AphidsSold}",
+        $"[color=gold]{Tr("lobby_stats_savefilesboot")}:[/color] {GameManager.Data.SavefileBoots}",
+        $"[color=gold]{Tr("lobby_stats_itemsbought")}:[/color] {GameManager.Data.ItemsBought}",
+        $"[color=gold]{Tr("lobby_stats_itemssold")}:[/color] {GameManager.Data.ItemsSold}",
+        $"[color=gold]{Tr("lobby_stats_totalplaytime")}:[/color] {TimeSpan.FromSeconds(_playtime).ToString(@"hh\:mm\:ss")}",
         ];
-        statsDisplay.Text = _stats.Join("\n");
+        statsDisplay.Text = new StringBuilder().AppendJoin("\n", _stats).ToString();
     }
 }

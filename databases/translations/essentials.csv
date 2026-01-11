@@ -1,25 +1,30 @@
 ,en,es
-warning_invalid_resort,This resort is not valid for this action. Maybe it does not exist?,Este complejo no es valido para esta accion. ¿Puede que no exista?
-warning_invalid_name,"This resort name is not valid, be sure to exclude special characters.","Este nombre de complejo no es valido, asegurate de remover caracteres especiales."
+warning_invalid_resort,Invalid action. Try again.,Accion Invalida. Prueba de nuevo.
+warning_invalid_name,"This resort name is not valid, be sure to exclude any special characters.","Este nombre de complejo no es valido, asegurate de remover caracteres especiales."
 warning_already_exists,This name is already taken by another resort! Delete it or go to your saves folder and move it.,Un complejo con este nombre ya existe! Eliminalo o ve a la carpeta de guardados y muevelo.
 warning_key_duplicated,This key is already binded to another action!,¡Esta tecla ya esta conectada a otra accion!
 warning_incompatible_version,The savefile you are trying to load is from another version! Are you sure you want to load?,La partida que intentas cargar es de otra version! ¿Estas seguro que quieres cargarla?
 warning_invalid_building,Cannot place this building here!,No se puede colocar esta estructura aquí!
 warning_news_locale,"This should not be visible, but if it is, hi! This is a warning for other languages.",Esta noticia no tiene una versión traducida a este lenguaje.
 press_start,Press {0} to start!,Presiona {0} para empezar!
-new_game,New Game,Nueva Partida
-load_game,Load Game,Cargar Partida
-continue,Continue,Continuar
-controls,Controls,Controles
-options,Options,Opciones
-credits,Credits,Creditos
-exit,Exit,Salir
+start_newgame,New Game,Nueva Partida
+start_loadgame,Load Game,Cargar Partida
+start_continue,Continue,Continuar
+start_controls,Controls,Controles
+start_options,Options,Opciones
+start_credits,Credits,Creditos
+start_exit,Exit,Salir
 new_game_warning,WARNING: Savefiles may become incompatible with future versions!,ADVERTENCIA: Partidas guardadas no tienen garantizado funcionar en versiones posteriores!
 new_game_player_name,Name:,Nombre:
 new_game_pronouns,Pronouns:,Pronombres:
 new_game_pronouns_placeholder,They/them,Elle/elles
-pronouns_they,They,Elle
-pronouns_them,them,elles
+pronouns_option_male,He/him,El
+pronouns_option_female,She/her,Ella
+pronouns_option_nonbinary,They/them,Elle
+pronouns_option_custom,Custom,Personalizado
+pronouns_male,He/him/his/himself,El/o
+pronouns_female,She/her/hers/herself,Ella/a
+pronouns_nonbinary,They/them/theirs/themself,Elle/e
 new_game_resort_name,Resort Name:,Nombre del complejo:
 new_game_creative,Creative Mode,Modo Creativo
 new_game_nodeath,No Aphid Death,Áfidos No Mueren
@@ -48,6 +53,11 @@ confirmation_no,Nope,No
 confirmation_exit,"Are you sure you want to exit?
 Your aphids will miss you!","¿Estas seguro que quieres salir?
 Tus áfidos te echaran de menos!"
+confirmation_exit_nosave,"Are you sure you want to exit?
+Your aphids will miss you!
+[shake][color=red](Unsaved progress will be lost)[/color][/shake]","¿Estas seguro que quieres salir?
+Tus áfidos te echaran de menos!
+[shake][color=red](Progreso no guardado se perdera)[/color][/shake]"
 options_master,Master,Master
 options_music,Music,Musica
 options_sounds,Sounds,Sonidos
@@ -76,38 +86,52 @@ controls_interactions_name,Interactions,Interacciones
 controls_buildmode_name,Build Mode,Modo Construcción
 controls_menus_name,Menu Access,Acceso de Menus
 controls_reset,Hold F1 to reset binds,Sosten F1 para resetar los controles
-help_title,Aphid Basics and You - 101,Introducción al Cuidado de Áfidos
-help_desc_0,"Welcome to the Resort! Start by hatching your first Aphid.
-Press {0} to open the inventory, you can click on an item to pull it, and press {1} to drop it.
-Use the latter to pickup stuff as well!","¡Bienvenido al Complejo! Empieza eclosionando tu primer Áfido.
+help_intro_title,Tutorial: Introduction,
+help_intro_0,"First, we need an aphid, and if you didn't know, they hatch from eggs!
+Press {0} to open your inventory, and click on one of the eggs to hold it.
+Now with it in your hands, press {1} to drop it, [wave]use the same key to pick them back aswell![/wave] .","¡Bienvenido al Complejo! Empieza eclosionando tu primer Áfido.
 Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
 ¡Este ultimo tambien se usa para recoger!"
-help_desc_1,"Aphids need to be taken care of! Interact with them using {0} to pet them.
-Be sure to also give them enough [color=cyan]food and water[/color]!","Áfidos requieren de cuidado! Interactua presionando {0} para acariciarlos.
-Asegurate de darles de [color=cyan]comer y beber[/color]!"
-help_desc_2,"You can buy supplies at the [color=cyan]store[/color], simply stand in front of it and interact with it.
-This applies to anything that looks, and is, interactable!","Compra provisiones en la [color=cyan ]tienda[/color], simplemente situate enfrente de ella e interactua.
-¡Esto aplica para todo lo que se vea Y sea interactuable!"
-help_desc_3,"Money grows from Aphids, literally!
-Interact with [color=#e33d00]outlined[/color] aphids to milk them for berries.
-The happier, the bigger the reward!","El dinero crece de los Áfidos, ¡literalmente!
-Interactua con áfidos [color=#e33d00]delineados[/color] para orderñarlos por bayas.
-Cuanto más felices esten, mejor la recompensa."
-help_desc_4,"You can cook dishes at the kitchen, where you can mix and match ingredients.
-Remember that your aphids have a unique preference for certain food types!","Puedes hacer platillos unicos en la cocina, donde puedes mezclar y combinar ingredientes.
-¡Recuerda que tus áfidos tendran una preferencia unica por ciertos tipos de comida!"
-help_desc_5,"Want to see your progress? Open the generational album with {0} and admire all of
-your current and past aphids under your care. You can watch their photos here too!","¿Quieres ver tu progreso? Abre el album generacional con {0} y admira todos
-los áfidos presentes y pasados bajo tu cuidado. Tambien puedes ver sus fotos aquí ."
-help_desc_6,"Here is the aphid's stat window, where you can see its needs and skills.
-You can easily rename an aphid by pressing the name, modyfing it and pressing Enter.","Esto es el estado de un áfidos, donde muestra sus necesidades y habilidades.
-Puedes renombrarlos facilmente, simplemente presiona su nombre, modificalo y presiona Enter."
-help_desc_7,"Get a better view of your resort by pressing {0} and enter free camera mode!
-While in this mode, you can watch over your aphids.
-Here you can find the build menu, the furniture store, and other camera functions.","¡Consigue una mejor vision del complejo presionando {0} para acceder al modo camara libre!
-En este modo, puedes supervisar tus áfidos de forma rapida.
-Puedes encontrar los menus de construcción, el catalogo de muebles, y otras funciones de camara."
+help_intro_1,"[color=coral]Tip:[/color] Press {0} as shortcut for grabbing the first item in your bag.
+It is also the [shake]only[/shake] way to store an item back.",
+help_caretake_title,Tutorial: Basic Caretaking,
+help_caretake_0,"Aphids have needs that you have to take care of, such as [color=coral]food[/color], [color=cyan]water[/color] and [color=mediumpurple]affection[/color].
+You can see how good they are doing by pressing {0} near them.
+This will show you their current status and skill progress. 
+You can start by petting them with {1}. This will also raise their bondship with you,
+which affects some parts of their behaviour!",
+help_caretake_1,[color=coral]Tip:[/color] You can also use the same bind to interact with other things in the world.,
+help_shop_title,Tutorial: Item Shop,
+help_shop_0,"You can purchase various items at the shop, such as food, toys, or eggs to hatch.
+To buy them, you will need berries, which you get from aphids!
+Aphids will generate berries every few minutes, you just need to manually harvest it by interacting with the aphid.",
+help_shop_1,[color=coral]Tip:[/color] You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img] symbol and clicking on any item you want to sell.,
+help_kitchen_title,Tutorial: Kitchen Recipes,
+help_kitchen_0,"Food is more than just the single item. Near the shop a kitchen awaits, here you can mix and match ingredients to create all sorts of different recipes.",
+help_kitchen_1,"All dishes have different nutritional values and some even grant a skill bonus!
+Keep in mind that your aphids will have a unique preference for certain types of food which grant them an even bigger bonus on all stats.",
+help_kitchen_2,"[color=coral]Tip:[/color] If you need to experiment, there's some berry bushes around that should help you do it for free...",
+help_generations_title,Tutorial: Generations Album,
+help_generations_0,"You can watch all aphids that are, [wave]and[/wave] were under your care in the generations album.
+Press {0} to open it, here you can see your aphids origins, and, if you have a deep bond with them, you can even see their current personality!",
+help_generations_1,"This is also the place where photos are displayed, click on either the [img]res://sprites/ui/gui_icons/icon_camera.png[/img] icon on the top right to see an aphid's album, or the one at the bottom left to see the general album.",
+help_camera_title,Tutorial: Free Camera,
+help_camera_0,"By pressing {0}, you will activate free camera mode, where you can move freely through the resort.
+",
+help_camera_1,"[color=coral]First[/color] is the build menu, where you can place and move the furniture in the resort.
+[color=coral]Second[/color] is the furniture shop, where you can purchase said furniture.
+[color=coral]Third[/color] features the camera functions, such as aphid tracking and spectating.",
+help_jobs_title,Tutorial: Job Board,
+help_jobs_0,"You can send aphids to help requesta all over Bugaria! Simply head to the lobby and look in the job board to the left.
+All jobs have a difficulty that dictates the amount of skills and levels needed to give it a chance.
+After it is finished, you will be rewarded with berries and a small boost in skills.",
+help_jobs_1,"Beware! Underleveled aphids have the chance to fail the request, gaining only half the berries.",
+help_skills_title,Tutorial: Skill Training,
+help_skills_0,"Need a more efficient, faster push in skill leveling? Try training!",
+help_skills_1,"Certain furniture items allow to train specific skills, according to their description.
+After placing it down, simply hold an aphid, and then interact with the building to start.",
 pause_resume,Resume,Reanudar
+pause_save,Save,Guardar
 pause_options,Options,Opciones
 pause_controls,Controls,Controles
 pause_help,Help,Ayuda
@@ -167,7 +191,7 @@ trait_heavysleeper,Heavy Sleeper,Sueño Profundo
 trait_lightsleeper,Light Sleeper,Sueño Ligero
 trait_affectionate,Affectionate,Afectuoso
 trait_fastlearner,Fast Learner,Aprendiz Rapido
-trait_slowlearner,Slow Learner,Aprendiz Lento
+trait_producer,Quality Producer,Productor de Calidad
 food_flavor_0,Sweet,Dulce
 food_flavor_1,Sour,Agrio
 food_flavor_2,Salty,Salado
@@ -193,12 +217,13 @@ resort_golden_desc,"Situated at the Golden Settlement, It's the first accomodati
 camera_spectating,Spectating:,Espectando:
 lobby_category_aphid,Aphids,Áfidos
 lobby_category_resort,Upgrades,Mejoras
+lobby_category_stats,Statistics,Estadísticas
+lobby_aphid_noaphids,No Aphids,Sin Áfidos
 lobby_resort_service,Aphid Caretaking Service,Servicio de Cuidado de Áfidos
 lobby_resort_eastwing,East Wing Access,Acceso al a Ala Este
 lobby_resort_membership_silver,Upgrade Membership (Silver),Mejorar Membresía (Plata)
 lobby_resort_membership_gold,Upgrade Membership (Gold),Mejorar Membresía (Oro)
 lobby_resort_membership_diamond,Upgrade Membership (Diamond),Mejorar Membresía (Diamante)
-lobby_category_stats,Statistics,Estadísticas
 lobby_stats_totalaphids,Total aphids raised,Áfidos totales críados
 lobby_stats_aphidcount,Current aphids under your care,Áfidos actuales bajo tu cuidado
 lobby_stats_savefilesboot,Times this resort has been played,Veces que este complejo se ha jugado
@@ -213,7 +238,7 @@ lobby_job_timerdone,Done!,Hecho!
 lobby_job_successchance,Success Chance,Probabilidad de Éxito
 lobby_job_assign,ASSIGN,ASIGNAR
 lobby_job_select,SELECT,ESCOGER
-lobby_job_finish,FINISH,COMPLETAR
+lobby_job_finish,FINISH,FINALIZAR
 bio_name_placeholder,Aphid's Name,Nombre del Áfido
 bio_skill_stamina,Endurance,Resistencia
 bio_skill_strength,Strength,Fuerza

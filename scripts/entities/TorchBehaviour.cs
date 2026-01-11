@@ -2,15 +2,17 @@ using Godot;
 
 public partial class TorchBehaviour : AnimatedSprite2D
 {
-	[Export] private Light2D light;
+	[Export] private PointLight2D light;
 	[Export] private AnimatedSprite2D flame;
-	bool is_activated, firstload;
 
-	private static readonly RandomNumberGenerator _RNG = new();
-	public override void _EnterTree()
+	bool is_active;
+	float default_scale;
+
+	private static readonly RandomNumberGenerator TORCH_RNG = new();
+	public override void _Ready()
 	{
 		Play(StringNames.DefaultAnim);
-		Frame = new RandomNumberGenerator().RandiRange(0, 2);
+		Frame = TORCH_RNG.RandiRange(0, 2);
 		if (flame != null)
 		{
 			FrameChanged += () =>
@@ -19,77 +21,52 @@ public partial class TorchBehaviour : AnimatedSprite2D
 			};
 		}
 
-		FieldManager.OnTimeChange += LIGHT_EVENT_FN;
-		LIGHT_EVENT_FN();
+		FieldManager.Instance.OnTimeChange.Add((_) => { SwitchLightState(); });
+		SwitchLightState(_instant: true);
 	}
-	public override void _Process(double delta)
-	{
-		if (CameraManager.GetSquaredDistanceTo(GlobalPosition) < CameraManager.SCREEN_RENDER_DISTANCE_SQR
-		&& !(FieldManager.TimeOfDay == FieldManager.DayHours.Noon || FieldManager.TimeOfDay == FieldManager.DayHours.Morning))
-			light.Enabled = true;
-		else
-			light.Enabled = false;
-    }
 
-	public override void _ExitTree()
-	{
-		FieldManager.OnTimeChange -= LIGHT_EVENT_FN;
-	}
-	public void LIGHT_EVENT_FN()
-	{
-		if (firstload)
-			SwitchLightState();
-		else
-			SwitchLightState(_instant: true);
-		firstload = true;
-	}
 	public void SwitchLightState(bool _instant = false)
 	{
-		if (FieldManager.TimeOfDay == FieldManager.DayHours.Noon || FieldManager.TimeOfDay == FieldManager.DayHours.Morning)
+		is_active = true;
+		if (FieldManager.TimeOfDay == FieldManager.DayHourMode.Noon || FieldManager.TimeOfDay == FieldManager.DayHourMode.Morning)
+			is_active = false;
+
+		if (is_active) // turn on
 		{
-			if (_instant)
-			{
-				if (flame != null)
-					flame.Visible = false;
-			}
-			is_activated = false;
-		}
-		else if (!is_activated)
-		{
+			flame?.Show();
+			light.Enabled = true;
+
 			if (_instant)
 				light.Energy = 1;
-			if (flame != null)
+			else
+				LightIn();
+		}
+		else // turn off
+		{
+			if (_instant)
 			{
-				flame.Visible = true;
-				flame.Play("lit");
+				light.Enabled = false;
+				light.Energy = 0;
+				flame?.Hide();
 			}
-			is_activated = true;
-			LightIn();
+			else
+				LightOut();
 		}
 	}
 	public void LightIn()
 	{
 		Tween _in = CreateTween();
-		_in.TweenProperty(light, "energy", 1.1, _RNG.RandfRange(1, 2)).FromCurrent();
-		_in.Finished += LightOut;
+		_in.TweenProperty(light, "energy", 1, TORCH_RNG.RandfRange(3, 5)).FromCurrent();
 	}
 	public void LightOut()
 	{
 		Tween _out = CreateTween();
 
-		if (is_activated)
+		_out.TweenProperty(light, "energy", 0, TORCH_RNG.RandfRange(1, 2)).FromCurrent();
+		_out.Finished += () =>
 		{
-			_out.TweenProperty(light, "energy", 1.2, _RNG.RandfRange(1, 2)).FromCurrent();
-			_out.Finished += LightIn;
-		}
-		else
-		{
-			_out.TweenProperty(light, "energy", 0, _RNG.RandfRange(1, 2)).FromCurrent();
-			_out.Finished += () =>
-			{
-				light.Enabled = false;
-				flame?.Hide();
-			};
-		}
+			light.Enabled = false;
+			flame?.Hide();
+		};
 	}
 }

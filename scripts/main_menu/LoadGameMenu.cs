@@ -6,129 +6,122 @@ using Godot;
 
 public partial class LoadGameMenu : Control
 {
-	[Export] private AnimationPlayer menuPlayer;
-	[Export] private Control container;
+	[Export] private AnimationPlayer anim_player;
+	[Export] private Container container;
+	[Export] private ScrollContainer scroll;
 	[Export] private PackedScene savefile_slot;
-	private string[] fileNames;
-	private int lastFileNameIndex;
+	private string[] file_names;
+	private List<SaveSlot> loaded_savefiles = [];
 
-	private const string loadGameCategory = "load_game", continueCategory = "continue";
-
-	public void AddMenuAction()
+	private struct SaveSlot
 	{
-		if (DirAccess.GetDirectoriesAt(SaveSystem.PROFILES_DIR).Length > 0)
+		public Control slot;
+		public TimeSpan lastTimePlayed;
+		public string name;
+
+		public SaveSlot(string name, TimeSpan lastTimePlayed, Control slot)
 		{
-			// create load game button
-			if (DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories().Length > 0)
-				MainMenu.Instance.CreateMenuAction(loadGameCategory, OpenLoadMenu);
-			// create continue button
-			if (!string.IsNullOrEmpty(OptionsManager.Settings.LastPlayedResort))
-			{
-				SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
-				if (DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
-				{
-					MainMenu.Instance.CreateMenuAction(continueCategory, ContinueGame);
-					MainMenu.Instance.SetCategory(continueCategory);
-				}
-			}
+			this.name = name;
+			this.slot = slot;
+			this.lastTimePlayed = lastTimePlayed;
 		}
 	}
 
-	private void OpenLoadMenu()
+	private MenuInstance menu;
+
+	public override void _EnterTree()
 	{
+		menu = new(Enum.GetName(StartMenu.WheelCategories.LoadGame), anim_player, (_) =>
+		{
+			scroll.ScrollVertical = 0;
+			GenerateSaveSlots();
+		}, null, (_) => scroll.ScrollVertical = 0, null, true);
+
 		for (int i = 0; i < container.GetChildCount(); i++)
 			container.GetChild(i).QueueFree();
-		MainMenu.Instance.SetMenu(this);
 
-		Dictionary<TimeSpan, Control> _savefiles = [];
+		if (DirAccess.GetDirectoriesAt(SaveSystem.PROFILES_DIR).Length > 0)
+			StartMenu.CreateWheelAction(StartMenu.WheelCategories.LoadGame, menu);
+	}
 
-		// Create savefiles
-		fileNames = DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories();
+	private void GenerateSaveSlots()
+	{
+		file_names = DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories();
 		SaveSystem.SaveModule<GameManager.GameData> _module = new(GameManager.ID, new GameManager.GameDataModule(), 0);
 
-		for (int i = 0; i < fileNames.Length; i++)
+		for (int i = 0; i < file_names.Length; i++)
 		{
-			// Get the metdata of a savefile
-			string _profile = fileNames[i];
-			uint _version = 0;
-
-			// this whole "exists" check is to know wheter we should display info or state that is missing instead
-			// it checks if a directory has "main.data", if not, check if it has a pre-1.3 savefile instead, if neither then it does not exist
-			_module.RootPath = Path.Combine(SaveSystem.PROFILES_DIR, fileNames[i]);
-			bool _exists = false;
-			if (!Godot.FileAccess.FileExists(_module.GetPath()))
-			{
-				string _path_old = _module.GetPath(true).Replace("main.data", "game_savedata.json");
-				if (Godot.FileAccess.FileExists(_path_old))
-					_exists = true;
-			}
-			else
-				_exists = true;
-			GameManager.GameData _data = _module.Load(false);
-			if (_exists)
-				_version = _module.GameVersion;
-
-			Control _slot = savefile_slot.Instantiate() as Control;
-
-			(_slot.FindChild("name_label") as RichTextLabel).Text = _profile;
-			(_slot.FindChild("time_label") as Label).Text =
-					_exists ? TimeSpan.FromSeconds(_data.Playtime).ToString(@"hh\:mm\:ss") : "???";
-			(_slot.FindChild("aphid_label") as Label).Text =
-					_exists ? _data.AphidCount.ToString("000") : "???";
-
-			// sets the proper string for when the game was last played
-			string _lastPlayedTime = "???";
-			TimeSpan _lastPlayedInterval = new();
-
-			if (_exists)
-			{
-				_lastPlayedInterval = DateTime.Now - GlobalManager.Utils.UnixTimeStampToDateTime(Godot.FileAccess.GetModifiedTime(_module.GetPath()));
-				if (_lastPlayedInterval.TotalDays < 1)
-					_lastPlayedTime = Tr("date_today");
-				else if (_lastPlayedInterval.TotalDays < 2)
-					_lastPlayedTime = Tr("date_yesterday");
-				else
-					_lastPlayedTime = string.Format(Tr("date_daysago"), (int)_lastPlayedInterval.TotalDays);
-			}
-			(_slot.FindChild("last_played_label") as Label).Text = Tr("load_game_last_played") + " " + _lastPlayedTime;
-
-			// button functionality
-			(_slot.FindChild("load_button") as BaseButton).Pressed += () =>
-			{
-				if (_version < GlobalManager.GAME_VERSION)
-					ConfirmationPopup.Create(() => PlayFile(_profile, _data.LastRoom), null,
-							ConfirmationPopup.ConfirmationEnum.Fast, "warning_incompatible_version");
-				else
-					PlayFile(_profile, _data.LastRoom);
-			};
-			(_slot.FindChild("delete_button") as BaseButton).Pressed += () => DeleteFile(_profile, _slot);
-
-			_savefiles.Add(_lastPlayedInterval, _slot);
+			if (loaded_savefiles.Exists(s => s.name == file_names[i]))
+				continue;
+			loaded_savefiles.Add(CreateSaveSlot(file_names[i], ref _module));
 		}
 
-		var _list = _savefiles.OrderBy(age => age.Key.TotalSeconds).ToList();
-		foreach (var _pair in _list)
-			container.AddChild(_pair.Value);
+		loaded_savefiles = [.. loaded_savefiles.OrderBy(slot => slot.lastTimePlayed)];
 
-		menuPlayer.Play("open");
+		for (int i = 0; i < loaded_savefiles.Count; i++)
+			container.MoveChild(loaded_savefiles[i].slot, i);
 	}
-	private void ContinueGame()
+	private SaveSlot CreateSaveSlot(string _profile, ref SaveSystem.SaveModule<GameManager.GameData> _module)
 	{
-		if (string.IsNullOrWhiteSpace(OptionsManager.Settings.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
+		// Get the metdata of a savefile
+		uint _version = 0;
+
+		// this whole "exists" check is to know wheter we should display info or state that is missing instead
+		// it checks if a directory has "main.data", if not, check if it has a pre-1.3 savefile instead, if neither then it does not exist
+		_module.RootPath = Path.Combine(SaveSystem.PROFILES_DIR, _profile);
+		bool _exists = false;
+		if (!Godot.FileAccess.FileExists(_module.GetPath()))
 		{
-			MainMenu.Instance.RemoveMenuAction(continueCategory);
-			GlobalManager.CreatePopup("Could not find valid profile to continue", this);
-			return;
+			string _path_old = _module.GetPath(true).Replace("main.data", "game_savedata.json");
+			if (Godot.FileAccess.FileExists(_path_old))
+				_exists = true;
+		}
+		else
+			_exists = true;
+		GameManager.GameData _data = _module.Load(false);
+		if (_exists)
+			_version = _module.GameVersion;
+
+		// start generating the saveslot node
+		Control _slot = savefile_slot.Instantiate() as Control;
+
+		(_slot.FindChild("name_label") as RichTextLabel).Text = " " + _profile; // add a space for correct text spacing
+		(_slot.FindChild("time_label") as Label).Text =
+				_exists ? TimeSpan.FromSeconds(_data.Playtime).ToString(@"hh\:mm\:ss") : "???";
+		(_slot.FindChild("aphid_label") as Label).Text =
+				_exists ? _data.AphidCount.ToString("000") : "???";
+
+		string _lastPlayedText = "???";
+		TimeSpan _lastPlayedTime = new((long)(Time.GetUnixTimeFromSystem() - _data.LastTimeLoaded));
+
+		// sets the proper string for when the game was last played
+		if (_exists && _data.LastTimeLoaded != 0)
+		{
+			if (_lastPlayedTime.TotalDays <= 1)
+				_lastPlayedText = Tr("date_today");
+			else if (_lastPlayedTime.TotalDays <= 2)
+				_lastPlayedText = Tr("date_yesterday");
+			else
+				_lastPlayedText = string.Format(Tr("date_daysago"), (int)_lastPlayedTime.TotalDays);
 		}
 
-		SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
-        GameManager.GameSaveModule _module = new(GameManager.ID, new GameManager.GameDataModule(), 0)
-        {
-            RootPath = Path.Combine(SaveSystem.ProfilePath)
-        };
+		(_slot.FindChild("last_played_label") as Label).Text = $"{Tr("load_game_last_played")} {_lastPlayedText}";
 
-		GameManager.GameData _data = _module.Load(false);
-		MainMenu.LoadResort(_data.LastRoom);
+		// =====| button functionality |==========
+		var _button = _slot.FindChild("load_button") as BaseButton;
+		_button.FocusEntered += () => SoundManager.CreateSound("ui/button_switch");
+		_button.Pressed += () =>
+		{
+			if (_version < GlobalManager.GAME_VERSION)
+				ConfirmationPopup.Create(() => PlayFile(_profile, _data.LastRoom), null,
+						ConfirmationPopup.ConfirmationEnum.Fast, "warning_incompatible_version");
+			else
+				PlayFile(_profile, _data.LastRoom);
+		};
+		(_slot.FindChild("delete_button") as BaseButton).Pressed += () => DeleteFile(_profile, _slot);
+
+		container.AddChild(_slot);
+		return new(_profile, _lastPlayedTime, _slot);
 	}
 
 	private static void PlayFile(string _profile, string _room = "")
@@ -136,19 +129,20 @@ public partial class LoadGameMenu : Control
 		SaveSystem.SelectProfile(_profile);
 		MainMenu.LoadResort(_room);
 	}
-	private static void DeleteFile(string _profile, Node _slot)
+	private void DeleteFile(string _profile, Node _slot)
 	{
 		ConfirmationPopup.Create(() =>
 		{
 			MainMenu.DeleteResort(_profile);
+			loaded_savefiles.Remove(loaded_savefiles.Find((s) => s.slot.Equals(_slot)));
 			_slot.QueueFree();
 
 			// there is no more savefiles, reset to default installation state
 			if (DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories().Length == 0)
 			{
-				MainMenu.Instance.RemoveMenuAction(loadGameCategory);
-				MainMenu.Instance.RemoveMenuAction(continueCategory);
-				MainMenu.Instance.CloseMenu();
+				StartMenu.RemoveWheelAction(StartMenu.WheelCategories.LoadGame);
+				StartMenu.RemoveWheelAction(StartMenu.WheelCategories.Continue);
+				StartMenu.Instance.GoBack();
 			}
 
 		}, null, ConfirmationPopup.ConfirmationEnum.Safe);

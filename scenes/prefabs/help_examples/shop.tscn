@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://yqk8ofxlcjuq"]
+
+[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="1_5xukx"]
+[ext_resource type="Texture2D" uid="uid://bjqhamn66qnsn" path="res://sprites/help_examples/shop.PNG" id="2_1s40j"]
+
+[node name="shop" type="Control"]
+self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+light_mask = 0
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="shop" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 604.0
+offset_top = 73.0
+offset_right = 1030.0
+offset_bottom = 579.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "You can purchase various items at the shop, such as food, toys, or eggs to hatch.
+To buy them, you will need berries, which you get from aphids!
+Aphids will genereate berries every few minutes, you just need to manually harvest it by interacting with the aphid."
+scroll_active = false
+
+[node name="shop2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 352.0
+offset_right = 549.0
+offset_bottom = 535.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "Tip: You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img] symbol and clicking on any item you want to sell."
+scroll_active = false
+
+[node name="shop_img" type="TextureRect" parent="."]
+light_mask = 0
+material = ExtResource("1_5xukx")
+layout_mode = 0
+offset_left = 79.0
+offset_top = 73.0
+offset_right = 498.0
+offset_bottom = 328.0
+texture = ExtResource("2_1s40j")
+stretch_mode = 4

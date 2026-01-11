@@ -1,55 +1,59 @@
 using Godot;
 
-public partial class BerryBushBehaviour : Sprite2D, Player.IInteractEvent, ResortManager.IMetadata
+public partial class BerryBushBehaviour : Sprite2D, SaveSystem.IDataModule
 {
 	[Export] private Texture2D[] berryTextures = new Texture2D[2];
-	[Export] private Node2D interactionArea;
+	[Export] private InteractableArea2D interactionArea;
 	[Export] private AnimationPlayer player;
-	[Export] private GpuParticles2D particles;
+
 	private float berry_timer;
 	private bool isfinished;
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
-		berry_timer = 60 * GlobalManager.RNG.RandiRange(3,5);
+        interactionArea.OnInteractOnly.Add(Interact);
     }
 
 	public void Interact()
 	{
-		if (isfinished && !PlayerInventory.IsExceedingCapacity(2))
+		if (isfinished && !PlayerInventory.WouldInventoryBeFullWith(2))
 		{
-			isfinished = false;
-			PlayerInventory.StoreItem("berry");
-			PlayerInventory.StoreItem("berry");
-			Texture = berryTextures[0];
-			player.Play("harvest");
-			particles.Emitting = true;
-			var _player = SoundManager.SFXPlayer2D.Duplicate() as AudioStreamPlayer2D;
-			_player.PitchScale = 3;
-			SoundManager.CreateSound2D("ui/leaves", _player, GlobalPosition);
 			interactionArea.RemoveMeta(StringNames.TagMeta);
-			berry_timer = 60 * GlobalManager.RNG.RandiRange(3,5);
+			PlayerInventory.StoreItem("berry", 2);
+			Default();
+
+			// animation and sounds
+			player.Play("harvest");
+			Texture = berryTextures[0];
+			SoundManager.CreateSound2D("ui/leaves", GlobalPosition).PitchScale = 3;
+			GlobalManager.EmitParticles("leaves_bush", GlobalPosition, false);
 		}
 	}
-    public override void _Process(double delta)
+    
+	public override void _Process(double delta)
     {
 		if (berry_timer > 0)
         	berry_timer -= (float)delta;
 		else if (!isfinished)
 		{
-			isfinished = true;
+			interactionArea.SetMeta(StringNames.TagMeta, (int)StringNames.GlobalTags.Interactable);
 			Texture = berryTextures[1];
-			interactionArea.SetMeta(StringNames.TagMeta, StringNames.InteractableTag);
 			player.Play("grow");
+			isfinished = true;
 		}
     }
-    public void SetData(string _data)
+    
+	public void Set(string _data)
 	{
 		berry_timer = float.Parse(_data);
 	}
-
-	public string GetData()
+	public string Get()
 	{
 		return berry_timer.ToString();
 	}
+	public void Default()
+    {
+        berry_timer = 60 * GlobalManager.RNG.RandiRange(3,5);
+		isfinished = false;
+    }
 }

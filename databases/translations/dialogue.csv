@@ -175,8 +175,8 @@ It would be a good idea if you read it, don't you think.",">...(...)¿Que es lo 
 >Estoy segure que te han dado una guía de [color=red]ayuda[/color](...)
 Sería una buena idea leerlo ahora, no te parece."
 echo_flavor_1,">No.(...) You cannot take the aphids outside.
->...(...)Yes. [i]You[/i] can go outside. I'm not your mother.",">No. No puedes llevarte a los áfidos afuera.
->...(...)Si, [i]tu[/i] puedes salir, no soy tu madre."
+>...(...)Yes. [shake]You[/shake] can go outside. I'm not your mother.",">No. No puedes llevarte a los áfidos afuera.
+>...(...)Si, [shake]tu[/shake] puedes salir, no soy tu madre."
 echo_flavor_2,">[font_size=20]...Did I really have to join her for this...[/font_size]
 >Erhm, hello?(...)
 Could you mind your own business?",">[font_size=20]...De verdad tenia que formar parte de esto por ella...[/font_size]
@@ -200,13 +200,13 @@ pero todo lo que hago es solo mirar estas [shake rate=20.0 level=6 connected=0]e
 >No hay manera que cualquier cosa más grande que un áfido sea capaz
 de venir a tocar la puerta.(...)
 Solo puedo rezar..."
-tanjy_flavor_0,">Whatcha looking at?
->Does my horn have something on it?(...)
-Ough!
->Why are you giggling!",">¿Que miras?
->¿Mi cuerno tiene algo?(...)
-Ough!
->¡Por qué te ries!"
+tanjy_flavor_0,">Whatcha looking at?(...)
+Does my horn have something on it?
+>[shake][font_size=80]Ough![/font_size][/shake]
+Why are you giggling!",">¿Que miras?(...)
+¿Mi cuerno tiene algo?
+>[shake][font_size=80]Ough![/font_size][/shake]
+¡Por qué te ries!"
 tanjy_flavor_1,">I come from [wave amp=50.0 freq=5.0 connected=0]very faaaar away[/wave](...)
 You can tell because I'm not like anyone else!
 >I'm strong(...), fast(...), intelligent(...), and strong!",">Vengo de [wave amp=50.0 freq=5.0 connected=0]muuuuuy lejos[/wave](...)
@@ -217,50 +217,75 @@ How dare they!
 >Until then, your aphids will be hatless(...)
 Sad!",">Dijeron que los sombreros vendrían hoy, ¡pero no los veo!
 ¡Cómo se atreven!
->Hasta entonces, tus áfidos estan calvos.(...)
+>Hasta entonces, tus áfidos estaran calvos.(...)
 ¡Que pena!"
-job_easy_0,"I require the assistance of brave, intrepid aphids, to mow grass!
-This tufts are invading my yard and I need them OUT.","Necesito la assistencia de intrepidos y valerosos áfidos, para cortar hierba!
+tanjy_flavor_3,">I would be inside but  the guard at the entrance won't let me.
+Rude!
+>I could beat them myself but...(...)
+I do need my hats, where are they!",">Entraria, pero el guarda en la entrada no me deja.
+Terrible!
+>Podria hacer algo al respecto pero...(...)
+De verdad que necesito mis sombreros ¡Donde estan!"
+job_easy_0,"I require the assistance of brave, intrepid aphids, to mow the grass!
+This grass tufts are blocking my whole yard and I need them OUT.","Necesito la asistencia de intrepidos y valerosos áfidos, para cortar hierba!
 Estos mates estan invadiendo mi jardín y los quiero FUERA."
-job_easy_1,"Needing a few aphids for supply transportation.
+job_easy_1,"Needing a few aphids for crate transportation.
 Preferably, with five years of entry experience.","Necesito un par de áfidos para transporte de suministros.
 Preferiblemente con cinco años de experiencia como practicante."
 job_easy_2,"Doing some research in lesser bugs.
-We need some with a basic understanding of commands.",WIP
+I just need one who listens well, that's all...","Haciendo una investigación en bichos menores.
+Solo necesito uno que sepa escuchar, eso es todo..."
 job_easy_3,"Needing some advertising on the go!
-No skills required, just a lot of enthusiasm!",WIP
-job_easy_4,"Need a delivery aphid. Lots of packages.
-And they need to be sent FAST.",WIP
-job_easy_5,"Looking to rent an aphid for a children's class.
-Please, no aggressive ones!",WIP
-job_easy_6,"Need a distraction for no reason in particular.
-I just need it to be quick, again, no reason in particular.",WIP
+No skills required, just a lot of enthusiasm!","Necesitamos publicidad!
+No se necesitan habilidades, solo un monton de entusiasmo!"
+job_easy_4,"In need of delivery bugs. We need them now and fast!
+We got lots of packages already, so please contact us 
+as soon as you can.","Necesitamos bichos de servicio. Ahora o nunca!
+Tenemos varios paquetes que se acumulan, así que porfavor, contactenos lo más rapido que se pueda."
+job_easy_5,"Looking to rent an aphid for a school class. The children would love it!
+Just need it to be well behaved. ","Viendo si puedo rentar un áfido para una clase.
+Estoy segura que a los chicos les encantara!
+Solo lo necesito que sea bien portado."
+job_easy_6,"There's lots of treasure hidden beneath the sands.
+We could do with a few lil scavengers.","Hay varios tesoros enterados debajo de las arenas.
+Nos podrian ser utiles un par de recolletores."
 job_medium_0,"Requesting aphids for general therapy and support services.
-Only particular need is for them to understand orders.",WIP
-job_medium_1,"Local construction workers needing a hand for land renovation!
+Only requirement is for them to understand my orders.","Requerio áfidos para fines de terapia y servicios de salud.
+Unico requerimiento es que entiendan mis ordenes."
+job_medium_1,"Local workers needing a hand for land renovation!
 Sapling, grass and rock eaters welcome.",WIP
 job_medium_2,"Having a problem with some unwanted guests!
 Requesting some aphids that can slice the life out of this weeds.",WIP
 job_medium_3,"We need a hand for berry transport.
 We'll even give you a part of the supply as thanks! (Just don't tell the queen)",WIP
-job_medium_4,"Getting lost is killing the economy over here.
-We'll pay handsomly to a aphid guide who can help turists arrive safely.",WIP
-job_medium_5,"The mines yearn for more workers.
-All hands help, even the little ones!",WIP
+job_medium_4,Emergency crew in need of a trained searcher for the rescue of lost explorers.,WIP
+job_medium_5,"Work in the tunnels is getting rough.
+Will be needing some extra hands on board.",WIP
 job_hard_0,"Help Wanted! The theater requires actors, great and handsome actors!
 Respond to this request if you think you have what I want.",WIP
 job_hard_1,"Requesting assistance for bridge repair operation.
 The stronger, the better.",WIP
-job_hard_2,"Good day resort members, if one could bring one of their aphids for revision,
-I would be thankful. Don't worry, they'll be fine.
-Chompy doesn't bite.",WIP
-job_hard_3,"Her majesty has requested to see one the aphids from the resort.
+job_hard_2,"Requesting a playmate for Chompy, let it be known, she plays rough.
+Looking forward to it.",WIP
+job_hard_3,"The queen has requested to see one of your aphids from the resort.
+She states that “they look like little adorable fellas” and such demands a demonstration.
 Bring one of great mind alike!",WIP
 job_hard_4,"The chomp infestation is getting out of hands.
-Requesting the strongest guards the settlement can send.",WIP
-job_expert_0,"On a hunt for golden seedlings. Thus I need an aphid that is tougher than the toughies, 
-smarter than the smarties, and sharper than the sharpies",WIP
-job_master_0,"Our crops are getting wilted by deadlanders.
-We plead for you to send one you see fit to handle such task.",WIP
+Requesting the strongest bugs the settlement can send, quick!",WIP
+job_expert_0,"Going on a hunt for golden seedlings, and I will need an aphid companion,
+who is tougher than the toughies, smarter than the smarties,
+and sharper than the sharpies.",WIP
+job_expert_1,"Threat arises from the shadows, requesting strong companions for
+pest control.",
+job_expert_2,"I need someone to go fetch me some ingredients, and it better be quick!
+Just leave them by the door.",
+job_expert_3,"Scout teams need to follow a trace for a potential nest of mantidflies, 
+and they could with someone that has a better sense of smell.",
+job_master_0,"Attacks by the deadlanders have obliterated our camps.
+We plead for a loyal guard who can keep them at bay.",WIP
 job_master_1,"Adventuring deeper on unknown areas, and as the paths become more puzzling,
 we need a companion who can wiggle us out of trouble.",WIP
+job_master_2,"(The request note is barely legible but you can see the crude drawing of an aphid)
+(It also has a berry symbol on it so I guess is not a threat either)",
+job_master_3,"Needing some test subjects for sustained battle simulations
+and I heard from a friend one of you could grant me one worthy subject.",

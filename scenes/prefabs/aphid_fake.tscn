@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://2rlgwyhwp5w8"]
+
+[ext_resource type="Script" uid="uid://cnk8ke0ejdobp" path="res://scripts/aphid/AphidFake.cs" id="1_io8qa"]
+[ext_resource type="Script" uid="uid://iy6e0bhh0det" path="res://scripts/aphid/AphidSkin.cs" id="2_hcs75"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_aeaon"]
+load_path = "res://.godot/imported/legs_idle.png-d9cdd6c74f01dbb3076c7f959a753f9c.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8peo8"]
+load_path = "res://.godot/imported/body_idle.png-9110ce617dd54d177c4fd4b975b66872.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_d51lm"]
+load_path = "res://.godot/imported/eyes_idle.png-0a2df93b13bd78a8b78ac77a5908e762.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_daav4"]
+load_path = "res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9f87e.ctex"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5soec"]
+size = Vector2(35, 10)
+
+[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin")]
+collision_layer = 3
+collision_mask = 3
+motion_mode = 1
+script = ExtResource("1_io8qa")
+skin = NodePath("anchor")
+
+[node name="anchor" type="Node2D" parent="." node_paths=PackedStringArray("eyes", "antenna", "body", "back_legs", "front_legs")]
+process_mode = 1
+script = ExtResource("2_hcs75")
+eyes = NodePath("eyes")
+antenna = NodePath("antenna")
+body = NodePath("body")
+back_legs = NodePath("back_legs")
+front_legs = NodePath("front_legs")
+
+[node name="back_legs" type="Sprite2D" parent="anchor"]
+use_parent_material = true
+position = Vector2(0, 1)
+texture = SubResource("CompressedTexture2D_aeaon")
+offset = Vector2(-6, -18)
+
+[node name="body" type="Sprite2D" parent="anchor"]
+use_parent_material = true
+texture = SubResource("CompressedTexture2D_8peo8")
+offset = Vector2(0, -16)
+
+[node name="eyes" type="Sprite2D" parent="anchor"]
+texture = SubResource("CompressedTexture2D_d51lm")
+offset = Vector2(0, -16)
+
+[node name="front_legs" type="Sprite2D" parent="anchor"]
+use_parent_material = true
+texture = SubResource("CompressedTexture2D_aeaon")
+offset = Vector2(0, -16)
+
+[node name="antenna" type="Sprite2D" parent="anchor"]
+texture = SubResource("CompressedTexture2D_daav4")
+offset = Vector2(0, -16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+z_index = -10
+position = Vector2(0.5, -3)
+shape = SubResource("RectangleShape2D_5soec")
+debug_color = Color(0.212894, 0.44259, 0.625621, 0.666667)

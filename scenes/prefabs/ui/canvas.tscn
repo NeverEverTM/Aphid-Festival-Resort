@@ -1,4 +1,4 @@
-[gd_scene load_steps=95 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=97 format=3 uid="uid://bufmc14xek8uk"]
 
 [ext_resource type="Script" uid="uid://du1wf6ua7yxdx" path="res://scripts/controllers/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
@@ -18,8 +18,6 @@
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="13_7k46k"]
 [ext_resource type="Shader" uid="uid://dw8sws2xkkyr6" path="res://scripts/shaders/outline.gdshader" id="13_8siup"]
 [ext_resource type="Script" uid="uid://c1bew1k35gsxj" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
-[ext_resource type="AudioStream" uid="uid://cipmd78nu3xqc" path="res://sfx/ui/button_select.wav" id="15_4n2d7"]
-[ext_resource type="AudioStream" uid="uid://8iee2bn6ldk1" path="res://sfx/ui/button_switch.wav" id="16_crekn"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
 [ext_resource type="Texture2D" uid="uid://4n4rotaskrdw" path="res://sprites/ui/gui_icons/icon_sell.png" id="17_y86om"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="18_i8b57"]
@@ -28,17 +26,15 @@
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="20_qrmy7"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="23_au4eg"]
 [ext_resource type="Script" uid="uid://c56otv2uv2d50" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
-[ext_resource type="Texture2D" uid="uid://dknqeho1jsf5o" path="res://sprites/help_examples/aphid_egg.PNG" id="26_6gm3y"]
-[ext_resource type="Texture2D" uid="uid://eym7ebbf50iv" path="res://sprites/help_examples/aphid_leave.PNG" id="27_hp0ii"]
-[ext_resource type="Texture2D" uid="uid://b8fsibtdj5m8p" path="res://sprites/help_examples/food.PNG" id="28_cw4t2"]
-[ext_resource type="Texture2D" uid="uid://bjqhamn66qnsn" path="res://sprites/help_examples/shop.PNG" id="29_uxl73"]
-[ext_resource type="Texture2D" uid="uid://c2lrlam0erhiq" path="res://sprites/help_examples/money.PNG" id="30_7xxid"]
-[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="30_snkug"]
-[ext_resource type="Texture2D" uid="uid://c6kkr4rw1ce15" path="res://sprites/help_examples/kut.PNG" id="31_uwabr"]
-[ext_resource type="Texture2D" uid="uid://b76u5f8hbpncc" path="res://sprites/help_examples/stats.PNG" id="31_x27oh"]
-[ext_resource type="Texture2D" uid="uid://drtx08aejoe38" path="res://sprites/help_examples/album.PNG" id="32_o4x4n"]
-[ext_resource type="Texture2D" uid="uid://6mmehkh5ph1d" path="res://sprites/help_examples/storage.PNG" id="33_mlkyv"]
+[ext_resource type="PackedScene" uid="uid://yqk8ofxlcjuq" path="res://scenes/prefabs/help_examples/shop.tscn" id="32_ignfg"]
+[ext_resource type="PackedScene" uid="uid://cdndyepkxq1g" path="res://scenes/prefabs/help_examples/kitchen.tscn" id="33_s3hmc"]
+[ext_resource type="PackedScene" uid="uid://vrlyu0hgpxx8" path="res://scenes/prefabs/help_examples/jobs.tscn" id="34_w2syd"]
+[ext_resource type="PackedScene" uid="uid://byd0gpwlwrcg2" path="res://scenes/prefabs/help_examples/generations.tscn" id="34_x2yum"]
+[ext_resource type="PackedScene" uid="uid://d3x44vhenjq3p" path="res://scenes/prefabs/help_examples/camera.tscn" id="35_50hc1"]
+[ext_resource type="PackedScene" uid="uid://c2bs6ryhkw4yf" path="res://scenes/prefabs/help_examples/skills.tscn" id="35_ignfg"]
 [ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="36_n1534"]
+[ext_resource type="PackedScene" uid="uid://cp3jfbnd6s48l" path="res://scenes/prefabs/help_examples/caretake.tscn" id="37_s3hmc"]
+[ext_resource type="PackedScene" uid="uid://bwlju5rebi5do" path="res://scenes/prefabs/help_examples/intro.tscn" id="38_x2yum"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="39_j2rvs"]
 [ext_resource type="PackedScene" uid="uid://co34071w6qov6" path="res://scenes/prefabs/ui/pause_menu_button.tscn" id="40_8siup"]
 [ext_resource type="Script" uid="uid://4hi7mig7sbn1" path="res://scripts/panels/GameOver.cs" id="42_n1534"]
@@ -65,6 +61,8 @@ shader_parameter/pattern = 2
 shader_parameter/inside = false
 shader_parameter/add_margins = true
 shader_parameter/number_of_images = Vector2(1, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_w2syd"]
 
 [sub_resource type="Animation" id="Animation_8lprv"]
 length = 0.001
@@ -683,114 +681,56 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("background:material:shader_parameter/color")
+tracks/0/path = NodePath("panel_bg:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("panel_bg:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(367, 132)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"values": [Vector2(425, 70)]
 }
 
 [sub_resource type="Animation" id="Animation_ew6dt"]
 resource_name = "close"
-length = 0.3
+length = 0.25
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("background:material:shader_parameter/color")
+tracks/0/path = NodePath("panel_bg:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0.588235), Color(1, 1, 1, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("panel_bg:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3),
+"times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Vector2(425, 90), Vector2(425, 800)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
+"values": [Vector2(425, 70), Vector2(425, 750)]
 }
 
 [sub_resource type="Animation" id="Animation_beomf"]
 resource_name = "open"
-length = 0.4
+length = 0.25
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("background:material:shader_parameter/color")
+tracks/0/path = NodePath("panel_bg:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.588235)]
+"values": [Vector2(425, 800), Vector2(425, 70)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("panel_bg:position")
+tracks/1/path = NodePath(".:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.266667),
-"transitions": PackedFloat32Array(0.5, 0.5),
-"update": 0,
-"values": [Vector2(425, 800), Vector2(425, 90)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -811,105 +751,225 @@ shader_parameter/direction = Vector2(-1, 1)
 shader_parameter/node_size = Vector2(1, 1)
 shader_parameter/color = Color(1, 1, 1, 0)
 
-[sub_resource type="Shader" id="Shader_n1534"]
-code = "shader_type canvas_item;
-render_mode unshaded;
-
-uniform vec4 color : source_color = vec4(1.0);
-uniform bool ignore_modulate = true;
-uniform float width : hint_range(0, 10) = 1.0;
-uniform int pattern : hint_range(0, 2) = 0; // diamond, circle, square
-uniform bool inside = false;
-uniform bool add_margins = true; // only useful when inside is false
-uniform vec2 number_of_images = vec2(1.0); // number of horizontal and vertical images in the sprite sheet
-
-varying flat vec4 modulate;
-
-void vertex() {
-	modulate = COLOR;
-
-	if (add_margins) {
-		if ((UV.x <= 0.0 || UV.x >= 1.0) && (UV.y <= 0.0 || UV.y >= 1.0)) {
-			VERTEX += (UV * 2.0 - 1.0) * width;
-		} else {
-			VERTEX += sign(VERTEX) * width; // replace sign(VERTEX) by (sign(VERTEX) * 2.0 - 1.0) if your AnimatedSprite2D isn't Centered
-		}
-	}
+[sub_resource type="Animation" id="Animation_w2syd"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("background:material:shader_parameter/color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
 }
 
-bool hasContraryNeighbour(vec2 uv, vec2 texture_pixel_size, vec2 image_top_left, vec2 image_bottom_right, sampler2D texture) {
-	for (float i = -ceil(width); i <= ceil(width); i++) {
-		float x = abs(i) > width ? width * sign(i) : i;
-		float offset;
-
-		if (pattern == 0) {
-			offset = width - abs(x);
-		} else if (pattern == 1) {
-			offset = floor(sqrt(pow(width + 0.5, 2) - x * x));
-		} else if (pattern == 2) {
-			offset = width;
-		}
-
-		for (float j = -ceil(offset); j <= ceil(offset); j++) {
-			float y = abs(j) > offset ? offset * sign(j) : j;
-			vec2 xy = uv + texture_pixel_size * vec2(x, y);
-
-			if ((xy != clamp(xy, image_top_left, image_bottom_right) || texture(texture, xy).a <= 0.0) == inside) {
-				return true;
-			}
-		}
-	}
-
-	return false;
+[sub_resource type="Animation" id="Animation_50hc1"]
+resource_name = "close"
+length = 0.2
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("background:material:shader_parameter/color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.588235), Color(1, 1, 1, 0)]
 }
 
-void fragment() {
-	vec2 uv = UV;
-	vec2 image_top_left = floor(uv * number_of_images) / number_of_images;
-	vec2 image_bottom_right = image_top_left + vec2(1.0) / number_of_images;
-
-	if (add_margins) {
-		vec2 texture_pixel_size = vec2(1.0) / (vec2(1.0) / TEXTURE_PIXEL_SIZE + vec2(width * 2.0) * number_of_images);
-
-		uv = (uv - texture_pixel_size * width - image_top_left) * TEXTURE_PIXEL_SIZE / texture_pixel_size + image_top_left;
-
-		if (uv != clamp(uv, image_top_left, image_bottom_right)) {
-			COLOR.a = 0.0;
-		} else {
-			COLOR = texture(TEXTURE, uv) * modulate;
-		}
-	} else {
-		COLOR = texture(TEXTURE, uv) * modulate;
-	}
-
-	if ((COLOR.a > 0.0) == inside && hasContraryNeighbour(uv, TEXTURE_PIXEL_SIZE, image_top_left, image_bottom_right, TEXTURE)) {
-		if (ignore_modulate){
-		// Plugin from the Lib didnt have this option,
-		//so here i manually ask if to use the modulate color as base
-			COLOR.rgb = inside ? mix(COLOR.rgb, color.rgb, color.a * modulate.a) : color.rgb;
-		}
-		else {
-			COLOR.rgb = inside ? mix(COLOR.rgb, color.rgb * modulate.rgb, color.a * modulate.a) : color.rgb * modulate.rgb;
-		}
-		COLOR.a += (1.0 - COLOR.a) * color.a * modulate.a;
-	}
+[sub_resource type="Animation" id="Animation_epclp"]
+resource_name = "open"
+length = 0.2
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("background:material:shader_parameter/color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.588235)]
 }
-"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6x4su"]
-shader = SubResource("Shader_n1534")
-shader_parameter/color = Color(0.465524, 0.0281535, 0.169077, 1)
-shader_parameter/ignore_modulate = true
-shader_parameter/width = 5.17
-shader_parameter/pattern = 2
-shader_parameter/inside = false
-shader_parameter/add_margins = true
-shader_parameter/number_of_images = Vector2(1, 1)
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_o7j8h"]
+_data = {
+&"RESET": SubResource("Animation_w2syd"),
+&"close": SubResource("Animation_50hc1"),
+&"open": SubResource("Animation_epclp")
+}
 
-[sub_resource type="LabelSettings" id="LabelSettings_sc5y1"]
-font_size = 40
-outline_size = 10
-outline_color = Color(0, 0, 0, 1)
+[sub_resource type="Animation" id="Animation_s3hmc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("help_bg:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(92, 40)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("help_controls:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(522, 600)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("help_title:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(236, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_x2yum"]
+resource_name = "close"
+length = 0.3
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("help_bg:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.435275, 1),
+"update": 0,
+"values": [Vector2(92, 40), Vector2(92, -700)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("help_controls:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.17, 0.3),
+"transitions": PackedFloat32Array(0.5, 2, 1),
+"update": 0,
+"values": [Vector2(522, 600), Vector2(522, 550), Vector2(522, 800)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("help_title:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.298774),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(236, 16), Vector2(236, -100)]
+}
+
+[sub_resource type="Animation" id="Animation_ignfg"]
+resource_name = "open"
+length = 0.3
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("help_bg:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(92, -700), Vector2(92, 40)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("help_controls:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(522, 800), Vector2(522, 600)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("help_title:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(236, -100), Vector2(236, 16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_50hc1"]
+_data = {
+&"RESET": SubResource("Animation_s3hmc"),
+&"close": SubResource("Animation_x2yum"),
+&"open": SubResource("Animation_ignfg")
+}
 
 [sub_resource type="Animation" id="Animation_x7mm2"]
 length = 0.001
@@ -1874,7 +1934,7 @@ shader_parameter/direction = Vector2(-1, 1)
 shader_parameter/node_size = Vector2(4, 4)
 shader_parameter/color = Color(0.568627, 0.239216, 0.117647, 0)
 
-[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("hud_element", "photo_display", "photo_anim_player", "currency_text", "screenshot_button", "menu_button", "prompt_grid", "weather_player", "weather_text", "weather_bg")]
+[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("hud_element", "photo_display", "photo_anim_player", "currency_text", "screenshot_button", "prompt_grid", "weather_player", "weather_text", "weather_bg")]
 process_mode = 1
 script = ExtResource("1_vek4n")
 hud_element = NodePath("hud")
@@ -1882,7 +1942,6 @@ photo_display = NodePath("photo")
 photo_anim_player = NodePath("photo/AnimationPlayer")
 currency_text = NodePath("berries_bar/amount")
 screenshot_button = NodePath("hud/screenshotButton")
-menu_button = NodePath("hud/menuButton")
 prompt_grid = NodePath("control_prompt_anchor/control_prompt_grid")
 prompt_element = ExtResource("6_2mjwi")
 weather_player = NodePath("datetime/AnimationPlayer")
@@ -1961,7 +2020,7 @@ offset_left = 1355.0
 offset_top = 809.0
 offset_right = 1784.0
 offset_bottom = 1107.0
-texture = ExtResource("33_mlkyv")
+texture = SubResource("CompressedTexture2D_w2syd")
 expand_mode = 1
 stretch_mode = 5
 flip_h = true
@@ -2319,9 +2378,10 @@ libraries = {
 &"": SubResource("AnimationLibrary_7mn38")
 }
 
-[node name="pause_menu" type="Control" parent="." node_paths=PackedStringArray("menu_player", "panel", "options_panel", "controls_panel", "help_panel", "buttons")]
+[node name="pause_menu" type="Control" parent="." node_paths=PackedStringArray("menu_button", "menu_player", "bg_player", "buttons", "options_panel", "controls_panel", "help_panel")]
 process_mode = 3
 visible = false
+light_mask = 0
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -2330,14 +2390,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_pcakw")
 script = ExtResource("14_uvp6r")
+menu_button = NodePath("../hud/menuButton")
 menu_player = NodePath("pause_player")
-panel = NodePath("panel_bg")
+bg_player = NodePath("background/background_player")
+buttons = [NodePath("panel_bg/VBoxContainer/resume"), NodePath("panel_bg/VBoxContainer/save"), NodePath("panel_bg/VBoxContainer/options"), NodePath("panel_bg/VBoxContainer/controls"), NodePath("panel_bg/VBoxContainer/help"), NodePath("panel_bg/VBoxContainer/backtomenu"), NodePath("panel_bg/VBoxContainer/exit")]
 options_panel = NodePath("options_panel")
 controls_panel = NodePath("controls_panel")
 help_panel = NodePath("help_panel")
-select_sound = ExtResource("15_4n2d7")
-switch_sound = ExtResource("16_crekn")
-buttons = [NodePath("panel_bg/VBoxContainer/resume"), NodePath("panel_bg/VBoxContainer/options"), NodePath("panel_bg/VBoxContainer/controls"), NodePath("panel_bg/VBoxContainer/help"), NodePath("panel_bg/VBoxContainer/backtomenu"), NodePath("panel_bg/VBoxContainer/exit")]
 
 [node name="pause_player" type="AnimationPlayer" parent="pause_menu"]
 libraries = {
@@ -2357,421 +2416,155 @@ scale = Vector2(4, 4)
 texture = ExtResource("18_i8b57")
 stretch_mode = 1
 
+[node name="background_player" type="AnimationPlayer" parent="pause_menu/background"]
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_o7j8h")
+}
+
 [node name="options_panel" parent="pause_menu" instance=ExtResource("19_h41ts")]
-visible = false
 layout_mode = 1
-offset_left = -600.0
-offset_top = -320.0
-offset_right = -560.0
-offset_bottom = -280.0
 
 [node name="controls_panel" parent="pause_menu" instance=ExtResource("23_au4eg")]
-visible = false
 layout_mode = 1
 offset_left = 8.0
 offset_top = -14.0
 offset_right = 48.0
 offset_bottom = 26.0
 
-[node name="help_panel" type="Control" parent="pause_menu" node_paths=PackedStringArray("helpDescriptions", "scrollContainer")]
+[node name="help_panel" type="Control" parent="pause_menu" node_paths=PackedStringArray("container_node", "count_label", "title_label", "left_button", "right_button", "anim_player")]
 visible = false
 light_mask = 0
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -27.0
-offset_top = -20.0
-offset_right = 13.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("24_xmavb")
-helpDescriptions = [NodePath("ScrollContainer/Control/intro_panel/welcome"), NodePath("ScrollContainer/Control/caretake_panel/care"), NodePath("ScrollContainer/Control/shop_panel/shop"), NodePath("ScrollContainer/Control/money_panel/money"), NodePath("ScrollContainer/Control/kitchen_panel/kitchen"), NodePath("ScrollContainer/Control/generations_panel/album"), NodePath("ScrollContainer/Control/stats_panel/stats"), NodePath("ScrollContainer/Control/resort_misc_panel/resort")]
-scrollContainer = NodePath("ScrollContainer")
+panels = Array[PackedScene]([ExtResource("38_x2yum"), ExtResource("37_s3hmc"), ExtResource("32_ignfg"), ExtResource("33_s3hmc"), ExtResource("34_x2yum"), ExtResource("35_50hc1"), ExtResource("34_w2syd"), ExtResource("35_ignfg")])
+container_node = NodePath("help_bg")
+count_label = NodePath("help_controls/count_label")
+title_label = NodePath("help_title/title_label")
+left_button = NodePath("help_controls/left")
+right_button = NodePath("help_controls/right")
+anim_player = NodePath("help_player")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="pause_menu/help_panel"]
-layout_mode = 0
-offset_left = -556.0
-offset_top = -206.0
-offset_right = 597.0
-offset_bottom = 381.0
-scroll_vertical = 100
-horizontal_scroll_mode = 0
+[node name="help_player" type="AnimationPlayer" parent="pause_menu/help_panel"]
+libraries = {
+&"": SubResource("AnimationLibrary_50hc1")
+}
 
-[node name="Control" type="Control" parent="pause_menu/help_panel/ScrollContainer"]
-custom_minimum_size = Vector2(1142.29, 3700)
-layout_mode = 2
-
-[node name="intro_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+[node name="help_bg" type="NinePatchRect" parent="pause_menu/help_panel"]
+self_modulate = Color(0.596205, 0.0484744, 0.226755, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 47.0
-offset_top = 22.0
-offset_right = 1119.0
-offset_bottom = 626.0
+offset_left = 92.0
+offset_top = 40.0
+offset_right = 1189.0
+offset_bottom = 659.0
 texture = ExtResource("4_bri73")
 patch_margin_left = 20
 patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="welcome" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/intro_panel"]
-layout_mode = 0
-offset_left = 66.0
-offset_top = 27.0
-offset_right = 986.0
-offset_bottom = 209.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "Welcome to the Resort! Start by hatching your first Aphid.
-Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
-Use the same button to pickup stuff as well!"
-scroll_active = false
-
-[node name="open_inv_image" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/intro_panel"]
+[node name="help_controls" type="NinePatchRect" parent="pause_menu/help_panel"]
+self_modulate = Color(0.827451, 0.345098, 0.431373, 1)
 light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 71.0
-offset_top = 233.0
-offset_right = 509.0
-offset_bottom = 530.0
-texture = ExtResource("26_6gm3y")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="drop_item_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/intro_panel"]
-light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 653.0
-offset_top = 240.0
-offset_right = 1029.0
-offset_bottom = 528.0
-texture = ExtResource("27_hp0ii")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="caretake_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 50.0
-offset_top = 652.0
-offset_right = 1118.0
-offset_bottom = 1002.0
-texture = ExtResource("4_bri73")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="care" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/caretake_panel"]
-layout_mode = 0
-offset_left = 53.0
-offset_top = 45.0
-offset_right = 649.0
-offset_bottom = 314.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "Welcome to the Resort! Start by hatching your first Aphid.
-Press {0} to open the inventory, click on an item to pull it, and press {1} to drop it.
-Use the same button to pickup stuff as well!"
-scroll_active = false
-
-[node name="food_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/caretake_panel"]
-light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 708.0
-offset_top = 45.0
-offset_right = 1010.0
-offset_bottom = 305.0
-texture = ExtResource("28_cw4t2")
-stretch_mode = 4
-
-[node name="shop_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 52.0
-offset_top = 1026.0
-offset_right = 1117.0
-offset_bottom = 1409.0
-texture = ExtResource("4_bri73")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="shop" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/shop_panel"]
-layout_mode = 0
-offset_left = 580.0
-offset_top = 41.0
-offset_right = 1006.0
-offset_bottom = 344.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="shop_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/shop_panel"]
-light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 46.0
-offset_top = 41.0
-offset_right = 530.0
-offset_bottom = 342.0
-texture = ExtResource("29_uxl73")
-stretch_mode = 4
-
-[node name="money_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 52.0
-offset_top = 1435.0
-offset_right = 617.0
-offset_bottom = 1823.0
-texture = ExtResource("4_bri73")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="money_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/money_panel"]
-light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 614.0
-offset_top = 32.0
-offset_right = 1016.0
-offset_bottom = 354.0
-texture = ExtResource("30_7xxid")
-stretch_mode = 4
-
-[node name="money" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/money_panel"]
-layout_mode = 0
-offset_left = 42.0
-offset_top = 31.0
-offset_right = 527.0
-offset_bottom = 367.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="kitchen_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 53.0
-offset_top = 1845.0
-offset_right = 1096.0
-offset_bottom = 2391.0
-texture = ExtResource("4_bri73")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="kitchen_npc_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/kitchen_panel"]
-light_mask = 0
-texture_filter = 2
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 511.0
-offset_top = 236.0
-offset_right = 5421.0
-offset_bottom = 3036.0
-scale = Vector2(0.1, 0.1)
-texture = ExtResource("36_n1534")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="kitchen_npc_img2" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/kitchen_panel"]
-light_mask = 0
-texture_filter = 2
-material = SubResource("ShaderMaterial_6x4su")
-layout_mode = 0
-offset_left = 86.0
-offset_top = 236.0
-offset_right = 495.0
-offset_bottom = 510.0
-texture = ExtResource("31_uwabr")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="kitchen" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/kitchen_panel"]
-layout_mode = 0
-offset_left = 53.0
-offset_top = 39.0
-offset_right = 972.0
-offset_bottom = 209.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="stats_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 51.0
-offset_top = 2416.0
-offset_right = 1096.0
-offset_bottom = 2809.0
-texture = ExtResource("4_bri73")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="stats" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/stats_panel"]
-layout_mode = 0
-offset_left = 54.0
-offset_top = 36.0
-offset_right = 603.0
-offset_bottom = 360.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="stats_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/stats_panel"]
-light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 640.0
-offset_top = 26.0
-offset_right = 993.0
-offset_bottom = 369.0
-texture = ExtResource("31_x27oh")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="generations_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 51.0
-offset_top = 2834.0
-offset_right = 1097.0
-offset_bottom = 3175.0
-texture = ExtResource("4_bri73")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="album_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/generations_panel"]
-light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 498.0
-offset_top = 26.0
-offset_right = 1010.0
-offset_bottom = 330.0
-texture = ExtResource("32_o4x4n")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="album" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/generations_panel"]
-layout_mode = 0
-offset_left = 43.0
-offset_top = 27.0
-offset_right = 460.0
-offset_bottom = 300.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="resort_misc_panel" type="NinePatchRect" parent="pause_menu/help_panel/ScrollContainer/Control"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 51.0
-offset_top = 3203.0
-offset_right = 1099.0
-offset_bottom = 3653.0
-texture = ExtResource("4_bri73")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="resort" type="RichTextLabel" parent="pause_menu/help_panel/ScrollContainer/Control/resort_misc_panel"]
-layout_mode = 0
-offset_left = 47.0
-offset_top = 36.0
-offset_right = 553.0
-offset_bottom = 396.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
-scroll_active = false
-
-[node name="build_img" type="TextureRect" parent="pause_menu/help_panel/ScrollContainer/Control/resort_misc_panel"]
-light_mask = 0
-material = ExtResource("30_snkug")
-layout_mode = 0
-offset_left = 593.0
-offset_top = 58.0
-offset_right = 990.0
-offset_bottom = 389.0
-texture = ExtResource("33_mlkyv")
-expand_mode = 1
-stretch_mode = 4
-
-[node name="title_bg" type="NinePatchRect" parent="pause_menu/help_panel"]
-self_modulate = Color(0.490616, 0.0316169, 0.179899, 1)
-layout_mode = 0
-offset_left = -540.0
-offset_top = -308.0
-offset_right = 612.0
-offset_bottom = -190.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -118.0
+offset_top = -120.0
+offset_right = 119.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
 texture = ExtResource("20_qrmy7")
 patch_margin_left = 20
 patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="Label" type="Label" parent="pause_menu/help_panel/title_bg"]
+[node name="left" type="TextureButton" parent="pause_menu/help_panel/help_controls"]
 light_mask = 0
 layout_mode = 0
+offset_left = -45.0
+offset_top = 4.0
+offset_right = 59.0
+offset_bottom = 100.0
+focus_mode = 0
+texture_normal = ExtResource("50_tqug1")
+stretch_mode = 5
+script = ExtResource("8_y632t")
+PressedColor = Color(0.644663, 0.644663, 0.644663, 1)
+FocusColor = Color(0.851769, 0.851769, 0.851769, 1)
+HoverColor = Color(0.840326, 0.840326, 0.840325, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="right" type="TextureButton" parent="pause_menu/help_panel/help_controls"]
+light_mask = 0
+layout_mode = 0
+offset_left = 176.0
+offset_top = 4.0
+offset_right = 280.0
+offset_bottom = 100.0
+focus_mode = 0
+texture_normal = ExtResource("50_tqug1")
+stretch_mode = 5
+flip_h = true
+script = ExtResource("8_y632t")
+PressedColor = Color(0.644663, 0.644663, 0.644663, 1)
+FocusColor = Color(0.851769, 0.851769, 0.851769, 1)
+HoverColor = Color(0.840326, 0.840326, 0.840325, 1)
+metadata/_custom_type_script = "uid://clrj1y6xmjq83"
+
+[node name="count_label" type="Label" parent="pause_menu/help_panel/help_controls"]
+layout_mode = 0
 offset_left = 50.0
+offset_top = 27.0
+offset_right = 183.0
+offset_bottom = 75.0
+text = "1/10"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="help_title" type="NinePatchRect" parent="pause_menu/help_panel"]
+self_modulate = Color(0.428168, 0.0223845, 0.154402, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -404.0
 offset_top = 16.0
-offset_right = 1103.0
-offset_bottom = 103.0
-theme_override_font_sizes/font_size = 50
-text = "help_title"
+offset_right = 404.0
+offset_bottom = 98.0
+grow_horizontal = 2
+texture = ExtResource("20_qrmy7")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="title_label" type="Label" parent="pause_menu/help_panel/help_title"]
+layout_mode = 0
+offset_right = 808.0
+offset_bottom = 82.0
+text = "Tutorial: This is a Title for this Window"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="panel_bg" type="NinePatchRect" parent="pause_menu"]
 layout_mode = 0
-offset_left = 367.0
-offset_top = 132.0
-offset_right = 788.0
-offset_bottom = 639.0
+offset_left = 425.0
+offset_top = 70.0
+offset_right = 846.0
+offset_bottom = 643.0
 texture = ExtResource("39_j2rvs")
 patch_margin_left = 30
 patch_margin_top = 30
@@ -2783,11 +2576,14 @@ axis_stretch_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="pause_menu/panel_bg"]
 layout_mode = 2
 offset_left = 31.0
-offset_top = 46.0
+offset_top = 38.0
 offset_right = 391.0
-offset_bottom = 486.0
+offset_bottom = 552.0
 
 [node name="resume" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
+layout_mode = 2
+
+[node name="save" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
 
 [node name="options" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
@@ -2804,17 +2600,6 @@ layout_mode = 2
 
 [node name="exit" parent="pause_menu/panel_bg/VBoxContainer" instance=ExtResource("40_8siup")]
 layout_mode = 2
-
-[node name="warning" type="Label" parent="pause_menu/panel_bg"]
-layout_mode = 0
-offset_left = -212.0
-offset_top = 545.0
-offset_right = 627.0
-offset_bottom = 593.0
-text = "pause_warning"
-label_settings = SubResource("LabelSettings_sc5y1")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="game_over" type="Control" parent="." node_paths=PackedStringArray("sprite", "label", "bg", "doneSymbol")]
 process_mode = 3

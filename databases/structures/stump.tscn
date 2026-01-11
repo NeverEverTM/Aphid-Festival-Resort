@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://mobb6ffpg1lv"]
+[gd_scene load_steps=6 format=3 uid="uid://mobb6ffpg1lv"]
 
 [ext_resource type="Texture2D" uid="uid://c6sxlnodi7bl3" path="res://sprites/props/stump.png" id="1_1rqe0"]
 [ext_resource type="Script" uid="uid://cw0psgmxj5gxf" path="res://scripts/entities/ChairBehaviour.cs" id="2_rxj05"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_25n0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rxj05"]
 size = Vector2(26, 9)
@@ -9,12 +10,13 @@ size = Vector2(26, 9)
 [sub_resource type="CircleShape2D" id="CircleShape2D_rxj05"]
 radius = 2.0
 
-[node name="stump" type="Sprite2D" node_paths=PackedStringArray("playerCollider")]
+[node name="stump" type="Sprite2D" node_paths=PackedStringArray("playerCollider", "interactArea")]
 texture = ExtResource("1_1rqe0")
 offset = Vector2(0, -14)
 script = ExtResource("2_rxj05")
 sitOffset = Vector2(0, -16)
 playerCollider = NodePath("StaticBody2D/static_collision")
+interactArea = NodePath("Area2D")
 metadata/id = "stump"
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
@@ -24,7 +26,8 @@ position = Vector2(0, -4.5)
 shape = SubResource("RectangleShape2D_rxj05")
 
 [node name="Area2D" type="Area2D" parent="."]
-metadata/tag = "interactable"
+script = ExtResource("3_25n0r")
+Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, -5)

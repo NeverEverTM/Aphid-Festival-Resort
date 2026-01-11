@@ -5,3 +5,4 @@ icon.svg
 icon.svg.import
 *.lnk
 *.png~
+BenchmarkDotNet.Artifacts/

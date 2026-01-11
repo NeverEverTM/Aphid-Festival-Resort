@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cr7ypl2glxegu"]
+[gd_scene load_steps=9 format=3 uid="uid://cr7ypl2glxegu"]
 
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="1_lu87u"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="2_lu87u"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="3_ap2gs"]
+[ext_resource type="Material" uid="uid://bso2uhxo4wa1o" path="res://resources/prophecy_material_1.tres" id="4_ap2gs"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="4_kjhgs"]
-[ext_resource type="Texture2D" uid="uid://d0rlw1lt7bukx" path="res://sprites/ui/aphid_template.png" id="4_n6se3"]
+[ext_resource type="Texture2D" uid="uid://b47krcimyyuy7" path="res://sprites/ui/aphid_outline.png" id="5_kjhgs"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="5_wtscx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_thxrm"]
@@ -22,12 +23,13 @@ pivot_offset = Vector2(87, 87)
 size_flags_vertical = 4
 texture_normal = ExtResource("3_ap2gs")
 script = ExtResource("2_lu87u")
-PressedColor = Color(0.442911, 0.442911, 0.442911, 1)
-FocusColor = Color(0.47887, 0.553207, 0.568807, 1)
+PressedColor = Color(0.606626, 0.606626, 0.606626, 1)
+FocusColor = Color(0.145707, 0.677382, 0.623212, 1)
 HoverColor = Color(0.886262, 0.886261, 0.886262, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
 [node name="slot_bg" type="TextureRect" parent="."]
+self_modulate = Color(0.81, 0.81, 0.81, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 8.0
@@ -54,11 +56,14 @@ patch_margin_right = 10
 patch_margin_bottom = 10
 
 [node name="slot_aphid" type="TextureRect" parent="slot_frame"]
+light_mask = 0
+material = ExtResource("4_ap2gs")
 layout_mode = 0
-offset_right = 175.0
-offset_bottom = 175.0
-texture = ExtResource("4_n6se3")
-expand_mode = 1
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 165.0
+offset_bottom = 164.0
+texture = ExtResource("5_kjhgs")
 stretch_mode = 5
 
 [node name="slot_bg_icon_0" type="TextureRect" parent="."]

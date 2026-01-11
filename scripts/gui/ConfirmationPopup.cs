@@ -159,7 +159,7 @@ public partial class ConfirmationPopup : CanvasLayer
 		catch (Exception e)
 		{
 			GlobalManager.CreatePopup(e.ToString(), GlobalManager.Instance);
-			Logger.Print(Logger.LogPriority.Error, "ConfirmationPopup: Error on confirm:\n", e); Cancel();
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "ConfirmationPopup: Error on confirm:\n", e); Cancel();
 		}
 		currentPopup.GetTree().Root.ProcessMode = ProcessModeEnum.Pausable;
 		currentPopup.CallDeferred(Node.MethodName.QueueFree);

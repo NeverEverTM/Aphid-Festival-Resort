@@ -5,19 +5,19 @@ using Godot;
 
 public partial class Player : CharacterBody2D
 {
-	public static Player Instance { get; private set; }
-
+	[Export] protected Marker2D droppingPoint;
 	[Export] private Area2D interactionArea;
 	[Export] public AnimatedSprite2D animatorNode;
 
-	/// <summary>
-	/// Disables player input interaction.
-	/// </summary>
+	public static Player Instance { get; private set; }
+	// Savedata params
+	internal static PlayerData.Savefile Data;
+	internal static SaveSystem.SaveModule<PlayerData.Savefile> SaveModule;
 	public bool IsDisabled { get; private set; }
+	/// <summary>
+	/// The amount of queued disable calls, as long as there is more than one, the player will remain disabled.
+	/// </summary>
 	private int QueuedDisabled = 0;
-	private bool in_menu;
-	protected Timer DisabledTimer;
-
 	// Movement Params
 	/// <summary>
 	/// Prohibits use of the movement keys to move, alternate to disabling the whole player altogether.
@@ -26,111 +26,130 @@ public partial class Player : CharacterBody2D
 	public Vector2 MovementDirection { get; private set; }
 	private const float LONG_IDLE_BASE = 6;
 	private float idle_timer = LONG_IDLE_BASE;
-	private bool flip_direction = true, is_running;
-	private AudioStream audio_step;
+	private bool flip_direction = true, is_running, is_moving;
 
 	// Interaction Params
 	public Dictionary<StringName, Action> InputActions { get; set; }
 	public Dictionary<StringName, Action<double>> HeldInputActions { get; set; }
-	public static List<string> ValidInteractionTags { get; set; }
+	/// <summary>
+	/// Tags of the object that the player can interact with.
+	/// </summary>
+	public static List<StringNames.GlobalTags> ValidInteractionTags { get; set; } =
+	[
+		StringNames.GlobalTags.Aphid,
+		StringNames.GlobalTags.NPC,
+		StringNames.GlobalTags.Menu,
+		StringNames.GlobalTags.Interactable
+	];
 
 	private readonly List<Node2D> interactables_nearby = [], pickups_nearby = [];
-	private readonly List<string> interactables_tags = [];
+	private readonly List<StringNames.GlobalTags> interactables_tags = [];
 	private double held_timer;
-	private bool is_moving;
 	private int held_refresh_timer;
 	private StringName current_held_action;
 
+	private bool in_menu;
+	protected Timer DisabledTimer;
+	private AudioStream audio_step;
+
 	// Pickup Params
-	public PickupData HeldPickup { set; get; } = new();
-	private Vector2 pickup_ground_position = new(35, 0); // facing right by default
-	public record PickupData
+	public PickupArgs HeldPickup { protected set; get; }
+	public enum PickupEventEnum { OnPickup, OnDrop }
+	protected List<Action<PickupArgs>> OnPickup = [], OnDrop = [];
+	public class PickupArgs : EventArgs
 	{
-		public Node2D Item = null;
-		public string Tag = string.Empty;
+		public Node2D Entity = null;
+		public Aphid Entity_Aphid = null;
+		public StringNames.GlobalTags Tag;
 		public bool IsAphid = false;
-		public Aphid AphidEntity = null;
 		public Sprite2D Sprite = null;
 		public Vector2 InitialOffset = new();
 		public Vector2 LastValidPosition = new();
 	}
 
-	public delegate void PickupEventHandler(string _tag, Node2D _item);
-	public delegate void InteractableEventHandler(string _tag, Node2D _item);
-	public event PickupEventHandler OnPickup, OnDrop;
-	public event InteractableEventHandler OnInteractableEnter, OnInteractableExit;
+	protected List<Action<InteractableEventArgs>> OnInteractableEnter = [], OnInteractableExit = [];
+	public enum InteractableEventEnum
+	{
+		/// <summary>
+		/// Triggered when a node enters the area and/or is detected inside of the same. This event can be triggered multiple times, make sure to check for repeated results.
+		/// </summary>
+		OnInteractableEnter,
+		/// <summary>
+		/// Triggered once when node leaves the area.
+		/// </summary>
+		OnInteractableExit
+	}
+	public class InteractableEventArgs : EventArgs
+	{
+		public StringNames.GlobalTags Tag;
+		public Node2D Entity;
+	}
 
-	// Savedata params
-	internal static SaveData Data;
-	internal static SaveSystem.SaveModule<SaveData> SaveModule;
-	public static string NewName { get; set; }
-	public static string[] NewPronouns { get; set; }
+	/// <summary>
+	/// Adds listeners for Pickup related events.
+	/// </summary>
+	public void AddEventListener(Action<PickupArgs> _action, PickupEventEnum _event)
+	{
+		switch (_event)
+		{
+			case PickupEventEnum.OnPickup:
+				OnPickup.Add(_action);
+				break;
+			case PickupEventEnum.OnDrop:
+				OnDrop.Add(_action);
+				break;
+		}
+	}
+	/// <summary>
+	/// Adds listeners for Interactable related events. Check enums for more information.
+	/// </summary>
+	public void AddEventListener(Action<InteractableEventArgs> _action, InteractableEventEnum _event)
+	{
+		switch (_event)
+		{
+			case InteractableEventEnum.OnInteractableEnter:
+				OnInteractableEnter.Add(_action);
+				break;
+			case InteractableEventEnum.OnInteractableExit:
+				OnInteractableExit.Add(_action);
+				break;
+		}
+	}
+	/// <summary>
+	/// Removes listeners for Pickup related events.
+	/// </summary>
+	public void RemoveEventListener(Action<PickupArgs> _action, PickupEventEnum _event)
+	{
+		switch (_event)
+		{
+			case PickupEventEnum.OnPickup:
+				OnPickup.Remove(_action);
+				break;
+			case PickupEventEnum.OnDrop:
+				OnDrop.Remove(_action);
+				break;
+		}
+	}
+	/// <summary>
+	/// Removes listeners for Interactable related events.
+	/// </summary>
+	public void RemoveEventListener(Action<InteractableEventArgs> _action, InteractableEventEnum _event)
+	{
+		switch (_event)
+		{
+			case InteractableEventEnum.OnInteractableEnter:
+				OnInteractableEnter.Remove(_action);
+				break;
+			case InteractableEventEnum.OnInteractableExit:
+				OnInteractableExit.Remove(_action);
+				break;
+		}
+	}
+
+	/// <summary>
+	/// Used to store the last safe position during Busy times. Manually set by the entity that needs it.
+	/// </summary>
 	public Vector2 LastPosition { get; set; }
-
-	// MARK: SaveData Implementation
-	public record SaveData
-	{
-		public string Name { get; set; } = "Mello";
-		public string[] Pronouns { get; set; } = ["They", "them"];
-		public int Level { get; set; }
-
-		public float PositionX { get; set; }
-		public float PositionY { get; set; }
-
-		public List<string> Inventory { get; set; } = [];
-		public List<string> Storage { get; set; } = [];
-		public List<string> RecipesDiscovered { get; set; } = [];
-		public int Currency { get; set; } = 30;
-		public int InventoryMaxCapacity { get; set; } = 15;
-
-		public SaveData()
-		{
-			Name = NewName;
-			Pronouns = NewPronouns;
-		}
-		public void AddCurrency(int _amount)
-		{
-			Currency = Mathf.Max(Currency + _amount, 0);
-			CanvasManager.UpdateCurrency();
-		}
-	}
-	public class PlayerDataModule : SaveSystem.IDataModule<SaveData>
-	{
-		public void Set(SaveData _data)
-		{
-			Data = _data;
-			CanvasManager.UpdateCurrency();
-
-			if (!GameManager.IsNewGame)
-			{
-				Vector2 _position = new(Data.PositionX, Data.PositionY);
-				if (GameManager.APPLY_OUTOFBOUND_PATCH && (GameManager.IsOutOfBounds(_position) || GameManager.IsInsideGeometry(_position)))
-					Instance.GlobalPosition = FieldManager.Instance.Doors[0].GlobalPosition + (-FieldManager.Instance.Doors[0].entryDirection) * 5;
-				else
-					Instance.GlobalPosition = _position;
-				CameraManager.Focus(Instance);
-				CameraManager.ForceCameraPosition(Instance.GlobalPosition);
-			}
-
-			_data.Name ??= "Mello";
-			_data.Pronouns ??= ["They", "them"];
-		}
-		public SaveData Get()
-		{
-			if (!SceneManager.IsBusy)
-			{
-				Data.PositionX = Instance.GlobalPosition.X;
-				Data.PositionY = Instance.GlobalPosition.Y;
-			}
-			else
-			{
-				Data.PositionX = Instance.LastPosition.X;
-				Data.PositionY = Instance.LastPosition.Y;
-			}
-			return Data;
-		}
-		public SaveData Default() => new();
-	}
 
 	// MARK: Initialization
 	public override void _EnterTree()
@@ -138,14 +157,20 @@ public partial class Player : CharacterBody2D
 		Instance = this;
 		if (SaveModule == null)
 		{
-			SaveModule = new SaveSystem.SaveModule<SaveData>("player", new PlayerDataModule(), 1000)
+			SaveModule = new SaveSystem.SaveModule<PlayerData.Savefile>("player", new PlayerData.PlayerDataModule(), 1000)
 			{
 				Extension = SaveSystem.SAVEFILE_EXTENSION
 			};
 			SaveSystem.AddSaveModule(SaveModule);
 		}
 		CanvasManager.Menus.OnSwitch.Add(OnSwitchMenu);
+		SetMeta(StringNames.TagMeta, (int)StringNames.GlobalTags.Player);
 	}
+	public override void _ExitTree()
+	{
+		Instance = null;
+	}
+
 	public override void _Ready()
 	{
 		DeclareInputInteractions();
@@ -163,7 +188,7 @@ public partial class Player : CharacterBody2D
 			}
 		};
 
-		CameraManager.Focus(Instance);
+		CameraManager.Focus(this);
 	}
 	private void OnSwitchMenu(MenuInstance _lastMenu, MenuInstance _menu)
 	{
@@ -188,7 +213,6 @@ public partial class Player : CharacterBody2D
 	/// </summary>
 	private void DeclareInputInteractions()
 	{
-		ValidInteractionTags = [Aphid.Tag, NPCBehaviour.Tag, "menu", StringNames.InteractableTag];
 		InputActions = new()
 		{
 			{ InputNames.Interact, Instance.TryInteract },
@@ -226,17 +250,15 @@ public partial class Player : CharacterBody2D
 		interactionArea.AreaExited += _lose;
 		interactionArea.BodyExited += _lose;
 
-		void _leaveItemInGround(string _c, bool _s)
+		SceneManager.AddEventListener((_) =>
 		{
-			if (HeldPickup.Item != null)
-				HeldPickup.Item.GlobalPosition = GlobalPosition;
-			SceneManager.OnPreLoad -= _leaveItemInGround;
-		}
-		SceneManager.OnPreLoad += _leaveItemInGround;
+			if (HeldPickup != null)
+				HeldPickup.Entity.GlobalPosition = GlobalPosition;
+		}, SceneManager.EventEnum.OnPreLoad);
 	}
 	private void InputAction_Pickup()
 	{
-		if (Instance.HeldPickup.Item == null)
+		if (Instance.HeldPickup == null)
 			Instance.TryPickup();
 		else
 			Instance.Drop();
@@ -245,35 +267,40 @@ public partial class Player : CharacterBody2D
 		PlayerInventory.Instance.ChangeInventoryMode();
 	private void InputAction_PullItem()
 	{
-		if (IsInstanceValid(AphidInfo.Instance) && (AphidInfo.Available || AphidInfo.Enabled))
-		{
-			AphidInfo.SetAphid();
-			return;
-		}
-
 		// either pull the first item or store it in the inventory
-		if (Instance.HeldPickup.Item != null)
-			PlayerInventory.StoreCurrentItem();
+		if (HeldPickup != null)
+		{
+			if (HeldPickup.IsAphid)
+				AphidInfo.Instance.Display(!AphidInfo.Instance.IsBeingDisplayed);
+			else
+				PlayerInventory.StoreCurrentItem();
+		}
 		else
-			PlayerInventory.PullItem(0);
+		{
+			if (AphidInfo.Instance.AreAphidsNearby)
+				AphidInfo.Instance.DisplayClosestAphid();
+			else
+				PlayerInventory.PullItem(0);
+		}
 	}
+
 	private void HeldInputAction_CallAphids(double _time)
 	{
-		if (_time == 0 && Instance.HeldPickup.Item == null)
+		if (_time == 0 && Instance.HeldPickup == null)
 			Instance.CallAllNearbyAphids();
 	}
 
 	// MARK: Processing
 	public override void _PhysicsProcess(double delta)
 	{
-		IsDisabled = QueuedDisabled > 0 || CanvasManager.Menus.IsActive;
+		IsDisabled = QueuedDisabled > 0;
 
 		// Calculate player movement
 		if (!IsDisabled)
 		{
 			is_running = OptionsManager.Settings.SettingAutoRun ?
-					!Input.IsActionPressed(InputNames.Run) :
-					Input.IsActionPressed(InputNames.Run);
+				!Input.IsActionPressed(InputNames.Run) :
+				Input.IsActionPressed(InputNames.Run);
 		}
 
 		Velocity = !is_moving ?
@@ -284,7 +311,7 @@ public partial class Player : CharacterBody2D
 		TickFlip((float)delta);
 		MoveAndSlide();
 		PlayMovementAnim((float)delta);
-		if (HeldPickup.Item != null && !GlobalManager.IsBusy)
+		if (HeldPickup != null && !GlobalManager.IsBusy)
 			ProcessPickupBehaviour();
 
 		if (IsDisabled)
@@ -381,10 +408,11 @@ public partial class Player : CharacterBody2D
 		if (QueuedDisabled < 0)
 		{
 			QueuedDisabled = 0;
-			Logger.Print(Logger.LogPriority.Error, "Player was requested to unqueue a disable call, but there was no queued disables!");
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "Player was requested to unqueue a disable call, but there was no queued disables!");
 		}
 
 		IsDisabled = QueuedDisabled > 0 || CanvasManager.Menus.IsActive;
+
 		SetProcessUnhandledInput(!IsDisabled);
 		if (!IsDisabled)
 		{
@@ -398,8 +426,9 @@ public partial class Player : CharacterBody2D
 
 		if (_cancelActions)
 		{
-			SetPlayerAnim(StringNames.IdleAnim);
-			if (HeldPickup.Item != null)
+			if (animatorNode.Animation == StringNames.WalkAnim || animatorNode.Animation == StringNames.RunAnim)
+				SetPlayerAnim(StringNames.IdleAnim);
+			if (HeldPickup != null)
 			{
 				if (GlobalManager.IsBusy)
 					DropNoAnim(false);
@@ -407,7 +436,6 @@ public partial class Player : CharacterBody2D
 					Drop();
 			}
 			PlayerInventory.SetTo(false);
-			AphidInfo.Display(false);
 		}
 	}
 	/// <summary>
@@ -440,23 +468,30 @@ public partial class Player : CharacterBody2D
 			return;
 
 		Node2D _node = interactables_nearby[0];
-		float _minDistance = GlobalPosition.DistanceTo(_node.GlobalPosition);
 
+		// get the closest interactable object
+		float _minDistance = GlobalPosition.DistanceSquaredTo(_node.GlobalPosition);
 		for (int i = 0; i < interactables_nearby.Count; i++)
 		{
-			float _distanceFromPlayer = GlobalPosition.DistanceTo(interactables_nearby[i].GlobalPosition);
+			float _distanceFromPlayer = GlobalPosition.DistanceSquaredTo(interactables_nearby[i].GlobalPosition);
 			if (_distanceFromPlayer < _minDistance)
 			{
 				_minDistance = _distanceFromPlayer;
 				_node = interactables_nearby[i];
 			}
 		}
-		// Attempts interacting with the CollisionObject itself
-		if (_node.HasMethod(StringNames.InteractFunc))
-			_node.CallDeferred(StringNames.InteractFunc);
-		// Otherwise, attempts to interact with its parent instead
-		else if (_node.GetParent().HasMethod(StringNames.InteractFunc))
-			_node.GetParent().CallDeferred(StringNames.InteractFunc);
+		// Attempts interacting
+		try
+		{
+			if (_node is InteractableArea2D)
+				(_node as InteractableArea2D).Interact(this, StringNames.GlobalTags.Player);
+			else if (_node is IInteractableArea)
+				(_node as IInteractableArea).Interact(this, StringNames.GlobalTags.Player);
+		}
+		catch (Exception _error)
+		{
+			GD.Print(_error);
+		}
 	}
 	private async void CallAllNearbyAphids()
 	{
@@ -482,7 +517,7 @@ public partial class Player : CharacterBody2D
 		var _collisionList = interactionArea.GetOverlappingBodies();
 		_collisionList.AddRange(interactionArea.GetOverlappingAreas());
 		List<Node2D> _previous_interactables = [.. interactables_nearby];
-		List<string> _previous_tags = [.. interactables_tags];
+		List<StringNames.GlobalTags> _previous_tags = [.. interactables_tags];
 
 		interactables_nearby.Clear();
 		interactables_tags.Clear();
@@ -504,28 +539,34 @@ public partial class Player : CharacterBody2D
 			{
 				if (interactables_nearby.Contains(_previous_interactables[i]))
 					continue;
-				CanvasManager.RemoveControlPrompt(_previous_tags[i]);
+				CanvasManager.RemoveControlPrompt(StringNames.GlobalTagsNames[(int)_previous_tags[i]]);
 			}
 		}
 	}
-	private string CheckForInteractable(Node2D _node)
+	private StringNames.GlobalTags CheckForInteractable(Node2D _node)
 	{
 		if (!_node.HasMeta(StringNames.TagMeta))
-			return string.Empty;
+			return StringNames.GlobalTags.None;
 
-		string _tag = (string)_node.GetMeta(StringNames.TagMeta);
+		StringNames.GlobalTags _tag = (StringNames.GlobalTags)(int)_node.GetMeta(StringNames.TagMeta);
 		if (!ValidInteractionTags.Contains(_tag))
-			return string.Empty;
+			return StringNames.GlobalTags.None;
 
 		interactables_nearby.Add(_node);
 		interactables_tags.Add(_tag);
 		SetPrompt(_tag, _node);
-		OnInteractableEnter?.Invoke(_tag, _node);
+
+		InteractableEventArgs _args = new()
+		{
+			Tag = _tag,
+			Entity = _node,
+		};
+		GlobalManager.Utils.InvokeEventListeners(ref OnInteractableEnter, _args);
 		return _tag;
 	}
 	private void CheckForPickup(Node2D _node)
 	{
-		if (HeldPickup.Item != null || !_node.HasMeta(StringNames.PickupMeta) ||
+		if (HeldPickup != null || !_node.HasMeta(StringNames.PickupMeta) ||
 				!(bool)_node.GetMeta(StringNames.PickupMeta))
 			return;
 
@@ -537,49 +578,55 @@ public partial class Player : CharacterBody2D
 	{
 		if (!_node.HasMeta(StringNames.TagMeta))
 			return;
-		string _tag = (string)_node.GetMeta(StringNames.TagMeta);
+		StringNames.GlobalTags _tag = (StringNames.GlobalTags)(int)_node.GetMeta(StringNames.TagMeta);
 		interactables_nearby.Remove(_node);
 		if (!HasInteractable(_tag))
-			CanvasManager.RemoveControlPrompt(_tag);
-		OnInteractableExit?.Invoke(_tag, _node);
+			CanvasManager.RemoveControlPrompt(StringNames.GlobalTagsNames[(int)_tag]);
+
+		InteractableEventArgs _args = new()
+		{
+			Tag = _tag,
+			Entity = _node,
+		};
+		GlobalManager.Utils.InvokeEventListeners(ref OnInteractableExit, _args);
 	}
 	private void RemovePickup(Node2D _node)
 	{
 		if (!_node.HasMeta(StringNames.PickupMeta)) // is it a pickup
 			return;
 		pickups_nearby.Remove(_node);
-		if (pickups_nearby.Count == 0 && HeldPickup.Item == null)
+		if (pickups_nearby.Count == 0 && HeldPickup == null)
 			CanvasManager.RemoveControlPrompt(InputNames.Pickup);
 	}
-	public bool HasInteractable(string _tag)
+	public bool HasInteractable(StringNames.GlobalTags _tag)
 	{
 		for (int i = 0; i < interactables_nearby.Count; i++)
 		{
 			if (!interactables_nearby[i].HasMeta(StringNames.TagMeta))
 				continue;
-			if (interactables_nearby[i].GetMeta(StringNames.TagMeta).ToString() == _tag)
+			if ((StringNames.GlobalTags)(int)interactables_nearby[i].GetMeta(StringNames.TagMeta) == _tag)
 				return true;
 		}
 		return false;
 	}
-	private static void SetPrompt(string _tag, Node2D _node = null)
+	private static void SetPrompt(StringNames.GlobalTags _tag, Node2D _node = null)
 	{
 		switch (_tag)
 		{
-			case Aphid.Tag:
+			case StringNames.GlobalTags.Aphid:
 				if ((_node as Aphid).IsReadyForHarvest)
-					CanvasManager.AddControlPrompt("harvest", Aphid.Tag, InputNames.Interact);
+					CanvasManager.AddControlPrompt("harvest", StringNames.GlobalTagsNames[(int)StringNames.GlobalTags.Aphid], InputNames.Interact);
 				else
-					CanvasManager.AddControlPrompt("pet", Aphid.Tag, InputNames.Interact);
+					CanvasManager.AddControlPrompt("pet", StringNames.GlobalTagsNames[(int)StringNames.GlobalTags.Aphid], InputNames.Interact);
 				break;
-			case NPCBehaviour.Tag:
-				CanvasManager.AddControlPrompt("talk", NPCBehaviour.Tag, InputNames.Interact);
+			case StringNames.GlobalTags.NPC:
+				CanvasManager.AddControlPrompt("talk", StringNames.GlobalTagsNames[(int)StringNames.GlobalTags.NPC], InputNames.Interact);
 				break;
-			case "menu":
-				CanvasManager.AddControlPrompt("open_menu", "menu", InputNames.Interact);
+			case StringNames.GlobalTags.Menu:
+				CanvasManager.AddControlPrompt("open_menu", StringNames.GlobalTagsNames[(int)StringNames.GlobalTags.Menu], InputNames.Interact);
 				break;
 			default:
-				CanvasManager.AddControlPrompt(InputNames.Interact, StringNames.InteractableTag, InputNames.Interact);
+				CanvasManager.AddControlPrompt(InputNames.Interact, StringNames.GlobalTagsNames[(int)StringNames.GlobalTags.Interactable], InputNames.Interact);
 				break;
 		}
 	}
@@ -598,9 +645,10 @@ public partial class Player : CharacterBody2D
 		if (_node.IsQueuedForDeletion())
 			return;
 
-		var _tag = _node.HasMeta(StringNames.TagMeta) ? (string)_node.GetMeta(StringNames.TagMeta) : "none";
+		StringNames.GlobalTags _tag = _node.HasMeta(StringNames.TagMeta) ?
+				(StringNames.GlobalTags)(int)_node.GetMeta(StringNames.TagMeta) : StringNames.GlobalTags.None;
 		// If is an aphid, do a bunch of extra shit
-		if (_tag == Aphid.Tag)
+		if (_tag == StringNames.GlobalTags.Aphid)
 		{
 			Aphid _aphid = _node as Aphid;
 			if (!_aphid.IsBusy())
@@ -621,7 +669,7 @@ public partial class Player : CharacterBody2D
 	/// </summary>
 	/// <param name="_node">The object's node</param>
 	/// <param name="_tag">The tag of the object</param>
-	public async Task Pickup(Node2D _node, string _tag)
+	public async Task Pickup(Node2D _node, StringNames.GlobalTags _tag)
 	{
 		_node.SetMeta(StringNames.PickupMeta, false);
 		_node.ProcessMode = ProcessModeEnum.Disabled;
@@ -639,7 +687,7 @@ public partial class Player : CharacterBody2D
 	/// <summary>
 	/// Same as Pickup but without the timed animations.
 	/// </summary>
-	public void PickupNoAnim(Node2D _node, string _tag)
+	public void PickupNoAnim(Node2D _node, StringNames.GlobalTags _tag)
 	{
 		_node.SetMeta(StringNames.PickupMeta, false);
 		_node.ProcessMode = ProcessModeEnum.Disabled;
@@ -651,51 +699,38 @@ public partial class Player : CharacterBody2D
 	/// </summary>
 	/// <param name="_node">The object's node</param>
 	/// <param name="_tag">The tag of the object</param>
-	private void SetPickupHeldItem(Node2D _node, string _tag)
+	private void SetPickupHeldItem(Node2D _node, StringNames.GlobalTags _tag)
 	{
 		HeldPickup = new()
 		{
-			Item = _node,
+			Entity = _node,
 			Tag = _tag,
 			LastValidPosition = _node.GlobalPosition
 		};
 
-		if (_tag is Aphid.Tag)
+		if (_tag == StringNames.GlobalTags.Aphid)
 		{
 			HeldPickup.IsAphid = true;
-			HeldPickup.AphidEntity = _node as Aphid;
-			HeldPickup.AphidEntity.skin.SetFlipDirection(flip_direction ? Vector2.Right : Vector2.Left, true);
-			HeldPickup.InitialOffset = HeldPickup.AphidEntity.skin.Position;
+			HeldPickup.Entity_Aphid = _node as Aphid;
+			HeldPickup.Entity_Aphid.skin.SetFlipDirection(flip_direction ? Vector2.Right : Vector2.Left, true);
+			HeldPickup.InitialOffset = HeldPickup.Entity_Aphid.skin.Position;
 
-			SoundManager.CreateSound2D(HeldPickup.AphidEntity.AudioDynamic_Idle, HeldPickup.AphidEntity.GlobalPosition, true);
+			SoundManager.CreateSound2D(HeldPickup.Entity_Aphid.AudioDynamic_Idle, HeldPickup.Entity_Aphid.GlobalPosition, true);
 		}
-
 
 		if (!HeldPickup.IsAphid)
 		{
 			// get relevant sprite information
-			var _children = HeldPickup.Item.FindChildren("*", "Sprite2D");
+			var _children = HeldPickup.Entity.FindChildren("*", "Sprite2D");
 			if (_children.Count > 0)
 			{
 				HeldPickup.Sprite = _children[0] as Sprite2D;
 				HeldPickup.InitialOffset = HeldPickup.Sprite.Offset;
 			}
 		}
-		else
-		{
-
-			
-		}
 
 		CanvasManager.AddControlPrompt("drop", InputNames.Pickup, InputNames.Pickup);
-		try
-		{
-			OnPickup?.Invoke(_tag, _node);
-		}
-		catch (Exception _error)
-		{
-			Logger.Print(Logger.LogPriority.Error, "Player: Error on picking up object (noanim).", _error);
-		}
+		GlobalManager.Utils.InvokeEventListeners(ref OnPickup, HeldPickup);
 	}
 
 	/// <summary>
@@ -707,8 +742,7 @@ public partial class Player : CharacterBody2D
 		if (IsDisabled || IsInstanceValid(DisabledTimer))
 			return false;
 
-		var query = PhysicsRayQueryParameters2D.Create(GlobalPosition,
-				GlobalPosition + (flip_direction ? pickup_ground_position : -pickup_ground_position));
+		var query = PhysicsRayQueryParameters2D.Create(GlobalPosition, GlobalPosition + (flip_direction ? droppingPoint.Position : -droppingPoint.Position));
 		query.HitFromInside = false;
 
 		if (GlobalManager.Utils.Raycast(query).Count > 0)
@@ -722,20 +756,14 @@ public partial class Player : CharacterBody2D
 	/// <param name="_queueFree"></param>
 	public void DropNoAnim(bool _queueFree)
 	{
-		// TODO: turn this into a list of actions and give them pickup data instead.
-		PickupData _pickup = HeldPickup;
 		CanvasManager.RemoveControlPrompt("drop");
-		try
-		{
-			OnDrop?.Invoke(_pickup.Tag, _pickup.Item);
-		}
-		catch (Exception _error)
-		{
-			Logger.Print(Logger.LogPriority.Error, "Player: Error on dropping object (noanim).", _error);
-		}
+		GlobalManager.Utils.InvokeEventListeners(ref OnDrop, HeldPickup);
 
 		if (_queueFree)
-			HeldPickup.Item.QueueFree();
+		{
+			HeldPickup.Entity.QueueFree();
+			HeldPickup = null;
+		}
 		else
 			DisposePickup(true);
 	}
@@ -744,54 +772,58 @@ public partial class Player : CharacterBody2D
 	/// </summary>
 	public void Drop()
 	{
-		PickupData _pickup = HeldPickup;
+		PickupArgs _args = new()
+		{
+			Tag = HeldPickup.Tag,
+			Entity = HeldPickup.Entity,
+		};
 		SetDisabled(true);
 		SetPlayerAnim(StringNames.PickupAnim, true);
 		RunDisabledTimer(0.45f);
 		DisabledTimer.Timeout += () =>
 		{
 			DisposePickup(false);
-			OnDrop?.Invoke(_pickup.Tag, _pickup.Item);
+			GlobalManager.Utils.InvokeEventListeners(ref OnDrop, _args);
 		};
 	}
 	private void DisposePickup(bool _setAtLastPosition)
 	{
 		if (HeldPickup.IsAphid)
-			HeldPickup.AphidEntity.skin.Position = HeldPickup.InitialOffset;
+			HeldPickup.Entity_Aphid.skin.Position = HeldPickup.InitialOffset;
 		else if (IsInstanceValid(HeldPickup.Sprite))
 			HeldPickup.Sprite.Offset = HeldPickup.InitialOffset;
 
 		if (_setAtLastPosition)
-			HeldPickup.Item.GlobalPosition = HeldPickup.LastValidPosition;
+			HeldPickup.Entity.GlobalPosition = HeldPickup.LastValidPosition;
 		else
-			HeldPickup.Item.GlobalPosition = GlobalPosition +
-					(flip_direction ? pickup_ground_position : -pickup_ground_position);
-		HeldPickup.Item.ProcessMode = ProcessModeEnum.Inherit;
-		HeldPickup.Item.SetMeta(StringNames.PickupMeta, true);
-		HeldPickup = new();
+		// based on current facing direction
+			HeldPickup.Entity.GlobalPosition = GlobalPosition + (animatorNode.Scale.X < 0 ? droppingPoint.Position : -droppingPoint.Position); 
+		HeldPickup.Entity.ProcessMode = ProcessModeEnum.Inherit;
+		HeldPickup.Entity.SetMeta(StringNames.PickupMeta, true);
+		HeldPickup = null;
 	}
 	private void ProcessPickupBehaviour()
 	{
-		if (!IsInstanceValid(HeldPickup.Item))
+		if (!IsInstanceValid(HeldPickup.Entity))
 		{
-			HeldPickup = new();
+			HeldPickup = null;
 			return;
 		}
 		bool _isSat = animatorNode.Animation == StringNames.SitAnim;
 
-		HeldPickup.Item.GlobalPosition = GlobalPosition;
+		HeldPickup.Entity.GlobalPosition = GlobalPosition;
 
 		if (!HeldPickup.IsAphid)
 		{
 			if (HeldPickup.Sprite != null)
 				HeldPickup.Sprite.Offset = new Vector2(0, -47 + (_isSat ? 12 : 0));
 			else
-				HeldPickup.Item.GlobalPosition += new Vector2(0, -48 + (_isSat ? 12 : 0));
+				HeldPickup.Entity.GlobalPosition += new Vector2(0, -48 + (_isSat ? 12 : 0));
 		}
 		else
 		{
-			HeldPickup.AphidEntity.skin.SetFlipDirection(MovementDirection, true);
-			HeldPickup.AphidEntity.skin.Position = new(0, -39 + (_isSat ? 13 : 0));
+			HeldPickup.Entity_Aphid.skin.SetFlipDirection(MovementDirection, true);
+			HeldPickup.Entity_Aphid.skin.Position = new(0, -39 + (_isSat ? 13 : 0));
 		}
 	}
 
@@ -856,15 +888,5 @@ public partial class Player : CharacterBody2D
 			animatorNode.Play(_name);
 		else
 			animatorNode.PlayBackwards(_name);
-	}
-
-	public interface IInteractEvent
-	{
-		/// <summary>
-		/// Function used to dictate what happens when the player interacts with this.
-		/// Must be the parent of or a CollisionObject2D itself with a CollisionShape2D acting as an interaction area.
-		/// To be valid, make sure the CollisionObject has a tag and that it is included in the Player.ValidInteractionTags list. 
-		/// </summary>
-		public void Interact();
 	}
 }

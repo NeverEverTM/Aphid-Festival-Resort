@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ba1ev1heaa3s6"]
+[gd_scene load_steps=19 format=3 uid="uid://ba1ev1heaa3s6"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_fjlrd"]
 [ext_resource type="Script" uid="uid://ywkbskbfbf7w" path="res://scripts/panels/OptionsMenu.cs" id="2_eio0f"]
@@ -7,6 +7,133 @@
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="6_jwgu8"]
 [ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/gui_icons/icon_folder.png" id="6_qdykg"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="7_msete"]
+
+[sub_resource type="Animation" id="Animation_xygao"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("volume_sliders:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("settings:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1280, 360)]
+}
+
+[sub_resource type="Animation" id="Animation_8h0dc"]
+resource_name = "close"
+length = 0.2
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("volume_sliders:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 0.5),
+"update": 0,
+"values": [Vector2(20, 20), Vector2(-412, 20)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("settings:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.5, 0.5),
+"update": 0,
+"values": [Vector2(1280, 360), Vector2(1700, 360)]
+}
+
+[sub_resource type="Animation" id="Animation_37k2w"]
+resource_name = "open"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("volume_sliders:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(0.5, 2, 1),
+"update": 0,
+"values": [Vector2(-412, 20), Vector2(40, 20), Vector2(20, 20)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("settings:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(0.5, 2, 1),
+"update": 0,
+"values": [Vector2(1700, 360), Vector2(1260, 360), Vector2(1280, 360)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hhm33"]
+_data = {
+&"RESET": SubResource("Animation_xygao"),
+&"close": SubResource("Animation_8h0dc"),
+&"open": SubResource("Animation_37k2w")
+}
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bmjtx"]
 atlas = ExtResource("4_2e3pp")
@@ -36,33 +163,44 @@ region = Rect2(16, 32, 16, 16)
 atlas = ExtResource("7_msete")
 region = Rect2(0, 32, 16, 16)
 
-[node name="options_panel" type="Control" node_paths=PackedStringArray("masterSlider", "musicSlider", "soundSlider", "ambienceSlider", "uiSlider", "saveFolderButton", "windowMode", "language", "autoRun")]
+[node name="options_panel" type="Control" node_paths=PackedStringArray("anim_player", "masterSlider", "musicSlider", "soundSlider", "ambienceSlider", "uiSlider", "saveFolderButton", "windowMode", "language", "autoRun")]
+visible = false
 light_mask = 0
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -576.0
-offset_top = -324.0
-offset_right = -536.0
-offset_bottom = -284.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_fjlrd")
 script = ExtResource("2_eio0f")
-masterSlider = NodePath("master/master_slider")
-musicSlider = NodePath("music/music_slider")
-soundSlider = NodePath("sound/sound_slider")
-ambienceSlider = NodePath("ambience/ambience_slider")
-uiSlider = NodePath("ui/ui_slider")
-saveFolderButton = NodePath("savefolder_button")
-windowMode = NodePath("windowMode")
-language = NodePath("language")
-autoRun = NodePath("autorun")
+anim_player = NodePath("anim_player")
+masterSlider = NodePath("volume_sliders/master/master_slider")
+musicSlider = NodePath("volume_sliders/music/music_slider")
+soundSlider = NodePath("volume_sliders/sound/sound_slider")
+ambienceSlider = NodePath("volume_sliders/ambience/ambience_slider")
+uiSlider = NodePath("volume_sliders/ui/ui_slider")
+saveFolderButton = NodePath("settings/savefolder_button")
+windowMode = NodePath("settings/windowMode")
+language = NodePath("settings/language")
+autoRun = NodePath("settings/autorun")
 
-[node name="master" type="NinePatchRect" parent="."]
+[node name="anim_player" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_hhm33")
+}
+
+[node name="volume_sliders" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -360.0
+offset_right = 40.0
+offset_bottom = -320.0
+grow_vertical = 2
+
+[node name="master" type="NinePatchRect" parent="volume_sliders"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
@@ -76,7 +214,7 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="Label" type="Label" parent="master"]
+[node name="Label" type="Label" parent="volume_sliders/master"]
 light_mask = 0
 layout_mode = 0
 offset_left = 75.0
@@ -86,7 +224,7 @@ offset_bottom = 59.0
 text = "options_master"
 horizontal_alignment = 1
 
-[node name="master_slider" type="HSlider" parent="master"]
+[node name="master_slider" type="HSlider" parent="volume_sliders/master"]
 light_mask = 0
 layout_mode = 0
 offset_left = 35.0
@@ -99,8 +237,8 @@ step = 0.04
 value = 0.75
 scrollable = false
 
-[node name="music" type="NinePatchRect" parent="."]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+[node name="music" type="NinePatchRect" parent="volume_sliders"]
+self_modulate = Color(0.730973, 0.285304, 0.17537, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 1.0
@@ -113,7 +251,7 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="Label" type="Label" parent="music"]
+[node name="Label" type="Label" parent="volume_sliders/music"]
 light_mask = 0
 layout_mode = 0
 offset_left = 75.0
@@ -123,7 +261,7 @@ offset_bottom = 59.0
 text = "options_music"
 horizontal_alignment = 1
 
-[node name="music_slider" type="HSlider" parent="music"]
+[node name="music_slider" type="HSlider" parent="volume_sliders/music"]
 light_mask = 0
 layout_mode = 0
 offset_left = 36.0
@@ -136,8 +274,8 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="sound" type="NinePatchRect" parent="."]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+[node name="sound" type="NinePatchRect" parent="volume_sliders"]
+self_modulate = Color(0.46757, 0.224631, 0.507051, 1)
 light_mask = 0
 layout_mode = 0
 offset_top = 279.0
@@ -149,7 +287,7 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="Label" type="Label" parent="sound"]
+[node name="Label" type="Label" parent="volume_sliders/sound"]
 light_mask = 0
 layout_mode = 0
 offset_left = 76.0
@@ -159,7 +297,7 @@ offset_bottom = 61.0
 text = "options_sounds"
 horizontal_alignment = 1
 
-[node name="sound_slider" type="HSlider" parent="sound"]
+[node name="sound_slider" type="HSlider" parent="volume_sliders/sound"]
 light_mask = 0
 layout_mode = 0
 offset_left = 34.0
@@ -172,8 +310,8 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="ambience" type="NinePatchRect" parent="."]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+[node name="ambience" type="NinePatchRect" parent="volume_sliders"]
+self_modulate = Color(0.134244, 0.463342, 0.611131, 1)
 light_mask = 0
 layout_mode = 0
 offset_top = 408.0
@@ -185,7 +323,7 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="Label" type="Label" parent="ambience"]
+[node name="Label" type="Label" parent="volume_sliders/ambience"]
 light_mask = 0
 layout_mode = 0
 offset_left = 55.0
@@ -195,7 +333,7 @@ offset_bottom = 61.0
 text = "options_ambience"
 horizontal_alignment = 1
 
-[node name="ambience_slider" type="HSlider" parent="ambience"]
+[node name="ambience_slider" type="HSlider" parent="volume_sliders/ambience"]
 light_mask = 0
 layout_mode = 0
 offset_left = 34.0
@@ -208,8 +346,8 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="ui" type="NinePatchRect" parent="."]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
+[node name="ui" type="NinePatchRect" parent="volume_sliders"]
+self_modulate = Color(0.21516, 0.456137, 0.296683, 1)
 light_mask = 0
 layout_mode = 0
 offset_top = 530.0
@@ -221,7 +359,7 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="Label" type="Label" parent="ui"]
+[node name="Label" type="Label" parent="volume_sliders/ui"]
 light_mask = 0
 layout_mode = 0
 offset_left = 33.0
@@ -232,7 +370,7 @@ text = "options_ui"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ui_slider" type="HSlider" parent="ui"]
+[node name="ui_slider" type="HSlider" parent="volume_sliders/ui"]
 light_mask = 0
 layout_mode = 0
 offset_left = 34.0
@@ -245,14 +383,24 @@ step = 0.01
 value = 0.4
 scrollable = false
 
-[node name="savefolder_button" type="TextureButton" parent="."]
+[node name="settings" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="savefolder_button" type="TextureButton" parent="settings"]
 self_modulate = Color(0.898096, 0.140423, 0.365346, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 1079.0
-offset_top = -14.0
-offset_right = 1291.0
-offset_bottom = 198.0
+offset_left = -126.0
+offset_top = 234.0
+offset_right = 86.0
+offset_bottom = 446.0
 scale = Vector2(0.5, 0.5)
 texture_normal = SubResource("AtlasTexture_bmjtx")
 stretch_mode = 4
@@ -261,7 +409,7 @@ PressedColor = Color(0.533333, 0.533333, 0.533333, 1)
 FocusColor = Color(0.282353, 0.572549, 0.788235, 1)
 HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
 
-[node name="icon" type="TextureRect" parent="savefolder_button"]
+[node name="icon" type="TextureRect" parent="settings/savefolder_button"]
 light_mask = 0
 layout_mode = 0
 offset_left = 22.0
@@ -271,39 +419,40 @@ offset_bottom = 185.0
 texture = ExtResource("6_qdykg")
 stretch_mode = 4
 
-[node name="autorun" type="CheckButton" parent="."]
+[node name="autorun" type="CheckButton" parent="settings"]
+light_mask = 0
 layout_mode = 0
-offset_left = 832.0
-offset_top = 112.0
-offset_right = 1191.0
-offset_bottom = 202.0
+offset_left = -384.0
+offset_top = -334.0
+offset_right = -25.0
+offset_bottom = -244.0
 text = "options_autorun"
 
-[node name="NinePatchRect" type="NinePatchRect" parent="autorun"]
+[node name="NinePatchRect" type="NinePatchRect" parent="settings/autorun"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 show_behind_parent = true
 light_mask = 0
 layout_mode = 0
 offset_left = -18.0
-offset_top = 6.0
 offset_right = 370.0
-offset_bottom = 83.0
+offset_bottom = 90.0
 texture = ExtResource("3_d5s5m")
 patch_margin_left = 20
 patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="camerasmooth" type="CheckButton" parent="."]
+[node name="camerasmooth" type="CheckButton" parent="settings"]
 visible = false
+light_mask = 0
 layout_mode = 0
-offset_left = 832.0
-offset_top = 200.0
-offset_right = 1191.0
-offset_bottom = 290.0
+offset_left = -448.0
+offset_top = -160.0
+offset_right = -58.0
+offset_bottom = -70.0
 text = "options_camerasmooth"
 
-[node name="NinePatchRect" type="NinePatchRect" parent="camerasmooth"]
+[node name="NinePatchRect" type="NinePatchRect" parent="settings/camerasmooth"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 show_behind_parent = true
 light_mask = 0
@@ -318,16 +467,17 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="autorun3" type="CheckButton" parent="."]
+[node name="autorun3" type="CheckButton" parent="settings"]
 visible = false
+light_mask = 0
 layout_mode = 0
-offset_left = 832.0
-offset_top = 288.0
-offset_right = 1191.0
-offset_bottom = 378.0
+offset_left = -448.0
+offset_top = -72.0
+offset_right = -89.0
+offset_bottom = 18.0
 text = "options_autorun"
 
-[node name="NinePatchRect" type="NinePatchRect" parent="autorun3"]
+[node name="NinePatchRect" type="NinePatchRect" parent="settings/autorun3"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 show_behind_parent = true
 light_mask = 0
@@ -342,13 +492,13 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="windowMode" type="OptionButton" parent="."]
+[node name="windowMode" type="OptionButton" parent="settings"]
 light_mask = 0
 layout_mode = 0
-offset_left = 831.0
-offset_top = 419.0
-offset_right = 1184.0
-offset_bottom = 495.0
+offset_left = -385.0
+offset_top = -227.0
+offset_right = -32.0
+offset_bottom = -151.0
 expand_icon = true
 selected = 0
 item_count = 2
@@ -359,7 +509,7 @@ popup/item_1/text = "options_fullscreen"
 popup/item_1/icon = SubResource("AtlasTexture_acmck")
 popup/item_1/id = 1
 
-[node name="NinePatchRect" type="NinePatchRect" parent="windowMode"]
+[node name="NinePatchRect" type="NinePatchRect" parent="settings/windowMode"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 show_behind_parent = true
 light_mask = 0
@@ -374,13 +524,13 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="language" type="OptionButton" parent="."]
+[node name="language" type="OptionButton" parent="settings"]
 light_mask = 0
 layout_mode = 0
-offset_left = 834.0
-offset_top = 525.0
-offset_right = 1187.0
-offset_bottom = 601.0
+offset_left = -382.0
+offset_top = -129.0
+offset_right = -29.0
+offset_bottom = -53.0
 expand_icon = true
 selected = 0
 item_count = 2
@@ -391,7 +541,7 @@ popup/item_1/text = "Español"
 popup/item_1/icon = SubResource("AtlasTexture_ym452")
 popup/item_1/id = 1
 
-[node name="NinePatchRect" type="NinePatchRect" parent="language"]
+[node name="NinePatchRect" type="NinePatchRect" parent="settings/language"]
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 show_behind_parent = true
 light_mask = 0
@@ -406,14 +556,14 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="screen" type="OptionButton" parent="."]
+[node name="screen" type="OptionButton" parent="settings"]
 visible = false
 light_mask = 0
 layout_mode = 0
-offset_left = 159.0
-offset_top = -153.0
-offset_right = 512.0
-offset_bottom = -77.0
+offset_left = -1121.0
+offset_top = -513.0
+offset_right = -768.0
+offset_bottom = -437.0
 expand_icon = true
 selected = 0
 item_count = 2

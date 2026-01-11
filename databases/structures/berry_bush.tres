@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_5leus"]
+
+[resource]
+script = ExtResource("1_5leus")
+ID = "berry_bush"
+Cost = 40
+LevelRequirement = 0
+Tag = 2
+Shop = 2
+ShopOrderPriority = 58

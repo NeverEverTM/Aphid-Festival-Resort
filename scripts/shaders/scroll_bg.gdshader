@@ -1,3 +1,4 @@
+// SCROLLS TEXTURES BASED ON DETERMINATED DIRECTION AND SIZE, USED FOR UI BACKGROUNDS
 shader_type canvas_item;
 render_mode unshaded;
 

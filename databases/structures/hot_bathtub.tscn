@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://dy64j327koe2q"]
+[gd_scene load_steps=9 format=3 uid="uid://dy64j327koe2q"]
 
 [ext_resource type="Script" uid="uid://g2000tj46ocw" path="res://scripts/entities/BedBehaviour.cs" id="1_y0wc2"]
 [ext_resource type="PackedScene" uid="uid://b5mo6qrv1lsij" path="res://scenes/particles/steam_smoke.tscn" id="2_bimjs"]
 [ext_resource type="Texture2D" uid="uid://b1ctgilmol88x" path="res://sprites/props/hot_bathtub_1.png" id="2_uwm25"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="4_uwm25"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0dms6"]
 load_path = "res://.godot/imported/hot_bathtub.png-1d02dc58ccafe26e93b4f787713d310d.ctex"
@@ -50,7 +51,8 @@ position = Vector2(0, -11)
 collision_layer = 3
 collision_mask = 0
 monitoring = false
-metadata/tag = "interactable"
+script = ExtResource("4_uwm25")
+Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(1, 3)

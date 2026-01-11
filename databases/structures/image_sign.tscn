@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://c4b2x5elxg4i7"]
+[gd_scene load_steps=6 format=3 uid="uid://c4b2x5elxg4i7"]
 
 [ext_resource type="Texture2D" uid="uid://66bis73g2x7n" path="res://sprites/props/image_sign.png" id="1_h2uk8"]
 [ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSign.cs" id="2_3vroc"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_h2uk8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3vroc"]
 size = Vector2(62, 6)
@@ -9,11 +10,12 @@ size = Vector2(62, 6)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h2uk8"]
 size = Vector2(84, 25)
 
-[node name="image_sign" type="Sprite2D" node_paths=PackedStringArray("billboard")]
+[node name="image_sign" type="Sprite2D" node_paths=PackedStringArray("billboard", "interactArea2D")]
 texture = ExtResource("1_h2uk8")
 offset = Vector2(0, -32)
 script = ExtResource("2_3vroc")
 billboard = NodePath("billboard")
+interactArea2D = NodePath("Area2D")
 
 [node name="billboard" type="Sprite2D" parent="."]
 position = Vector2(0.499998, -36)
@@ -26,7 +28,8 @@ position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_3vroc")
 
 [node name="Area2D" type="Area2D" parent="."]
-metadata/tag = "interactable"
+script = ExtResource("3_h2uk8")
+Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, -2.5)

@@ -1,3 +1,4 @@
+// OLD VERSION OF WATER
 shader_type canvas_item;
 render_mode unshaded;
 uniform vec4 top_wave_color : source_color;

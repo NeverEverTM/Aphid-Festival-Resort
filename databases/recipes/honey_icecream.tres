@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_crwax"]
+[ext_resource type="Resource" path="res://databases/food/icecream.tres" id="2_cu83t"]
+[ext_resource type="Resource" path="res://databases/food/honey_drop.tres" id="3_1eono"]
+[ext_resource type="Resource" path="res://databases/food/glazed_honey.tres" id="4_7lmki"]
+[ext_resource type="Resource" path="res://databases/food/shaved_ice.tres" id="5_1pbl6"]
+[ext_resource type="Resource" path="res://databases/food/honey_icecream.tres" id="6_jg62e"]
+[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="7_mso1h"]
+
+[resource]
+script = ExtResource("7_mso1h")
+Owner = ExtResource("6_jg62e")
+Combinations = Array[Array]([Array[ExtResource("1_crwax")]([ExtResource("2_cu83t"), ExtResource("3_1eono")]), Array[ExtResource("1_crwax")]([ExtResource("2_cu83t"), ExtResource("4_7lmki")]), Array[ExtResource("1_crwax")]([ExtResource("5_1pbl6"), ExtResource("4_7lmki")])])

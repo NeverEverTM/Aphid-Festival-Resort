@@ -1,9 +1,10 @@
 using System;
 using Godot;
 
-public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.IMetadata
+public partial class ImageSign : Sprite2D, SaveSystem.IDataModule
 {
     [Export] private Sprite2D billboard;
+    [Export] private InteractableArea2D interactArea2D;
 
     private FileDialog popup = new();
     private string path;
@@ -23,6 +24,7 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
         popup.Canceled += () => Player.Instance.SetDisabled(false);
         AddChild(popup);
         orig_scale = billboard.Scale;
+        interactArea2D.OnInteractOnly.Add(Interact);
     }
 
     public void Interact()
@@ -31,13 +33,13 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
         popup.PopupCentered();
     }
 
-    public void SetData(string _data)
+    public void Set(string _data)
     {
         firstLoad = true;
         path = _data;
         SetImage(_data);
     }
-    public string GetData()
+    public string Get()
     {
         return path;
     }
@@ -69,7 +71,7 @@ public partial class ImageSign : Sprite2D, Player.IInteractEvent, ResortManager.
         }
         catch(Exception _error)
         {
-            Logger.Print(Logger.LogPriority.Error, "Image Sign: Unable to load image.", _error);
+            DebugLogger.Print(DebugLogger.LogPriority.Error, "Image Sign: Unable to load image.", _error);
         }
 
         if (!firstLoad)

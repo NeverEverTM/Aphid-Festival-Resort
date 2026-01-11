@@ -1,38 +1,22 @@
-[gd_scene load_steps=7 format=3 uid="uid://fe2rj3qknw8t"]
+[gd_scene load_steps=4 format=3 uid="uid://fe2rj3qknw8t"]
 
-[ext_resource type="Texture2D" uid="uid://cwecy5ses13x5" path="res://sprites/atlases/characters/joy_sheet.png" id="1_wsvv6"]
 [ext_resource type="Script" uid="uid://dee25qf2sown0" path="res://scripts/entities/NPCPhysicsBody.cs" id="2_6q5kb"]
-[ext_resource type="Script" uid="uid://ddxsastrcw16s" path="res://scripts/entities/NPCBehaviour.cs" id="2_w1x8r"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_1fifj"]
-atlas = ExtResource("1_wsvv6")
-region = Rect2(0, 0, 32, 64)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_opp8w"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1fifj")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
+[ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/prefabs/npc.tscn" id="2_vatlf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jipw7"]
-size = Vector2(20, 11)
+size = Vector2(18, 10)
 
 [node name="NPC" type="CharacterBody2D" node_paths=PackedStringArray("npcBody")]
+collision_layer = 5
+collision_mask = 5
 motion_mode = 1
 script = ExtResource("2_6q5kb")
-npcBody = NodePath("sprite")
+npcBody = NodePath("NPC")
 metadata/tag = "npc"
 
-[node name="sprite" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_opp8w")
-offset = Vector2(0, -32)
-script = ExtResource("2_w1x8r")
+[node name="NPC" parent="." instance=ExtResource("2_vatlf")]
+physics_interpolation_mode = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -1.5)
+position = Vector2(1, 0)
 shape = SubResource("RectangleShape2D_jipw7")

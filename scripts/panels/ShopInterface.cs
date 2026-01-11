@@ -1,12 +1,13 @@
-using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 // Used for the UI interface you interact with
-public partial class ShopInterface : Control, MenuTrigger.ITrigger
+public partial class ShopInterface : Control
 {
 	public MenuInstance Menu { get; protected set; }
 
-	[Export] protected string shopTag;
+	[Export] protected InteractableArea2D interactArea;
+	[ExportGroup("Inmutables")]
 	[Export] protected AnimationPlayer storePlayer;
 	[Export] protected GridContainer itemGrid;
 	[Export] protected RichTextLabel itemName, itemDescription;
@@ -15,18 +16,21 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	[Export] protected PackedScene itemContainer;
 	[Export] protected TextureButton itemBuyButton;
 	[ExportCategory("Customizables")]
+	[Export] protected ItemData.ShopOwner shopTag;
 	[Export] protected Color bgColorSlot = new("cyan");
 	[Export] protected Texture2D defaultIcon;
-	protected string currentItem;
-	protected int currentCost;
+
+	protected ItemData current_item;
+	protected ItemData[] current_list;
 
 	// ===============| Shelf products |=============
 	public override void _EnterTree()
 	{
+		FetchItemList();
 		CleanShelf();
-		Menu = new MenuInstance(shopTag,
+		Menu = new MenuInstance(GetShopTagName(),
 			storePlayer,
-			Open: _ => 
+			Open: _ =>
 			{
 				ResetShop();
 				SoundManager.CreateSound("ui/store_bell");
@@ -34,37 +38,42 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 			null,
 			Close: _ => CleanShelf()
 		);
-		itemBuyButton.Pressed += () => SelectItem(currentItem);
+		itemBuyButton.Pressed += () => SelectItem(current_item);
+		if (IsInstanceValid(interactArea))
+			interactArea.OnInteractOnly.Add(SetMenu);
 	}
 	protected virtual void ResetShop()
 	{
-		currentItem = string.Empty;
-		itemName.Text = Tr($"store_{shopTag}_name");
-		itemDescription.Text = Tr($"store_{shopTag}_desc");
-		itemCost.Text = Tr($"store_{shopTag}_phrase");
+		current_item = ItemData.Empty;
+		itemName.Text = Tr($"store_{GetShopTagName()}_name");
+		itemDescription.Text = Tr($"store_{GetShopTagName()}_desc");
+		itemCost.Text = Tr($"store_{GetShopTagName()}_phrase");
 		itemIcon.Texture = defaultIcon;
 		itemBuyButton.Hide();
 		CreateShelf();
 	}
+	protected virtual void FetchItemList()
+	{
+		// Fetch item datas and order them
+		current_list = [.. GlobalManager.G_ITEMS.Values.Where(i => i.Shop == shopTag)];
+		current_list = [.. current_list.OrderBy(i => i.ShopOrderPriority)];
+	}
 	protected virtual void CreateShelf()
 	{
-		// Create items
-		foreach (KeyValuePair<string, GlobalManager.Item> _pair in GlobalManager.G_ITEMS)
+		// Create items slots
+		for (int i = 0; i < current_list.Length; i++)
 		{
-			// is it related to this store?
-			if (!_pair.Value.shopTag.Equals(shopTag))
-				continue;
-
 			// create item slot
 			TextureButton _itemSlot = itemContainer.Instantiate() as TextureButton;
 			itemGrid.AddChild(_itemSlot);
 
 			// set icon
-			(_itemSlot.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(_pair.Key);
+			(_itemSlot.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(current_list[i].ID);
 			(_itemSlot.GetChild(0) as Control).SelfModulate = bgColorSlot;
 
 			// set behaviour
-			_itemSlot.Pressed += () => SelectItem(_pair.Key);
+			var _index = i;
+			_itemSlot.Pressed += () => SelectItem(current_list[_index]);
 		}
 	}
 	protected virtual void CleanShelf()
@@ -72,26 +81,26 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		for (int i = 0; i < itemGrid.GetChildCount(); i++)
 			itemGrid.GetChild(i).QueueFree();
 	}
-	protected virtual void SelectItem(string _itemName)
+
+	protected virtual void SelectItem(ItemData _item)
 	{
 		// set this as current displayed item
-		if (currentItem != _itemName)
-			SetItem(_itemName);
+		if (current_item != _item)
+			SetItem(_item);
 		else // but if is already displayed, then buy it
 			TryPurchase();
 	}
-	protected virtual void SetItem(string _itemName)
+	protected virtual void SetItem(ItemData _item)
 	{
-		currentItem = _itemName;
-		currentCost = GlobalManager.G_ITEMS[_itemName].cost;
-		itemCost.Text = currentCost.ToString();
+		current_item = _item;
 
-		itemName.Text = Tr(_itemName + "_name");
-		itemDescription.Text = Tr(_itemName + "_desc");
+		itemCost.Text = _item.Cost.ToString();
+		itemName.Text = Tr(_item.ID + "_name");
+		itemDescription.Text = Tr(_item.ID + "_desc");
+		itemIcon.Texture = GlobalManager.GetIcon(_item.ID);
 
-		itemIcon.Texture = GlobalManager.GetIcon(_itemName);
-		SoundManager.CreateSound("ui/button_select");
 		itemBuyButton.Show();
+		SoundManager.CreateSound("ui/button_select");
 	}
 	/// <summary>
 	/// Function that returns whether or not an item can be purchased.
@@ -100,9 +109,9 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	/// <returns></returns>
 	protected virtual bool CanPurchase()
 	{
-		if (string.IsNullOrEmpty(currentItem))
+		if (string.IsNullOrEmpty(current_item.ID))
 			return false;
-		if ((Player.Data.Currency - currentCost) < 0)
+		if ((Player.Data.Currency - current_item.Cost) < 0)
 			return false;
 		return true;
 	}
@@ -122,7 +131,7 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 	/// </summary>
 	protected virtual void Purchase()
 	{
-		Player.Data.AddCurrency(-currentCost);
+		PlayerData.AddCurrency(-current_item.Cost);
 		SoundManager.CreateSound("ui/kaching");
 	}
 
@@ -131,4 +140,5 @@ public partial class ShopInterface : Control, MenuTrigger.ITrigger
 		if (CanvasManager.Menus.Current != Menu)
 			_ = CanvasManager.Menus.SetTo(Menu);
 	}
+	public string GetShopTagName() => shopTag.ToString().ToLower();
 }

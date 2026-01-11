@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public partial class RoomDoor : Area2D
@@ -16,7 +17,7 @@ public partial class RoomDoor : Area2D
     {
         BodyEntered += TriggerRoomTransition;
     }
-    private void TriggerRoomTransition(Node2D _node)
+    public void TriggerRoomTransition(Node2D _node)
     {
         // we are entering from this door
         if (comingThrough)
@@ -29,10 +30,22 @@ public partial class RoomDoor : Area2D
             return;
 
         // deactivate the door barrier to cross to the next scene
-        if (_node.HasMeta(StringNames.TagMeta) && _node.GetMeta(StringNames.TagMeta).ToString() == "player")
+        if (_node.HasMeta(StringNames.TagMeta) && (StringNames.GlobalTags)(int)_node.GetMeta(StringNames.TagMeta) == StringNames.GlobalTags.Player)
         {
             collider.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
-            _ = SceneManager.Load(roomToGo, new(roomToGo, entryToGo, entryDirection, GlobalPosition));
+            LoadRoom();
+        }
+    }
+
+    public async void LoadRoom()
+    {
+        try
+        {
+            await SceneManager.Load(roomToGo, new(roomToGo, entryToGo, entryDirection, GlobalPosition));
+        }
+        catch(Exception _error)
+        {
+            DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
         }
     }
 }

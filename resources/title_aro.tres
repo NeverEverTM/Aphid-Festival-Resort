@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c8y1it4pga61m"]
+
+[ext_resource type="Shader" uid="uid://r327rsji0x46" path="res://scripts/shaders/wave_graphic.gdshader" id="1_a5qyf"]
+
+[resource]
+shader = ExtResource("1_a5qyf")
+shader_parameter/top_wave_color = Color(0, 0, 0, 1)
+shader_parameter/middle_wave_color = Color(0.777882, 0.777882, 0.777882, 1)
+shader_parameter/bottom_wave_color = Color(1, 1, 1, 1)
+shader_parameter/bg_color = Color(0.501961, 0, 0.501961, 1)
+shader_parameter/line_width = 0.1
+shader_parameter/width = 4.3
+shader_parameter/speed = 0.69

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_ng8al"]
+[ext_resource type="Resource" path="res://databases/food/leaf.tres" id="2_w33uh"]
+[ext_resource type="Resource" path="res://databases/food/shaved_ice.tres" id="3_gwuy7"]
+[ext_resource type="Resource" path="res://databases/food/leaf_salad.tres" id="4_fykei"]
+[ext_resource type="Resource" path="res://databases/food/cold_salad.tres" id="5_dvcwf"]
+[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="6_h2f0q"]
+
+[resource]
+script = ExtResource("6_h2f0q")
+Owner = ExtResource("5_dvcwf")
+Combinations = Array[Array]([Array[ExtResource("1_ng8al")]([ExtResource("2_w33uh"), ExtResource("3_gwuy7")]), Array[ExtResource("1_ng8al")]([ExtResource("4_fykei"), ExtResource("3_gwuy7")])])

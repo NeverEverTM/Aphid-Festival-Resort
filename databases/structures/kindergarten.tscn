@@ -1,27 +1,108 @@
-[gd_scene load_steps=5 format=3 uid="uid://w7x7ar1jllwc"]
+[gd_scene load_steps=8 format=3 uid="uid://w7x7ar1jllwc"]
 
+[ext_resource type="Texture2D" uid="uid://c1hrmta7qaaf" path="res://sprites/props/kindergarten.png" id="1_mvlf1"]
 [ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillInteractable.cs" id="1_v0sp4"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0dms6"]
-load_path = "res://.godot/imported/hot_bathtub.png-1d02dc58ccafe26e93b4f787713d310d.ctex"
+[sub_resource type="Animation" id="Animation_sin52"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Marker2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 4)]
+}
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5spxb"]
-atlas = SubResource("CompressedTexture2D_0dms6")
-region = Rect2(0, 0, 64, 32)
+[sub_resource type="Animation" id="Animation_uy04q"]
+resource_name = "start"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Marker2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.03333, 2.56667, 3.63333, 5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 4), Vector2(20, 4), Vector2(20, 4), Vector2(0, 4), Vector2(0, 4)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2.56667, 4.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [],
+"method": &"FlipAphidToTheRight"
+}, {
+"args": [],
+"method": &"FlipAphidToTheLeft"
+}, {
+"args": [],
+"method": &"HopAphid"
+}]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1, 2.56667, 3.63333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"values": [{
+"args": [],
+"method": &"SetWalk"
+}, {
+"args": [],
+"method": &"SetWalk"
+}, {
+"args": [],
+"method": &"SetWalk"
+}, {
+"args": [],
+"method": &"SetWalk"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_n2os5"]
+_data = {
+&"RESET": SubResource("Animation_sin52"),
+&"start": SubResource("Animation_uy04q")
+}
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yx58p"]
-size = Vector2(94, 29)
+size = Vector2(123, 42)
 
-[node name="kindergarten" type="Sprite2D" node_paths=PackedStringArray("resting_position")]
-modulate = Color(0, 1, 1, 1)
-texture = SubResource("AtlasTexture_5spxb")
-offset = Vector2(0, -11)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mvlf1"]
+size = Vector2(97, 19)
+
+[node name="kindergarten" type="Sprite2D"]
+texture = ExtResource("1_mvlf1")
+offset = Vector2(0, -18)
 script = ExtResource("1_v0sp4")
-skill = 2
-timer = 10.0
-resting_position = NodePath("Marker2D")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_n2os5")
+}
 
 [node name="Area2D" type="Area2D" parent="."]
+light_mask = 0
+z_index = -1
 position = Vector2(0, -11)
 collision_layer = 3
 collision_mask = 0
@@ -29,10 +110,18 @@ monitoring = false
 metadata/tag = "interactable"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(1, 3.5)
+position = Vector2(1.5, 12)
 shape = SubResource("RectangleShape2D_yx58p")
 debug_color = Color(0.740182, 0.394256, 0.653542, 0.42)
 
 [node name="Marker2D" type="Marker2D" parent="."]
-position = Vector2(0, -7)
+position = Vector2(0, 4)
 gizmo_extents = 39.5
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_mvlf1")

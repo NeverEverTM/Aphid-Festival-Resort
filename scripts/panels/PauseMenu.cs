@@ -1,136 +1,118 @@
-using Godot;
 using System;
 using System.Threading.Tasks;
+using Godot;
 
 public partial class PauseMenu : Control
 {
 	public static PauseMenu Instance { get; private set; }
-	private MenuInstance menu;
 
-	[Export] private AnimationPlayer menu_player;
-	[Export] private Control panel, options_panel, controls_panel, help_panel;
-	[Export] private AudioStream select_sound, switch_sound;
+	[Export] private TextureButton menu_button;
+	[Export] private AnimationPlayer menu_player, bg_player;
 	[Export] private BaseButton[] buttons;
-	private Control current_menu;
-	private int lastButtonIndex;
+	[Export] private Control options_panel, controls_panel, help_panel;
+
+	private MenuInstance menu;
+	private const string PAUSE_MENU_NAME = "pause";
+	private MenuInstance[] menu_panels;
 
 	public override void _EnterTree()
 	{
 		Instance = this;
 
-		Action[] actions =
-		[
-			ResumeButton,
-			OptionsButton,
-			ControlsButton,
-			HelpButton,
-			BackToMenuButton,
-			ExitButton
+		// hardcoded menu values
+		menu_panels = [
+			(options_panel as IMenuInstance).Create(),
+			(controls_panel as IMenuInstance).Create(),
+			(help_panel as IMenuInstance).Create()
 		];
 
-		for (int i = 0; i < actions.Length; i++)
+		// hardcoded button values
+		Action[] _actions = [
+			() => _ = CanvasManager.Menus.SetTo(null),
+			() => ConfirmationPopup.Create(SaveButton, null, ConfirmationPopup.ConfirmationEnum.Fast),
+			() => _ = CanvasManager.Menus.SetTo(menu_panels[0]),
+			() => _ = CanvasManager.Menus.SetTo(menu_panels[1]),
+			() => _ = CanvasManager.Menus.SetTo(menu_panels[2]),
+			() => _ = ConfirmationPopup.Create(BackToMenuButton, null,
+					ConfirmationPopup.ConfirmationEnum.Fast, "confirmation_exit_nosave"),
+			() => ConfirmationPopup.Create(() => GetTree().Quit(), null,
+					ConfirmationPopup.ConfirmationEnum.Fast, "confirmation_exit_nosave")
+		];
+		// setup button text and sounds
+		for (int i = 0; i < buttons.Length; i++)
 		{
-			int new_index = i;
+			int _index = i;
 			buttons[i].Pressed += () =>
 			{
-				lastButtonIndex = new_index;
-				OnButtonPress(actions[new_index]);
+				if (!CanvasManager.Menus.Processing)
+					_actions[_index]();
+				SoundManager.CreateSound("ui/button_select");
 			};
-			buttons[i].FocusEntered += () => SoundManager.CreateSound(switch_sound);
-			(buttons[i].GetChild(0) as Label).Text = $"pause_{buttons[i].Name}";
+			buttons[i].GetChild<Label>(0).Text = $"{PAUSE_MENU_NAME}_{buttons[i].Name}";
 		}
 
-		menu = new("pause", menu_player);
+		menu = new(PAUSE_MENU_NAME, menu_player,
+		Open: (_) =>
+		{
+			if (!CanvasManager.Menus.IsActive)
+			{
+				Show();
+				GetTree().Paused = true;
+				bg_player.Play(StringNames.OpenAnim); // sets the permanent pause bg
+				SoundManager.PauseSong();
+				SoundManager.CreateSound("ui/button_switch");
+			}
+			buttons[0].GrabFocus();
+		}
+		, null,
+		Close: (_nextMenu) =>
+		{
+			if (_nextMenu == null)
+			{
+				GetTree().Paused = false;
+				bg_player.Play(StringNames.CloseAnim); // sets the permanent pause bg
+				SoundManager.ResumeSong();
+				Player.Instance.SetMovementDirection(Vector2.Zero);
+			}
+		},
+		() =>
+		{
+			if (CanvasManager.Menus.Pending == null)
+				Hide();
+		});
+
+		menu_button.Pressed += () => _ = CanvasManager.Menus.SetTo(menu);
 	}
 	public override void _ExitTree()
 	{
 		GetTree().Paused = false;
 	}
-
-	public async Task SetPauseMenu(bool _state)
-	{
-		if (_state)
-		{
-			if (FreeCameraManager.Enabled || CanvasManager.Menus.IsActive || DialogManager.IsActive)
-				return;
-
-			if (await CanvasManager.Menus.SetTo(menu))
-			{
-				buttons[0].GrabFocus();
-				GetTree().Paused = true;
-				SoundManager.PauseSong();
-				SoundManager.CreateSound(switch_sound);
-			}
-		}
-		else
-		{
-			GetTree().Paused = false;
-			SoundManager.ResumeSong();
-			await CanvasManager.Menus.GoBack();
-		}
-	}
-	public void SetSubMenu(Control _menu)
-	{
-		panel.Hide();
-		current_menu = _menu;
-		current_menu.Show();
-	}
-	public void ExitSubMenu()
-	{
-		current_menu.Hide();
-		current_menu = null;
-		panel.Show();
-		buttons[lastButtonIndex].GrabFocus();
-	}
-
 	public override void _Input(InputEvent @event)
 	{
-		// closing pause menu or its submenus
-		if (Visible)
-		{
-			if (@event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.Cancel))
-			{
-				if (current_menu != null)
-					ExitSubMenu();
-				else
-					_ = Instance.SetPauseMenu(false);
-			}
-		} // opening pause menu
-		else if (@event.IsActionPressed(InputNames.Escape) && !CanvasManager.Menus.IsActive)
-			_ = Instance.SetPauseMenu(true);
-	}
-
-	private void OnButtonPress(Action _action)
-	{
-		if (GlobalManager.IsBusy)
+		if (GlobalManager.IsBusy || SceneManager.IsBusy || FreeCameraManager.Enabled || DialogManager.IsActive)
 			return;
 
-		_action();
-		SoundManager.CreateSound(select_sound);
+		if (CanvasManager.Menus.Current == null)
+		{
+			if (@event.IsActionPressed(InputNames.Escape))
+				_ = CanvasManager.Menus.SetTo(menu);
+		}
+		else if (CanvasManager.Menus.Available[0].Name.Equals(PAUSE_MENU_NAME))
+		{
+			if (@event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.Cancel))
+				_ = CanvasManager.Menus.GoBack();
+		}
 	}
-	private void ResumeButton() =>
-		_ = Instance.SetPauseMenu(false);
-	private void OptionsButton() =>
-		SetSubMenu(options_panel);
-	private void ControlsButton() =>
-		SetSubMenu(controls_panel);
-	private void HelpButton() =>
-		SetSubMenu(help_panel);
+
+	private async void SaveButton()
+	{
+		if (await SaveSystem.SaveProfile())
+			SoundManager.CreateSound("ui/kitchen_success");
+		else
+			SoundManager.CreateSound("ui/kitchen_fail");
+	}
 	private async void BackToMenuButton()
 	{
-		await SaveSystem.SaveProfile();
-		await SceneManager.Switch("menu", false, false);
-	}
-	private void ExitButton()
-	{
-		ConfirmationPopup.Create(ExitGame, null,
-			ConfirmationPopup.ConfirmationEnum.Fast, "confirmation_exit");
-
-	}
-	private async void ExitGame()
-	{
-		GlobalManager.IsBusy = true;
-		await SaveSystem.SaveProfile();
-		GetTree().Quit();
+		await SceneManager.Switch("menu", false);
 	}
 }

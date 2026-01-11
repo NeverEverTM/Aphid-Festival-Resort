@@ -1,9 +1,14 @@
-[gd_scene load_steps=10 format=3 uid="uid://bj8hvpt1kjaiw"]
+[gd_scene load_steps=12 format=3 uid="uid://bj8hvpt1kjaiw"]
 
 [ext_resource type="Texture2D" uid="uid://vu7nfemnhodu" path="res://sprites/props/berry_bush_empty.png" id="1_q1h30"]
+[ext_resource type="Shader" uid="uid://di36wbuic5ap6" path="res://scripts/shaders/grass.gdshader" id="1_utndy"]
 [ext_resource type="Script" uid="uid://j02qpj8iycok" path="res://scripts/entities/BerryBushBehaviour.cs" id="2_ied3s"]
 [ext_resource type="Texture2D" uid="uid://44vmfjus0as2" path="res://sprites/props/berry_bush.png" id="3_8l5nk"]
-[ext_resource type="PackedScene" uid="uid://cf4r7ihqeab31" path="res://scenes/particles/leaves_bush.tscn" id="4_snfrp"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="5_6n4iy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6n4iy"]
+shader = ExtResource("1_utndy")
+shader_parameter/sway = 2.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iqnwb"]
 size = Vector2(59, 11)
@@ -73,28 +78,27 @@ _data = {
 &"harvest": SubResource("Animation_pldhh")
 }
 
-[node name="berry_bush" type="Sprite2D" node_paths=PackedStringArray("interactionArea", "player", "particles")]
+[node name="berry_bush" type="Sprite2D" node_paths=PackedStringArray("interactionArea", "player")]
+material = SubResource("ShaderMaterial_6n4iy")
 texture = ExtResource("1_q1h30")
 offset = Vector2(0, -15)
 script = ExtResource("2_ied3s")
 berryTextures = [ExtResource("1_q1h30"), ExtResource("3_8l5nk")]
 interactionArea = NodePath("area2d")
 player = NodePath("AnimationPlayer")
-particles = NodePath("leaves_bush")
 metadata/id = "berry_bush"
-
-[node name="leaves_bush" parent="." instance=ExtResource("4_snfrp")]
-show_behind_parent = true
-position = Vector2(0, -18)
 
 [node name="area2d" type="Area2D" parent="."]
 collision_mask = 0
 input_pickable = false
 monitoring = false
+script = ExtResource("5_6n4iy")
+Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="area2d"]
 position = Vector2(-0.5, -4.5)
 shape = SubResource("RectangleShape2D_iqnwb")
+debug_color = Color(0.895648, 0.18931, 0.636549, 0.42)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

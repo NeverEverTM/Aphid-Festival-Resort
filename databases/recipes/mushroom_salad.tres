@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_fesfs"]
+[ext_resource type="Resource" path="res://databases/food/leaf.tres" id="2_tjgpl"]
+[ext_resource type="Resource" path="res://databases/food/shroom.tres" id="3_0hqo6"]
+[ext_resource type="Resource" path="res://databases/food/cooked_shroom.tres" id="4_bw0a6"]
+[ext_resource type="Resource" path="res://databases/food/leaf_salad.tres" id="5_a2pqc"]
+[ext_resource type="Resource" path="res://databases/food/mushroom_salad.tres" id="6_gpb7k"]
+[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="7_arvwg"]
+
+[resource]
+script = ExtResource("7_arvwg")
+Owner = ExtResource("6_gpb7k")
+Combinations = Array[Array]([Array[ExtResource("1_fesfs")]([ExtResource("2_tjgpl"), ExtResource("3_0hqo6")]), Array[ExtResource("1_fesfs")]([ExtResource("2_tjgpl"), ExtResource("4_bw0a6")]), Array[ExtResource("1_fesfs")]([ExtResource("5_a2pqc"), ExtResource("3_0hqo6")]), Array[ExtResource("1_fesfs")]([ExtResource("5_a2pqc"), ExtResource("4_bw0a6")])])

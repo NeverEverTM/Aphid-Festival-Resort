@@ -58,9 +58,9 @@ public partial class CameraManager : Camera2D
             Instance.GlobalPosition = FocusedObject.GlobalPosition;
 
         // we still clamp the camera's position because, while the actual camera respects the bounds,
-            //  its actual global position does not
-            Instance.GlobalPosition = Instance.GlobalPosition.Clamp(FieldManager.Instance.TopLeft.GlobalPosition + SCREEN_CENTER_GLOBAL,
-                FieldManager.Instance.BottomRight.GlobalPosition - SCREEN_CENTER_GLOBAL);
+        //  its actual global position does not
+        Instance.GlobalPosition = Instance.GlobalPosition.Clamp(FieldManager.Instance.TopLeft.GlobalPosition + SCREEN_CENTER_GLOBAL,
+            FieldManager.Instance.BottomRight.GlobalPosition - SCREEN_CENTER_GLOBAL);
     }
     private void ProcessFreeCamera()
     {
@@ -100,7 +100,7 @@ public partial class CameraManager : Camera2D
     {
         if (!IsInstanceValid(_focusObject))
         {
-            Logger.Print(Logger.LogPriority.Warning, "CameraManager: Tried to focus non-valid object.");
+            DebugLogger.Print(DebugLogger.LogPriority.Warning, "CameraManager: Tried to focus non-valid object.");
             return;
         }
         FocusedObject = _focusObject;
@@ -121,7 +121,7 @@ public partial class CameraManager : Camera2D
         SCREEN_SIZE_CANVAS = Instance.GetViewport().GetVisibleRect().Size;
         SCREEN_CENTER_CANVAS = SCREEN_SIZE_CANVAS / 2;
         SCREEN_CENTER_GLOBAL = SCREEN_CENTER_CANVAS / Instance.Zoom;
-        SCREEN_RENDER_DISTANCE = 800 * Instance.Zoom.X;
+        SCREEN_RENDER_DISTANCE = 700 * Instance.Zoom.X;
         SCREEN_RENDER_DISTANCE_SQR = SCREEN_RENDER_DISTANCE * SCREEN_RENDER_DISTANCE;
     }
 
@@ -136,6 +136,21 @@ public partial class CameraManager : Camera2D
         _total = Math.Clamp(_total, 1.25f, 5f);
         Instance.Zoom = new(_total, _total);
         UpdateViewportSizeTracking();
+    }
+    public static Tween TweenCamera(double _duration, float _zoom = DEFAULT_CAMERA_ZOOM)
+    {
+        // update the tween to avoid a weird zoom delay effect near the borders of the map
+        Tween _zoomTween = Instance.CreateTween(), _updateTween = Instance.CreateTween().SetLoops();
+        _updateTween.TweenCallback(Callable.From(UpdateViewportSizeTracking)).SetDelay(0.01f);
+        _zoomTween.SetEase(Tween.EaseType.Out);
+        _zoomTween.SetTrans(Tween.TransitionType.Circ);
+        _zoomTween.TweenProperty(Instance, "zoom", new Vector2(_zoom, _zoom), _duration).FromCurrent();
+        _zoomTween.Finished += () =>
+        {
+            _updateTween.Kill();
+            SetCameraZoom(_zoom);
+        };
+        return _zoomTween;
     }
 
     /// <returns>The mouse position translated to global position/returns>

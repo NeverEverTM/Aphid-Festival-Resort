@@ -1,0 +1,112 @@
+[gd_scene load_steps=8 format=3 uid="uid://c2bs6ryhkw4yf"]
+
+[ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="1_c6qog"]
+[ext_resource type="Texture2D" uid="uid://c5t28g5kiorp8" path="res://sprites/help_examples/train_chamber.PNG" id="2_j8837"]
+[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="2_pvb3h"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vhu6a"]
+atlas = ExtResource("1_c6qog")
+region = Rect2(0, 48, 17, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pvb3h"]
+atlas = ExtResource("1_c6qog")
+region = Rect2(16, 48, 17, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j8837"]
+atlas = ExtResource("1_c6qog")
+region = Rect2(33, 47, 15, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_crfnc"]
+atlas = ExtResource("1_c6qog")
+region = Rect2(49, 48, 14, 16)
+
+[node name="skills" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -640.0
+offset_top = -360.0
+offset_right = -640.0
+offset_bottom = -360.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="skill_label_0" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 126.0
+offset_right = 1080.0
+offset_bottom = 284.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "First, we need an aphid, and if you didn't know, they hatch from eggs!
+First, we need an aphid, and if you didn't know, they hatch from eggs!"
+scroll_active = false
+metadata/controls = PackedStringArray("open_inventory", "pickup")
+
+[node name="skill_label_1" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 423.0
+offset_right = 1080.0
+offset_bottom = 590.0
+theme_override_font_sizes/normal_font_size = 35
+bbcode_enabled = true
+text = "Tip: You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img]
+ symbol and clicking on any item you want to sell."
+scroll_active = false
+metadata/controls = PackedStringArray("pull")
+
+[node name="TextureRect5" type="TextureRect" parent="."]
+material = ExtResource("2_pvb3h")
+layout_mode = 0
+offset_left = 244.0
+offset_top = 196.0
+offset_right = 672.0
+offset_bottom = 406.0
+texture = ExtResource("2_j8837")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 693.0
+offset_top = 281.0
+offset_right = 783.0
+offset_bottom = 371.0
+texture = SubResource("AtlasTexture_vhu6a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 776.0
+offset_top = 243.0
+offset_right = 866.0
+offset_bottom = 333.0
+texture = SubResource("AtlasTexture_pvb3h")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 866.0
+offset_top = 281.0
+offset_right = 956.0
+offset_bottom = 371.0
+texture = SubResource("AtlasTexture_j8837")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect4" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 935.0
+offset_top = 243.0
+offset_right = 1025.0
+offset_bottom = 333.0
+texture = SubResource("AtlasTexture_crfnc")
+expand_mode = 1
+stretch_mode = 5

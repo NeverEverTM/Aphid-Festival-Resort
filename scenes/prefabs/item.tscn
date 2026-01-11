@@ -1,19 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://d3miyavfmn4oh"]
+[gd_scene load_steps=3 format=3 uid="uid://d3miyavfmn4oh"]
 
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="1_dxj3r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1kg8j"]
 radius = 14.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_dxj3r"]
-radius = 7.0
-
 [node name="item" type="Area2D"]
 collision_layer = 3
 collision_mask = 0
 monitoring = false
-metadata/tag = "item"
-metadata/pickup = true
+metadata/tag = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_dxj3r")
@@ -23,9 +19,3 @@ offset = Vector2(0, -7)
 position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_1kg8j")
 debug_color = Color(0.895443, 0.256337, 0.487308, 0.42)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(0, -7)
-shape = SubResource("CircleShape2D_dxj3r")

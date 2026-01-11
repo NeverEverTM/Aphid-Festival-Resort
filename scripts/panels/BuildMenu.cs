@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -38,7 +39,7 @@ public partial class BuildMenu : Control
 
 		buildButton.Pressed += () => _ = CanvasManager.Menus.SetTo(Menu);
 		storageButton.Pressed += SetStorage;
-		controlPrompt.Text = ControlsManager.GetActionName(InputNames.OpenInventory);
+		controlPrompt.Text = ControlsManager.GetLocalizedActionName(InputNames.OpenInventory);
 
 		SaveSystem.OnFinish += APPLY_OUTOFBOUND_PATCH;
 	}
@@ -83,7 +84,7 @@ public partial class BuildMenu : Control
 		GenerateBuildingList();
 		ClearBuildingList();
 		GameManager.APPLY_OUTOFBOUND_PATCH = false;
-		Logger.Print(Logger.LogPriority.Info, "BuildMenu: OUTOFBOUND patch finalized.");
+		DebugLogger.Print(DebugLogger.LogPriority.Info, "BuildMenu: OUTOFBOUND patch finalized.");
 	}
 
 	private void UpdateStorage(int _startIndex = 0)
@@ -107,8 +108,8 @@ public partial class BuildMenu : Control
 	{
 		for (int i = 0; i < ResortManager.Current.StructureRoot.GetChildCount(); i++)
 		{
-			var _structure = ResortManager.Current.StructureRoot.GetChild(i);
-			var _building = CreateBuilding(_structure as Node2D);
+			var _structure = ResortManager.Current.StructureRoot.GetChild<Node2D>(i);
+			var _building = CreateBuilding(_structure);
 
 			// patch to get structures outside the playable area
 			if (GameManager.APPLY_OUTOFBOUND_PATCH && _building == null)
@@ -226,7 +227,7 @@ public partial class BuildMenu : Control
 		}
 		else
 		{
-			Logger.Print(Logger.LogPriority.Warning, "BuildMenu: ", $"{_self.Name} does not have the needed properties to create its Rect bounding box");
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, "BuildMenu: ", $"{_self.Name} does not have the needed properties to create its Rect bounding box");
 			return null;
 		}
 
@@ -270,7 +271,7 @@ public partial class BuildMenu : Control
 
 		if (_mode == RemoveMode.Sell)
 		{
-			Player.Data.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].cost / 2);
+			PlayerData.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].Cost / 2);
 			SoundManager.CreateSound("ui/kaching");
 		}
 		if (_mode == RemoveMode.Store)
@@ -434,10 +435,10 @@ public partial class BuildMenu : Control
 		{
 			if (active_buildings[i].Rect.HasPoint(_mousePosition))
 			{
-				if (active_buildings[i].Self is IFurnitureInteractable)
+				if (active_buildings[i].Self is IStructureAphid)
 				{
-					IFurnitureInteractable _furniture = active_buildings[i].Self as IFurnitureInteractable;
-					if (_furniture.SelectedAphid != null || !_furniture.IsInterruptable)
+					IStructureAphid _furniture = active_buildings[i].Self as IStructureAphid;
+					if (_furniture.SelectedAphid != null)
 					{
 						SoundManager.CreateSound("ui/button_fail");
 						continue;

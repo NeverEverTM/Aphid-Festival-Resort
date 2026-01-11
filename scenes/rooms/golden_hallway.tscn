@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=4 uid="uid://bl1eixq6al72o"]
+[gd_scene load_steps=22 format=4 uid="uid://bl1eixq6al72o"]
 
 [ext_resource type="PackedScene" uid="uid://c6hlqyvj3a8n0" path="res://scenes/prefabs/base_room.tscn" id="1_conpa"]
 [ext_resource type="TileSet" uid="uid://c8bp7321wr03y" path="res://sprites/atlases/tilesets/resort_ground.tres" id="2_t3ftp"]
@@ -16,8 +16,6 @@
 [ext_resource type="PackedScene" uid="uid://mobb6ffpg1lv" path="res://databases/structures/stump.tscn" id="14_x2qyx"]
 [ext_resource type="AudioStream" uid="uid://dr8pjwr0i4kbv" path="res://sfx/ambience/river_ambience.mp3" id="15_jgo58"]
 [ext_resource type="AudioStream" uid="uid://snn7cy1t6bia" path="res://sfx/ambience/wind_ambience.mp3" id="16_vlm5t"]
-[ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/prefabs/npc.tscn" id="17_2euig"]
-[ext_resource type="Texture2D" uid="uid://cluuahe0lv018" path="res://sprites/atlases/characters/tangy_sheet.png" id="18_a3mqm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_shvsy"]
 size = Vector2(28, 107)
@@ -25,66 +23,14 @@ size = Vector2(28, 107)
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_conpa"]
 normal = Vector2(-1, 0)
 
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_t3ftp"]
+normal = Vector2(0.999476, 0.0323571)
+
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_vrtww"]
 normal = Vector2(1, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yxpab"]
 size = Vector2(32, 193)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2aok0"]
-atlas = ExtResource("18_a3mqm")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_h2l7m"]
-atlas = ExtResource("18_a3mqm")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_17n3g"]
-atlas = ExtResource("18_a3mqm")
-region = Rect2(64, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fm5xd"]
-atlas = ExtResource("18_a3mqm")
-region = Rect2(96, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_twxmx"]
-atlas = ExtResource("18_a3mqm")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_bmica"]
-atlas = ExtResource("18_a3mqm")
-region = Rect2(0, 32, 32, 32)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_34gdn"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2aok0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_h2l7m")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_17n3g")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fm5xd")
-}],
-"loop": true,
-"name": &"default",
-"speed": 3.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_twxmx")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_bmica")
-}],
-"loop": true,
-"name": &"talk",
-"speed": 6.0
-}]
 
 [node name="golden_hallway" node_paths=PackedStringArray("Doors") instance=ExtResource("1_conpa")]
 Doors = [NodePath("room_trigger")]
@@ -125,7 +71,18 @@ shape = SubResource("RectangleShape2D_shvsy")
 position = Vector2(48, -8)
 shape = SubResource("WorldBoundaryShape2D_conpa")
 
-[node name="decoration" type="Node2D" parent="." index="8"]
+[node name="TEST" parent="." index="8" instance=ExtResource("3_igcko")]
+position = Vector2(-752, 338)
+
+[node name="CollisionShape2D" parent="TEST" index="0"]
+position = Vector2(22, -10.5)
+shape = SubResource("RectangleShape2D_shvsy")
+
+[node name="CollisionShape2D" parent="TEST/collider" index="0"]
+position = Vector2(7, -9)
+shape = SubResource("WorldBoundaryShape2D_t3ftp")
+
+[node name="decoration" type="Node2D" parent="." index="9"]
 y_sort_enabled = true
 position = Vector2(724, 436)
 
@@ -267,27 +224,27 @@ position = Vector2(509, -231)
 [node name="large_grass10" parent="decoration" index="45" instance=ExtResource("5_p38c2")]
 position = Vector2(58, -251)
 
-[node name="left_boundary" type="StaticBody2D" parent="." index="9"]
+[node name="left_boundary" type="StaticBody2D" parent="." index="10"]
 position = Vector2(0, 346)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="left_boundary" index="0"]
 shape = SubResource("WorldBoundaryShape2D_vrtww")
 
-[node name="right_boundary_0" type="StaticBody2D" parent="." index="10"]
+[node name="right_boundary_0" type="StaticBody2D" parent="." index="11"]
 position = Vector2(1283, 181)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="right_boundary_0" index="0"]
 position = Vector2(13, -22)
 shape = SubResource("RectangleShape2D_yxpab")
 
-[node name="right_boundary_1" type="StaticBody2D" parent="." index="11"]
+[node name="right_boundary_1" type="StaticBody2D" parent="." index="12"]
 position = Vector2(1283, 487)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="right_boundary_1" index="0"]
 position = Vector2(13, -8.5)
 shape = SubResource("RectangleShape2D_yxpab")
 
-[node name="river_ambience" type="AudioStreamPlayer2D" parent="." index="12"]
+[node name="river_ambience" type="AudioStreamPlayer2D" parent="." index="13"]
 position = Vector2(1048, 657)
 stream = ExtResource("15_jgo58")
 volume_db = -5.0
@@ -296,7 +253,7 @@ max_distance = 500.0
 attenuation = 0.5
 bus = &"Ambience"
 
-[node name="river_ambience2" type="AudioStreamPlayer2D" parent="." index="13"]
+[node name="river_ambience2" type="AudioStreamPlayer2D" parent="." index="14"]
 position = Vector2(138, 649)
 stream = ExtResource("15_jgo58")
 volume_db = -5.0
@@ -305,7 +262,7 @@ max_distance = 500.0
 attenuation = 0.5
 bus = &"Ambience"
 
-[node name="river_ambience3" type="AudioStreamPlayer2D" parent="." index="14"]
+[node name="river_ambience3" type="AudioStreamPlayer2D" parent="." index="15"]
 position = Vector2(662, 641)
 stream = ExtResource("15_jgo58")
 volume_db = -5.0
@@ -314,20 +271,11 @@ max_distance = 500.0
 attenuation = 0.5
 bus = &"Ambience"
 
-[node name="wind_ambience" type="AudioStreamPlayer" parent="." index="15"]
+[node name="wind_ambience" type="AudioStreamPlayer" parent="." index="16"]
 stream = ExtResource("16_vlm5t")
 volume_db = -10.0
 autoplay = true
 bus = &"Ambience"
 
-[node name="tanjy" parent="." index="16" instance=ExtResource("17_2euig")]
-position = Vector2(581, 287)
-sprite_frames = SubResource("SpriteFrames_34gdn")
-animation = &"talk"
-autoplay = "default"
-offset = Vector2(0, -16)
-ID = "tanjy"
-DialogueMode = 2
-flipDirection = true
-
 [editable path="room_trigger"]
+[editable path="TEST"]

@@ -1,12 +1,19 @@
 using Godot;
 
-public partial class ChairBehaviour : Sprite2D, Player.IInteractEvent
+public partial class ChairBehaviour : Sprite2D
 {
     [Export] private Vector2 sitOffset;
     [Export] private CollisionShape2D playerCollider;
+    [Export] private InteractableArea2D interactArea;
 
     bool enabled;
     Vector2 last_offset, last_position;
+
+    public override void _EnterTree()
+    {
+        interactArea.OnInteract.Add((_, _) => Interact());
+    }
+
 
     public void Interact()
     {

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_gox5u"]
+[ext_resource type="Resource" path="res://databases/food/berry.tres" id="2_o4515"]
+[ext_resource type="Resource" path="res://databases/food/flour_bag.tres" id="3_1oqak"]
+[ext_resource type="Resource" path="res://databases/food/roasted_berries.tres" id="4_pa4ms"]
+[ext_resource type="Resource" path="res://databases/food/nutty_cake.tres" id="5_4tpdo"]
+[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="6_i17ka"]
+
+[resource]
+script = ExtResource("6_i17ka")
+Owner = ExtResource("5_4tpdo")
+Combinations = Array[Array]([Array[ExtResource("1_gox5u")]([ExtResource("2_o4515"), ExtResource("3_1oqak")]), Array[ExtResource("1_gox5u")]([ExtResource("4_pa4ms"), ExtResource("3_1oqak")])])

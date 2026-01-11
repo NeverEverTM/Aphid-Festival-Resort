@@ -1,7 +1,8 @@
-[gd_resource type="TileSet" load_steps=15 format=3 uid="uid://c8bp7321wr03y"]
+[gd_resource type="TileSet" load_steps=17 format=3 uid="uid://c8bp7321wr03y"]
 
 [ext_resource type="Texture2D" uid="uid://dm2i8x30jctnm" path="res://sprites/atlases/tilesets/tile_sheet.png" id="1_5twf8"]
 [ext_resource type="Shader" uid="uid://dmhlykjpl60jb" path="res://scripts/shaders/water.gdshader" id="1_itoty"]
+[ext_resource type="Texture2D" uid="uid://cgrn4y4ffb887" path="res://sprites/atlases/tilesets/fences.png" id="3_d87ab"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_i1nt7"]
 tile_data = PackedInt32Array(0, 393216, 6, 65536, 0, 6, 131072, 0, 7, 1, 65536, 6, 65537, 65536, 7)
@@ -617,18 +618,6 @@ texture = ExtResource("1_5twf8")
 2:8/0 = 0
 1:8/0 = 0
 3:8/0 = 0
-4:8/next_alternative_id = 3
-4:8/0 = 0
-4:8/0/y_sort_origin = 5
-4:8/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 5.30583, 8, 5.30583, 8, 8, -8, 8)
-5:8/next_alternative_id = 4
-5:8/0 = 0
-5:8/0/y_sort_origin = 5
-5:8/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 5.30583, -2.42809, 5.30583, -2.42809, 8, -8, 8)
-5:8/1 = 1
-5:8/1/flip_h = true
-5:8/1/y_sort_origin = 5
-5:8/1/physics_layer_0/polygon_0/points = PackedVector2Array(3.14753, 5.30583, 8, 5.30583, 8, 8, 2.96767, 8)
 3:7/0 = 0
 3:7/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:7/next_alternative_id = 2
@@ -694,6 +683,35 @@ texture = ExtResource("1_5twf8")
 8:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 8:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wauos"]
+texture = ExtResource("3_d87ab")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 0, 8, 0, 8, 8, -8, 8)
+1:0/next_alternative_id = 2
+1:0/0 = 0
+2:0/next_alternative_id = 6
+2:0/0 = 0
+2:0/1 = 1
+2:0/1/flip_h = true
+2:0/4 = 4
+2:0/4/modulate = Color(1, 1, 1, 0)
+2:0/4/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -4, -8, -4, 8, -8, 8)
+2:0/5 = 5
+2:0/5/flip_h = true
+2:0/5/modulate = Color(1, 1, 1, 0)
+2:0/5/physics_layer_0/polygon_0/points = PackedVector2Array(4, -8, 8, -8, 8, 8, 4, 8)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 5, 8, 5, 8, 8, -8, 8)
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 5, 8, 5, 8, 8, -8, 8)
+2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 5, -3, 5, -3, 8, -8, 8)
+3:1/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+4:1/0 = 0
+4:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(3, 5, 8, 5, 8, 8, 3, 8)
+
 [resource]
 occlusion_layer_0/light_mask = 1
 occlusion_layer_0/sdf_collision = true
@@ -709,5 +727,6 @@ terrain_set_1/mode = 0
 terrain_set_1/terrain_0/name = "water"
 terrain_set_1/terrain_0/color = Color(0.196078, 0.188235, 1, 1)
 sources/0 = SubResource("TileSetAtlasSource_qmted")
+sources/1 = SubResource("TileSetAtlasSource_wauos")
 pattern_0 = SubResource("TileMapPattern_i1nt7")
 pattern_1 = SubResource("TileMapPattern_q6pb8")

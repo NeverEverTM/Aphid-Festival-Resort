@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://dmo505ujibtbs"]
+[gd_scene load_steps=7 format=3 uid="uid://dmo505ujibtbs"]
 
 [ext_resource type="Texture2D" uid="uid://c76wsibtbi12" path="res://sprites/props/big_image_sign.png" id="1_ylhd2"]
 [ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSign.cs" id="2_6hw3u"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="3_ylhd2"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="4_6hw3u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6hw3u"]
 size = Vector2(188.916, 11.1807)
@@ -38,7 +39,8 @@ position = Vector2(-0.369045, -4.4394)
 shape = SubResource("RectangleShape2D_6hw3u")
 
 [node name="Area2D" type="Area2D" parent="."]
-metadata/tag = "interactable"
+script = ExtResource("4_6hw3u")
+Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-0.369053, -5.40326)

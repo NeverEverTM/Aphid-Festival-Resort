@@ -8,10 +8,11 @@ using Godot;
 /// <summary>
 /// Panel for the controls menu user interface.
 /// </summary>
-public partial class ControlsMenu : Control
+public partial class ControlsMenu : Control, IMenuInstance
 {
+	[Export] private AnimationPlayer anim_player;
 	[Export] private Control[] controls;
-	[Export] private ScrollContainer scrollContainer;
+	[Export] private ScrollContainer scroll;
 	[Export] private TextureProgressBar reset_bar;
 	[Export] private AudioStream select_sound, fail_sound, reset_sound;
 	[Export] private Curve interaction_curve;
@@ -22,39 +23,9 @@ public partial class ControlsMenu : Control
 	private Control current_action;
 	private InputEvent current_keybind;
 
+	private MenuInstance menu;
+
 	public override void _Ready()
-	{
-		SetControlBinds();
-		VisibilityChanged += () =>
-		{
-			if (Visible)
-			{
-				scrollContainer.ScrollVertical = 0;
-				return;
-			}
-
-			is_remapping = false;
-
-			if (IsInstanceValid(current_action))
-			{
-				(current_action.FindChild("action") as RichTextLabel).Text =
-					ControlsManager.GetActionName(current_action.Name);
-			}
-
-			if (was_modified && !ConfirmationPopup.IsConfirming)
-			{
-				ConfirmationPopup.Create(
-					_onConfirm: () => { ControlsManager.InputBinds.Save(); },
-					_onCancel: () => { ControlsManager.InputBinds.Load(); RefreshBinds(); });
-			}
-
-			current_action = null;
-			current_keybind = null;
-			was_modified = was_restarted = false;
-		};
-	}
-
-	private void SetControlBinds()
 	{
 		foreach (Control _inputButton in controls)
 		{
@@ -62,7 +33,7 @@ public partial class ControlsMenu : Control
 			if (!ControlsManager.Binds.ContainsKey(_inputButton.Name))
 				continue;
 			validActions.Add(_inputButton.Name);
-			string _displayAction = ControlsManager.GetActionName(_inputButton.Name);
+			string _displayAction = ControlsManager.GetLocalizedActionName(_inputButton.Name);
 
 			// Set text and functinality of control binders
 			(_inputButton.FindChild("action") as RichTextLabel).Text = _displayAction;
@@ -74,7 +45,7 @@ public partial class ControlsMenu : Control
 	{
 		foreach (Control _inputButton in controls)
 		{
-			string _displayAction = ControlsManager.GetActionName(_inputButton.Name);
+			string _displayAction = ControlsManager.GetLocalizedActionName(_inputButton.Name);
 
 			// Set text and functinality of control binders
 			(_inputButton.FindChild("action") as RichTextLabel).Text = _displayAction;
@@ -208,5 +179,40 @@ public partial class ControlsMenu : Control
 			interactionTimer = 0;
 			reset_bar.Value = 0;
 		}
+	}
+
+	// ===| Menu Interface |===
+	public MenuInstance Create()
+	{
+		menu ??= new("controls", anim_player, Open, TryClose, Close, null, true);
+		return menu;
+	}
+	public void Open(MenuInstance _last)
+	{
+		scroll.ScrollVertical = 0;
+	}
+	public bool TryClose(MenuInstance _next)
+	{
+		if (is_remapping)
+			return false;
+		if (was_modified && !ConfirmationPopup.IsConfirming)
+		{
+			was_modified = false;
+			ConfirmationPopup.Create(
+				_onConfirm: () => { ControlsManager.InputBinds.Save(); },
+				_onCancel: () => { ControlsManager.InputBinds.Load(); RefreshBinds(); });
+		}
+		return !ConfirmationPopup.IsConfirming;
+	}
+	public void Close(MenuInstance _next)
+	{
+		if (IsInstanceValid(current_action))
+		{
+			(current_action.FindChild("action") as RichTextLabel).Text =
+				ControlsManager.GetLocalizedActionName(current_action.Name);
+		}
+		current_action = null;
+		current_keybind = null;
+		is_remapping = was_modified = was_restarted = false;
 	}
 }

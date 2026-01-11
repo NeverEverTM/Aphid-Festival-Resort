@@ -8,6 +8,6 @@ script = ExtResource("2_dydvq")
 Skills = Dictionary[int, int]({
 3: 1
 })
-BaseTime = 120.0
-BaseReward = 10
+BaseTime = 100.0
+BaseReward = 8
 Background = ExtResource("1_rwcmu")

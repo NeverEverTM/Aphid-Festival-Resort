@@ -1,42 +1,105 @@
+using System;
 using Godot;
 
-public partial class HelpPanel : Control
+public partial class HelpPanel : Control, IMenuInstance
 {
-	[Export] private RichTextLabel[] helpDescriptions;
-	[Export] private ScrollContainer scrollContainer;
+	[Export] private PackedScene[] panels;
+	[Export] private Control container_node;
+	[Export] private Label count_label, title_label;
+	[Export] private BaseButton left_button, right_button;
+	[Export] private AnimationPlayer anim_player;
+
+	private int current;
+	private enum Direction { Left, Right }
+
+	private MenuInstance menu;
+
 	public override void _Ready()
 	{
-		VisibilityChanged += () =>
-		{
-			if (Visible)
-			{
-				scrollContainer.ScrollVertical = 0;
-				UpdateHelpDescriptions();
-			}
-		};
+		SetProcessInput(false);
+		left_button.Pressed += () => AdvancePage(Direction.Left);
+		right_button.Pressed += () => AdvancePage(Direction.Right);
+    }
 
-		UpdateHelpDescriptions();
-	}
-
-	private void UpdateHelpDescriptions()
+	public override void _Input(InputEvent @event)
 	{
-		helpDescriptions[0].Text = string.Format(Tr("help_desc_0"),
-        [
-            ControlsManager.GetActionName(InputNames.OpenInventory),
-			ControlsManager.GetActionName(InputNames.Pickup),
-		]);
-		helpDescriptions[1].Text = string.Format(Tr("help_desc_1"),
-			ControlsManager.GetActionName(InputNames.Interact));
-		helpDescriptions[2].Text = Tr("help_desc_2");
-		helpDescriptions[3].Text = Tr("help_desc_3");
-		helpDescriptions[4].Text = Tr("help_desc_4");
-		helpDescriptions[5].Text = string.Format(Tr("help_desc_5"),
-			ControlsManager.GetActionName(InputNames.OpenGenerations));
-		helpDescriptions[6].Text = Tr("help_desc_6");
-		helpDescriptions[7].Text = string.Format(Tr("help_desc_7"),
-        [
-            ControlsManager.GetActionName(InputNames.ChangeCamera),
-			ControlsManager.GetActionName(InputNames.TakeScreenshot),
-		]);
+		if (@event.IsActionPressed(InputNames.Left))
+			AdvancePage(Direction.Left);
+		else if (@event.IsActionPressed(InputNames.Right))
+			AdvancePage(Direction.Right);
 	}
+
+	private void AdvancePage(Direction _direction)
+	{
+		if (_direction == Direction.Left)
+		{
+			current--;
+			if (current < 0)
+				current = panels.Length - 1;
+		}
+		else if (_direction == Direction.Right)
+		{
+			current++;
+			if (current == panels.Length)
+				current = 0;
+		}
+		SetPage(current);
+	}
+
+	public void SetPage(int _index)
+	{
+		current = _index;
+		container_node.GetChildOrNull<Control>(0)?.QueueFree();
+		Control _node = panels[current].Instantiate<Control>();
+		SetAllLabels(_node);
+		container_node.AddChild(_node);
+
+		count_label.Text = $"{current + 1}/{panels.Length}";
+		SoundManager.CreateSound("ui/button_switch");
+	}
+
+	private void SetAllLabels(Control _page)
+	{
+		var _labels = _page.GetChildren();
+		string _categoryName = _page.Name;
+		title_label.Text = Tr($"help_{_categoryName}_title");
+
+		for (int i = 0, d = 0; i < _labels.Count; i++)
+		{
+			if (_labels[i] is not RichTextLabel)
+				continue;
+			string _dialogue = Tr($"help_{_categoryName}_{d}");
+
+			if (_labels[i].HasMeta("controls"))
+			{
+				string[] _args = Array.ConvertAll((string[])_labels[i].GetMeta("controls"), ControlsManager.GetLocalizedActionName);
+				for (int s = 0; s < _args.Length; s++)
+					_args[s] = $"[color=gold]{_args[s]}[/color]";
+				_dialogue = string.Format(_dialogue, _args);
+			}
+
+			(_labels[i] as RichTextLabel).Text = _dialogue;
+			d++;
+		}
+	}
+
+	public MenuInstance Create()
+	{
+		menu = new("help", anim_player, Open, TryClose, Close, null, true);
+		return menu;
+    }
+    public void Open(MenuInstance _last)
+    {
+		SetProcessInput(true);
+		current = 0;
+		SetPage(0);
+    }
+    public bool TryClose(MenuInstance _next)
+    {
+		return true;
+    }
+    public void Close(MenuInstance _next)
+    {
+        SetProcessInput(false);
+    }
 }
