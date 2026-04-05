@@ -17,32 +17,49 @@ public partial class AphidInfo : Control
 	[Export] private TextureProgressBar staminaBar, strengthBar, speedBar, intelligenceBar;
 	[Export] private Label staminaLabel, strengthLabel, speedLabel, intelligenceLabel;
 
-	private Aphid current_aphid;
-	private List<Node2D> nearby_aphids = [];
 	private StringName AVAILABLE_ANIM = new("available"), UNAVAILABLE_ANIM = new("unavailable"),
 			OPEN_AVAILABLE = new("open_available"), CLOSE_AVAILABLE = new("close_available");
 
-	public bool IsBeingDisplayed { get; private set; }
-	public bool AreAphidsNearby { get; private set; }
-	public bool IsAphidPickedUp { get; private set; }
+	private Aphid current_aphid = null;
+	private readonly List<Node2D> nearby_aphids = [];
 
+	/// <summary>
+	/// Wheter or not is actively showing its information.
+	/// </summary>
+	public bool Enabled { get; private set; } = false;
+	public DisplayMode CurrentDisplay = DisplayMode.Hidden;
+	public enum DisplayMode
+	{
+		Hidden, Shown, PartiallyShown
+	}
+	public bool AreAphidsNearby { get; private set; } = false;
+	public bool IsAphidPickedUp { get; private set; } = false;
+
+	// MARK: Initialization
 	public override void _EnterTree()
 	{
 		Instance = this;
-		name_label.FocusExited += SetCurrentAphidName;
+		name_label.FocusExited += ApplyName;
 		SceneManager.AddEventListener(ConnectEvents, SceneManager.EventEnum.OnPostLoad);
-		showButton.Pressed += () => Display(!IsBeingDisplayed);
+		showButton.Pressed += SetByButton;
+
+		// fixes a small stutter that happens when opening the menu for the first time, by opening it briefly before start
+		Show();
+		menu_player.Play(StringNames.CloseAnim);
 	}
 	public override void _ExitTree()
 	{
-		Display(false);
 		Instance = null;
 	}
 
+	// MARK: Processing
 	public override void _Process(double delta)
 	{
-		if (IsBeingDisplayed && IsInstanceValid(current_aphid))
-			Update();
+		if (Enabled)
+		{
+			if (IsInstanceValid(current_aphid))
+				UpdateGUI();
+		}
 	}
 	public override void _Input(InputEvent @event)
 	{
@@ -66,18 +83,15 @@ public partial class AphidInfo : Control
 		if (name_label.Text.Length > 20)
 			AcceptEvent();
 	}
+
+	// MARK: Events
 	private void ConnectEvents(SceneManager.SceneArgs _args)
 	{
-		Player.Instance.AddEventListener(OnPickup, Player.PickupEventEnum.OnPickup);
-		Player.Instance.AddEventListener(OnDrop, Player.PickupEventEnum.OnDrop);
-		Player.Instance.AddEventListener(OnInteractableEnter, Player.InteractableEventEnum.OnInteractableEnter);
-		Player.Instance.AddEventListener(OnInteractableExit, Player.InteractableEventEnum.OnInteractableExit);
-		CanvasManager.Menus.OnSwitch.Add((_l, _m) =>
-		{
-			if (_m != null && _m.Equals("pause"))
-				return;
-			Display(false);
-		});
+		Player.Instance.AddEventListener(OnPickup, Player.PickupEvents.OnPickup);
+		Player.Instance.AddEventListener(OnDrop, Player.PickupEvents.OnDrop);
+		Player.Instance.AddEventListener(OnInteractableEnter, Player.InteractableEvents.OnInteractableEnter);
+		Player.Instance.AddEventListener(OnInteractableExit, Player.InteractableEvents.OnInteractableExit);
+		CanvasManager.Menus.AddEventListener(OnMenuChange, MenuHandler.MenuEvents.OnMenuChange);
 	}
 	private void OnPickup(Player.PickupArgs _args)
 	{
@@ -85,8 +99,10 @@ public partial class AphidInfo : Control
 			return;
 
 		IsAphidPickedUp = true;
-		SelectAphid(Player.Instance.HeldPickup.Entity_Aphid);
-		SetControlPrompt();
+		if (Enabled)
+			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.CloseInfo);
+		else
+			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.ShowInfo);
 	}
 	private void OnDrop(Player.PickupArgs _args)
 	{
@@ -94,10 +110,12 @@ public partial class AphidInfo : Control
 			return;
 
 		IsAphidPickedUp = false;
-		SelectAphid(null);
-		Display(false);
+		if (Enabled)
+			SetTo(false, !AreAphidsNearby);
+		else if (!AreAphidsNearby && _args.IsNoAnim)
+			SetTo(false, true);
 	}
-	private void OnInteractableEnter(Player.InteractableEventArgs _args)
+	private void OnInteractableEnter(Player.InteractableArgs _args)
 	{
 		if (_args.Tag != StringNames.GlobalTags.Aphid)
 			return;
@@ -112,113 +130,44 @@ public partial class AphidInfo : Control
 		AreAphidsNearby = nearby_aphids.Count > 0;
 		if (AreAphidsNearby && _wereAphidsNearby != AreAphidsNearby)
 		{
-			SetControlPrompt();
-			Instance.menu_player.Play(AVAILABLE_ANIM);
+			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.ShowInfo);
+			SetDisplayMode(DisplayMode.PartiallyShown);
 		}
 	}
-	private void OnInteractableExit(Player.InteractableEventArgs _args)
+	private void OnInteractableExit(Player.InteractableArgs _args)
 	{
 		if (_args.Tag != StringNames.GlobalTags.Aphid)
 			return;
-		nearby_aphids.Remove(_args.Entity);
+
+		if (!nearby_aphids.Remove(_args.Entity))
+			return;
 
 		// if there are no aphids nearby now, and there were before, update interface
 		bool _wereAphidsNearby = AreAphidsNearby;
 		AreAphidsNearby = nearby_aphids.Count > 0;
-		if (!IsAphidPickedUp && !AreAphidsNearby && _wereAphidsNearby != AreAphidsNearby)
+		if (!IsAphidPickedUp)
 		{
-			if (IsBeingDisplayed)
-				Display(false, true);
-			else
-			{
-				SetControlPrompt();
-				Instance.menu_player.Play(UNAVAILABLE_ANIM);
-			}
+			if (_wereAphidsNearby && !AreAphidsNearby)
+				SetTo(false, true);
 		}
 	}
-	// Interface
-	private void SetCurrentAphidName()
+	private void OnMenuChange(MenuHandler.MenuArgs _args)
+	{
+		if (_args.Current?.Name == "pause" || _args.Next?.Name == "pause")
+			return;
+
+		SetDisplayMode(DisplayMode.Hidden);
+	}
+
+	// MARK: User Interface
+	private void ApplyName()
 	{
 		if (current_aphid == null || string.IsNullOrWhiteSpace(name_label.Text))
 			return;
 
 		current_aphid.Instance.Genes.Name = name_label.Text;
 	}
-
-	// Main Behaviour
-	public void Display(bool _state, bool _force = false)
-	{
-		if (IsBeingDisplayed == _state)
-			return;
-		IsBeingDisplayed = _state;
-
-		if (_force)
-			menu_player.Play(IsBeingDisplayed ? StringNames.OpenAnim : StringNames.CloseAnim);
-		else
-			menu_player.Play(IsBeingDisplayed ? OPEN_AVAILABLE : CLOSE_AVAILABLE);
-		if (IsBeingDisplayed && current_aphid != null)
-			Update(true);
-
-		SetControlPrompt();
-	}
-	public void DisplayClosestAphid(bool _force = false)
-	{
-		if (IsBeingDisplayed)
-			Display(false, _force);
-		else
-		{
-			current_aphid = SelectClosestAphid();
-			if (current_aphid != null)
-				Display(true, _force);
-			else
-				Display(false, _force);
-		}
-	}
-	private void SetControlPrompt()
-	{
-		CanvasManager.RemoveControlPrompt(InputNames.Pull);
-
-		if (IsBeingDisplayed)
-			CanvasManager.AddControlPrompt("close_info", InputNames.Pull, InputNames.Pull);
-		else if (IsAphidPickedUp || AreAphidsNearby)
-			CanvasManager.AddControlPrompt("show_info", InputNames.Pull, InputNames.Pull);
-	}
-
-	/// <summary>
-	/// Allows to select an aphid to show information for.
-	/// </summary>
-	/// <param name="_aphid">The aphid to show, if given null, it deselects the aphid.</param>
-	public void SelectAphid(Aphid _aphid = null)
-	{
-		// if null or we already have one, deselect
-		if (_aphid == null || current_aphid != null)
-			current_aphid = null;
-
-		// otherwise, select the given one, or find the closest one
-		else if (_aphid != null)
-			current_aphid = _aphid;
-	}
-	/// <summary>
-	/// Select closest aphid to Player
-	/// </summary>
-	public Aphid SelectClosestAphid()
-	{
-		float _minDistance = float.PositiveInfinity;
-		Node2D _closestAphid = null;
-		for (int i = 0; i < nearby_aphids.Count; i++)
-		{
-			float _min = Player.Instance.GlobalPosition.DistanceSquaredTo(nearby_aphids[i].GlobalPosition);
-			if (_min < _minDistance)
-			{
-				_minDistance = _min;
-				_closestAphid = nearby_aphids[i];
-			}
-		}
-
-		return _closestAphid as Aphid;
-	}
-
-	private void Update(bool _forceUpdate = false)
+	private void UpdateGUI(bool _forceUpdate = false)
 	{
 		if (_forceUpdate)
 		{
@@ -253,5 +202,141 @@ public partial class AphidInfo : Control
 		speedLabel.Text = Tr("bio_skill_speed") + $" (lvl {_skills[3].Level})";
 
 		ageDisplay.Texture = age[current_aphid.Instance.Status.IsAdult ? 1 : 0];
+	}
+
+	// MARK: General
+	/// <summary>
+	/// Sets the state of the information tab.
+	/// </summary>
+	/// <param name="_force">Force a change of state, this will also force it to fully hide if set to false</param>
+	public void SetTo(bool _state, bool _force = false)
+	{
+		if (Enabled == _state && !_force)
+			return;
+
+		if (_state && current_aphid == null)
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "AphidInfo: Attempted to show aphid when none is selected.");
+			return;
+		}
+
+		Enabled = _state;
+		SetDisplayMode(_state ? DisplayMode.Shown : (_force ? DisplayMode.Hidden : DisplayMode.PartiallyShown));
+		CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.ShowInfo);
+
+		if (Enabled)
+		{
+			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.CloseInfo, 1);
+			UpdateGUI(true);
+		}
+		else if (AreAphidsNearby || IsAphidPickedUp)
+			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.ShowInfo, 1);
+	}
+	public void SetByButton()
+	{
+		if (FreeCameraManager.Enabled)
+			SetTo(!Enabled);
+
+		if (IsAphidPickedUp)
+			SetByPickup();
+		else
+			SetByClosest();
+	}
+	public void SetByClosest()
+	{
+		if (Enabled)
+			SetTo(false);
+		else
+		{
+			current_aphid = SelectClosestAphid();
+			if (current_aphid != null)
+				SetTo(true);
+		}
+	}
+	public void SetByPickup()
+	{
+		if (Enabled)
+			SetTo(false);
+		else
+		{
+			current_aphid = Player.Instance.HeldItem.Entity_Aphid;
+			SetTo(true);
+		}
+	}
+
+	/// <summary>
+	/// Sets the current animation for the information tab, DOES NOT set it as enabled.
+	/// </summary>
+	/// <param name="_mode"></param>
+	public void SetDisplayMode(DisplayMode _mode)
+	{
+		if (_mode == CurrentDisplay)
+			return;
+
+		switch (_mode)
+		{
+			case DisplayMode.PartiallyShown:
+				switch (CurrentDisplay)
+				{
+					case DisplayMode.Hidden:
+						menu_player.Play(AVAILABLE_ANIM);
+						break;
+					case DisplayMode.Shown:
+						menu_player.Play(CLOSE_AVAILABLE);
+						break;
+				}
+				break;
+			case DisplayMode.Hidden:
+				switch (CurrentDisplay)
+				{
+					case DisplayMode.PartiallyShown:
+						menu_player.Play(UNAVAILABLE_ANIM);
+						break;
+					case DisplayMode.Shown:
+						menu_player.Play(StringNames.CloseAnim);
+						break;
+				}
+				break;
+			case DisplayMode.Shown:
+				switch (CurrentDisplay)
+				{
+					case DisplayMode.Hidden:
+						menu_player.Play(StringNames.OpenAnim);
+						break;
+					case DisplayMode.PartiallyShown:
+						menu_player.Play(OPEN_AVAILABLE);
+						break;
+				}
+				break;
+		}
+		CurrentDisplay = _mode;
+	}
+
+	/// <summary>
+	/// Sets the given aphid as the one to display information of.
+	/// </summary>
+	/// <param name="_aphid">The aphid to show, if given null, it deselects the aphid.</param>
+	public void SelectAphid(Aphid _aphid)
+	{
+		current_aphid = _aphid;
+	}
+	/// <summary>
+	/// Select closest aphid to Player
+	/// </summary>
+	public Aphid SelectClosestAphid()
+	{
+		float _minDistance = float.PositiveInfinity;
+		Node2D _closestAphid = null;
+		for (int i = 0; i < nearby_aphids.Count; i++)
+		{
+			float _min = Player.Instance.GlobalPosition.DistanceSquaredTo(nearby_aphids[i].GlobalPosition);
+			if (_min < _minDistance)
+			{
+				_minDistance = _min;
+				_closestAphid = nearby_aphids[i];
+			}
+		}
+
+		return _closestAphid as Aphid;
 	}
 }

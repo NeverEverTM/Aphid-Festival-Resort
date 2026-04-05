@@ -34,7 +34,7 @@ interactArea = NodePath("area2d")
 [node name="area2d" type="Area2D" parent="."]
 monitoring = false
 script = ExtResource("3_ubl3p")
-Tag = 7
+Tag = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="area2d"]
 position = Vector2(0, -0.5)

@@ -11,6 +11,6 @@ point_count = 2
 process_mode = 3
 layer = 10
 script = ExtResource("1_epfnf")
-timer = 1.3
 curve = SubResource("Curve_7wljt")
 leaf = ExtResource("2_qq0u4")
+timer = 1.3

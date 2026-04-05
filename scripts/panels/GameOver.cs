@@ -69,7 +69,7 @@ public partial class GameOver : Control, CutsceneManager.ICutscene
         await SceneManager.Load("golden_resort", new("golden_resort", -1, Vector2.Zero, Vector2.Zero));
 
         if (FreeCameraManager.Enabled)
-            FreeCameraManager.SetFreeCameraMode(false);
+            FreeCameraManager.SetTo(false);
 
         Player.Instance.GlobalPosition = ResortManager.Current.SpawnPoint.GlobalPosition;
         CameraManager.Instance.ForceUpdateScroll();
@@ -117,7 +117,7 @@ public partial class GameOver : Control, CutsceneManager.ICutscene
         Instance.GetTree().Paused = false;
 
         if (FreeCameraManager.Enabled)
-            FreeCameraManager.SetFreeCameraMode(false);
+            FreeCameraManager.SetTo(false);
 
         Player.Instance.GlobalPosition = ResortManager.Current.SpawnPoint.GlobalPosition;
         CameraManager.ForceCameraPosition();

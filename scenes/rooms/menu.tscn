@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=100 format=3 uid="uid://by6u0617yy7oe"]
 
 [ext_resource type="Script" uid="uid://cesdis2vfhjmp" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="2_w3mwt"]
@@ -16,23 +16,25 @@
 [ext_resource type="Shader" uid="uid://cxlqld44bp5i1" path="res://scripts/shaders/water_placeable.gdshader" id="10_4si8u"]
 [ext_resource type="PackedScene" uid="uid://ba1ev1heaa3s6" path="res://scenes/panels/options_panel.tscn" id="10_8uix6"]
 [ext_resource type="Texture2D" uid="uid://cxtfy4o75q5ex" path="res://sprites/ui/logos/TITLE_RESORT.png" id="10_17y42"]
-[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="11_1iujn"]
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/backgrounds/menu_bar.png" id="11_1iujn"]
 [ext_resource type="Script" uid="uid://c8dsjkf1tu1p6" path="res://scripts/main_menu/LoadGameMenu.cs" id="11_6of5g"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="11_wl7ma"]
 [ext_resource type="PackedScene" uid="uid://cifp27quamefu" path="res://scenes/prefabs/ui/savefile_slot.tscn" id="12_tjjf3"]
 [ext_resource type="Script" uid="uid://cvyggc1iie7r7" path="res://scripts/main_menu/NewGameMenu.cs" id="13_51p2j"]
-[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="15_x38s1"]
+[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/backgrounds/menu_clipboard.png" id="15_x38s1"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="16_rnb0o"]
 [ext_resource type="LabelSettings" uid="uid://6u24mowlhh7j" path="res://resources/note_label.tres" id="17_17y42"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="17_w4wev"]
 [ext_resource type="PackedScene" uid="uid://ttn1ivy2gfhv" path="res://scenes/prefabs/ui/animated_ui_display.tscn" id="17_w6vnm"]
-[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="21_5jg8l"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="21_5jg8l"]
 [ext_resource type="Texture2D" uid="uid://ct4h858npiyg6" path="res://sprites/aphibu.png" id="23_rt0qn"]
+[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/backgrounds/pause_menu_bg.png" id="26_4hk7n"]
 [ext_resource type="Shader" uid="uid://c1trbf56kaou1" path="res://scripts/shaders/shine_highlight.gdshader" id="26_ukngl"]
-[ext_resource type="Texture2D" uid="uid://co1btvdxhud6s" path="res://sprites/ui/logo_large_color_dark.png" id="27_a546m"]
-[ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/mosaic_menu_bg.png" id="28_17y42"]
+[ext_resource type="Texture2D" uid="uid://ux0nvnt0x5iu" path="res://sprites/ui/backgrounds/checkered_pattern.png" id="27_4hk7n"]
+[ext_resource type="Texture2D" uid="uid://co1btvdxhud6s" path="res://sprites/ui/logos/logo_large_color_dark.png" id="27_a546m"]
+[ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/backgrounds/mosaic_menu_bg.png" id="28_17y42"]
 [ext_resource type="Texture2D" uid="uid://dwt5dtn13i3r2" path="res://sprites/ui/logos/pc_project.png" id="28_i03ks"]
-[ext_resource type="Texture2D" uid="uid://2qjcs2thdaim" path="res://sprites/ui/bg_border.png" id="28_pmnnv"]
+[ext_resource type="Texture2D" uid="uid://2qjcs2thdaim" path="res://sprites/ui/backgrounds/bg_border.png" id="28_pmnnv"]
 [ext_resource type="Texture2D" uid="uid://d3lxookj6y8bl" path="res://sprites/ui/logos/pc_dotted_bg.png" id="28_t4p6d"]
 [ext_resource type="Texture2D" uid="uid://cpvpnfbm7q8of" path="res://sprites/atlases/characters/crystal_sheet.png" id="29_66y5n"]
 [ext_resource type="Texture2D" uid="uid://pgscnb8dl5jr" path="res://sprites/ui/logos/pc_title.png" id="30_1xe6g"]
@@ -95,6 +97,23 @@ tracks/3/keys = {
 "values": [Vector2(1, 1)]
 }
 
+[sub_resource type="Animation" id="Animation_owv4b"]
+resource_name = "boing_festival"
+length = 0.3
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("title/title_festival:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06, 0.16, 0.3),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5, 1),
+"update": 0,
+"values": [Vector2(1.1, 1.1), Vector2(0.8, 0.8), Vector2(1.05, 1.05), Vector2(1, 1)]
+}
+
 [sub_resource type="Animation" id="Animation_4si8u"]
 resource_name = "close"
 length = 0.2
@@ -149,23 +168,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_owv4b"]
-resource_name = "boing_festival"
-length = 0.3
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("title/title_festival:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.06, 0.16, 0.3),
-"transitions": PackedFloat32Array(0.5, 0.5, 0.5, 1),
-"update": 0,
-"values": [Vector2(1.1, 1.1), Vector2(0.8, 0.8), Vector2(1.05, 1.05), Vector2(1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_c0d3e"]
@@ -543,7 +545,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("load_quote/load_label:visible_ratio")
+tracks/0/path = NodePath("load_label:visible_ratio")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -555,128 +557,139 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("load_quote/peek:position")
+tracks/1/path = NodePath("savefiles_clip:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(22, 14)]
+"values": [Vector2(-564, -205)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("load_quote:position")
+tracks/2/path = NodePath(".:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-467, -528)]
+"update": 1,
+"values": [false]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("savefiles_scroll:position")
+tracks/3/path = NodePath("scroll_bg:self_modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(-564, -205)]
+"values": [Color(1, 1, 1, 0)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath(".:visible")
+tracks/4/path = NodePath("band_0:size")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"update": 0,
+"values": [Vector2(722.0039, 110.56703)]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("load_quote/peek:rotation")
+tracks/5/path = NodePath("band_1:size")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [0.0]
+"values": [Vector2(1469.1967, 239.22021)]
 }
 
-[sub_resource type="Animation" id="Animation_4hk7n"]
+[sub_resource type="Animation" id="Animation_5x14v"]
 resource_name = "close"
-length = 0.4
+length = 0.5
 step = 0.01
-capture_included = true
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("load_quote/peek:position")
+tracks/0/path = NodePath("load_label:visible_ratio")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.07, 0.15, 0.23, 0.32, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 2,
-"values": [Vector2(-65, 0), Vector2(-92, 26), Vector2(-131, 95), Vector2(-141, 292.258), Vector2(-187, 625.878), Vector2(-195, 892.795)]
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, -0.1]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("load_quote:position")
+tracks/1/path = NodePath(".:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.166667, 0.4),
-"transitions": PackedFloat32Array(0.5, 1),
-"update": 0,
-"values": [Vector2(-467, -336), Vector2(-467, -500)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("savefiles_scroll:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(2, 1),
-"update": 0,
-"values": [Vector2(-564, -205), Vector2(-564, 600)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath(".:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.4),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("scroll_bg:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.78431374), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("band_0:size")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.44),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(722.0039, 110.56703), Vector2(0, 110.567)]
+}
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("load_quote/peek:rotation")
+tracks/4/path = NodePath("band_1:size")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.07, 0.15, 0.23, 0.32, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.44),
+"transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
-"values": [0.0, -0.394311, -1.02516, -2.27387, -3.85548, -4.82303]
+"values": [Vector2(1469.1967, 239.22021), Vector2(0, 239.21997)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("savefiles_clip:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.13, 0.5),
+"transitions": PackedFloat32Array(0.5, 0.5, 1),
+"update": 0,
+"values": [Vector2(111, 140), Vector2(111, 100), Vector2(111, 1000)]
 }
 
 [sub_resource type="Animation" id="Animation_uq7ju"]
@@ -685,7 +698,7 @@ length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("load_quote/load_label:visible_ratio")
+tracks/0/path = NodePath("load_label:visible_ratio")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -697,70 +710,98 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("load_quote/peek:position")
+tracks/1/path = NodePath("savefiles_clip:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.266667, 0.5),
-"transitions": PackedFloat32Array(1, -2, 1),
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
-"values": [Vector2(22, 0), Vector2(22, 0), Vector2(-65, 0)]
+"values": [Vector2(111, 750), Vector2(111, 140)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("load_quote:position")
+tracks/2/path = NodePath(".:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(0.5, 1),
-"update": 0,
-"values": [Vector2(-467, -612), Vector2(-467.23, -336)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("savefiles_scroll:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.5, 1),
-"update": 0,
-"values": [Vector2(-564, 1000), Vector2(-564, -205)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("scroll_bg:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(2, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.78431374)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("band_0:size")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(0, 110.567), Vector2(722.0039, 110.56703)]
+}
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("load_quote/peek:rotation")
+tracks/5/path = NodePath("band_1:size")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 1),
 "update": 0,
-"values": [0.0]
+"values": [Vector2(0, 239.21997), Vector2(1469.1967, 239.22021)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wcxo3"]
 _data = {
 &"RESET": SubResource("Animation_0ys5g"),
-&"close": SubResource("Animation_4hk7n"),
+&"close": SubResource("Animation_5x14v"),
 &"open": SubResource("Animation_uq7ju")
 }
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nqiqd"]
+shader = ExtResource("11_wl7ma")
+shader_parameter/speed = 0.1
+shader_parameter/direction = Vector2(-1, 1)
+shader_parameter/node_size = Vector2(4, 4)
+shader_parameter/color = Color(0.9579323, 0.28794512, 0.55686915, 1)
+shader_parameter/useModulateAlpha = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_721kg"]
+shader = ExtResource("11_wl7ma")
+shader_parameter/speed = 0.25
+shader_parameter/direction = Vector2(1, 0)
+shader_parameter/node_size = Vector2(1, 1)
+shader_parameter/color = Color(0.7514087, 0.08389979, 0.18289512, 1)
+shader_parameter/useModulateAlpha = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_peokq"]
+shader = ExtResource("11_wl7ma")
+shader_parameter/speed = 0.1
+shader_parameter/direction = Vector2(-1, 0)
+shader_parameter/node_size = Vector2(1, 1)
+shader_parameter/color = Color(0.7514087, 0.08389979, 0.18289512, 1)
+shader_parameter/useModulateAlpha = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y12wb"]
+shader = ExtResource("10_4si8u")
+shader_parameter/frequency = 2.0
 
 [sub_resource type="Animation" id="Animation_y12wb"]
 length = 0.001
@@ -858,7 +899,8 @@ shader = ExtResource("11_wl7ma")
 shader_parameter/speed = 0.05
 shader_parameter/direction = Vector2(0, 1)
 shader_parameter/node_size = Vector2(8, 8)
-shader_parameter/color = Color(0.165381, 0.287517, 0.17704, 1)
+shader_parameter/color = Color(0.36736876, 0.5822288, 0.38716468, 1)
+shader_parameter/useModulateAlpha = true
 
 [sub_resource type="Animation" id="Animation_cgrit"]
 length = 0.001
@@ -984,6 +1026,7 @@ shader_parameter/speed = 0.1
 shader_parameter/direction = Vector2(1, 1)
 shader_parameter/node_size = Vector2(4, 4)
 shader_parameter/color = Color(0.234601, 0.562211, 0.337839, 1)
+shader_parameter/useModulateAlpha = false
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pmnnv"]
 shader = ExtResource("11_wl7ma")
@@ -991,6 +1034,7 @@ shader_parameter/speed = 0.2
 shader_parameter/direction = Vector2(-1, 1)
 shader_parameter/node_size = Vector2(2, 2)
 shader_parameter/color = Color(0.204084, 1, 0.564584, 1)
+shader_parameter/useModulateAlpha = false
 
 [sub_resource type="Animation" id="Animation_r0sfp"]
 length = 0.001
@@ -1912,7 +1956,6 @@ entity_root = NodePath("entityRoot")
 y_sort_enabled = true
 
 [node name="tilemap_resort" parent="." node_paths=PackedStringArray("Doors") instance=ExtResource("3_7aeaj")]
-position = Vector2(984, 32)
 Doors = [NodePath("../room_trigger")]
 
 [node name="room_trigger" parent="." instance=ExtResource("3_17y42")]
@@ -2048,8 +2091,8 @@ offset_bottom = 604.0
 mouse_filter = 1
 theme_override_constants/outline_size = 10
 theme_override_fonts/normal_font = ExtResource("2_w3mwt")
-theme_override_font_sizes/mono_font_size = 100
 theme_override_font_sizes/normal_font_size = 50
+theme_override_font_sizes/mono_font_size = 100
 bbcode_enabled = true
 text = "[center]< Start >[/center]"
 scroll_active = false
@@ -2062,6 +2105,7 @@ offset_left = -176.0
 offset_top = 531.0
 offset_right = 843.0
 offset_bottom = 586.0
+mouse_filter = 1
 theme = ExtResource("9_76l0k")
 theme_override_constants/outline_size = 10
 bbcode_enabled = true
@@ -2127,7 +2171,7 @@ grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 1
 theme = ExtResource("9_76l0k")
-text = "alpha v0.2.2-experimental"
+text = "v0.3-pre1"
 label_settings = SubResource("LabelSettings_6iqyf")
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -2435,7 +2479,6 @@ frame_progress = 0.75091
 
 [node name="popup_anchor" type="Control" parent="CanvasLayer/newgame_panel"]
 light_mask = 0
-layout_mode = 3
 anchors_preset = 0
 offset_left = -50.0
 offset_top = 83.0
@@ -2446,23 +2489,17 @@ offset_bottom = 123.0
 visible = false
 light_mask = 0
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -9.0
-offset_top = -5.0
-offset_right = 31.0
-offset_bottom = 35.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 theme = ExtResource("9_76l0k")
 script = ExtResource("11_6of5g")
 anim_player = NodePath("menu_player")
-container = NodePath("savefiles_scroll/savefile_container")
-scroll = NodePath("savefiles_scroll")
+container = NodePath("savefiles_clip/savefiles_scroll/savefile_container")
+scroll = NodePath("savefiles_clip/savefiles_scroll")
 savefile_slot = ExtResource("12_tjjf3")
 
 [node name="menu_player" type="AnimationPlayer" parent="CanvasLayer/loadgame_panel"]
@@ -2470,84 +2507,127 @@ libraries = {
 &"": SubResource("AnimationLibrary_wcxo3")
 }
 
-[node name="savefiles_scroll" type="ScrollContainer" parent="CanvasLayer/loadgame_panel"]
+[node name="scroll_bg" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
+self_modulate = Color(1, 1, 1, 0)
+texture_repeat = 2
+material = SubResource("ShaderMaterial_nqiqd")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("26_4hk7n")
+stretch_mode = 1
+
+[node name="band_0" type="NinePatchRect" parent="CanvasLayer/loadgame_panel"]
+self_modulate = Color(0.6495339, 0.21260911, 0.22304368, 1)
 light_mask = 0
-clip_contents = false
+texture_repeat = 2
+material = SubResource("ShaderMaterial_721kg")
+layout_mode = 0
+offset_left = -104.271545
+offset_top = 220.51988
+offset_right = 617.73236
+offset_bottom = 331.0869
+rotation = -0.4886922
+texture = ExtResource("27_4hk7n")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="band_1" type="NinePatchRect" parent="CanvasLayer/loadgame_panel"]
+self_modulate = Color(0.6495339, 0.21260911, 0.22304368, 1)
+light_mask = 0
+texture_repeat = 2
+material = SubResource("ShaderMaterial_peokq")
+layout_mode = 0
+offset_left = 1545.0
+offset_top = 398.0
+offset_right = 3014.1968
+offset_bottom = 637.2202
+rotation = -3.5482543
+texture = ExtResource("27_4hk7n")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="savefiles_clip" type="TextureRect" parent="CanvasLayer/loadgame_panel"]
+clip_children = 1
+light_mask = 0
 layout_mode = 0
 offset_left = -564.0
 offset_top = -205.0
-offset_right = 579.0
-offset_bottom = 365.0
+offset_right = 547.0
+offset_bottom = 362.99976
+texture = ExtResource("31_ip2o7")
+
+[node name="savefiles_scroll" type="ScrollContainer" parent="CanvasLayer/loadgame_panel/savefiles_clip"]
+light_mask = 0
+clip_contents = false
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 1206.6665
+offset_bottom = 619.7776
+scale = Vector2(0.9, 0.9)
 follow_focus = true
 horizontal_scroll_mode = 0
 scroll_deadzone = 200
 
-[node name="savefile_container" type="VBoxContainer" parent="CanvasLayer/loadgame_panel/savefiles_scroll"]
+[node name="savefile_container" type="VBoxContainer" parent="CanvasLayer/loadgame_panel/savefiles_clip/savefiles_scroll"]
+clip_children = 2
 light_mask = 0
 custom_minimum_size = Vector2(0, 500)
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 0
+theme_override_constants/separation = 20
 
-[node name="savefile_slot" parent="CanvasLayer/loadgame_panel/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
+[node name="savefile_slot" parent="CanvasLayer/loadgame_panel/savefiles_clip/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
 layout_mode = 2
 
-[node name="savefile_slot2" parent="CanvasLayer/loadgame_panel/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
+[node name="savefile_slot2" parent="CanvasLayer/loadgame_panel/savefiles_clip/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
 layout_mode = 2
 
-[node name="savefile_slot3" parent="CanvasLayer/loadgame_panel/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
+[node name="savefile_slot3" parent="CanvasLayer/loadgame_panel/savefiles_clip/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
 layout_mode = 2
 
-[node name="savefile_slot4" parent="CanvasLayer/loadgame_panel/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
+[node name="savefile_slot4" parent="CanvasLayer/loadgame_panel/savefiles_clip/savefiles_scroll/savefile_container" instance=ExtResource("12_tjjf3")]
 layout_mode = 2
 
-[node name="load_quote" type="NinePatchRect" parent="CanvasLayer/loadgame_panel"]
-self_modulate = Color(0.70238, 0.099987, 0.242699, 1)
+[node name="load_label" type="Label" parent="CanvasLayer/loadgame_panel"]
 light_mask = 0
+material = SubResource("ShaderMaterial_y12wb")
 layout_mode = 0
-offset_left = -467.0
-offset_top = -528.0
-offset_right = 505.0
-offset_bottom = -431.0
-texture = ExtResource("31_ip2o7")
-
-[node name="load_label" type="Label" parent="CanvasLayer/loadgame_panel/load_quote"]
-light_mask = 0
-layout_mode = 0
-offset_left = 53.0
-offset_top = -3.0
-offset_right = 934.0
-offset_bottom = 105.0
+offset_left = 317.0
+offset_top = 20.0
+offset_right = 1197.0
+offset_bottom = 140.0
+theme_override_font_sizes/font_size = 100
 text = "load_game_note"
-horizontal_alignment = 1
+horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 3
 visible_characters = 0
 visible_ratio = 0.0
 
-[node name="load_bg" type="NinePatchRect" parent="CanvasLayer/loadgame_panel/load_quote"]
-self_modulate = Color(0.434462, 0.0398546, 0.13662, 1)
-show_behind_parent = true
+[node name="load_quote" type="Control" parent="CanvasLayer/loadgame_panel"]
+visible = false
+self_modulate = Color(0.70238, 0.099987, 0.242699, 1)
 light_mask = 0
-layout_mode = 0
-offset_left = -103.0
-offset_top = -21.0
-offset_right = 1061.0
-offset_bottom = 123.0
-texture = ExtResource("21_5jg8l")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+anchors_preset = 0
+offset_left = -467.0
+offset_top = -336.0
+offset_right = 667.23
+offset_bottom = -237.0
 
 [node name="peek" type="TextureRect" parent="CanvasLayer/loadgame_panel/load_quote"]
+visible = false
 show_behind_parent = true
 light_mask = 0
 layout_mode = 0
 offset_left = 22.0
-offset_top = 14.0
 offset_right = 122.0
-offset_bottom = 114.0
+offset_bottom = 100.0
 pivot_offset = Vector2(50, 58.87)
 texture = ExtResource("23_rt0qn")
 expand_mode = 1
@@ -2598,17 +2678,26 @@ libraries = {
 autoplay = "default"
 
 [node name="player_display2" parent="CanvasLayer/credits_panel/credits" instance=ExtResource("17_w6vnm")]
-self_modulate = Color(0.531205, 0.796682, 0.383918, 1)
+self_modulate = Color(1, 0.58065784, 0.460568, 1)
 position = Vector2(-33, 529)
 animation = &"aphid"
 autoplay = "aphid"
 frame_progress = 0.0653264
 
 [node name="player_display3" parent="CanvasLayer/credits_panel/credits" instance=ExtResource("17_w6vnm")]
-self_modulate = Color(0.531205, 0.796682, 0.383918, 1)
+self_modulate = Color(1, 0.58065784, 0.460568, 1)
 position = Vector2(-30, 520)
 autoplay = "run"
 frame_progress = 0.202951
+
+[node name="dark_overlay" type="TextureRect" parent="CanvasLayer/credits_panel/credits"]
+self_modulate = Color(0, 0, 0, 0.34117648)
+layout_mode = 0
+offset_left = -30.0
+offset_top = -16.0
+offset_right = 1128.0
+offset_bottom = 640.0
+texture = ExtResource("31_ip2o7")
 
 [node name="credits_label" type="RichTextLabel" parent="CanvasLayer/credits_panel/credits"]
 light_mask = 0
@@ -2660,8 +2749,6 @@ visible = false
 top_level = true
 z_index = 1000
 position = Vector2(1175, 538)
-animation = &"default"
-frame = 2
 frame_progress = 0.139887
 
 [node name="aphid_display" parent="CanvasLayer/intro/player_display" instance=ExtResource("17_w6vnm")]

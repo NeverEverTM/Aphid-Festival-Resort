@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://d0l36ft72ftrq"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_i7vwu"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_i7vwu"]
 
 [resource]
 script = ExtResource("1_i7vwu")
 ID = "abomihoney"
 Cost = 1
-LevelRequirement = 0
-Tag = 1
-Shop = 0
+Category = 1
 ShopOrderPriority = 41

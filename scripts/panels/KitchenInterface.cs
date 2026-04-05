@@ -94,7 +94,7 @@ public partial class KitchenInterface : Control
 	private void SetIngredientSlot(string _item_name, int _index)
 	{
 		bool _isNull = _item_name == null;
-		if (!_isNull && GlobalManager.G_ITEMS[_item_name].Tag != StringNames.GlobalTags.Food)
+		if (!_isNull && !GlobalManager.G_FOOD.ContainsKey(_item_name))
 		{
 			SoundManager.CreateSound("ui/button_fail");
 			return; // if is not a food item, dont bother
@@ -179,7 +179,7 @@ public partial class KitchenInterface : Control
 		// set interface to clear, dont clear if redo is active
 		if (!redoRecipe.ButtonPressed)
 		{
-			if (GlobalManager.G_FOOD[current_recipe.Owner.Item.ID].Type == AphidData.FoodType.Vile)
+			if (GlobalManager.G_FOOD[current_recipe.Owner.Item.ID].Flavor == AphidData.FoodType.Vile)
 			{
 				dialogBox.Text = "kitchen_fail";
 				SoundManager.CreateSound("ui/kitchen_fail");
@@ -223,7 +223,7 @@ public partial class KitchenInterface : Control
 		// mistakes and big mistakes used as ingredients yields bad results
 		if (ingredient1 == MISTAKE_RECIPE || ingredient2 == MISTAKE_RECIPE || ingredient1 == BIG_MISTAKE_RECIPE || ingredient2 == BIG_MISTAKE_RECIPE)
 		{
-			current_recipe = new(BIG_MISTAKE_RECIPE, ingredient1, ingredient2);
+			current_recipe = new(GlobalManager.G_FOOD[BIG_MISTAKE_RECIPE], []);
 			return BIG_MISTAKE_RECIPE;
 		}
 
@@ -253,7 +253,7 @@ public partial class KitchenInterface : Control
 			return false;
 		});
 
-		current_recipe ??= new(MISTAKE_RECIPE, ingredient1, ingredient2);
+		current_recipe ??= new(GlobalManager.G_FOOD[MISTAKE_RECIPE], []);
 
 		return current_recipe.Owner.Item.ID;
 	}

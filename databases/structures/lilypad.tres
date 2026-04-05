@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://bqcjxmj7b3sy4"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_i8qfe"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_i8qfe"]
 
 [resource]
 script = ExtResource("1_i8qfe")
 ID = "lilypad"
 Cost = 5
-LevelRequirement = 0
 Tag = 3
 Shop = 2
 ShopOrderPriority = 43

@@ -54,4 +54,50 @@ public class AphidInstance
         else
             Status.LastActiveState = _state;
     }
+    public void AddRelationship(Aphid _aphid, AphidActions.Relationship _relationship = null)
+    {
+        if (_aphid.Instance.GUID.Equals(GUID))
+        {
+            DebugLogger.Print(DebugLogger.LogPriority.Warning, "AphidRelationship: This is our aphid!");
+            return;
+        }
+        if (Genes.Relationships.ContainsKey(_aphid.Instance.GUID))
+            return;
+        _relationship ??= new(_aphid.Instance.GUID, AphidActions.Relationship.RelationshipLevel.Acquaintance);
+        Genes.Relationships.Add(_aphid.Instance.GUID, _relationship);
+    }
+    public void AddRelationship(AphidInstance _aphid, AphidActions.Relationship _relationship = null)
+    {
+        if (_aphid.GUID.Equals(GUID))
+        {
+            DebugLogger.Print(DebugLogger.LogPriority.Warning, "AphidRelationship: This is our aphid!");
+            return;
+        }
+        if (Genes.Relationships.ContainsKey(_aphid.GUID))
+            return;
+        _relationship ??= new(_aphid.GUID, AphidActions.Relationship.RelationshipLevel.Acquaintance);
+        Genes.Relationships.Add(_aphid.GUID, _relationship);
+    }
+    public bool HasRelationship(Aphid _aphid, out AphidActions.Relationship _relationship)
+    {
+        if (_aphid.Instance.GUID.Equals(GUID))
+        {
+            DebugLogger.Print(DebugLogger.LogPriority.Warning, "AphidRelationship: This is our aphid!");
+            _relationship = null;
+            return false;
+        }
+        bool _hasValue = Genes.Relationships.TryGetValue(_aphid.Instance.GUID, out _relationship);
+        return _hasValue;
+    }
+    public bool HasRelationship(AphidInstance _aphid, out AphidActions.Relationship _relationship)
+    {
+        if (_aphid.GUID.Equals(GUID))
+        {
+            DebugLogger.Print(DebugLogger.LogPriority.Warning, "AphidRelationship: This is our aphid!");
+            _relationship = null;
+            return false;
+        }
+        bool _hasValue = Genes.Relationships.TryGetValue(_aphid.GUID, out _relationship);
+        return _hasValue;
+    }
 }

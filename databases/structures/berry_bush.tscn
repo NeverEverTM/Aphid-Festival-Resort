@@ -93,7 +93,7 @@ collision_mask = 0
 input_pickable = false
 monitoring = false
 script = ExtResource("5_6n4iy")
-Tag = 2
+Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="area2d"]
 position = Vector2(-0.5, -4.5)

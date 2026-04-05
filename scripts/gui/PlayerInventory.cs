@@ -30,6 +30,7 @@ public partial class PlayerInventory : Control
 	}
 	public override void _ExitTree()
 	{
+		Instance = null;
 		ControlsManager.OnControlChanged -= ChangeControlPrompt;
 	}
 
@@ -101,7 +102,7 @@ public partial class PlayerInventory : Control
 			return;
 		}
 
-		PlayerData.AddCurrency(GlobalManager.G_ITEMS[_item_name].Cost / 2);
+		Player.AddCurrency(GlobalManager.G_ITEMS[_item_name].Cost / 2);
 		Update();
 
 		GameManager.Data.ItemsSold++;
@@ -135,7 +136,7 @@ public partial class PlayerInventory : Control
 		if (Player.Data.Inventory.Remove(_item_name))
 		{
 			Node2D _item = ResortManager.CreateItem(_item_name, Player.Instance.GlobalPosition);
-			Player.Instance.PickupNoAnim(_item, (StringNames.GlobalTags)(int)_item.GetMeta(StringNames.TagMeta));
+			Player.Instance.PickupNoAnim(_item);
 			Update();
 			SoundManager.CreateSound("ui/backpack_open");
 			return true;
@@ -189,13 +190,13 @@ public partial class PlayerInventory : Control
 	/// <returns>Wheter it could store the item.</returns>
 	public static bool StoreCurrentItem(bool _okayWithEmpty = false)
 	{
-		if (Player.Instance.HeldPickup == null)
+		if (Player.Instance.HeldItem == null)
 			return _okayWithEmpty;
 			
-		if (Player.Instance.HeldPickup.Tag == StringNames.GlobalTags.Aphid)
+		if (Player.Instance.HeldItem.Tag == StringNames.GlobalTags.Aphid)
 			return false;
 
-		var _id = Player.Instance.HeldPickup.Entity.GetMeta(StringNames.IdMeta).ToString();
+		var _id = Player.Instance.HeldItem.Entity.GetMeta(StringNames.IdMeta).ToString();
 
 		if (StoreItem(_id))
 		{

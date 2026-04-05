@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://dgvc22xpcl31v"]
+
+[ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="1_mjjwj"]
+[ext_resource type="VideoStream" uid="uid://rd7wmdl0s4l1" path="res://mov/Market.ogv" id="2_mjjwj"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_nhxbu"]
+light_mode = 1
+
+[node name="background" type="Sprite2D"]
+clip_children = 2
+light_mask = 0
+material = SubResource("CanvasItemMaterial_qug4s")
+texture = ExtResource("1_mjjwj")
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="."]
+light_mask = 0
+material = SubResource("CanvasItemMaterial_nhxbu")
+offset_left = -44.0
+offset_top = -29.0
+offset_right = 45.0
+offset_bottom = 29.0
+mouse_filter = 2
+stream = ExtResource("2_mjjwj")
+volume_db = -10.929999
+autoplay = true
+expand = true
+loop = true
+bus = &"Sounds"

@@ -32,8 +32,16 @@ public static class SaveSystem
 	SAVEFILE_EXTENSION = ".data";
 
 	private static readonly List<SaveMetadata> ProfileSaveModules = [];
-	public delegate void SaveEvent();
-	public static event SaveEvent OnFinish;
+
+	public enum SaveEventsEnum { OnSaveFinish, OnLoadFinish }
+	public class SaveEventArgs : EventArgs
+	{
+		public uint GameVersion { get; set; }
+		public SaveEventArgs(SaveMetadata _metadata)
+		{
+			GameVersion = _metadata.GameVersion;
+		}
+	}
 
 	public static void CreateBaseDirectories()
 	{
@@ -47,7 +55,7 @@ public static class SaveSystem
 	/// <summary>
 	/// Saves all current save modules to memory as the set profile.
 	/// </summary>
-	/// <param name="_autosave">Autosaves do not overwrite their respectives main savefiles</param>
+	/// <param name="_autosave">Makes this save not overwrite backup with newer information.</param>
 	/// <param name="_force">Force a saving to happen, only used by some higher authority classes that know saving is safe in the moment.</param>
 	/// <returns></returns>
 	public static async Task<bool> SaveProfile(bool _autosave = false, bool _force = false)
@@ -65,17 +73,18 @@ public static class SaveSystem
 
 		// Save serialized classes
 		for (int i = 0; i < _profileList.Count; i++)
-        {
-            Task _task = SaveClassData(_profileList[i], _autosave); 
+		{
+			Task _task = SaveClassData(_profileList[i], _autosave);
 			await _task;
 			if (_task.IsFaulted || _task.IsCanceled)
-            {
-				GlobalManager.CreatePopup($"Error for {_profileList[i].ID}", CanvasManager.Instance);
+			{
+				GlobalManager.CREATE_POPUP($"Error for {_profileList[i].ID}", CanvasManager.Instance);
 				return false;
-            }
-        }
+			}
+		}
 
-		GlobalManager.IsBusy = false;
+		if (!_force) // TODO: implement something similar to the Disabled function in player to queue Busy states instead
+			GlobalManager.IsBusy = false;
 		DebugLogger.Print(DebugLogger.LogPriority.Log, $"ProfileSave: Saved profile <{Profile}> to <{ProfilePath}>.");
 		return true;
 	}
@@ -85,19 +94,22 @@ public static class SaveSystem
 		{
 			if (!_autosave)
 			{
-				// primary 
-				_class.CallSave(ProfilePath + PROFILE_BACKUP_DIR, false);
+				// auxiliary backup
+				_class.CallSave(ProfilePath + PROFILE_AUTOSAVE_DIR, false);
 
 				// current
 				_class.CallSave(ProfilePath);
 
-				// auxiliary 
-				_class.CallSave(ProfilePath + PROFILE_AUTOSAVE_DIR, false);
+				// primary backup
+				_class.CallSave(ProfilePath + PROFILE_BACKUP_DIR, false);
 			}
 			else
 			{
-				// auxiliary 
+				// auxiliary backup
 				_class.CallSave(ProfilePath + PROFILE_AUTOSAVE_DIR, false);
+
+				// current
+				_class.CallSave(ProfilePath);
 			}
 		}
 		catch (Exception _e)
@@ -109,11 +121,12 @@ public static class SaveSystem
 	}
 
 	// MARK: Profile Loading
+
 	/// <summary>
 	/// Loads profile data from memory. Only loads currently queued up savemodules.
 	/// </summary>
-	/// <returns></returns>
-	public static async Task LoadProfile()
+	/// <param name="_loadFully">Should it load this module even if it was loaded already?<para>This only affects modules that stay for the whole game session, such as Aphids data or Player data.</para></param>
+	public static Task LoadProfile(bool _loadFully = true)
 	{
 		string[] _paths =
 		[
@@ -125,26 +138,44 @@ public static class SaveSystem
 
 		// verify profile dir creation
 		for (int i = 0; i < _paths.Length; i++)
-			await CreateProfileDir(_paths[i], i != 1);
+		{
+			if (!CreateProfileMainDir(_paths[i], i != 1))
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Error, DebugLogger.GameTermination.Complete, "ProfileLoad: Failed to create directories.");
+				return Task.FromException(new("Failed to create directories"));
+			}
+		}
 
 		// load all save data classes
 		for (int i = 0; i < _profileList.Count; i++)
-			LoadClassData(_profileList[i], _paths);
+		{
+			if (!_loadFully && _profileList[i].Loaded)
+				continue;
 
-		OnFinish?.Invoke();
+			if (!LoadClassData(_profileList[i], _paths))
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Log, $"ProfileLoad: Failed to load profile <{Profile}> to memory.");
+				return Task.FromException(new("Failed to load profile"));
+			}
+		}
+
 		DebugLogger.Print(DebugLogger.LogPriority.Log, $"ProfileLoad: Loaded profile <{Profile}> to memory.");
+		return Task.CompletedTask;
 	}
 	private static bool LoadClassData(SaveMetadata _class, string[] _paths)
 	{
+		// Attempt to load the highest priority path first, if you cant, try the next one
 		for (int i = 0; i < _paths.Length; i++)
 		{
 			try
 			{
-				_class.CallLoad(ProfilePath);
+				_class.CallLoad(_paths[i]);
 				return true;
 			}
 			catch (Exception _error)
-			{ DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ProfileLoad: {_class.ID} was not able to be loaded." + _error); }
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ProfileLoad: {_class.ID} at path <{_paths[i]}> was not able to be loaded." + _error);
+			}
 		}
 		return false;
 	}
@@ -152,30 +183,43 @@ public static class SaveSystem
 	// MARK: Profile Managment
 	public static void AddSaveModule(SaveMetadata _module)
 	{
-		if (!ProfileSaveModules.Contains(_module))
-			ProfileSaveModules.Add(_module);
+		if (ExistsSaveModule(_module))
+			return;
+
+		ProfileSaveModules.Add(_module);
 	}
 	public static void RemoveSaveModule(SaveMetadata _module)
 	{
+		if (!ExistsSaveModule(_module))
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"SaveSystem: {_module.ID} does not exist");
+			return;
+		}
 		_module.CallDispose();
 		if (!ProfileSaveModules.Remove(_module))
-			DebugLogger.Print(DebugLogger.LogPriority.Error, string.Format("SaveSystem: Failed on removing {0}", _module.ID));
+			DebugLogger.Print(DebugLogger.LogPriority.Error, string.Format("SaveSystem: Failed on removing {0} from Profile", _module.ID));
 	}
-	public static void RemoveSaveModule(string _id)
+	/// <summary>
+	/// Checks if this SaveModule already exists.
+	/// </summary>
+	/// <returns></returns>
+	public static bool ExistsSaveModule(SaveMetadata _module) =>
+		ProfileSaveModules.Exists((m) => m.ID == _module.ID);
+	/// <summary>
+	/// Disposes of SaveModules and/or clears their data, depends on gamestate and metadata settings. <span>Check SaveMetadata.DisposeMethod for more information.</span>
+	/// </summary>
+	public static void ClearSaveModules(SaveMetadata.DisposeMethod _method)
 	{
-		if (ProfileSaveModules.Exists((m) => m.ID.Equals(_id)))
+		for (int i = ProfileSaveModules.Count - 1; i >= 0; i--)
 		{
-			SaveMetadata _module = ProfileSaveModules.Find((m) => m.ID.Equals(_id));
-			_module.CallDispose();
-			ProfileSaveModules.Remove(_module);
+			if ((int)ProfileSaveModules[i].DisposeMode <= (int)_method)
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, $"SaveSystem: Removed module <{ProfileSaveModules[i].ID}>");
+				ProfileSaveModules[i].CallDispose();
+				RemoveSaveModule(ProfileSaveModules[i]);
+			}
 		}
-		else
-			DebugLogger.Print(DebugLogger.LogPriority.Error, string.Format("SaveSystem: Failed on removing {0}", _id));
 	}
-	public static bool HasSaveModule(string _id) =>
-		ProfileSaveModules.Exists((m) => m.ID == _id);
-	public static void ClearSaveModules() =>
-		ProfileSaveModules.Clear();
 
 	/// <summary>
 	/// Used for new games to set default vaules to all serializeables
@@ -198,34 +242,63 @@ public static class SaveSystem
 	public static string GetProfilePath(string _profile) =>
 		$"{PROFILES_DIR}/{_profile}";
 
-	public static async Task CreateProfile()
+	public static Task CreateProfile()
 	{
 		// Create directories for current profile
-		await CreateProfileDir(ProfilePath);
-		await CreateProfileDir(ProfilePath + PROFILE_BACKUP_DIR, true);
-		await CreateProfileDir(ProfilePath + PROFILE_AUTOSAVE_DIR, true);
+		bool _success = CreateProfileMainDir(ProfilePath) &&
+				CreateProfileMainDir(ProfilePath + PROFILE_BACKUP_DIR, true) &&
+				CreateProfileMainDir(ProfilePath + PROFILE_AUTOSAVE_DIR, true);
 
-		DebugLogger.Print(DebugLogger.LogPriority.Info, $"ProfileCreate: Succesfully created profile of <{Profile}>.");
+		if (_success)
+			DebugLogger.Print(DebugLogger.LogPriority.Info, $"ProfileCreate: Succesfully created profile of <{Profile}>.");
+		else
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.Error, $"ProfileCreate: Error on creating <{Profile}> at <{ProfilePath}>.");
+			GlobalManager.CREATE_POPUP("Error! Cannot create directories for profile (do you have any folders open?)", GlobalManager.Instance);
+			return Task.FromException(new("Unable to create profile directories"));
+		}
+		return Task.CompletedTask;
 	}
-	private static Task CreateProfileDir(string _path, bool _isCache = false)
+	/// <summary>
+	/// Creates the file structure for a profile directory at the given path.
+	/// </summary>
+	/// <param name="_path">The absolute path to the directory. Allows "user://" as root.</param>
+	/// <param name="_includeNonEssentials">Should it replicate non-essential folders? ex. screenshots folder.</param>
+	/// <returns>Wheter or not the directory was succesfully created.</returns>
+	private static bool CreateProfileMainDir(string _path, bool _includeNonEssentials = false)
 	{
 		// create profile directory
 		DirAccess.MakeDirAbsolute(_path);
-		var _dir = DirAccess.Open(_path);
+		DirAccess _mainDir = DirAccess.Open(_path);
 
-		if (_dir == null)
+		if (_mainDir == null)
 		{
-			DebugLogger.Print(DebugLogger.LogPriority.Error, "SaveSystem: DirAccess error on opening directory:\n", DirAccess.GetOpenError());
-			return Task.CompletedTask;
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "SaveSystem: DirAccess error on opening directory. Code:", DirAccess.GetOpenError());
+			return false;
 		}
 
 		// create subdirectories
-		_dir.MakeDir("aphids");
-		_dir.MakeDir("resorts");
-		if (!_isCache)
-			_dir.MakeDir("screenshots");
+		if (!CreateProfileSubDir("aphids", _path, ref _mainDir))
+			return false;
+		if (!CreateProfileSubDir("resorts", _path, ref _mainDir))
+			return false;
 
-		return Task.CompletedTask;
+		if (!_includeNonEssentials && !CreateProfileSubDir("resorts", _path, ref _mainDir))
+			return false;
+
+		return true;
+	}
+	private static bool CreateProfileSubDir(string _dirName, string _path, ref DirAccess _mainDir)
+	{
+		if (DirAccess.DirExistsAbsolute(System.IO.Path.Combine(_path, _dirName)))
+			return true;
+		Error _subDir = _mainDir.MakeDir(_dirName);
+		if (_subDir != Error.Ok)
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.Error, "SaveSystem: Error on creating dir. Code:", _subDir);
+			return false;
+		}
+		return true;
 	}
 
 	public static Task DeleteProfile(string _profile)
@@ -247,14 +320,17 @@ public static class SaveSystem
 	}
 
 	// ==================================================================
-	// MARK: Interfaces And Bases
-	public abstract class SaveMetadata(string ID, int LoadPriority = 0) : IEqualityComparer<SaveMetadata>
+	// MARK: SaveData Module
+	/// <summary>
+	/// Base class for SaveModule, includes all settings and metadata for the instance.
+	/// </summary>
+	public abstract class SaveMetadata(string ID, int LoadOrderPriority = 0) : IEqualityComparer<SaveMetadata>
 	{
 		public readonly string ID = ID;
 		/// <summary>
 		/// Higher number means higher load priority.
 		/// </summary>
-		internal int LoadOrderPriority = LoadPriority;
+		internal int LoadOrderPriority = LoadOrderPriority;
 		/// <summary>
 		/// Source directory. Usually by modified functions for dynamic pahts (such as, for savefile data). 
 		/// </summary>
@@ -267,19 +343,50 @@ public static class SaveSystem
 		/// File extension. Defaults to ".data"
 		/// </summary>
 		public string Extension = SAVEFILE_EXTENSION;
+
 		public uint GameVersion { get; protected set; } = GlobalManager.GAME_VERSION;
+		protected EncoderMethod EncodeMode = EncoderMethod.JSON;
+		public DisposeMethod DisposeMode = DisposeMethod.OnGameExit;
 
 		/// <summary>
-		/// Choose to either save the content as plain text or with a bit of encoding.
-		/// Does not make it more secure but it does slightly detract the user from modyfing it.
+		/// Dictates when AND how this save instance is disposed off.
 		/// </summary>
-		protected enum SaveMode { PlainText, Obfuscated }
-		protected SaveMode Mode = SaveMode.PlainText;
+		public enum DisposeMethod
+		{
+			/// <summary>
+			/// Dispose after the room changes
+			/// </summary>
+			OnRoomTransition,
+			/// <summary>
+			/// Dispose only after user exits the current profile.
+			/// </summary>
+			OnGameExit,
+			///// <summary>
+			///// Module is global
+			///// </summary>
+			//OnApplicationQuit,
+			/// <summary>
+			/// This module is not intended to be disposed of normally, used by global modules such as the settings.
+			/// </summary>
+			NotApplicable
+		}
+		/// <summary>
+		/// Dictates store method, mostly unusued and defaults to JSON.
+		/// </summary>
+		protected enum EncoderMethod
+		{
+			JSON,
+			Variant
+		}
+		/// <summary>
+		/// Indicates if this modules has already been loaded before, for situations where the module persists but do not requires to be re-loaded, both Save and Load set this as true.
+		/// </summary>
+		public bool Loaded;
 
 		/// <summary>
 		/// Returns the path to the saved contents.
 		/// </summary>
-		/// <param name="_global">Return this path as a global OS file path instead of a Godot file path?</param>
+		/// <param name="_global">Return this path as a global OS file path instead of a Godot file path.</param>
 		public string GetPath(bool _global = false) => !_global ?
 				System.IO.Path.Join(RootPath, RelativePath, ID + Extension)
 				: ProjectSettings.GlobalizePath(System.IO.Path.Join(RootPath, RelativePath, ID + Extension));
@@ -289,6 +396,33 @@ public static class SaveSystem
 		public abstract void CallSet();
 		public abstract void CallDispose();
 
+		protected List<Action<SaveEventArgs>> OnSaveFinish = [], OnLoadFinish = [];
+
+		public void AddEventListener(Action<SaveEventArgs> _action, SaveEventsEnum _event)
+		{
+			switch (_event)
+			{
+				case SaveEventsEnum.OnSaveFinish:
+					OnSaveFinish.Add(_action);
+					break;
+				case SaveEventsEnum.OnLoadFinish:
+					OnLoadFinish.Add(_action);
+					break;
+			}
+		}
+		public void RemoveEventListener(Action<SaveEventArgs> _action, SaveEventsEnum _event)
+		{
+			switch (_event)
+			{
+				case SaveEventsEnum.OnSaveFinish:
+					OnSaveFinish.Remove(_action);
+					break;
+				case SaveEventsEnum.OnLoadFinish:
+					OnLoadFinish.Remove(_action);
+					break;
+			}
+		}
+
 		public bool Equals(SaveMetadata x, SaveMetadata y) =>
 			x.ID == y.ID;
 
@@ -296,48 +430,37 @@ public static class SaveSystem
 			ID.GetHashCode();
 	}
 	/// <summary>
-	/// Used to handle data manipulation separately from the SaveModule.
+	/// Interface that allows custom handling of the data type after or before doing save/load operations in SaveModule.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	public interface IDataModule<T>
 	{
 		public void Set(T _data);
 		public T Get();
 		/// <summary>
-		/// Fetch the default value of this object.
+		/// Fetches the default value for this data type. Called to initialize it before loading or 
 		/// </summary>
 		public T Default();
 		/// <summary>
-		/// Initialize this function to get rid of unneeded data.
+		/// Custom method to manually handle disposal of objects. Call depends on SaveMetadata "DisposeMode" setting.
 		/// </summary>
-		public void Dispose() { }
+		public void Dispose() => Set(Default());
 	}
 	/// <summary>
 	/// Generic string version of IDataModule. Used for structures and items.
 	/// </summary>
-	public interface IDataModule
+	public interface IGenericDataModule
 	{
 		public void Set(string _data);
 		public string Get();
-		/// <summary>
-		/// Sets the default value for this object.
-		/// </summary>
+
 		public void Default()
 		{
 			return;
 		}
-		/// <summary>
-		/// Initialize this function to get rid of unneeded data.
-		/// </summary>
-		public void Dispose()
-		{
-			return;
-		}
+
+		public void Dispose() => Default();
 	}
 
-	// ==================================================================
-
-	// MARK: SaveData Module
 	/// <summary>
 	/// Core component to save runtime data to system via Json serialization.
 	/// This class is NOT meant to be the data holder. Instead, it requires the class type of the data to serialize.
@@ -356,7 +479,7 @@ public static class SaveSystem
 			using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Write);
 
 			// Store Data
-			if (Mode == SaveMode.PlainText)
+			if (EncodeMode == EncoderMethod.JSON)
 				_file.StorePascalString(JsonSerializer.Serialize(Data.Get(), JsonOptions));
 			else
 				_file.StoreVar(JsonSerializer.Serialize(Data.Get(), JsonOptions));
@@ -364,8 +487,11 @@ public static class SaveSystem
 			// Save most recent game version this file was saved in
 			_file.Store32(GlobalManager.GAME_VERSION);
 
+			GlobalManager.Utils.InvokeEventListeners(OnSaveFinish, new(this), true);
 			if (_logToPrint)
 				DebugLogger.Print(DebugLogger.LogPriority.Log, $"ProfileSave: Saved succesfully - Version: {GameVersion} Path: {_path}.");
+
+			Loaded = true;
 			return Task.CompletedTask;
 		}
 		public virtual T Load(bool loadToClass = true)
@@ -377,7 +503,7 @@ public static class SaveSystem
 			{
 				using var _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
 				// get data from stream
-				string _raw_data = Mode == SaveMode.PlainText ?
+				string _raw_data = EncodeMode == EncoderMethod.JSON ?
 					_raw_data = _file.GetPascalString() :
 					_raw_data = _file.GetVar().ToString();
 
@@ -402,6 +528,9 @@ public static class SaveSystem
 
 			DebugLogger.Print(DebugLogger.LogPriority.Log, $"ProfileLoad: Loaded succesfully(toClass={loadToClass}) - Version: {GameVersion} LP: "
 				+ LoadOrderPriority + " Path: " + _path);
+
+			Loaded = true;
+			GlobalManager.Utils.InvokeEventListeners(OnLoadFinish, new(this), true);
 			return _data;
 		}
 
@@ -438,6 +567,11 @@ public static class SaveSystem
 			Load();
 		}
 		public override void CallSet() => Data.Set(Data.Default());
-		public override void CallDispose() => Data.Dispose();
+		public override void CallDispose()
+		{
+			Data.Dispose();
+			OnSaveFinish.Clear();
+			OnLoadFinish.Clear();
+		}
 	}
 }

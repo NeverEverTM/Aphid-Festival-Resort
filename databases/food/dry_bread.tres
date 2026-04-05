@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="FoodData" load_steps=3 format=3 uid="uid://dn3ddy733owwl"]
 
-[ext_resource type="Resource" path="res://databases/items/dry_bread.tres" id="1_ftcci"]
+[ext_resource type="Resource" uid="uid://bd6y0jkusytok" path="res://databases/items/dry_bread.tres" id="1_ftcci"]
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="2_wrja7"]
 
 [resource]
 script = ExtResource("2_wrja7")
 Item = ExtResource("1_ftcci")
-Type = 6
+Flavor = 2
 FoodValue = 15
 DrinkValue = -8
 Skills = Dictionary[int, int]({

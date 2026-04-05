@@ -14,15 +14,16 @@ public partial class MainMenu : Node2D
 	[Export] private Node2D entity_root;
 	public static bool IsReady { get; private set; }
 
+	private bool DirectionForX, DirectionForY;
+	private float MaxWanderDistanceX = 600, MaxWanderDistanceY = 450;
+	private float[] babyWeight = [70, 30];
+
 	public override void _EnterTree()
 	{
 		Instance = this;
 	}
 	public async override void _Ready()
 	{
-		CameraManager.Instance.Position = GlobalManager.Utils.GetRandomVector(-300, 300);
-		CameraManager.ForceCameraPosition(new());
-
 		if (!IsReady)
 		{
 			intro_animator.Play("start");
@@ -39,6 +40,10 @@ public partial class MainMenu : Node2D
 		}
 
 		SpawnBunchaOfAphidsForTheFunnies();
+		DirectionForX = GlobalManager.RNG.Randf() > 0.5f;
+		DirectionForY = GlobalManager.RNG.Randf() > 0.5f;
+		CameraManager.ForceCameraPosition(GlobalManager.Utils.GetRandomVector(-300, 300));
+
 		SoundManager.PlaySong("misc/title");
 		title_animator.Play("slide_down");
 
@@ -56,12 +61,12 @@ public partial class MainMenu : Node2D
 	{
 		if (string.IsNullOrWhiteSpace(OptionsManager.Settings.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
-			GlobalManager.CreatePopup("Could not find valid profile to continue", this);
+			GlobalManager.CREATE_POPUP("Could not find valid profile to continue", this);
 			return;
 		}
 
 		SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
-		GameManager.GameSaveModule _module = new(GameManager.ID, new GameManager.GameDataModule(), 0)
+		GameManager.GameSaveModule _module = new(GameManager.SAVEMODULE_ID, new GameManager.GameDataModule(), 0)
 		{
 			RootPath = System.IO.Path.Combine(SaveSystem.ProfilePath)
 		};
@@ -74,7 +79,7 @@ public partial class MainMenu : Node2D
 		SaveSystem.SelectProfile(_profile);
 		if (!DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
-			GlobalManager.CreatePopup("warning_invalid_resort", Instance.canvas);
+			GlobalManager.CREATE_POPUP("warning_invalid_resort", Instance.canvas);
 			return;
 		}
 
@@ -88,7 +93,7 @@ public partial class MainMenu : Node2D
 
 		OptionsManager.Settings.LastPlayedResort = SaveSystem.Profile;
 		DebugLogger.Print(DebugLogger.LogPriority.Info, $"MainMenu: Loading the profile <{SaveSystem.Profile}>.");
-		await OptionsManager.Module.Save();
+		await OptionsManager.SaveModule.Save();
 		await SceneManager.Switch(_room, true);
 	}
 	public void ExitGame()
@@ -98,23 +103,19 @@ public partial class MainMenu : Node2D
 	}
 
 	// MARK: Cosmetic Interface
-	private bool DirectionForX, DirectionForY;
-	private float MaxWanderDistanceX = 800, MaxWanderDistanceY = 400;
-	private float[] babyWeight = [70, 30];
-
 	private void DoBounceAnim()
 	{
-		if (CameraManager.Instance.Position.X > MaxWanderDistanceX)
+		if (CameraManager.Instance.GlobalPosition.X > MaxWanderDistanceX)
 			DirectionForX = true;
-		else if (CameraManager.Instance.Position.X < -MaxWanderDistanceX)
+		else if (CameraManager.Instance.GlobalPosition.X < -MaxWanderDistanceX)
 			DirectionForX = false;
 
-		if (CameraManager.Instance.Position.Y > MaxWanderDistanceY)
+		if (CameraManager.Instance.GlobalPosition.Y > MaxWanderDistanceY)
 			DirectionForY = true;
-		else if (CameraManager.Instance.Position.Y < -MaxWanderDistanceY)
+		else if (CameraManager.Instance.GlobalPosition.Y < -MaxWanderDistanceY)
 			DirectionForY = false;
 
-		CameraManager.Instance.Position += new Vector2(DirectionForX ? -1 : 1, DirectionForY ? -1 : 1);
+		CameraManager.Instance.GlobalPosition += new Vector2(DirectionForX ? -1 : 1, DirectionForY ? -1 : 1);
 	}
 	private void SpawnBunchaOfAphidsForTheFunnies()
 	{

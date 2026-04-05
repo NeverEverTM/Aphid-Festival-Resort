@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://hw7abp7ybcgs"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_cw6lv"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_cw6lv"]
 
 [resource]
 script = ExtResource("1_cw6lv")
 ID = "aphid_egg"
 Cost = 50
-LevelRequirement = 0
-Tag = 0
 Shop = 1
 ShopOrderPriority = 13

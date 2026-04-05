@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 
 public partial class CutsceneManager : Node2D
 {
+    public static bool IsActive { get; set; }
+
     public static Dictionary<string, ICutscene> Cutscenes { get; set; }
     public static SaveSystem.SaveModule<Dictionary<string, ICutscene>> SaveModule;
     public class CutsceneDataModule : SaveSystem.IDataModule<Dictionary<string, ICutscene>>

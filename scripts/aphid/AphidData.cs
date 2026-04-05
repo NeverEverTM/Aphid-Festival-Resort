@@ -12,23 +12,23 @@ public partial class AphidData : Aphid
 	public enum BreedMode { Inactive = -1, WithItself = 0, WithPartner = 1, AsPartner = 2 }
 	public enum ValueFlagsEnum { RestTimeMultitplier, IdleTimeMultiplier, BreedTimeMultiplier }
 	public enum BoolFlagsEnum { IsHeavySleeper, IsPicky, CanOvereat }
-	public enum EntityStatusType 
-	{ 
+	public enum EntityStatusType
+	{
 		/// <summary>
-        /// Entity is currently loaded in.
-        /// </summary>
+		/// Entity is currently loaded in.
+		/// </summary>
 		Active,
 		/// <summary>
-        /// Entity is not loaded and is running passively on the background.
-        /// </summary>
+		/// Entity is not loaded and is running passively on the background.
+		/// </summary>
 		Passive,
 		/// <summary>
-        /// Entity is not loaded and does not run passively on the background.
-        /// </summary>
+		/// Entity is not loaded and does not run passively on the background.
+		/// </summary>
 		Busy
 	}
-	
-	public readonly static string[] SkillNames = [ "speed", "strength", "intelligence", "stamina" ];
+
+	public readonly static string[] SkillNames = ["speed", "strength", "intelligence", "stamina"];
 	private readonly static float[] flavor_weights = [22, 22, 22, 22, 12];
 	public readonly static string[] NameArchive =
 	[
@@ -54,23 +54,25 @@ public partial class AphidData : Aphid
 		"Leif", "Kabbu", "Vi", "Theo", "Jeb", "Buggy", "Toffee",
 		"Lea", "Mr Von Aphid", "Madeline", "Brassmo", "Summer",
 	];
+	
 	/// <summary>
 	/// Measured in seconds.
 	/// </summary>
 	internal static int Age_Adulthood = 1200, Age_Death = 7200,
 		Breed_Cooldown = 2400, Harvest_Cooldown = 180;
+
 	/// <summary>
 	/// Measured in seconds.
 	/// </summary>
-	internal const int MAX_TIREDNESS_SLEEP = 75, MIN_TIREDNESS_WAKEUP = 15,
-		BASE_FOOD_DECAY = 11, BASE_THIRST_DECAY = 9, BASE_AFFECTION_DECAY = 12,
+	internal const int BASE_FOOD_DECAY = 11, BASE_THIRST_DECAY = 9, BASE_AFFECTION_DECAY = 12,
 		BASE_BONDSHIP_DECAY = 50, BASE_BONDSHIP_GRACE = 700;
-
-	internal const int HARVEST_VALUE_BABY = 2, HARVEST_VALUE_ADULT = 5;
-
+	/// <summary>
+	/// Measured in seconds.
+	/// </summary>
 	internal const float PET_DURATION = 0.8f, BASE_SLEEP_DECAY = 9.5f,
 		BASE_SLEEP_GAIN = 3.5f;
 
+	internal const int MAX_TIREDNESS_SLEEP = 75, MIN_TIREDNESS_WAKEUP = 15, HARVEST_VALUE_BABY = 2, HARVEST_VALUE_ADULT = 5;
 	internal const float COLOR_RANGE = 0.15f;
 
 	/// <summary>
@@ -98,16 +100,25 @@ public partial class AphidData : Aphid
 		// State
 		public float PositionX { get; set; }
 		public float PositionY { get; set; }
-		public Aphid.StateEnum LastActiveState { set; get; }
+		public StateEnum LastActiveState { set; get; }
 		public string HomeResort { get; set; }
-   		public EntityStatusType Mode { get; set; } = EntityStatusType.Active;
+		public EntityStatusType Mode { get; set; } = EntityStatusType.Active;
 		/// <summary>
-        /// Time at which this aphid was last loaded, uses the last playtime as an anchor.
-        /// </summary>
-		public double LastTimeLoaded;
+		/// Time at which this aphid was last loaded, uses the last playtime as an anchor.
+		/// </summary>
+		public double LastTimeLoaded { get; set; }
 
 		// Training
-		public TrainData CurrentTraining;
+		public TrainData CurrentTraining { get; set; }
+
+		public void StartPatch(uint version)
+		{
+			if (LastTimeLoaded == 0)
+				LastTimeLoaded = GameManager.Data.Playtime;
+
+			if (string.IsNullOrWhiteSpace(HomeResort))
+				HomeResort = "golden";
+		}
 	}
 	/// <summary>
 	/// Genetic information about the aphid's preferences and personality.
@@ -176,17 +187,17 @@ public partial class AphidData : Aphid
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, "AphidData: More than four traits.");
 
 			// generate preferences
-				GenerateFoodPreferences();
+			GenerateFoodPreferences();
 
 			// generate skin
 			AntennaType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.AntennaType;
 			EyeType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.EyeType;
 			BodyType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.BodyType;
 			LegType = _parents[GlobalManager.RNG.RandiRange(0, 1)].Genes.LegType;
-			AntennaColor = LerpColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor);
-			EyeColor = LerpColor(_mother.Genes.EyeColor, _father.Genes.EyeColor);
-			BodyColor = LerpColor(_mother.Genes.BodyColor, _father.Genes.BodyColor);
-			LegColor = LerpColor(_mother.Genes.LegColor, _father.Genes.LegColor);
+			AntennaColor = MixAphidColor(_mother.Genes.AntennaColor, _father.Genes.AntennaColor);
+			EyeColor = MixAphidColor(_mother.Genes.EyeColor, _father.Genes.EyeColor);
+			BodyColor = MixAphidColor(_mother.Genes.BodyColor, _father.Genes.BodyColor);
+			LegColor = MixAphidColor(_mother.Genes.LegColor, _father.Genes.LegColor);
 		}
 
 		public virtual void GenerateSkills()
@@ -266,20 +277,27 @@ public partial class AphidData : Aphid
 		}
 		public virtual void GenerateFoodPreferences()
 		{
+			List<float> _preference_options = [0.25f, 0.5f, 0.75f, 1.0f];
 			FoodPreference = (FoodType)GlobalManager.Utils.GetRandomByWeight(flavor_weights);
 			FoodMultipliers = [
-				GetMultiplier(FoodType.Sweet),
-				GetMultiplier(FoodType.Sour),
-				GetMultiplier(FoodType.Salty),
-				GetMultiplier(FoodType.Bitter),
-				FoodPreference == FoodType.Vile ? GetMultiplier(FoodType.Vile) : -1, // the rare Vile preference
-				GetMultiplier(FoodType.Bland) - 0.4f,
-				1
+				GetFoodMultiplier(FoodType.Sweet, ref _preference_options),
+				GetFoodMultiplier(FoodType.Sour, ref _preference_options),
+				GetFoodMultiplier(FoodType.Salty, ref _preference_options),
+				GetFoodMultiplier(FoodType.Bitter, ref _preference_options),
+				GetFoodMultiplier(FoodType.Vile), // the rare Vile preference
+				0.5f, // Bland
+				1 // Neutral
 			];
 		}
-		public virtual float GetMultiplier(FoodType _type) =>
-			0.5f + (_type == FoodPreference ? 0.5f : 0) + GlobalManager.RNG.Randf();
-		public static Color LerpColor(Color _color1, Color _color2)
+		public virtual float GetFoodMultiplier(FoodType _type, ref List<float> _options)
+		{
+			float _option = CORE_RNG.RandiRange(0, _options.Count - 1);
+			_options.Remove(_option);
+			return 0.5f + (_type == FoodPreference ? 0.5f : 0) + _option;
+		}
+		public virtual float GetFoodMultiplier(FoodType _type) =>
+			0.5f + (_type == FoodPreference ? 0.5f : 0);
+		public static Color MixAphidColor(Color _color1, Color _color2)
 		{
 			// we combine all colors to find the strongest value and order by such
 			List<float> _colors = [GD.RandRange(0,1) == 0 ? _color1.R : _color2.R,
@@ -299,6 +317,20 @@ public partial class AphidData : Aphid
 			}
 
 			return new Color(_colors[0], _colors[1], _colors[2]);
+		}
+		public void StartPatch(uint version)
+		{
+			if (Skills.Count == 0)
+				GenerateSkills();
+
+			if (Traits.Count == 0)
+				GenerateTraits();
+
+			while (Traits.Count >= 5)
+				Traits.RemoveAt(Traits.Count - 1);
+
+			if (FoodMultipliers[4] <= 0)
+				FoodMultipliers[4] = GetFoodMultiplier(FoodType.Vile);
 		}
 
 		/// <summary>
@@ -341,9 +373,9 @@ public partial class AphidData : Aphid
 	}
 
 	public class TrainData
-    {
-        public int PointGain = 0;
+	{
+		public int PointGain = 0;
 		public float BaseTime = 0;
 		public SkillEnum Skill = SkillEnum.Stamina;
-    }
+	}
 }

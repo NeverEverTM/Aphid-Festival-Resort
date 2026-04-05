@@ -124,7 +124,6 @@ public partial class AphidActions : Aphid
 			Level += _level;
 		}
 	}
-
 	/// <summary>
 	/// An event interface that fires up when a node enters/exits an aphid's interaction area.
 	/// </summary>
@@ -132,6 +131,7 @@ public partial class AphidActions : Aphid
 	{
 		public StringNames.GlobalTags Tag { get; }
 		public void OnNodeEntered(Aphid _aphid, Node2D _node);
+		public void OnNodeStay(Aphid _aphid, Node2D _node);
 		public void OnNodeExited(Aphid _aphid, Node2D _node);
 	}
 
@@ -265,7 +265,7 @@ public partial class AphidActions : Aphid
 	}
 	public class AffectionDecay(float BaseTime, bool OneShot = false, bool autostart = true) : CustomBaseTimer<Aphid>(BaseTime, OneShot, autostart)
 	{
-        public override void Process(Aphid entity, float _delta)
+		public override void Process(Aphid entity, float _delta)
 		{
 			if (entity.State.Is(StateEnum.Pet))
 				return;
@@ -286,7 +286,7 @@ public partial class AphidActions : Aphid
 	}
 	public class BondshipDecay(float BaseTime, bool OneShot = false, bool autostart = true) : CustomBaseTimer<Aphid>(BaseTime, OneShot, autostart)
 	{
-        public override void Process(Aphid entity, float _delta)
+		public override void Process(Aphid entity, float _delta)
 		{
 			if (entity.State.Is(StateEnum.Sleep) || entity.State.Is(StateEnum.Breed)) // dont go down while is asleep or mating
 				return;
@@ -308,7 +308,7 @@ public partial class AphidActions : Aphid
 	}
 	public class LifetimeDecay(float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true) : CustomBaseTimer<Aphid>(BaseTime, TimeLeft, OneShot, autostart)
 	{
-        public override void Process(Aphid aphid, float _delta)
+		public override void Process(Aphid aphid, float _delta)
 		{
 			// All things have an end, specifically, a few hours after birth
 			base.Process(aphid, _delta);
@@ -342,7 +342,7 @@ public partial class AphidActions : Aphid
 	}
 	public class BreedTimer(float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true) : CustomBaseTimer<Aphid>(BaseTime, TimeLeft, OneShot, autostart)
 	{
-        public override void Process(Aphid entity, float _delta)
+		public override void Process(Aphid entity, float _delta)
 		{
 			// Too tired/young for breeding
 			if (!entity.Instance.Status.IsAdult || entity.State.Is(StateEnum.Breed) ||
@@ -365,7 +365,7 @@ public partial class AphidActions : Aphid
 
 		public class Passive(float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true) : CustomBaseTimer<AphidPassive>(BaseTime, TimeLeft, OneShot, autostart)
 		{
-            public override void Process(AphidPassive aphid, float _delta)
+			public override void Process(AphidPassive aphid, float _delta)
 			{
 				// Too tired/young for breeding
 				if (!aphid.Instance.Status.IsAdult || aphid.Instance.Status.LastActiveState == StateEnum.Breed ||
@@ -403,7 +403,7 @@ public partial class AphidActions : Aphid
 
 		public class Passive(float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true) : CustomBaseTimer<AphidPassive>(BaseTime, TimeLeft, OneShot, autostart)
 		{
-            public override void Process(AphidPassive entity, float _delta)
+			public override void Process(AphidPassive entity, float _delta)
 			{
 				base.Process(entity, _delta);
 				entity.Instance.Status.HarvestBuildup = BaseTime - TimeLeft;
@@ -411,64 +411,9 @@ public partial class AphidActions : Aphid
 
 			public override void Finish(AphidPassive entity)
 			{
+				return;
 				// TODO: Autocollector could be a nice upgrade but not sure about it
 			}
-		}
-	}
-
-	// AREA EVENTS
-	public class AphidFriendhsip : IAreaEvent
-	{
-		public StringNames.GlobalTags Tag => StringNames.GlobalTags.Aphid;
-		private readonly static float[] aphid_interaction_weights = [50, 50];
-
-		public void OnNodeEntered(Aphid _aphid, Node2D _node)
-		{
-			if (!_aphid.State.Is(StateEnum.Idle))
-				return;
-			Aphid _otherAphid = _node as Aphid;
-			if (!_otherAphid.State.Is(StateEnum.Idle))
-				return;
-
-			// met strangers you see for the first time
-			if (!_aphid.Instance.Genes.Relationships.TryGetValue(_otherAphid.Instance.GUID, out Relationship current_relationship))
-			{
-				current_relationship = new(_otherAphid.Instance.GUID, Relationship.RelationshipLevel.Acquaintance);
-				_aphid.Instance.Genes.Relationships.Add(_otherAphid.Instance.GUID, current_relationship);
-				return;
-			}
-
-			if (MISC_RNG.Randf() < 0.67f) //flip a coin on wheter it happens
-				return;
-
-			// attempt social interaction
-			_aphid.SetState(StateEnum.Social);
-			_aphid.skin.SetFlipDirection(_otherAphid.GlobalPosition - _aphid.GlobalPosition);
-			_aphid.CreateTimer(() => SoundManager.CreateSound2D(_aphid.AudioDynamic_Idle, _aphid.GlobalPosition), 1);
-
-			switch (MISC_RNG.RandWeighted(aphid_interaction_weights))
-			{
-				case 0: // get angry at interaction
-					_aphid.CreateTimer(() =>
-					{
-						current_relationship.AddToTotal(-3);
-						GlobalManager.EmitParticles("anger", _aphid.GlobalPosition, false);
-					}, 2);
-					return;
-				case 1: // get pleased at interaction
-					_aphid.CreateTimer(() =>
-					{
-						current_relationship.AddToTotal(3);
-						GlobalManager.EmitParticles("heart", _aphid.GlobalPosition, false);
-						_aphid.skin.DoHop();
-					}, 2);
-					return;
-			}
-		}
-
-		public void OnNodeExited(Aphid _aphid, Node2D _node)
-		{
-			return;
 		}
 	}
 
@@ -524,7 +469,14 @@ public partial class AphidActions : Aphid
 		public void Enter(Aphid aphid, StateEnum _previous, EventArgs _args)
 		{
 			idle_timer.decay_rate = aphid.ValueFlags[ValueFlagsEnum.IdleTimeMultiplier];
-			StandStill(aphid);
+
+			if (_args is IdleArgs)
+			{
+				target_position = (_args as IdleArgs).IdleSpot;
+				GoToIdlePoint(aphid);
+			}
+			else
+				StandStill(aphid);
 		}
 		public void Exit(Aphid aphid, StateEnum _next)
 		{
@@ -556,17 +508,26 @@ public partial class AphidActions : Aphid
 			target_position = new Vector2(MISC_RNG.RandfRange(-MAX_IDLE_RANGE, MAX_IDLE_RANGE),
 					MISC_RNG.RandfRange(-MAX_IDLE_RANGE, MAX_IDLE_RANGE)) + aphid.GlobalPosition;
 			aphid.SetMovementDirection(target_position, true);
-			timeout_timer.Start();
+			timeout_timer.Start(MAX_TIMEOUT_TIME);
+		}
+		public void GoToIdlePoint(Aphid aphid)
+		{
+			aphid.SetMovementDirection(target_position, true);
+			timeout_timer.Start(MAX_TIMEOUT_TIME * 3);
 		}
 
 		public class IdleTimer(float BaseTime, bool OneShot = false, bool autostart = true) : CustomTimer<Aphid>(BaseTime, OneShot, autostart)
 		{
 			public float decay_rate = 1;
 
-            public override float GetTimerTime()
+			public override float GetTimerTime()
 			{
 				return MISC_RNG.RandfRange(BaseTime, BaseTime * 2) * decay_rate;
 			}
+		}
+		public class IdleArgs(Vector2 IdleSpot) : EventArgs
+		{
+			public Vector2 IdleSpot = IdleSpot;
 		}
 	}
 	public class HungryState : IState
@@ -577,11 +538,11 @@ public partial class AphidActions : Aphid
 		public bool CanBeStartingState => false;
 
 		// Eating Params
-		public List<FoodArgs> nearby_food = [];
 		public FoodArgs current_target;
 		private CustomTimer<Aphid> food_timeout_timer;
+		private readonly FoodTrigger food_lookout = new();
 
-		private const int MAX_FOOD_RANGE = 200 * 200, MIN_FOOD_RANGE = 40 * 40, MAX_TIMEOUT_BASE = 10;
+		private const int MAX_FOOD_RANGE = 200 * 200, MIN_FOOD_RANGE = 30 * 30, MAX_TIMEOUT_BASE = 10;
 
 		public class FoodArgs : EventArgs
 		{
@@ -595,22 +556,19 @@ public partial class AphidActions : Aphid
 			food_timeout_timer = new(MAX_TIMEOUT_BASE, true, false);
 			food_timeout_timer.OnFinish.Add((_aphid) =>
 			{
-				current_target = nearby_food[MISC_RNG.RandiRange(0, nearby_food.Count - 1)];
+				if (food_lookout.nearby_food.Count > 0)
+					current_target = food_lookout.nearby_food.Values.ToList()[MISC_RNG.RandiRange(0, food_lookout.nearby_food.Count - 1)];
+				else
+					_aphid.SetState(StateEnum.Idle);
 			});
 			aphid.Timers.Add(food_timeout_timer);
+			aphid.AreaEvents.Add(food_lookout);
 		}
 		public void Enter(Aphid aphid, StateEnum _previous, EventArgs _args)
 		{
-			current_target = nearby_food[0];
 			food_timeout_timer.Start(MAX_TIMEOUT_BASE);
-
-			List<FoodArgs> _validFood = [];
-			for (int i = 0; i < nearby_food.Count; i++)
-			{
-				if (IsInstanceValid(nearby_food[i].node))
-					_validFood.Add(nearby_food[i]);
-			}
-			nearby_food = [.. _validFood];
+			current_target = food_lookout.nearby_food.First().Value;
+			ChooseClosest(aphid);
 		}
 		public void Exit(Aphid aphid, StateEnum _next)
 		{
@@ -620,31 +578,15 @@ public partial class AphidActions : Aphid
 		public void Process(Aphid aphid, float delta)
 		{
 			// if is not valid, too far away, or claimed by someone, let go
-			if (current_target == null 
-				|| !IsInstanceValid(current_target.node) 
-				|| aphid.GlobalPosition.DistanceSquaredTo(current_target.node.GlobalPosition) > MAX_FOOD_RANGE 
+			if (current_target == null || !IsInstanceValid(current_target.node) || food_lookout.nearby_food.Count == 0
+				|| aphid.GlobalPosition.DistanceSquaredTo(current_target.node.GlobalPosition) > MAX_FOOD_RANGE
 				|| !(bool)current_target.node.GetMeta(StringNames.PickupMeta))
 			{
 				aphid.SetState(StateEnum.Idle);
 				return;
 			}
 
-			// Select the closest food item
-			for (int i = 0; i < nearby_food.Count; i++)
-			{
-				// if they are both at the same level of priority(favorite) then choose the closest one
-				if (nearby_food[i].is_favorite == current_target.is_favorite)
-				{
-					if (aphid.GlobalPosition.DistanceSquaredTo(nearby_food[i].node.GlobalPosition)
-						< aphid.GlobalPosition.DistanceSquaredTo(current_target.node.GlobalPosition))
-						continue;
-				}
-				else if (!nearby_food[i].is_favorite) // otherwise, if the new one isnt favorite, ignore it
-					continue;
-
-				current_target = nearby_food[i];
-				food_timeout_timer.Start(10);
-			}
+			ChooseClosest(aphid);
 
 			// Walk towards the food item, once close, begin the eating state
 			if (aphid.GlobalPosition.DistanceSquaredTo(current_target.node.GlobalPosition) > MIN_FOOD_RANGE)
@@ -657,43 +599,78 @@ public partial class AphidActions : Aphid
 				aphid.SetState(StateEnum.Eat, current_target);
 			}
 		}
-
-		public bool OnNodeExited(Node2D _node)
+		public void ChooseClosest(Aphid aphid)
 		{
-			var _food = nearby_food.Find((f) => f.node.Equals(_node));
-
-			if (_food != null)
+			// Select the closest food item
+			foreach (var _pair in food_lookout.nearby_food)
 			{
-				nearby_food.Remove(_food);
-				return true;
+				if (!IsInstanceValid(current_target.node))
+				{
+					current_target = _pair.Value;
+					continue;
+				}
+				if (!IsInstanceValid(_pair.Value.node))
+				{
+					food_lookout.nearby_food.Remove(_pair.Key);
+					continue;
+				}
+				// if they are both at the same level of priority(favorite) then choose the closest one
+				if (_pair.Value.is_favorite == current_target.is_favorite)
+				{
+					if (aphid.GlobalPosition.DistanceSquaredTo(_pair.Value.node.GlobalPosition)
+						>= aphid.GlobalPosition.DistanceSquaredTo(current_target.node.GlobalPosition))
+						continue;
+				}
+				else if (!_pair.Value.is_favorite) // otherwise, if the new one isnt favorite, ignore it
+					continue;
+
+				current_target = _pair.Value;
+				food_timeout_timer.Start(MAX_TIMEOUT_BASE);
 			}
-			return false;
 		}
 
 		public class FoodTrigger : IAreaEvent
 		{
 			public StringNames.GlobalTags Tag => StringNames.GlobalTags.Food;
 			public List<ulong> ignored = [];
+			public Dictionary<ulong, FoodArgs> nearby_food = [];
 
 			public void OnNodeEntered(Aphid aphid, Node2D _node)
 			{
-				if (ignored.Contains(_node.GetInstanceId()))
-					return;
-
-				// its marked to not be picked up or already in list
-				if (!(bool)_node.GetMeta(StringNames.PickupMeta))
+				AnalyzeItem(aphid, _node);
+			}
+			public void OnNodeStay(Aphid _aphid, Node2D _node)
+			{
+				for (int i = ignored.Count - 1; i >= 0; i--)
 				{
-					ignored.Add(_node.GetInstanceId());
-					return;
+					if (!IsInstanceIdValid(ignored[i]))
+						ignored.RemoveAt(i);
 				}
 
+				if (nearby_food.Count > 0 && !_aphid.State.Is(StateEnum.Eat))
+					_aphid.SetState(StateEnum.Hungry);
+				else
+					AnalyzeItem(_aphid, _node);
+			}
+			public void OnNodeExited(Aphid _aphid, Node2D _node)
+			{
+				nearby_food.Remove(_node.GetInstanceId());
+			}
+
+			public void AnalyzeItem(Aphid aphid, Node2D _node)
+			{
+				ulong _instanceID = _node.GetInstanceId();
+				if (ignored.Contains(_instanceID) || nearby_food.ContainsKey(_instanceID) || aphid.State.Is(StateEnum.Eat)
+					|| !(bool)_node.GetMeta(StringNames.PickupMeta))
+					return;
+
 				FoodData _current_food = GlobalManager.G_FOOD[_node.GetMeta(StringNames.IdMeta).ToString()];
-				var _flavor = _current_food.Type;
+				var _flavor = _current_food.Flavor;
 				bool _isfavorite = aphid.Instance.Genes.FoodPreference == _flavor;
 				bool _isPickyEater = aphid.BoolFlags[BoolFlagsEnum.IsPicky];
 
 				// if Vile, reject it cause yucky, unless you like it for some reason
-				if (_flavor == AphidData.FoodType.Vile && _isfavorite)
+				if (_flavor == FoodType.Vile && _isfavorite)
 				{
 					ignored.Add(_node.GetInstanceId());
 					return;
@@ -725,19 +702,13 @@ public partial class AphidActions : Aphid
 					}
 				}
 
-				(aphid.ActiveStates[StateEnum.Hungry] as HungryState).nearby_food.Add(new()
+				nearby_food.Add(_instanceID, new()
 				{
 					node = _node,
 					is_favorite = _isfavorite,
 					flavor = _flavor
 				});
-				ignored.Add(_node.GetInstanceId());
 				aphid.SetState(StateEnum.Hungry);
-			}
-
-			public void OnNodeExited(Aphid _aphid, Node2D _node)
-			{
-				(_aphid.ActiveStates[StateEnum.Hungry] as HungryState).OnNodeExited(_node);
 			}
 		}
 	}
@@ -752,7 +723,7 @@ public partial class AphidActions : Aphid
 		private int gobble_ticks;
 		private bool anim_direction;
 		private CustomTimer<Aphid> gobble_timer;
-
+		private GpuParticles2D gobble_particles;
 		private HungryState.FoodArgs current_target;
 
 		public void Awake(Aphid aphid)
@@ -763,14 +734,22 @@ public partial class AphidActions : Aphid
 		}
 		public void Enter(Aphid aphid, StateEnum _previous, EventArgs _specialArgs)
 		{
+			if (_specialArgs == null || _specialArgs is not HungryState.FoodArgs)
+				return;
 			current_target = _specialArgs as HungryState.FoodArgs;
+
 			gobble_timer.Start(MAX_GOBBLE_TIME);
+			gobble_particles = GlobalManager.EmitParticles("food", current_target.node.GlobalPosition, false);
+			gobble_particles.Texture = (current_target.node.GetChild(0) as Sprite2D).Texture;
+			(gobble_particles as FoodParticleBehaviour).CreateCustomParticleTexture();
 		}
 
 		public void Exit(Aphid aphid, StateEnum _next)
 		{
 			gobble_timer.Stop();
 			current_target = null;
+			gobble_particles.OneShot = true;
+			gobble_particles = null;
 		}
 
 		public void Process(Aphid aphid, float delta)
@@ -801,7 +780,7 @@ public partial class AphidActions : Aphid
 			FoodData _food = GlobalManager.G_FOOD[current_target.node.GetMeta(StringNames.IdMeta).ToString()];
 
 			// set food values
-			float _multi = aphid.Instance.Genes.FoodMultipliers[(int)_food.Type];
+			float _multi = aphid.Instance.Genes.FoodMultipliers[(int)_food.Flavor];
 			if (_food.FoodValue > 0)
 				aphid.Instance.AddHunger(_food.FoodValue * _multi);
 
@@ -1090,7 +1069,10 @@ public partial class AphidActions : Aphid
 				_partner.skin.DoHop();
 				GlobalManager.EmitParticles("heart", _partner.GlobalPosition, false);
 			}
-
+			public void OnNodeStay(Aphid _aphid, Node2D _node)
+			{
+				return;
+			}
 			public void OnNodeExited(Aphid _aphid, Node2D _node)
 			{
 				return;
@@ -1119,16 +1101,22 @@ public partial class AphidActions : Aphid
 			train_timer.last_level = aphid.Instance.Genes.Skills[train_timer.skill_name].Level;
 
 			train_timer.Start(aphid.Instance.Status.CurrentTraining.BaseTime);
+			// prevent interaction with the aphid
+			aphid.RemoveMeta(StringNames.TagMeta);
+			aphid.SetMeta(StringNames.PickupMeta, false); 
 		}
 		public void Exit(Aphid aphid, StateEnum _next)
 		{
-			train_timer = null;
+			aphid.Timers.Remove(train_timer);
 			aphid.skin.OverrideMovementAnim = false;
+			aphid.SetMeta(StringNames.TagMeta, (int)aphid.Tag);
+			aphid.SetMeta(StringNames.PickupMeta, true); 
 		}
 		public void Process(Aphid aphid, float delta)
 		{
-			if (aphid.Instance.Status.Tiredness > AphidData.MAX_TIREDNESS_SLEEP)
+			if (aphid.Instance.Status.Tiredness > MAX_TIREDNESS_SLEEP)
 			{
+				GD.Print("Too tired!");
 				aphid.SetState(StateEnum.Idle);
 				return;
 			}
@@ -1140,7 +1128,7 @@ public partial class AphidActions : Aphid
 			public int last_level;
 			public string skill_name;
 
-            public override void Finish(Aphid entity)
+			public override void Finish(Aphid entity)
 			{
 				TrainData _data = entity.Instance.Status.CurrentTraining;
 				entity.Instance.Genes.Skills[_data.Skill.ToString().ToLower()].GivePoints(
@@ -1186,21 +1174,130 @@ public partial class AphidActions : Aphid
 		public bool CanBeStartingState => false;
 		public bool TransitionToAnything => true;
 
+		private readonly static float[] aphid_interaction_weights = [50, 50];
+		private SocialArgs args;
+
+		public class SocialArgs : EventArgs
+		{
+			/// <summary>
+			/// The other aphid who we are socializing with.
+			/// </summary>
+			public Aphid Friendphid;
+			/// <summary>
+			/// Relationship of the other aphid with this aphid
+			/// </summary>
+			public Relationship FriendphidRelationship;
+			/// <summary>
+			/// Relationship of this aphid with the other aphid.
+			/// </summary>
+			public Relationship MyRelationship;
+			/// <summary>
+			/// If we are the aphid controlling the social interaction or just the friendphid.
+			/// </summary>
+			public bool IsActive;
+		}
+
 		public void Awake(Aphid aphid)
 		{
-			return;
+			aphid.AreaEvents.Add(new AphidFriendhsip());
 		}
 		public void Enter(Aphid aphid, StateEnum _previous, EventArgs _specialArgs)
 		{
-			return;
+			if (_specialArgs == null)
+				return;
+
+			args = _specialArgs as SocialArgs;
+			if (!args.IsActive)
+				return;
+
+			aphid.skin.SetFlipDirection(args.Friendphid.GlobalPosition - aphid.GlobalPosition);
+			args.Friendphid.skin.SetFlipDirection(aphid.GlobalPosition - args.Friendphid.GlobalPosition);
+
+			Interaction1(aphid);
 		}
 		public void Exit(Aphid aphid, StateEnum _next)
 		{
-			return;
+			args = null;
 		}
 		public void Process(Aphid aphid, float delta)
 		{
-			return;
+			if (args == null)
+				aphid.SetState(StateEnum.Idle);
+		}
+
+		private void FinishInteraction(Aphid aphid)
+		{
+			if (args.Friendphid.State.Is(StateEnum.Social))
+				args.Friendphid.SetState(StateEnum.Idle);
+			if (aphid.State.Is(StateEnum.Social))
+				aphid.SetState(StateEnum.Idle);
+		}
+		private void Interaction1(Aphid aphid)
+		{
+			aphid.CreateTimer(() =>
+			{
+				RandRelationship(aphid);
+				FinishInteraction(aphid);
+			}, 3);
+			aphid.CreateTimer(() => SoundManager.CreateSound2D(aphid.AudioDynamic_Idle, aphid.GlobalPosition), MISC_RNG.RandfRange(0.5f, 2));
+		}
+		private void RandRelationship(Aphid aphid)
+		{
+			switch (MISC_RNG.RandWeighted(aphid_interaction_weights))
+			{
+				case 0: // get angry at interaction
+					args.MyRelationship.AddToTotal(-3);
+					args.FriendphidRelationship.AddToTotal(-3);
+					GlobalManager.EmitParticles("anger", aphid.GlobalPosition + (args.Friendphid.GlobalPosition - aphid.GlobalPosition) / 2, false);
+					return;
+				case 1: // get pleased at interaction
+					args.MyRelationship.AddToTotal(3);
+					args.FriendphidRelationship.AddToTotal(3);
+					GlobalManager.EmitParticles("heart", aphid.GlobalPosition + (args.Friendphid.GlobalPosition - aphid.GlobalPosition) / 2, false);
+					return;
+			}
+		}
+		
+		public class AphidFriendhsip : IAreaEvent
+		{
+			public StringNames.GlobalTags Tag => StringNames.GlobalTags.Aphid;
+
+			public void OnNodeEntered(Aphid _aphid, Node2D _node)
+			{
+				Aphid _otherAphid = _node as Aphid;
+
+				// met strangers you see for the first time
+				if (!_otherAphid.Instance.HasRelationship(_aphid, out Relationship other_relationship))
+					_otherAphid.Instance.AddRelationship(_aphid);
+				if (!_aphid.Instance.HasRelationship(_otherAphid, out Relationship relationship))
+				{
+					_aphid.Instance.AddRelationship(_otherAphid);
+					return;
+				}
+
+				if (!_aphid.State.Is(StateEnum.Idle) || !_otherAphid.State.Is(StateEnum.Idle))
+					return;
+
+				if (MISC_RNG.Randf() < 0.67f) // chance for an interaction to happen
+					return;
+
+				// attempt social interaction
+				_aphid.SetState(StateEnum.Social, new SocialArgs()
+				{
+					Friendphid = _otherAphid,
+					FriendphidRelationship = other_relationship,
+					MyRelationship = relationship,
+					IsActive = true
+				});
+			}
+			public void OnNodeStay(Aphid _aphid, Node2D _node)
+			{
+				return;
+			}
+			public void OnNodeExited(Aphid _aphid, Node2D _node)
+			{
+				return;
+			}
 		}
 	}
 }

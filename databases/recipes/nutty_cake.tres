@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://bavs042pum2w1"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_gox5u"]
-[ext_resource type="Resource" path="res://databases/food/berry.tres" id="2_o4515"]
-[ext_resource type="Resource" path="res://databases/food/flour_bag.tres" id="3_1oqak"]
-[ext_resource type="Resource" path="res://databases/food/roasted_berries.tres" id="4_pa4ms"]
-[ext_resource type="Resource" path="res://databases/food/nutty_cake.tres" id="5_4tpdo"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="6_i17ka"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_gox5u"]
+[ext_resource type="Resource" uid="uid://db3fe3vrac52l" path="res://databases/food/berry.tres" id="2_o4515"]
+[ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="3_1oqak"]
+[ext_resource type="Resource" uid="uid://c8vdniuehpe40" path="res://databases/food/roasted_berries.tres" id="4_pa4ms"]
+[ext_resource type="Resource" uid="uid://b0v7vk7nv1ye8" path="res://databases/food/nutty_cake.tres" id="5_4tpdo"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="6_i17ka"]
 
 [resource]
 script = ExtResource("6_i17ka")

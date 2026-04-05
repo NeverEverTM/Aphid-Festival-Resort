@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://c140r8dv4t86f"]
+
+[ext_resource type="Texture2D" uid="uid://by731h48tm8a0" path="res://sprites/icons/abomihoney.tres" id="1_23asr"]
+
+[node name="food_slot" type="Button"]
+custom_minimum_size = Vector2(350, 100)
+offset_right = 350.0
+offset_bottom = 100.0
+
+[node name="icon" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 11.0
+offset_top = 10.0
+offset_right = 90.0
+offset_bottom = 90.0
+texture = ExtResource("1_23asr")
+stretch_mode = 4
+
+[node name="label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 109.666664
+offset_top = 23.000008
+offset_right = 336.0
+offset_bottom = 71.00001
+theme_override_font_sizes/font_size = 30
+text = "Abomihoneysada"
+vertical_alignment = 1

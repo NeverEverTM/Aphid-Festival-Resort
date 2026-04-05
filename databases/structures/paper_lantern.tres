@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://bucmo53pkgp54"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_sxkf1"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_sxkf1"]
 
 [resource]
 script = ExtResource("1_sxkf1")
 ID = "paper_lantern"
 Cost = 5
-LevelRequirement = 0
-Tag = 3
+TierRequirement = 1
 Shop = 2
 ShopOrderPriority = 46

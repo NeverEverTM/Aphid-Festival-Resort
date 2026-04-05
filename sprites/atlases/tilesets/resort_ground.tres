@@ -21,11 +21,11 @@ domain_warp_type = 1
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_voy8x"]
 width = 256
 height = 256
+noise = SubResource("FastNoiseLite_tvjqf")
+seamless = true
 invert = true
 in_3d_space = true
-seamless = true
 seamless_blend_skirt = 1.0
-noise = SubResource("FastNoiseLite_tvjqf")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l2s0r"]
 shader = ExtResource("1_itoty")

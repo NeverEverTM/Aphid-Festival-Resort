@@ -1,3 +1,4 @@
+#Outdated
 ## Food & Recipe Implementation
 To implement a food or recipe, they require the following:
 - assigned gameplay values need to be inserted in the [foods_values] table

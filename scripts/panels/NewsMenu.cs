@@ -152,7 +152,7 @@ public partial class NewsMenu : Control
             newsBody.Text = string.Empty;
             newsBody.AppendText($"[color=coral][font_size=60]{_blog["title"].AsString()}[/font_size][/color]");
             newsBody.AppendText($"\n[color=cyan]{DateTime.Parse(_blog["date"].AsString()):dd/MM/yy}[/color]");
-            if (OptionsManager.Settings.Locale != OptionsManager.DEFAULT_LOCALE)
+            if (OptionsManager.Settings.IntFlags["Locale"].Value != 0)
                 newsBody.AppendText($"\n[bgcolor=red]{Tr("warning_news_locale")}[/bgcolor]\n");
             newsBody.AppendText(_data);
             newsBody.ScrollToLine(0);

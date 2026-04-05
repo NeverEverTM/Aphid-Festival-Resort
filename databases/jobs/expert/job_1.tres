@@ -6,7 +6,5 @@
 [resource]
 script = ExtResource("1_xq1gm")
 Skills = Dictionary[int, int]({})
-BaseTime = 0.0
-BaseReward = 0
 Background = ExtResource("1_klvoi")
 metadata/_custom_type_script = "uid://bh2k0jtgro60"

@@ -134,7 +134,7 @@ public partial class DebugConsole : CanvasLayer
 			{
 				IsEnabled = true;
 				SoundManager.CreateSound(SoundManager.GetAudioStream("ui/kitchen_success"));
-				GlobalManager.CreatePopup("Welcome to the next level", Instance);
+				GlobalManager.CREATE_POPUP("Welcome to the next level", Instance);
 			}
 			else
 				DidntSayIDidntWarnYouBeforeHand = false;
@@ -269,13 +269,13 @@ public partial class DebugConsole : CanvasLayer
 
 		public void Execute(string[] args)
 		{
-			if (!GlobalManager.IsInGame)
+			if (!SceneManager.CurrentlyInGame)
 			{
 				DebugLogger.Print(DebugLogger.LogPriority.Log, $"Motherload: No game currently running.");
 				return;
 			}
-			int _amount = GetInt(0, args, 0);
-			PlayerData.AddCurrency(_amount);
+			int _amount = GetInt(0, args, 256);
+			Player.AddCurrency(_amount);
 
 			if (_amount < 0)
 				DebugLogger.Print(DebugLogger.LogPriority.Log, $"Motherload: Removed ${_amount} from your current game.");
@@ -294,7 +294,7 @@ public partial class DebugConsole : CanvasLayer
 			var _date = Time.GetDatetimeDictFromSystem();
 			_date["hour"] = args[0];
 			_date["minute"] = args[1];
-			FieldManager.Instance.SetTime(false, _date);
+			RoomInstance.SetTime(false, _date);
 
 			DebugLogger.Print(DebugLogger.LogPriority.Log, $"In-Game Time is now {args[0]}:{args[1]}");
 		}
@@ -386,7 +386,6 @@ public partial class DebugConsole : CanvasLayer
 			{
 				case "new":
 				case "mew":
-				case "spawn":
 				case "create":
 					AphidData.Genes _genes = new();
 					_genes.DEBUG_Randomize(GetBool(1, args, true), GetBool(2, args, true), GetBool(3, args, true));
@@ -449,6 +448,28 @@ public partial class DebugConsole : CanvasLayer
 						return;
 					var _skill = GetArg(1, args);
 					validAphid.Instance.Genes.Skills[_skill].GivePoints(Mathf.Clamp(GetInt(2, args, 1), 0, 10));
+					break;
+				case "hunger":
+				case "h":
+					if (!IsInstanceValid(validAphid))
+						return;
+					var _hunger = GetInt(1, args, 1);
+					validAphid.Instance.AddHunger(_hunger);
+				break;
+				case "thirst":
+				case "th":
+					if (!IsInstanceValid(validAphid))
+						return;
+					var _thirst = GetInt(1, args, 1);
+					validAphid.Instance.AddThirst(_thirst);
+				break;
+				case "sleep":
+				case "tiredness":
+				case "ti":
+				if (!IsInstanceValid(validAphid))
+						return;
+					var _sleep = GetInt(1, args, 1);
+					validAphid.Instance.AddTiredness(_sleep);
 					break;
 			}
 		}
@@ -524,8 +545,8 @@ public partial class DebugConsole : CanvasLayer
 					|| GameManager.IsInsideGeometry(Player.Instance.GlobalPosition))
 				{
 					Player.Instance.GlobalPosition =
-							FieldManager.Instance.Doors[0].GlobalPosition
-							+ (-FieldManager.Instance.Doors[0].entryDirection) * 5;
+							RoomInstance.Instance.Doors[0].GlobalPosition
+							+ (-RoomInstance.Instance.Doors[0].entryDirection) * 5;
 					DebugLogger.Print(DebugLogger.LogPriority.Info, "PlayerTeleport: Unstucked player.");
 				}
 				else
@@ -763,10 +784,10 @@ public partial class DebugConsole : CanvasLayer
 	{
 		public void Run(string[] args)
 		{
-			var _list = GlobalManager.G_FOOD.OrderByDescending(f => f.Value.Type).ToDictionary();
+			var _list = GlobalManager.G_FOOD.OrderByDescending(f => f.Value.Flavor).ToDictionary();
 
 			foreach (var _pair in _list)
-				GD.Print(string.Format("|{0,5}|{1,5}|", _pair.Key, _pair.Value.Type.ToString()));
+				GD.Print(string.Format("|{0,5}|{1,5}|", _pair.Key, _pair.Value.Flavor.ToString()));
 		}
 	}
 

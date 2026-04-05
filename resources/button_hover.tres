@@ -1,0 +1,11 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://dnl0p7r72j0w0"]
+
+[ext_resource type="Texture2D" uid="uid://b8regqlb58b2o" path="res://sprites/ui/buttons/button_focus.PNG" id="1_yyl7x"]
+
+[resource]
+texture = ExtResource("1_yyl7x")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+modulate_color = Color(0.90213394, 0.14276835, 0.36752412, 1)

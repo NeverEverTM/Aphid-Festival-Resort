@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://mgjdubn7x1xd"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_ehmhr"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_ehmhr"]
 
 [resource]
 script = ExtResource("1_ehmhr")
 ID = "leaf"
 Cost = 2
-LevelRequirement = 0
-Tag = 1
+Category = 1
 Shop = 1
 ShopOrderPriority = 2

@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://cunllqo4isx0h"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_vave2"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_vave2"]
 
 [resource]
 script = ExtResource("1_vave2")
 ID = "poster_mothiva"
 Cost = 8
-LevelRequirement = 0
 Tag = 3
 Shop = 2
 ShopOrderPriority = 61

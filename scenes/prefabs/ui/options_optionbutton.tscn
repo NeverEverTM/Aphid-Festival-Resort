@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bidorkggwfce0"]
+
+[node name="windowMode" type="OptionButton"]
+light_mask = 0
+offset_right = 376.0
+offset_bottom = 88.0
+expand_icon = true

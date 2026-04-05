@@ -1,28 +1,26 @@
 using Godot;
-using System;
 
-public partial class LobbyDoorDetail : Sprite2D
+public partial class LobbyDoorDetail : Node2D
 {
     [Export] private Light2D light;
-    private Color transparency_color;
+    [Export] private Sprite2D shadow;
 
     public override void _Ready()
     {
-        transparency_color = SelfModulate;
-        FieldManager.Instance.OnTimeChange.Add(OnTimeChange);
+        RoomInstance.Instance.AddEventListener(OnTimeChange, RoomInstance.TimeEvents.OnHourChange);
     }
 
-    public void OnTimeChange(FieldManager.DayHourMode _hour)
+    public void OnTimeChange(RoomInstance.TimeArgs _args)
     {
-        if (_hour == FieldManager.DayHourMode.Noon || _hour == FieldManager.DayHourMode.Afternoon)
+        if (RoomInstance.TimeArgs.TimeOfDay == RoomInstance.DayHourMode.Noon || RoomInstance.TimeArgs.TimeOfDay == RoomInstance.DayHourMode.Afternoon)
         {
             light.Enabled = false;
-            SelfModulate = transparency_color;
+            shadow.Show();
         }
         else
         {
             light.Enabled = true;
-            SelfModulate = new Color(0,0,0,0);
+            shadow.Hide();
         }
     }
 }

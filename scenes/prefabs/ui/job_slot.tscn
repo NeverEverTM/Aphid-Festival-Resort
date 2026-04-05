@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://cr7ypl2glxegu"]
 
-[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="1_lu87u"]
+[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/backgrounds/pause_menu_bg.png" id="1_lu87u"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="2_lu87u"]
-[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/menu_border.png" id="3_ap2gs"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="3_ap2gs"]
 [ext_resource type="Material" uid="uid://bso2uhxo4wa1o" path="res://resources/prophecy_material_1.tres" id="4_ap2gs"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="4_kjhgs"]
 [ext_resource type="Texture2D" uid="uid://b47krcimyyuy7" path="res://sprites/ui/aphid_outline.png" id="5_kjhgs"]
@@ -71,7 +71,7 @@ visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
 custom_minimum_size = Vector2(60, 50)
-layout_mode = 2
+layout_mode = 0
 offset_left = -8.0
 offset_top = -2.0
 offset_right = 55.0
@@ -94,7 +94,7 @@ visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
 custom_minimum_size = Vector2(60, 50)
-layout_mode = 2
+layout_mode = 0
 offset_left = 120.0
 offset_top = -2.0
 offset_right = 183.0
@@ -117,7 +117,7 @@ visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
 custom_minimum_size = Vector2(60, 50)
-layout_mode = 2
+layout_mode = 0
 offset_left = -6.0
 offset_top = 124.0
 offset_right = 57.0
@@ -140,7 +140,7 @@ visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
 custom_minimum_size = Vector2(60, 50)
-layout_mode = 2
+layout_mode = 0
 offset_left = 120.0
 offset_top = 124.0
 offset_right = 183.0

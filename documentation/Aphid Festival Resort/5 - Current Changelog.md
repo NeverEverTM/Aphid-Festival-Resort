@@ -1,0 +1,84 @@
+I cannot keep track of all changes I do, and certainly could not keep track of this almost year-long changelog, so take some stuff (particularly the development section) with a grain of salt.
+## Gameplay
+- Resort layout was throughly updated across the many months. The final design is a lot more compact and has brought all POI's close together, the lobby building has also been added up north.
+- Added the lobby, where you can sell aphids, upgrade resort services and see the game's changelog.
+	- Aphids can be sold at a base price of 50 berries (25 if they are a baby), and the price increases the better trained they are.
+	- Added a stats records tab to check in miscellaneous data about your savefile.
+	- Added a news board that delivers the latest development updates. Here is where these changelogs should be seen from now on! 
+- **The upgrade system is full** on board! Each upgrade offers you a service that unlocks certain activities or increase your catalogue of items. For now, four services are included, most can be "level-up" a few times too.
+- Added the **Job Board!**,  you can send aphids on requests and gain money on succesful completion. All of them require skills of different levels in order to be completed, aphids will also need to be well rested in order to embark on requests.
+- Added a few new NPC's for the lobby, including Tanjy as a future hat seller, Theresa at the front desk, and a few others coming...
+- On top of being used for requests, Skills can now be trained and raised through certain equipment structures too! Food items still grant skill points, and have been tweaked and rebalanced.
+- In terms of structures:
+	- ADDED Paper Lantern for water lighting
+	- ADDED Combat Dummy for strength training
+	- ADDED Runmill for speed training
+	- ADDED Kindergarten for intelligence training
+	- ADDED Jump Rope for stamina training
+	- ADDED Hot Bathtub: Quickly recovers aphid stamina
+	- ADDED Bottlecap Cot: recovers aphid stamina
+	- ADDED Grass Pot
+	- ADDED Mothiva Poster
+	- ADDED Patterned Rug
+	- *UPDATED* Sunshade to better conform with the other wooden items
+	- *UPDATED* Sapling Stump with new sitting functionality
+	- *UPDATED* HiTech Display, with a power and change channel button, and a few extra channels
+## Graphics, QoL & Sound
+- New bootup intro.
+- New time of day, we have now Morning, AfterNoon, SUNSET, and Night, I also tweaked colors for each one.
+- Given ALL menu panels in the game a lot love and cheerish, including silly interactions and animations.
+- Added a manual save button to the pause menu, exiting to desktop or main menu no longer saves, and instead prompts you with a warning about it. Exiting through the Window's close button does save the game though.
+- Added an autosave! It triggers every few minutes, switching rooms will also save most data automatically.
+- Adjusted some focus elements, the game is still pretty much not gamepad compatible but keyboard experience should be better than before.
+- Remastered various sounds, particularly ones used for UI.
+- Item slot buttons have been standarized all over the game, and thus are nicer to interact with.
+  - Buttons in general should all act the same and be easier to spot.
+- Updated a lot og dialogue strings to reflect the new changes, also added a few new silly ones.
+- Added a few more sound cues for menus.
+- Updated the kitchen menu, which now includes a WIP section reserved for a future addition.
+- The aphid information panel should be much more smoother to interact when handling aphids or seeing them from the free camera. Looks and feel was also updated
+- Updated player sprite with what should be their final design, aswell as giving them a new idle.
+- Enhanced and added various particle effects. Lil nom bite particles for when aphids eat something.
+- Updated the tutorial with a full swipe of new information.
+## Fixed
+- [MAJOR] Aphid eggs no longer lose their genes when reloading the game.
+- [MAJOR] An aphid's parents are now referenced directly by ID instead of just saving the name, this is so it reflects the parent's current status properly (before, you could change a parent's name and it would not be reflected in the bio of their children).
+- Inheriting skills was *not* working before, it should do now.
+- Aphids recently born no longer get 5 or more traits from parents (The biography panel only shows 4 at a time but you can notice by behaviour).
+- Aphid Food Preferences were not actually working properly either and it would always favor Sweet as their favorite, along with giving them the proper weight chances to all, Vile also now has a positive effect in the case the aphid has a food prefence for it. (On top of changing their behaviours, so the food values per preference are easier to tell apart)
+- Fixed some collision checks with aphids, causing them to trigger an area event for the same object several times within a tick.
+- Camera bounds would remain stuck if you were to zoom during the free camera and then exit the mode without manually setting it back, making you unable to look near the borders of the map..
+- Generations Panel could softlock itself by either showing photos or passing page while in a busy state.
+- Sounds would not get disposed off properly, and could inherit some properties of the last active sound.
+- Generations panel now opens again by pressing its menu button ("G" by default)
+- Particles would be terminated before their animation finished, making them dissapear abruptly. Most noticeably was in the harvest particles, which were not intended to just pop out so suddenly.
+- You can no longer double-press to buy an item, and the actual buy button in the shops now works as stated.
+## Development
+- Updated to Godot 4.5.1, the update has took me so long that 4.6 stable has actually released but that will be up once work on 0.4 development begins.
+- Now all items can store metadata, so they can keep states between games, such as [Aphid eggs retaining their generated genes].
+- All tags have been replaced with an [enum] instead of a string, which is managed by the [StringNames.GlobalTags] enum.
+- OptionsManager has gotten new configurable options modules that should make adding any game setting alongside its control in the OptionsMenu a whole lot easier to create and keep track of.
+- Added the InteractableArea2D and IInteractableArea2D as the standard for interactable items.
+- MenuUtil has been deprecated and deleted in favour of MenuHandler and MenuInstance, which have now extra functionality to await for end of menu animation and a verification method for closing the window. This should solve several problems with menus softlocking or remaining innaccesible till restart.
+- The graphic shaders for backgrounds have been upgraded, allowing them to be more varied all through the game.
+- Redone various event listeners to be more streamlined and easier to use, they way most of them behave should be more standardized.
+- New GlobalManager.Util function to generically invoke event lists.
+- Added a few scrips to manage interactions between player and structures.
+- The old scene managment done by GlobalManager has been refactored into a new class called SceneManager, in charge of loading a game's state and room.
+- Data for aphids (both for currently alive and the generations album) have been turned into a proper individual savemodule, available at GameManager and loaded at highest priority.
+- The way SaveModules are loaded and saved has been adjusted on all instances. This is to accomodate saving and loading data properly when switching rooms
+- LoadScreen now exists as a base for load screens specific nodes, from which both the leaves and the fade to black, are part of.
+- Build menu now keeps track of the material the item had before applying the outline shader so it can properly set it after is done with it.
+- A heavy restructuring for most of the project's assets. This includes changing how a lot of Item Data was constructued.
+- Major refactoring of the player's pickup and drop methods, added a non-awaitable option for Drop.
+- PlayerInventory has been streamlined and PlayerData separated into its proper individual partial script.
+- Added a standarized option to create buttons that display aphid skins available in CanvasManager.
+- Refactored AphidActions, including states, decays and much more, added new functionality for future content, aswell as improving performance and readibility.
+- Aphids now have a list of Flags that can influence behaviour in the states without directly having to manually find these.
+- AphidFriendship has been reconstructed as the new Social State.
+- Aphids in the main menu have now their own AphidFake behaviour instead of borrowing the functional Aphid one.
+- Aphids now work in the background when not loaded in, as AphidPassive
+- Renamed Logger to DebugLogger since 4.5 seemingly has its own internal Logger class.
+- Created an Item Database GUI tool for better control in balance and to avoid mistakes when creating items.
+- Renamed FieldManager to RoomInstance, as a more general purpose script.
+- Created CustomTimer<T> and CustomBaseTimer for internal Timer purposes, various Timer related actions have been replaced with this.

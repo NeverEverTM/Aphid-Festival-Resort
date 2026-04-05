@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://45m6ekangod3"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_ggytv"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_ggytv"]
 
 [resource]
 script = ExtResource("1_ggytv")
 ID = "mistake"
 Cost = 1
-LevelRequirement = 0
-Tag = 1
-Shop = 0
+Category = 1
 ShopOrderPriority = 31

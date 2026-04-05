@@ -1,33 +1,14 @@
-[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://cd23iyvhe7fmn"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://cd23iyvhe7fmn"]
 
 [ext_resource type="Shader" uid="uid://bk32b6r7pq7ih" path="res://scripts/shaders/prophecy_sprite.gdshader" id="1_20k1y"]
-
-[sub_resource type="Gradient" id="Gradient_3fj7c"]
-interpolation_color_space = 2
-offsets = PackedFloat32Array(0, 0.526316, 1)
-colors = PackedColorArray(0.687524, 1, 0.997082, 1, 0.180147, 0.228667, 0.931212, 1, 0.0478243, 0, 0.822648, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_eyqv6"]
-frequency = 0.0192
-fractal_gain = 0.395
-domain_warp_enabled = true
-domain_warp_amplitude = 29.96
-domain_warp_frequency = 0.09
-domain_warp_fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gorjh"]
-generate_mipmaps = false
-seamless = true
-seamless_blend_skirt = 0.111
-color_ramp = SubResource("Gradient_3fj7c")
-noise = SubResource("FastNoiseLite_eyqv6")
+[ext_resource type="Texture2D" uid="uid://x7oo73w31ql1" path="res://sprites/ui/IMAGE_DEPTH.png" id="2_qkm2m"]
 
 [resource]
 shader = ExtResource("1_20k1y")
-shader_parameter/sample = SubResource("NoiseTexture2D_gorjh")
+shader_parameter/sample = ExtResource("2_qkm2m")
 shader_parameter/speed = 1.0
 shader_parameter/outline_color = Color(0.352941, 0.45098, 0.168627, 1)
 shader_parameter/hologram_swing = 6.62
-shader_parameter/hologram_transparency = 0.414
+shader_parameter/hologram_transparency = 0.5370000255075
 shader_parameter/hologram_direction = Vector2(1, 1)
-shader_parameter/hologram_pixelization = 200
+shader_parameter/hologram_pixelization = 300

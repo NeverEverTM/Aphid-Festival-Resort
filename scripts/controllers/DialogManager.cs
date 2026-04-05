@@ -93,6 +93,7 @@ public partial class DialogManager : Control
 		else
 			dialogName.GetParent<Control>().Hide();
 		Player.Instance.SetDisabled(true, true);
+		CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.TalkToNPC);
 		if (!Instance.Visible)
 			Instance.Show();
 

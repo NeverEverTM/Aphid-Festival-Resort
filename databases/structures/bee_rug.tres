@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://cil7mqlpo2d6"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_icnd8"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_icnd8"]
 
 [resource]
 script = ExtResource("1_icnd8")
 ID = "bee_rug"
 Cost = 10
-LevelRequirement = 0
 Tag = 3
 Shop = 2
 ShopOrderPriority = 52

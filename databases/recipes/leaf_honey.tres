@@ -1,12 +1,12 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://bt7w8j0j1towh"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_ww3ep"]
-[ext_resource type="Resource" path="res://databases/food/leaf.tres" id="2_6aj4b"]
-[ext_resource type="Resource" path="res://databases/food/honey_drop.tres" id="3_12v7b"]
-[ext_resource type="Resource" path="res://databases/food/glazed_honey.tres" id="4_omkft"]
-[ext_resource type="Resource" path="res://databases/food/leaf_salad.tres" id="5_xwjvm"]
-[ext_resource type="Resource" path="res://databases/food/leaf_honey.tres" id="6_bkdj6"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="7_33b01"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_ww3ep"]
+[ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="2_6aj4b"]
+[ext_resource type="Resource" uid="uid://tqr4clao4cij" path="res://databases/food/honey_drop.tres" id="3_12v7b"]
+[ext_resource type="Resource" uid="uid://b6xnudllhu78l" path="res://databases/food/glazed_honey.tres" id="4_omkft"]
+[ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="5_xwjvm"]
+[ext_resource type="Resource" uid="uid://denwpmbakg328" path="res://databases/food/leaf_honey.tres" id="6_bkdj6"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="7_33b01"]
 
 [resource]
 script = ExtResource("7_33b01")

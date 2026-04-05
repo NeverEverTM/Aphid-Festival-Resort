@@ -7,13 +7,44 @@ public class MenuHandler
 {
 	public MenuInstance Current { get; protected set; }
 	public MenuInstance Pending { get; protected set; }
+	public readonly List<MenuInstance> Available = [];
 
+	/// <summary>
+	/// If is in the process of selecting a menu.
+	/// </summary>
 	public bool Processing { get; protected set; } = false;
+	/// <summary>
+	///  Wheter or not is displaying a menu.
+	/// </summary>
 	public bool IsActive { get; protected set; } = false;
 	protected bool IsOnCallback { get; set; } = false;
 
-	public readonly List<MenuInstance> Available = [];
-	public readonly List<Action<MenuInstance, MenuInstance>> OnSwitch = [];
+	public class MenuArgs : EventArgs
+	{
+		/// <summary>
+		/// The current menu loaded.
+		/// </summary>
+		public MenuInstance Current;
+		/// <summary>
+		/// The menu to be loaded in next.
+		/// </summary>
+		public MenuInstance Next;
+
+		public bool IsActive, WasActive;
+	}
+	public enum MenuEvents
+	{
+		OnMenuChange
+	}
+	protected Dictionary<MenuEvents, List<Action<MenuArgs>>> Events = new()
+	{
+		{ MenuEvents.OnMenuChange, new() }
+	};
+
+	public void AddEventListener(Action<MenuArgs> _action, MenuEvents _event) =>
+		Events[_event].Add(_action);
+	public void RemoveEventListener(Action<MenuArgs> _action, MenuEvents _event) =>
+		Events[_event].Remove(_action);
 
 	protected void OnCloseConnect(StringName _)
 	{
@@ -36,13 +67,13 @@ public class MenuHandler
 	protected void OnOpenConnect()
 	{
 		try
-        {
+		{
 			Pending.Open?.Invoke(Current);
-        }
-		catch(Exception _error)
-        {
-            DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
-        }
+		}
+		catch (Exception _error)
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
+		}
 		Pending.MenuPlayer.AnimationFinished += OnOpenDisconnect;
 		Pending.MenuPlayer?.Play(StringNames.OpenAnim);
 	}
@@ -148,7 +179,7 @@ public class MenuHandler
 			Callable.From(OnOpenConnect).CallDeferred();
 			while (IsOnCallback)
 				await Task.Delay(1);
-				
+
 			Pending.IsOpen = true;
 
 			// if this is a root menu and it is not the current root, we clear the list and add this root
@@ -170,23 +201,32 @@ public class MenuHandler
 		if (Current != null)
 			Current.IsOpen = false;
 		Current = Pending;
-		IsActive = Available.Count > 0;
 
 		// call all OnSwitch events
-		try
+		IsOnCallback = true;
+		Callable _actionCall = Callable.From(() =>
 		{
-			for (int i = 0; i < OnSwitch.Count; i++)
+			try
 			{
-				int _index = i;
-				Callable _actionCall = Callable.From(() =>
-					OnSwitch[_index].Invoke(_lastMenu, Current));
-				_actionCall.CallDeferred();
+				GlobalManager.Utils.InvokeEventListeners(Events[MenuEvents.OnMenuChange], new()
+				{
+					Current = _lastMenu,
+					Next = Current,
+					IsActive = Available.Count > 0,
+					WasActive = IsActive
+				});
 			}
-		}
-		catch (Exception _error)
-		{
-			DebugLogger.Print(DebugLogger.LogPriority.Error, "MenuHandler: Unable to process menu request.", _error);
-		}
+			catch (Exception _error)
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Error, "MenuHandler: Unable to invoke event.", _error);
+			}
+
+			IsActive = Available.Count > 0;
+			IsOnCallback = false;
+		});
+		_actionCall.CallDeferred();
+		while (IsOnCallback)
+			await Task.Delay(1);
 
 		Pending = null;
 		return true;
@@ -226,11 +266,16 @@ public class MenuHandler
 	public void Clear()
 	{
 		Available.Clear();
-		OnSwitch.Clear();
+		foreach (var _pair in Events)
+			_pair.Value.Clear();
 		Processing = IsActive = false;
 		Current = Pending = null;
 	}
 }
+
+/// <summary>
+/// A menu instance for a MenuHandler. Can be created on the go using minimal setup.
+/// </summary>
 public class MenuInstance : IEqualityComparer<MenuInstance>
 {
 	/// <summary>
@@ -295,14 +340,13 @@ public class MenuInstance : IEqualityComparer<MenuInstance>
 	public int GetHashCode(MenuInstance obj) =>
 		obj.Name.GetHashCode();
 }
-
 /// <summary>
-/// Creates a bridge for applications that require a MenuInstance from an object without having to know them.
+/// A menu instance for a MenuHandler. Allows an easy translation from a node to a menu instance, while giving it further control.
 /// </summary>
 public interface IMenuInstance
 {
 	/// <summary>
-	/// Creates the menu instance and passes it to the caller, make sure to cache the menu and pass its reference instead when its called again.
+	/// Creates the menu instance and passes it to the caller, make sure to cache the menu and pass a reference instead when its called again.
 	/// </summary>
 	/// <returns></returns>
 	public MenuInstance Create();

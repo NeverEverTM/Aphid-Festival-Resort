@@ -1,11 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://ba1ev1heaa3s6"]
+[gd_scene load_steps=15 format=3 uid="uid://ba1ev1heaa3s6"]
 
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_fjlrd"]
 [ext_resource type="Script" uid="uid://ywkbskbfbf7w" path="res://scripts/panels/OptionsMenu.cs" id="2_eio0f"]
-[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="3_d5s5m"]
-[ext_resource type="Texture2D" uid="uid://ohodui0w0ouh" path="res://sprites/ui/checkboxes.png" id="4_2e3pp"]
-[ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="6_jwgu8"]
+[ext_resource type="PackedScene" uid="uid://bfkvrwk1fonnn" path="res://scenes/prefabs/ui/options_slider.tscn" id="3_37k2w"]
 [ext_resource type="Texture2D" uid="uid://duwts272md31" path="res://sprites/ui/gui_icons/icon_folder.png" id="6_qdykg"]
+[ext_resource type="PackedScene" uid="uid://bidorkggwfce0" path="res://scenes/prefabs/ui/options_optionbutton.tscn" id="6_xygao"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="7_msete"]
 
 [sub_resource type="Animation" id="Animation_xygao"]
@@ -85,7 +84,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(0.5, 0.5),
 "update": 0,
-"values": [Vector2(1280, 360), Vector2(1700, 360)]
+"values": [Vector2(1280, 360), Vector2(1750, 360)]
 }
 
 [sub_resource type="Animation" id="Animation_37k2w"]
@@ -125,7 +124,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.2, 0.3),
 "transitions": PackedFloat32Array(0.5, 2, 1),
 "update": 0,
-"values": [Vector2(1700, 360), Vector2(1260, 360), Vector2(1280, 360)]
+"values": [Vector2(1750, 360), Vector2(1260, 360), Vector2(1280, 360)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hhm33"]
@@ -135,35 +134,23 @@ _data = {
 &"open": SubResource("Animation_37k2w")
 }
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_bmjtx"]
-atlas = ExtResource("4_2e3pp")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_b3a4x"]
-atlas = ExtResource("7_msete")
-region = Rect2(16, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_acmck"]
-atlas = ExtResource("7_msete")
-region = Rect2(0, 32, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xa7jr"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_xygao"]
 atlas = ExtResource("7_msete")
 region = Rect2(48, 32, 16, 16)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ym452"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_8h0dc"]
 atlas = ExtResource("7_msete")
 region = Rect2(32, 32, 16, 16)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5sprh"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ejuvc"]
 atlas = ExtResource("7_msete")
 region = Rect2(16, 32, 16, 16)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_kl4mf"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_37k2w"]
 atlas = ExtResource("7_msete")
 region = Rect2(0, 32, 16, 16)
 
-[node name="options_panel" type="Control" node_paths=PackedStringArray("anim_player", "masterSlider", "musicSlider", "soundSlider", "ambienceSlider", "uiSlider", "saveFolderButton", "windowMode", "language", "autoRun")]
+[node name="options_panel" type="Control" node_paths=PackedStringArray("anim_player", "saveFolderButton", "volumeSliders", "wavinessSlider", "windowMode", "language", "genericCheckButtons")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -175,213 +162,47 @@ grow_vertical = 2
 theme = ExtResource("1_fjlrd")
 script = ExtResource("2_eio0f")
 anim_player = NodePath("anim_player")
-masterSlider = NodePath("volume_sliders/master/master_slider")
-musicSlider = NodePath("volume_sliders/music/music_slider")
-soundSlider = NodePath("volume_sliders/sound/sound_slider")
-ambienceSlider = NodePath("volume_sliders/ambience/ambience_slider")
-uiSlider = NodePath("volume_sliders/ui/ui_slider")
 saveFolderButton = NodePath("settings/savefolder_button")
-windowMode = NodePath("settings/windowMode")
-language = NodePath("settings/language")
-autoRun = NodePath("settings/autorun")
+volumeSliders = [NodePath("volume_sliders/VolumeMaster"), NodePath("volume_sliders/VolumeMusic"), NodePath("volume_sliders/VolumeSound"), NodePath("volume_sliders/VolumeAmbience"), NodePath("volume_sliders/VolumeUI")]
+wavinessSlider = NodePath("settings/BackgroundWaviness")
+windowMode = NodePath("settings/DisplayMode")
+language = NodePath("settings/Locale")
+genericCheckButtons = [NodePath("settings/AutoRun")]
 
 [node name="anim_player" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_hhm33")
 }
 
-[node name="volume_sliders" type="Control" parent="."]
+[node name="volume_sliders" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_top = -360.0
-offset_right = 40.0
-offset_bottom = -320.0
+offset_right = 370.0
+offset_bottom = 172.0
 grow_vertical = 2
+theme_override_constants/separation = 8
 
-[node name="master" type="NinePatchRect" parent="volume_sliders"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 1.0
-offset_top = 18.0
-offset_right = 371.0
-offset_bottom = 120.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+[node name="VolumeMaster" parent="volume_sliders" instance=ExtResource("3_37k2w")]
+layout_mode = 2
 
-[node name="Label" type="Label" parent="volume_sliders/master"]
-light_mask = 0
-layout_mode = 0
-offset_left = 75.0
-offset_top = 11.0
-offset_right = 287.0
-offset_bottom = 59.0
-text = "options_master"
-horizontal_alignment = 1
+[node name="VolumeMusic" parent="volume_sliders" instance=ExtResource("3_37k2w")]
+self_modulate = Color(0.7294118, 0.28627452, 0.1764706, 1)
+layout_mode = 2
 
-[node name="master_slider" type="HSlider" parent="volume_sliders/master"]
-light_mask = 0
-layout_mode = 0
-offset_left = 35.0
-offset_top = 58.0
-offset_right = 186.0
-offset_bottom = 74.0
-scale = Vector2(2, 2)
-max_value = 0.75
-step = 0.04
-value = 0.75
-scrollable = false
+[node name="VolumeSound" parent="volume_sliders" instance=ExtResource("3_37k2w")]
+self_modulate = Color(0.46666667, 0.22352941, 0.5058824, 1)
+layout_mode = 2
 
-[node name="music" type="NinePatchRect" parent="volume_sliders"]
-self_modulate = Color(0.730973, 0.285304, 0.17537, 1)
-light_mask = 0
-layout_mode = 0
-offset_left = 1.0
-offset_top = 145.0
-offset_right = 371.0
-offset_bottom = 247.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+[node name="VolumeAmbience" parent="volume_sliders" instance=ExtResource("3_37k2w")]
+self_modulate = Color(0.13333334, 0.4627451, 0.6117647, 1)
+layout_mode = 2
 
-[node name="Label" type="Label" parent="volume_sliders/music"]
-light_mask = 0
-layout_mode = 0
-offset_left = 75.0
-offset_top = 11.0
-offset_right = 287.0
-offset_bottom = 59.0
-text = "options_music"
-horizontal_alignment = 1
-
-[node name="music_slider" type="HSlider" parent="volume_sliders/music"]
-light_mask = 0
-layout_mode = 0
-offset_left = 36.0
-offset_top = 58.0
-offset_right = 187.0
-offset_bottom = 74.0
-scale = Vector2(2, 2)
-max_value = 0.75
-step = 0.01
-value = 0.4
-scrollable = false
-
-[node name="sound" type="NinePatchRect" parent="volume_sliders"]
-self_modulate = Color(0.46757, 0.224631, 0.507051, 1)
-light_mask = 0
-layout_mode = 0
-offset_top = 279.0
-offset_right = 371.0
-offset_bottom = 382.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="Label" type="Label" parent="volume_sliders/sound"]
-light_mask = 0
-layout_mode = 0
-offset_left = 76.0
-offset_top = 12.0
-offset_right = 307.0
-offset_bottom = 61.0
-text = "options_sounds"
-horizontal_alignment = 1
-
-[node name="sound_slider" type="HSlider" parent="volume_sliders/sound"]
-light_mask = 0
-layout_mode = 0
-offset_left = 34.0
-offset_top = 56.0
-offset_right = 185.0
-offset_bottom = 73.0
-scale = Vector2(2, 2)
-max_value = 0.75
-step = 0.01
-value = 0.4
-scrollable = false
-
-[node name="ambience" type="NinePatchRect" parent="volume_sliders"]
-self_modulate = Color(0.134244, 0.463342, 0.611131, 1)
-light_mask = 0
-layout_mode = 0
-offset_top = 408.0
-offset_right = 371.0
-offset_bottom = 511.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="Label" type="Label" parent="volume_sliders/ambience"]
-light_mask = 0
-layout_mode = 0
-offset_left = 55.0
-offset_top = 12.0
-offset_right = 324.0
-offset_bottom = 61.0
-text = "options_ambience"
-horizontal_alignment = 1
-
-[node name="ambience_slider" type="HSlider" parent="volume_sliders/ambience"]
-light_mask = 0
-layout_mode = 0
-offset_left = 34.0
-offset_top = 56.0
-offset_right = 185.0
-offset_bottom = 73.0
-scale = Vector2(2, 2)
-max_value = 0.75
-step = 0.01
-value = 0.4
-scrollable = false
-
-[node name="ui" type="NinePatchRect" parent="volume_sliders"]
-self_modulate = Color(0.21516, 0.456137, 0.296683, 1)
-light_mask = 0
-layout_mode = 0
-offset_top = 530.0
-offset_right = 371.0
-offset_bottom = 633.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="Label" type="Label" parent="volume_sliders/ui"]
-light_mask = 0
-layout_mode = 0
-offset_left = 33.0
-offset_top = 8.0
-offset_right = 336.0
-offset_bottom = 57.0
-text = "options_ui"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ui_slider" type="HSlider" parent="volume_sliders/ui"]
-light_mask = 0
-layout_mode = 0
-offset_left = 34.0
-offset_top = 56.0
-offset_right = 185.0
-offset_bottom = 73.0
-scale = Vector2(2, 2)
-max_value = 0.75
-step = 0.01
-value = 0.4
-scrollable = false
+[node name="VolumeUI" parent="volume_sliders" instance=ExtResource("3_37k2w")]
+self_modulate = Color(0.21568628, 0.45490196, 0.29803923, 1)
+layout_mode = 2
 
 [node name="settings" type="Control" parent="."]
 layout_mode = 1
@@ -393,183 +214,69 @@ anchor_bottom = 0.5
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="savefolder_button" type="TextureButton" parent="settings"]
-self_modulate = Color(0.898096, 0.140423, 0.365346, 1)
-light_mask = 0
+[node name="Locale" parent="settings" instance=ExtResource("6_xygao")]
 layout_mode = 0
-offset_left = -126.0
-offset_top = 234.0
-offset_right = 86.0
-offset_bottom = 446.0
-scale = Vector2(0.5, 0.5)
-texture_normal = SubResource("AtlasTexture_bmjtx")
-stretch_mode = 4
-script = ExtResource("6_jwgu8")
-PressedColor = Color(0.533333, 0.533333, 0.533333, 1)
-FocusColor = Color(0.282353, 0.572549, 0.788235, 1)
-HoverColor = Color(0.792157, 0.792157, 0.792157, 1)
-
-[node name="icon" type="TextureRect" parent="settings/savefolder_button"]
-light_mask = 0
-layout_mode = 0
-offset_left = 22.0
-offset_top = 21.0
-offset_right = 196.0
-offset_bottom = 185.0
-texture = ExtResource("6_qdykg")
-stretch_mode = 4
-
-[node name="autorun" type="CheckButton" parent="settings"]
-light_mask = 0
-layout_mode = 0
-offset_left = -384.0
-offset_top = -334.0
+offset_left = -444.0
+offset_top = -333.0
 offset_right = -25.0
-offset_bottom = -244.0
-text = "options_autorun"
-
-[node name="NinePatchRect" type="NinePatchRect" parent="settings/autorun"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-show_behind_parent = true
-light_mask = 0
-layout_mode = 0
-offset_left = -18.0
-offset_right = 370.0
-offset_bottom = 90.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="camerasmooth" type="CheckButton" parent="settings"]
-visible = false
-light_mask = 0
-layout_mode = 0
-offset_left = -448.0
-offset_top = -160.0
-offset_right = -58.0
-offset_bottom = -70.0
-text = "options_camerasmooth"
-
-[node name="NinePatchRect" type="NinePatchRect" parent="settings/camerasmooth"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-show_behind_parent = true
-light_mask = 0
-layout_mode = 0
-offset_left = -18.0
-offset_top = 6.0
-offset_right = 370.0
-offset_bottom = 83.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="autorun3" type="CheckButton" parent="settings"]
-visible = false
-light_mask = 0
-layout_mode = 0
-offset_left = -448.0
-offset_top = -72.0
-offset_right = -89.0
-offset_bottom = 18.0
-text = "options_autorun"
-
-[node name="NinePatchRect" type="NinePatchRect" parent="settings/autorun3"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-show_behind_parent = true
-light_mask = 0
-layout_mode = 0
-offset_left = -18.0
-offset_top = 6.0
-offset_right = 370.0
-offset_bottom = 83.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="windowMode" type="OptionButton" parent="settings"]
-light_mask = 0
-layout_mode = 0
-offset_left = -385.0
-offset_top = -227.0
-offset_right = -32.0
-offset_bottom = -151.0
-expand_icon = true
-selected = 0
-item_count = 2
-popup/item_0/text = "options_windowed"
-popup/item_0/icon = SubResource("AtlasTexture_b3a4x")
-popup/item_0/id = 0
-popup/item_1/text = "options_fullscreen"
-popup/item_1/icon = SubResource("AtlasTexture_acmck")
-popup/item_1/id = 1
-
-[node name="NinePatchRect" type="NinePatchRect" parent="settings/windowMode"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-show_behind_parent = true
-light_mask = 0
-layout_mode = 0
-offset_left = -17.0
-offset_top = -5.0
-offset_right = 371.0
-offset_bottom = 85.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="language" type="OptionButton" parent="settings"]
-light_mask = 0
-layout_mode = 0
-offset_left = -382.0
-offset_top = -129.0
-offset_right = -29.0
-offset_bottom = -53.0
-expand_icon = true
+offset_bottom = -236.0
 selected = 0
 item_count = 2
 popup/item_0/text = "English"
-popup/item_0/icon = SubResource("AtlasTexture_xa7jr")
+popup/item_0/icon = SubResource("AtlasTexture_xygao")
 popup/item_0/id = 0
 popup/item_1/text = "Español"
-popup/item_1/icon = SubResource("AtlasTexture_ym452")
+popup/item_1/icon = SubResource("AtlasTexture_8h0dc")
 popup/item_1/id = 1
 
-[node name="NinePatchRect" type="NinePatchRect" parent="settings/language"]
-self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
-show_behind_parent = true
-light_mask = 0
+[node name="DisplayMode" parent="settings" instance=ExtResource("6_xygao")]
 layout_mode = 0
-offset_left = -18.0
-offset_top = -6.0
-offset_right = 370.0
-offset_bottom = 84.0
-texture = ExtResource("3_d5s5m")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
-
-[node name="screen" type="OptionButton" parent="settings"]
-visible = false
-light_mask = 0
-layout_mode = 0
-offset_left = -1121.0
-offset_top = -513.0
-offset_right = -768.0
-offset_bottom = -437.0
-expand_icon = true
+offset_left = -444.0
+offset_top = -221.0
+offset_right = -25.0
+offset_bottom = -124.0
 selected = 0
 item_count = 2
 popup/item_0/text = "options_windowed"
-popup/item_0/icon = SubResource("AtlasTexture_5sprh")
-popup/item_0/id = 1
+popup/item_0/icon = SubResource("AtlasTexture_ejuvc")
+popup/item_0/id = 0
 popup/item_1/text = "options_fullscreen"
-popup/item_1/icon = SubResource("AtlasTexture_kl4mf")
+popup/item_1/icon = SubResource("AtlasTexture_37k2w")
 popup/item_1/id = 1
+
+[node name="AutoRun" type="CheckButton" parent="settings"]
+light_mask = 0
+layout_mode = 0
+offset_left = -384.0
+offset_top = -38.0
+offset_right = -25.0
+offset_bottom = 52.0
+text = "options_autorun"
+
+[node name="BackgroundWaviness" parent="settings" instance=ExtResource("3_37k2w")]
+layout_mode = 0
+offset_left = -395.0
+offset_top = 59.0
+offset_right = -25.0
+offset_bottom = 161.0
+
+[node name="slider" parent="settings/BackgroundWaviness" index="0"]
+max_value = 1.0
+value = 1.0
+
+[node name="label" parent="settings/BackgroundWaviness" index="1"]
+offset_left = 23.0
+offset_right = 351.0
+
+[node name="savefolder_button" type="Button" parent="settings"]
+light_mask = 0
+layout_mode = 0
+offset_left = -384.0
+offset_top = 263.0
+offset_right = -14.0
+offset_bottom = 351.0
+text = "options_savefilefolder"
+icon = ExtResource("6_qdykg")
+expand_icon = true
+
+[editable path="settings/BackgroundWaviness"]

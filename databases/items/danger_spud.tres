@@ -1,12 +1,13 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://srwrq5whd8wj"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_a8di8"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_a8di8"]
 
 [resource]
 script = ExtResource("1_a8di8")
 ID = "danger_spud"
 Cost = 4
 LevelRequirement = 1
-Tag = 1
+TierRequirement = 1
+Category = 1
 Shop = 1
 ShopOrderPriority = 11

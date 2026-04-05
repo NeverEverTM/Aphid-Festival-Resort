@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3 uid="uid://xtm3vi7gwx48"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_ybqqa"]
-[ext_resource type="Resource" path="res://databases/food/water.tres" id="2_56877"]
-[ext_resource type="Resource" path="res://databases/food/shaved_ice.tres" id="3_637cx"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="4_ldr6c"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_ybqqa"]
+[ext_resource type="Resource" uid="uid://bmvfpwj2jospk" path="res://databases/food/water.tres" id="2_56877"]
+[ext_resource type="Resource" uid="uid://mfvgn8dlbk6t" path="res://databases/food/shaved_ice.tres" id="3_637cx"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_ldr6c"]
 
 [resource]
 script = ExtResource("4_ldr6c")

@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://yf87i6gtem48"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_md84x"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_md84x"]
 
 [resource]
 script = ExtResource("1_md84x")
 ID = "cold_salad"
 Cost = 6
-LevelRequirement = 0
-Tag = 1
-Shop = 0
+Category = 1
 ShopOrderPriority = 22

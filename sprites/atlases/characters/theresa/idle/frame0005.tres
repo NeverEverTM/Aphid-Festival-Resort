@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://drpse18b8crvn"]
+
+[ext_resource type="Texture2D" uid="uid://bylwbp4rfsuk0" path="res://sprites/atlases/characters/theresa_atlas.res" id="1_d60p2"]
+
+[resource]
+atlas = ExtResource("1_d60p2")
+region = Rect2(160, 0, 32, 64)
+filter_clip = true

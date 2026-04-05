@@ -10,7 +10,7 @@ public partial class SceneManager : Node2D
     /// <summary>
     /// Current room that we are loaded in.
     /// </summary>
-    public static string CurrentScene { get; private set; }
+    public static string CurrentScene { get; private set; } = "menu";
     /// <summary>
     /// Wheter is going into active gameplay or the main menu.
     /// </summary>
@@ -19,24 +19,48 @@ public partial class SceneManager : Node2D
     /// Wheter a scene is currently being loaded or not.
     /// </summary>
     public static bool IsBusy { get; private set; }
-
+    public static bool CurrentlyInGame { get; internal set; } = false;
     private static bool WaitingOnDeferred = false;
 
     private static List<Action<SceneArgs>>
         OnPreLoad = [],
-        OnPostLoad = [],
+        OnGameFinish = [],
         OnGameInit = [],
-        OnGameFinish = [];
-    public enum EventEnum { OnPreLoad, OnPostLoad, OnGameInit, OnGameFinish }
+        OnPostLoad = [];
+
+    /// <summary>
+    /// Events available for Scene Manager.
+    /// <para>Events enums are listed by execution order.</para>
+    /// </summary>
+    public enum EventEnum
+    {
+        /// <summary>
+        /// Fired before all scene load actions are taken. Event is cleared after this.
+        /// </summary>
+        OnPreLoad,
+        /// <summary>
+        /// Fired when exiting a savefile, after PreLoad but before the scene changes. Never disposed of.
+        /// </summary>
+        OnGameFinish,
+        /// <summary>
+        /// Fired when entering a savefile after the scene, canvas and player are loaded but before save data is loaded. Never disposed of.
+        /// </summary>
+        OnGameInit,
+        /// <summary>
+        /// Fired after all scene load actions are taken, including loading save data. Event is cleared after this.
+        /// </summary>
+        OnPostLoad,
+    }
+
     public static void AddEventListener(Action<SceneArgs> _action, EventEnum _event)
     {
         switch (_event)
         {
             case EventEnum.OnPreLoad:
-                OnPreLoad.Add(_action);
+                    OnPreLoad.Add(_action);
                 break;
             case EventEnum.OnPostLoad:
-                OnPostLoad.Add(_action);
+                    OnPostLoad.Add(_action);
                 break;
             case EventEnum.OnGameInit:
                 OnGameInit.Add(_action);
@@ -86,7 +110,7 @@ public partial class SceneManager : Node2D
     }
 
     /// <summary>
-    /// Same as Load(), but it triggers a game state switch depending on the current state. Used for going in and out of active gameplay.
+    /// Loads AND switches game state from out-game->in-game and viceversa.
     /// </summary>
     /// <param name="_sceneToLoad">Name of the scene to load.</param>
     /// <param name="_cache">Allows to cache the PackedScene to load it faster next time.</param>
@@ -99,13 +123,13 @@ public partial class SceneManager : Node2D
             DebugLogger.Print(DebugLogger.LogPriority.Warning, $"SceneManager: Attempted to switch state while busy. Global: {GlobalManager.IsBusy}. Local: {IsBusy}");
             return;
         }
-        // acknowledge the transition between "playing in a game" and "not in a game"
-        if (_isInGame != GlobalManager.IsInGame)
+        // acknowledge the transition between "playing in a game" and "not in a game" //<- what is this for?
+        if (_isInGame != CurrentlyInGame)
         {
-            GlobalManager.IsInGame = _isInGame;
+            CurrentlyInGame = _isInGame;
             IsSwitching = _isInGame;
         }
-        SoundManager.StopSong();
+        
         // load scene with special properties for game transition
         await Load(_sceneToLoad, new(), GlobalManager.LEAF_LOADING_SCENE);
         IsSwitching = false;
@@ -131,8 +155,9 @@ public partial class SceneManager : Node2D
             return;
         }
 
+        // ==== | INITIALIZATION |====
         GlobalManager.IsBusy = IsBusy = true;
-        bool _isARoomTransition = !IsSwitching && GlobalManager.IsInGame;
+        bool _isARoomTransition = !IsSwitching && CurrentlyInGame;
         SceneArgs _args = new()
         {
             IsSwitching = IsSwitching,
@@ -142,42 +167,45 @@ public partial class SceneManager : Node2D
         };
         DebugLogger.Print(DebugLogger.LogPriority.Info, $"SceneManager: Loading scene <{_sceneToLoad}>.");
 
+        // ====| PRE SCENE LOAD |====
         LoadScreen _loadScreen = await InstantiateLoadingScreen(_loadingScreen);
+        OnPostLoad.Clear(); // make sure no calls get dragged between rooms
+
         if (_isARoomTransition)
             PlayPlayerTransition(_goingIn: true, _roomData);
-        else
-            await GlobalManager.Utils.InvokeAwaitableEventListeners(ref OnGameFinish, _args);
-        await _loadScreen.RunIN();
 
-        await GlobalManager.Utils.InvokeAwaitableEventListeners(ref OnPreLoad, _args, true);
+        await _loadScreen.RunIN();
+        
+        await GlobalManager.Utils.InvokeAwaitableEventListeners(OnPreLoad, _args, true);
+
+        if (!_isARoomTransition)
+            await GlobalManager.Utils.InvokeAwaitableEventListeners(OnGameFinish, _args);
+    
         if (_isARoomTransition)
-            await SaveSystem.SaveProfile(true, true);
+            await SaveSystem.SaveProfile(_autosave: true, _force: true);
         SoundManager.CleanAllSounds();
         GlobalManager.CleanAllParticles();
-        PackedScene _scene = await GlobalManager.PRELOAD_RESOURCE(_path, true) as PackedScene;
+        SaveSystem.ClearSaveModules(_isARoomTransition ? SaveSystem.SaveMetadata.DisposeMethod.OnRoomTransition : SaveSystem.SaveMetadata.DisposeMethod.OnGameExit);
 
+        // SCENE LOAD
         CurrentScene = _sceneToLoad;
-        WaitingOnDeferred = true;
-        Callable _sceneLoad = Callable.From(() =>
+        await InstantiateRootScene(_path);
+        if (CurrentlyInGame)
         {
-            Instance.GetTree().ChangeSceneToPacked(_scene);
-            WaitingOnDeferred = false;
-        });
-        _sceneLoad.CallDeferred();
-        while (WaitingOnDeferred) // wait until the deferred call ends
-            await Task.Delay(1);
+            await CanvasManager.INSTANTIATE_CANVAS();
+            await Player.INSTANTIATE_PLAYER(_args);
+        }
 
-        if (GlobalManager.IsInGame)
-            await InstantiateEssentials();
-        if (GlobalManager.IsInGame && !GameManager.IsNewGame)
-            await SaveSystem.LoadProfile();
-        await GlobalManager.Utils.InvokeAwaitableEventListeners(ref OnPostLoad, _args, true);
-        await Task.Delay(1); // game sometimes hangs if not awaited, probably something related to deferred calls
-
-        if (_isARoomTransition) 
+        // ====| POST SCENE LOAD |====
+        if (_isARoomTransition)
             PlayPlayerTransition(_goingIn: false, _roomData);
-        else if (GlobalManager.IsInGame)
-            await GlobalManager.Utils.InvokeAwaitableEventListeners(ref OnGameInit, _args);
+        else if (CurrentlyInGame) // game start
+            await GlobalManager.Utils.InvokeAwaitableEventListeners(OnGameInit, _args);
+
+        if (CurrentlyInGame && !GameManager.IsANewSavefile)
+            await SaveSystem.LoadProfile(_loadFully: !_isARoomTransition); // dont load everything again if we came from a room
+
+        await GlobalManager.Utils.InvokeAwaitableEventListeners(OnPostLoad, _args, true);
 
         GlobalManager.IsBusy = false;
         DebugLogger.Print(DebugLogger.LogPriority.Info, $"SceneManager: <{_sceneToLoad}> has been entered.");
@@ -188,22 +216,33 @@ public partial class SceneManager : Node2D
         IsBusy = false;
     }
 
-    public static async Task<LoadScreen> InstantiateLoadingScreen(string uid)
+    private static async Task InstantiateRootScene(string _path)
+    {
+        try
+        {
+            PackedScene _scene = await GlobalManager.PRELOAD_RESOURCE(_path, true) as PackedScene;
+            
+            WaitingOnDeferred = true;
+            Callable _sceneLoad = Callable.From(() =>
+            {
+                Instance.GetTree().ChangeSceneToPacked(_scene);
+                WaitingOnDeferred = false;
+            });
+            _sceneLoad.CallDeferred();
+            while (WaitingOnDeferred) // wait until the deferred call ends
+                await Task.Delay(1);
+        }
+        catch(Exception _error)
+        {
+            DebugLogger.Print(DebugLogger.LogPriority.Error, DebugLogger.GameTermination.Complete, $"SceneManager: Unable to load room at <{_path}>", _error);
+        }
+        await Task.Delay(1); // game sometimes hangs if not awaited, probably something related to deferred calls
+    }
+    private static async Task<LoadScreen> InstantiateLoadingScreen(string uid)
     {
         LoadScreen _loadScreen = (await GlobalManager.PRELOAD_RESOURCE(uid, false) as PackedScene).Instantiate() as LoadScreen;
         Instance.GetTree().Root.AddChild(_loadScreen);
         return _loadScreen;
-    }
-    private static async Task InstantiateEssentials()
-    {
-        Node2D _player = (await GlobalManager.PRELOAD_RESOURCE(GlobalManager.PLAYER_PREFAB, true) as PackedScene).Instantiate() as Node2D;
-        CanvasLayer _canvas = (await GlobalManager.PRELOAD_RESOURCE(GlobalManager.CANVAS_PREFAB, true) as PackedScene).Instantiate() as CanvasLayer;
-
-        Instance.GetTree().CurrentScene.AddChild(_player);
-        Instance.GetTree().CurrentScene.AddChild(_canvas);
-
-        if (!IsSwitching) // only disable if we came from a room transition, not from the main menu
-            Player.Instance.SetDisabled(true);
     }
     private static void PlayPlayerTransition(bool _goingIn, RoomData _roomData)
     {
@@ -215,12 +254,12 @@ public partial class SceneManager : Node2D
         }
         else
         {
-            if (FieldManager.Instance.Doors.Length <= _roomData.EntryIndex)
+            if (RoomInstance.Instance.Doors.Length <= _roomData.EntryIndex)
             {
                 DebugLogger.Print(DebugLogger.LogPriority.Error, DebugLogger.GameTermination.Complete, "CRITICAL ERROR ON SCENE MANAGER. DOOR INDEX DOES NOT EXIST IN THIS ROOM.");
                 return;
             }
-            RoomDoor _newDoor = FieldManager.Instance.Doors[_roomData.EntryIndex];
+            RoomDoor _newDoor = RoomInstance.Instance.Doors[_roomData.EntryIndex];
 
             _newDoor.comingThrough = true;
             Player.Instance.GlobalPosition = _newDoor.GlobalPosition;

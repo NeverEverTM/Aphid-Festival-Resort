@@ -1,0 +1,218 @@
+[gd_scene load_steps=5 format=3 uid="uid://bafd4ijwyt0v5"]
+
+[ext_resource type="Script" uid="uid://nsjni7h6lbi" path="res://addons/item_viewer/ItemCreator.cs" id="1_4vng8"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_hsucj"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_vicio"]
+[ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="3_oh0l6"]
+
+[node name="item_creator" type="Window" node_paths=PackedStringArray("fileNameEdit", "nameEdit", "costEdit", "descriptionEdit", "iconTexture", "categoryOptions", "shopOptions", "finishButton")]
+oversampling_override = 1.0
+title = "Item Creator"
+initial_position = 4
+size = Vector2i(730, 415)
+script = ExtResource("1_4vng8")
+fileNameEdit = NodePath("item_options/filename")
+nameEdit = NodePath("translation/name")
+costEdit = NodePath("item_options/cost")
+descriptionEdit = NodePath("translation/description")
+iconTexture = NodePath("item_options/icon_bg/icon_texture")
+categoryOptions = NodePath("item_options/category")
+shopOptions = NodePath("item_options/shop")
+finishButton = NodePath("item_options/Button")
+
+[node name="bg" type="NinePatchRect" parent="."]
+self_modulate = Color(0.55, 0, 0.26583347, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -27.0
+offset_top = -36.0
+offset_right = 31.0
+offset_bottom = 26.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_vicio")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="translation" type="Panel" parent="."]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 19.0
+offset_top = -183.5
+offset_right = 447.00003
+offset_bottom = 229.83331
+grow_vertical = 2
+scale = Vector2(0.75, 0.75)
+theme = ExtResource("1_hsucj")
+
+[node name="name" type="LineEdit" parent="translation"]
+layout_mode = 0
+offset_left = 125.16669
+offset_top = 21.111124
+offset_right = 391.1667
+offset_bottom = 77.11113
+theme_override_font_sizes/font_size = 30
+placeholder_text = "ex. Abomihoney"
+alignment = 2
+max_length = 15
+
+[node name="Label2" type="Label" parent="translation/name"]
+layout_mode = 0
+offset_left = -105.33345
+offset_top = 2.666687
+offset_right = -11.33345
+offset_bottom = 50.666687
+text = "Name:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="description_label" type="Label" parent="translation"]
+layout_mode = 0
+offset_left = 25.33358
+offset_top = 93.44444
+offset_right = 393.66623
+offset_bottom = 141.44444
+text = "Description:"
+vertical_alignment = 1
+
+[node name="description" type="TextEdit" parent="translation"]
+layout_mode = 0
+offset_left = 25.333328
+offset_top = 138.44444
+offset_right = 396.0
+offset_bottom = 401.77783
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+wrap_mode = 1
+
+[node name="item_options" type="Panel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 2.499939
+offset_top = -183.5
+offset_right = 465.1667
+offset_bottom = 229.83331
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 0.75)
+theme = ExtResource("1_hsucj")
+
+[node name="filename" type="LineEdit" parent="item_options"]
+layout_mode = 0
+offset_left = 170.00015
+offset_top = 20.0
+offset_right = 436.00015
+offset_bottom = 76.0
+theme_override_font_sizes/font_size = 30
+placeholder_text = "ex. honey_drop"
+alignment = 2
+
+[node name="Label2" type="Label" parent="item_options/filename"]
+layout_mode = 0
+offset_left = -148.00003
+offset_top = 2.666687
+offset_right = -8.0000305
+offset_bottom = 50.666687
+text = "Filename:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="icon_bg" type="NinePatchRect" parent="item_options"]
+self_modulate = Color(0.99999994, 0.29770806, 0.5935775, 1)
+layout_mode = 0
+offset_left = 34.666786
+offset_top = 88.66661
+offset_right = 141.33336
+offset_bottom = 193.99997
+texture = ExtResource("1_vicio")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="icon_texture" type="TextureRect" parent="item_options/icon_bg"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 14.6666565
+offset_top = 12.0
+offset_right = 93.33334
+offset_bottom = 89.333374
+texture = ExtResource("3_oh0l6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="cost" type="LineEdit" parent="item_options"]
+layout_mode = 0
+offset_left = 299.3334
+offset_top = 115.99992
+offset_right = 436.0
+offset_bottom = 171.99992
+placeholder_text = "00000"
+alignment = 2
+
+[node name="Label" type="Label" parent="item_options/cost"]
+layout_mode = 0
+offset_left = -85.333435
+offset_top = 2.666687
+offset_right = -11.333435
+offset_bottom = 50.666687
+text = "Cost:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="category" type="OptionButton" parent="item_options"]
+layout_mode = 0
+offset_left = 164.00015
+offset_top = 217.99997
+offset_right = 442.00015
+offset_bottom = 305.99997
+selected = 0
+item_count = 1
+popup/item_0/text = "Shop"
+popup/item_0/id = 0
+
+[node name="Label" type="Label" parent="item_options/category"]
+layout_mode = 0
+offset_left = -150.0
+offset_top = 16.0
+offset_right = -5.0
+offset_bottom = 64.0
+text = "Category:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="shop" type="OptionButton" parent="item_options"]
+layout_mode = 0
+offset_left = 164.00015
+offset_top = 314.0
+offset_right = 442.00015
+offset_bottom = 402.0
+selected = 0
+item_count = 1
+popup/item_0/text = "No Shop"
+popup/item_0/id = 0
+
+[node name="Label" type="Label" parent="item_options/shop"]
+layout_mode = 0
+offset_left = -150.0
+offset_top = 16.0
+offset_right = -5.0
+offset_bottom = 64.0
+text = "Shop:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="item_options"]
+layout_mode = 0
+offset_left = -105.99994
+offset_top = 428.0
+offset_right = 58.00006
+offset_bottom = 516.0
+text = "Create"

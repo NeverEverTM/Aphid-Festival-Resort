@@ -19,7 +19,7 @@ public partial class AphidHover : InteractableArea2D
     }
     public override void _Draw()
     {
-        if (FreeCameraManager.Enabled && FreeCameraManager.Instance.Visible)
+        if (FreeCameraManager.Enabled)
         {
             if (aphid.Equals(CameraManager.FocusedAphid))
                 DrawCircle(aphid.skin.Position, 40, new Color("green"), false, 2);
@@ -29,23 +29,15 @@ public partial class AphidHover : InteractableArea2D
     }
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (!mouseIshovering || !FreeCameraManager.Enabled || !FreeCameraManager.Instance.Visible)
+        if (!mouseIshovering || !FreeCameraManager.Enabled)
             return;
 
         if (@event.IsActionPressed(InputNames.Interact))
         {
             if (!aphid.Equals(CameraManager.FocusedAphid))
-            {
-                AphidInfo.Instance.SelectAphid(aphid);
-                AphidInfo.Instance.Display(true, true);
-                CameraManager.Focus(aphid);
-            }
+                FreeCameraManager.Instance.FocusAphid(aphid);
             else
-            {
-                AphidInfo.Instance.SelectAphid(null);
-                AphidInfo.Instance.Display(false, true);
-                CameraManager.UnFocus();
-            }
+                FreeCameraManager.StopFocus();
             GetViewport().SetInputAsHandled();
         }
     }

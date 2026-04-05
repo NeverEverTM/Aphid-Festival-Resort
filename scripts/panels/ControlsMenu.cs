@@ -11,11 +11,13 @@ using Godot;
 public partial class ControlsMenu : Control, IMenuInstance
 {
 	[Export] private AnimationPlayer anim_player;
-	[Export] private Control[] controls;
 	[Export] private ScrollContainer scroll;
 	[Export] private TextureProgressBar reset_bar;
+	[Export] private BaseButton reset_button;
 	[Export] private AudioStream select_sound, fail_sound, reset_sound;
 	[Export] private Curve interaction_curve;
+	[ExportCategory("Registered Control Binds")]
+	[Export] private Control[] controls;
 
 	private double interactionTimer;
 	private readonly List<string> validActions = [];
@@ -25,12 +27,19 @@ public partial class ControlsMenu : Control, IMenuInstance
 
 	private MenuInstance menu;
 
-	public override void _Ready()
+	public override void _EnterTree()
+	{
+		if (!ControlsManager.SaveModule.Loaded)
+			ControlsManager.SaveModule.AddEventListener((_) => InitMenu(), SaveSystem.SaveEventsEnum.OnLoadFinish);
+		else
+			InitMenu();
+	}
+	private void InitMenu()
 	{
 		foreach (Control _inputButton in controls)
 		{
 			// get the corresponding action
-			if (!ControlsManager.Binds.ContainsKey(_inputButton.Name))
+			if (!InputMap.HasAction(_inputButton.Name))
 				continue;
 			validActions.Add(_inputButton.Name);
 			string _displayAction = ControlsManager.GetLocalizedActionName(_inputButton.Name);
@@ -84,7 +93,7 @@ public partial class ControlsMenu : Control, IMenuInstance
 				if (_isBuildMode == controls.First((c) => c.Name == validActions[i]).GetParent().HasMeta("BuildMode"))
 				{
 					SoundManager.CreateSound(fail_sound);
-					GlobalManager.CreatePopup("warning_key_duplicated", GetParent());
+					GlobalManager.CREATE_POPUP("warning_key_duplicated", GetParent());
 					return true;
 				}
 			}
@@ -150,7 +159,7 @@ public partial class ControlsMenu : Control, IMenuInstance
 		if (!Visible || is_remapping)
 			return;
 
-		if (Input.IsKeyPressed(Key.F1))
+		if (Input.IsKeyPressed(Key.F1) || reset_button.ButtonPressed)
 		{
 			// prevents it from repeatdly doing it if held down
 			if (was_restarted)
@@ -168,7 +177,7 @@ public partial class ControlsMenu : Control, IMenuInstance
 				reset_bar.Value = 0;
 
 				ControlsManager.ResetToDefault();
-				ControlsManager.InputBinds.Save();
+				ControlsManager.SaveModule.Save();
 				RefreshBinds();
 				SoundManager.CreateSound(reset_sound);
 			}
@@ -199,8 +208,8 @@ public partial class ControlsMenu : Control, IMenuInstance
 		{
 			was_modified = false;
 			ConfirmationPopup.Create(
-				_onConfirm: () => { ControlsManager.InputBinds.Save(); },
-				_onCancel: () => { ControlsManager.InputBinds.Load(); RefreshBinds(); });
+				_onConfirm: () => { ControlsManager.SaveModule.Save(); },
+				_onCancel: () => { ControlsManager.SaveModule.Load(); RefreshBinds(); });
 		}
 		return !ConfirmationPopup.IsConfirming;
 	}

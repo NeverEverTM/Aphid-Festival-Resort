@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://be2i3p8ep8i7m"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_1lv6c"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_1lv6c"]
 
 [resource]
 script = ExtResource("1_1lv6c")
 ID = "train_dummy"
 Cost = 25
-LevelRequirement = 0
-Tag = 4
+Category = 4
 Shop = 2
 ShopOrderPriority = 69

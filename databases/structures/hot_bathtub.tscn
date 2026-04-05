@@ -52,7 +52,7 @@ collision_layer = 3
 collision_mask = 0
 monitoring = false
 script = ExtResource("4_uwm25")
-Tag = 2
+Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(1, 3)

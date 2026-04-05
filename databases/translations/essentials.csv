@@ -30,7 +30,7 @@ new_game_creative,Creative Mode,Modo Creativo
 new_game_nodeath,No Aphid Death,Áfidos No Mueren
 new_game_begin,Create resort!,Crear complejo!
 new_game_resort_placeholder,Type a name for your resort,Escribe un nombre para tu complejo
-load_game_note,Choose a resort to play! Press the X icon to delete a resort.,¡Escoge una partida para jugar! Presiona el icono X para borrar un complejo.
+load_game_note,Welcome Back!,¡Bienvenido de Vuelta!
 load_game_last_played,Last Played:,Ultima vez jugado:
 date_today,Today,Hoy
 date_yesterday,Yesterday,Ayer
@@ -58,14 +58,16 @@ Your aphids will miss you!
 [shake][color=red](Unsaved progress will be lost)[/color][/shake]","¿Estas seguro que quieres salir?
 Tus áfidos te echaran de menos!
 [shake][color=red](Progreso no guardado se perdera)[/color][/shake]"
-options_master,Master,Master
-options_music,Music,Musica
-options_sounds,Sounds,Sonidos
-options_ambience,Ambience,Ambiente
-options_ui,User Interface,Interfaz de Usuario
+options_volumemaster,Master,Master
+options_volumemusic,Music,Musica
+options_volumesound,Sounds,Sonidos
+options_volumeambience,Ambience,Ambiente
+options_volumeui,User Interface,Interfaz de Usuario
 options_fullscreen,Fullscreen,Panoramica
 options_windowed,Windowed,Ventana
+options_backgroundwaviness,Background Motion,Movimiento del Fondo
 options_autorun,Hold to Run,Manten para Correr
+options_savefilefolder,Savefile Directory,Carpeta de Partidas
 controls_up,Move Up,Caminar para Abajo
 controls_down,Move Down,Caminar para Arriba
 controls_left,Move Left,Caminar a la Izquiera
@@ -137,7 +139,6 @@ pause_controls,Controls,Controles
 pause_help,Help,Ayuda
 pause_backtomenu,Back to Menu,Volver al Menu
 pause_exit,Exit to Desktop,Salir al Escritorio
-pause_warning,Progress is saved automatically when leaving!,El juego se guarda automaticamente al salir!
 credits_note,"---------------------------------
 Created in the Godot 4 Engine
 
@@ -216,28 +217,39 @@ resort_golden_name,Golden Plains,Planicies Doradas
 resort_golden_desc,"Situated at the Golden Settlement, It's the first accomodation of many.","Situada en el Asentamiento Dorado, es la primer acomodacion de muchas."
 camera_spectating,Spectating:,Espectando:
 lobby_category_aphid,Aphids,Áfidos
-lobby_category_resort,Upgrades,Mejoras
+lobby_category_upgrades,Upgrades,Mejoras
 lobby_category_stats,Statistics,Estadísticas
 lobby_aphid_noaphids,No Aphids,Sin Áfidos
-lobby_resort_service,Aphid Caretaking Service,Servicio de Cuidado de Áfidos
-lobby_resort_eastwing,East Wing Access,Acceso al a Ala Este
-lobby_resort_membership_silver,Upgrade Membership (Silver),Mejorar Membresía (Plata)
-lobby_resort_membership_gold,Upgrade Membership (Gold),Mejorar Membresía (Oro)
-lobby_resort_membership_diamond,Upgrade Membership (Diamond),Mejorar Membresía (Diamante)
+lobby_upgrade_buy,Purchase,Comprar
+lobby_upgrade_upgrade,Upgrade,Mejorar
+lobby_upgrade_cost,Cost,Costo
+lobby_upgrade_requires_tier,Requires Tier,Requiere Tier
+lobby_upgrade_membership_tier_name,Increase Membership Tier,Incrementar Tier de Membresia
+lobby_upgrade_membership_tier_desc,"Raises your membership tier, which unlocks various amenities, such as better items, furniture types and even new services!",
+lobby_upgrade_job_level_name,Increase Request Difficulty,
+lobby_upgrade_job_level_desc,"You will be granted access to higher difficulty board requests, most of them pay even better if you have the right aphid for the job.",
+lobby_upgrade_caretaker_service_name,Aphid Caretaking Service,Servicio de Cuidado de Áfidos
+lobby_upgrade_caretaker_service_desc,Getting too overwhelmed? Staff will take care of your aphids while you are away doing other resort activities.,
+lobby_upgrade_tax_heaven_name,Lessen Member Tax,
+lobby_upgrade_tax_heaven_desc,"With a few extra pennies and proper paperwork, we can reduce tax from all your profits from within the resort!",
+lobby_upgrade_hat_shop_name,Access to Hat Shop,
+lobby_upgrade_hat_shop_desc,Grants access to the Hat Shop. Hats are purchased separetely.,
 lobby_stats_totalaphids,Total aphids raised,Áfidos totales críados
 lobby_stats_aphidcount,Current aphids under your care,Áfidos actuales bajo tu cuidado
 lobby_stats_savefilesboot,Times this resort has been played,Veces que este complejo se ha jugado
 lobby_stats_itemsbought,Items bought at the store,Items comprados en la tienda
 lobby_stats_itemssold,Items in your inventory sold,Items de tu inventario vendidos
+lobby_stats_totalplaytime,Total playtime,Tiempo transcurrido
 lobby_stats_aphidssold,Total aphids sold,Áfidos vendidos en total
 lobby_stats_randomnumber,Here is a random number for you,Aquí tienes un número aleatorio
 lobby_news_placeholder,"Loading latest news, this may take a bit...","Cargando noticias, esto puede tomar un rato..."
 lobby_job_aphidname,Name,Nombre
 lobby_job_active,{0} is on it!,{0} esta en ello!
 lobby_job_timerdone,Done!,Hecho!
+lobby_job_noaphids,There is no aphids available!,¡No hay áfidos disponibles!
 lobby_job_successchance,Success Chance,Probabilidad de Éxito
 lobby_job_assign,ASSIGN,ASIGNAR
-lobby_job_select,SELECT,ESCOGER
+lobby_job_select,SELECT,SELECCIONAR
 lobby_job_finish,FINISH,FINALIZAR
 bio_name_placeholder,Aphid's Name,Nombre del Áfido
 bio_skill_stamina,Endurance,Resistencia

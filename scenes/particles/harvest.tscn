@@ -6,8 +6,8 @@
 light_mode = 1
 
 [sub_resource type="Curve" id="Curve_qasph"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.73566884, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -11.527316, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_apq25"]
 curve = SubResource("Curve_qasph")
@@ -29,7 +29,7 @@ colors = PackedColorArray(0.582462, 0.292088, 0.924255, 1, 0.730511, 2.14663e-05
 gradient = SubResource("Gradient_508n5")
 
 [sub_resource type="Curve" id="Curve_e86sg"]
-_data = [Vector2(0, 1), 0.0, 2.5162, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 2.9173346, 0, 0, Vector2(1, 0.17509735), -3.2115629, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveXYZTexture" id="CurveXYZTexture_kxb76"]
@@ -48,6 +48,8 @@ emission_shape_scale = Vector3(30, 10, 1)
 emission_shape = 3
 emission_box_extents = Vector3(1, 1, 1)
 flatness = 1.0
+angular_velocity_min = -0.5000161
+angular_velocity_max = 0.4999839
 angular_velocity_curve = SubResource("CurveTexture_gtfx1")
 directional_velocity_min = -60.0
 directional_velocity_max = -20.0
@@ -68,6 +70,7 @@ turbulence_influence_max = 0.969
 light_mask = 0
 z_index = 1000
 material = SubResource("CanvasItemMaterial_6x8fq")
-amount = 30
+amount = 20
+amount_ratio = 0.5026
 texture = ExtResource("1_jjsms")
 process_material = SubResource("ParticleProcessMaterial_41uej")

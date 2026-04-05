@@ -12,20 +12,20 @@ uniform vec4 outline_color : source_color;
 uniform float hologram_swing : hint_range(0, 10) = 5;
 uniform float hologram_transparency : hint_range(0, 1) = 0.5;
 uniform vec2 hologram_direction = vec2(1.0, 1.0);
-uniform int hologram_pixelization : hint_range(1,200) = 40;
+uniform int hologram_pixelization : hint_range(1,800) = 40;
 
 vec4 render_background(vec2 uv, vec2 screen_uv){
 	vec2 scroll_bg = screen_uv * vec2(0.4,0.5) + hologram_direction * TIME * (speed / 100.0);
 	scroll_bg = round(scroll_bg * float(hologram_pixelization)) / float(hologram_pixelization);
 	vec4 texture_sample_bg = texture(sample, scroll_bg);
 	// fade color as you approach the edges
-	if (texture_sample_bg.r > 0.3 && texture_sample_bg.g > 0.3 && texture_sample_bg.b > 0.3)
-	{
-		texture_sample_bg.a = (0.7 - (abs(uv.x - 0.5) + abs(uv.y - 0.5))) - 0.2;
-		return texture_sample_bg;
-	}
-	else // colors under certain threshold dont get rendered
-		return void_color;
+	float _xFade = uv.x, _xFadeReverse = 1.0 - uv.x;
+	float _yFade = uv.y, _yFadeReverse = 1.0 - uv.y;
+
+	float _fade = min(min(min(_xFade, _yFade),_xFadeReverse), _yFadeReverse);
+	texture_sample_bg.a = _fade;
+
+	return texture_sample_bg;
 }
 
 vec4 get_holotexture(vec2 uv, vec2 screen_uv, sampler2D texture){

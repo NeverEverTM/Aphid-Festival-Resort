@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://cavrobmxukpmv"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_gkm4q"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_gkm4q"]
 
 [resource]
 script = ExtResource("1_gkm4q")
 ID = "aphid_rug"
 Cost = 15
-LevelRequirement = 0
 Tag = 3
 Shop = 2
 ShopOrderPriority = 53

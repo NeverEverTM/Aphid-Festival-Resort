@@ -1,13 +1,13 @@
 [gd_scene load_steps=3 format=3 uid="uid://uk8rbyvf7hlf"]
 
-[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="1_6rl57"]
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/backgrounds/menu_bar.png" id="1_6rl57"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="2_qbvih"]
 
 [node name="control_prompt" type="NinePatchRect"]
 self_modulate = Color(0.643238, 0.0482471, 0.261012, 1)
 light_mask = 0
-custom_minimum_size = Vector2(150, 60)
-offset_right = 169.0
+custom_minimum_size = Vector2(160, 60)
+offset_right = 160.0
 offset_bottom = 60.0
 texture = ExtResource("1_6rl57")
 patch_margin_left = 20
@@ -19,10 +19,9 @@ axis_stretch_horizontal = 1
 [node name="action_text" type="RichTextLabel" parent="."]
 light_mask = 0
 layout_mode = 0
-offset_left = -102.0
-offset_top = 11.0
-offset_right = -5.0
-offset_bottom = 60.0
+offset_left = -97.0
+offset_top = 5.0
+offset_bottom = 54.0
 mouse_filter = 2
 theme = ExtResource("2_qbvih")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -32,6 +31,7 @@ bbcode_enabled = true
 text = "[img]res://sprites/ui/gui_icons/icon_mouse_middle.png[/img]"
 scroll_active = false
 autowrap_mode = 0
+vertical_alignment = 1
 text_direction = 2
 
 [node name="prompt_text" type="RichTextLabel" parent="."]
@@ -45,7 +45,7 @@ mouse_filter = 2
 theme = ExtResource("2_qbvih")
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "Interactygugj"
+text = "Open Menu"
 scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1

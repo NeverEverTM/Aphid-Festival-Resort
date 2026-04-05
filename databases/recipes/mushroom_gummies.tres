@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://difllv1dxjvlx"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_th34w"]
-[ext_resource type="Resource" path="res://databases/food/flour_bag.tres" id="2_28ru8"]
-[ext_resource type="Resource" path="res://databases/food/shroom.tres" id="3_q8s57"]
-[ext_resource type="Resource" path="res://databases/food/mushroom_gummies.tres" id="4_xcx3x"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="5_orw4d"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_th34w"]
+[ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="2_28ru8"]
+[ext_resource type="Resource" uid="uid://dhikw41b4qvsa" path="res://databases/food/shroom.tres" id="3_q8s57"]
+[ext_resource type="Resource" uid="uid://3om3h3xjsune" path="res://databases/food/mushroom_gummies.tres" id="4_xcx3x"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_orw4d"]
 
 [resource]
 script = ExtResource("5_orw4d")

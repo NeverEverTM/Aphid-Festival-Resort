@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Godot;
 
 public partial class ResortManager : Node2D
@@ -11,13 +9,14 @@ public partial class ResortManager : Node2D
 	/// </summary>
 	[Export] public string Resort;
 	[Export] public Node2D EntityRoot, StructureRoot, SpawnPoint;
-	private static PackedScene aphidEntity;
+	[ExportGroup("Inmutables")]
+	[Export] private PackedScene aphidEntity;
 
 	/// <summary>
 	/// Access local aphids within this resort. To access aphids across all resorts, use GameManager.Aphids instead.
 	/// </summary>
 	public readonly List<Aphid> Aphids = [];
-	private SaveSystem.SaveModule<Savefile> SaveModule;
+	public SaveSystem.SaveModule<Savefile> SaveModule;
 	/// <summary>
 	/// Currently running instance/singleton of a resort. This instance will reference the last resort it had to load.
 	/// </summary>
@@ -42,15 +41,12 @@ public partial class ResortManager : Node2D
 			public string Id { get; set; }
 			public string Data { get; set; }
 		}
-
 	}
 	public class ResortDataModule : SaveSystem.IDataModule<Savefile>
 	{
 		public void Set(Savefile _data)
 		{
 			Data = _data;
-			if (!GameManager.IsNewGame)
-				Load();
 		}
 		public Savefile Get()
 		{
@@ -71,7 +67,7 @@ public partial class ResortManager : Node2D
 					Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 					PositionX = (int)_item.GlobalPosition.X,
 					PositionY = (int)_item.GlobalPosition.Y,
-					Data = (_item is SaveSystem.IDataModule) ? (_item as SaveSystem.IDataModule).Get() : null
+					Data = (_item is SaveSystem.IGenericDataModule) ? (_item as SaveSystem.IGenericDataModule).Get() : null
 				};
 			}
 
@@ -91,7 +87,7 @@ public partial class ResortManager : Node2D
 					Id = _item.GetMeta(StringNames.IdMeta).ToString(),
 					PositionX = (int)_item.GlobalPosition.X,
 					PositionY = (int)_item.GlobalPosition.Y,
-					Data = (_item is SaveSystem.IDataModule) ? (_item as SaveSystem.IDataModule).Get() : null
+					Data = (_item is SaveSystem.IGenericDataModule) ? (_item as SaveSystem.IGenericDataModule).Get() : null
 				};
 			}
 
@@ -100,29 +96,22 @@ public partial class ResortManager : Node2D
 		public Savefile Default() => new();
 	}
 
-	public override async void _EnterTree()
+	public override void _EnterTree()
 	{
 		Current = this;
-		if (!IsInstanceValid(aphidEntity))
-			aphidEntity = await GlobalManager.PRELOAD_RESOURCE(GlobalManager.APHID_ENTITY) as PackedScene;
 
 		// save data setup
-		SaveModule = new(Resort + "-resort", new ResortDataModule(), 1000)
+		SaveModule = new(Resort + "-resort", new ResortDataModule(), 1337)
 		{
 			Extension = SaveSystem.SAVEFILE_EXTENSION,
-			RelativePath = SaveSystem.PROFILE_RESORTS_DIR
+			RelativePath = SaveSystem.PROFILE_RESORTS_DIR,
+			DisposeMode = SaveSystem.SaveMetadata.DisposeMethod.OnRoomTransition 
 		};
+		SaveModule.AddEventListener(OnLoadFinish, SaveSystem.SaveEventsEnum.OnLoadFinish);
 		SaveSystem.AddSaveModule(SaveModule);
 	}
-	public override void _ExitTree()
-	{
-		SaveSystem.RemoveSaveModule(SaveModule);
-	}
 
-	/// <summary>
-	/// Loads current resort into the game.
-	/// </summary>
-	private static void Load()
+	private void OnLoadFinish(SaveSystem.SaveEventArgs _)
 	{
 		// load items
 		for (int i = 0; i < Data.Items?.Length; i++)
@@ -150,7 +139,7 @@ public partial class ResortManager : Node2D
 	public static Aphid SpawnAphid(AphidInstance _instance)
 	{
 		_instance.Status.Mode = AphidData.EntityStatusType.Active;
-		Aphid _aphid = aphidEntity.Instantiate() as Aphid;
+		Aphid _aphid = Current.aphidEntity.Instantiate() as Aphid;
 
 		_aphid.Instance = _instance;
 		_aphid.GlobalPosition = new(_instance.Status.PositionX, _instance.Status.PositionY);
@@ -163,12 +152,10 @@ public partial class ResortManager : Node2D
 		{
 			if (GameManager.IsOutOfBounds(_aphid.GlobalPosition) || GameManager.IsInsideGeometry(_aphid.GlobalPosition))
 			{
-				// an offset of -1000 is done here for the real center of the resort, though this could change in the future
-				_aphid.GlobalPosition = _aphid.GlobalPosition * 0.1f + new Vector2(-1000, 0);
+				_aphid.GlobalPosition *= 0.1f;
 				DebugLogger.Print(DebugLogger.LogPriority.Info, $"ResortManager: Applied OUTOFBOUND patch to {_aphid.Instance.Genes.Name}");
 			}
 		}
-
 		_aphid.SetReady();
 		return _aphid;
 	}
@@ -216,15 +203,16 @@ public partial class ResortManager : Node2D
 		ItemData _itemData = GlobalManager.G_ITEMS[_id];
 		_item.SetMeta(StringNames.PickupMeta, true);
 		_item.SetMeta(StringNames.IdMeta, _id);
-		_item.SetMeta(StringNames.TagMeta, (int)_itemData.Tag);
+		_item.SetMeta(StringNames.TagMeta, (int)(GlobalManager.G_FOOD.ContainsKey(_id) ? 
+				StringNames.GlobalTags.Food : StringNames.GlobalTags.Item));
 		_item.GlobalPosition = _position;
 		Current.EntityRoot.AddChild(_item);
 
 		try
 		{
-			if (_item is SaveSystem.IDataModule)
+			if (_item is SaveSystem.IGenericDataModule)
 			{
-				var _itemMetadata = _item as SaveSystem.IDataModule;
+				var _itemMetadata = _item as SaveSystem.IGenericDataModule;
 				if (!string.IsNullOrWhiteSpace(_data))
 					_itemMetadata.Set(_data);
 				else
@@ -257,9 +245,9 @@ public partial class ResortManager : Node2D
 
 		try
 		{
-			if (_structure is SaveSystem.IDataModule)
+			if (_structure is SaveSystem.IGenericDataModule)
 			{
-				var _structureMetadata = _structure as SaveSystem.IDataModule;
+				var _structureMetadata = _structure as SaveSystem.IGenericDataModule;
 				if (!string.IsNullOrWhiteSpace(_data))
 					_structureMetadata.Set(_data);
 				else

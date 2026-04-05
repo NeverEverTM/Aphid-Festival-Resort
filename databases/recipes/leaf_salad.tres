@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3 uid="uid://dfwmpfn8yo1jo"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_b8wwa"]
-[ext_resource type="Resource" path="res://databases/food/leaf.tres" id="2_4mix1"]
-[ext_resource type="Resource" path="res://databases/food/leaf_salad.tres" id="3_qx5wo"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="4_80c0u"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_b8wwa"]
+[ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="2_4mix1"]
+[ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="3_qx5wo"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_80c0u"]
 
 [resource]
 script = ExtResource("4_80c0u")

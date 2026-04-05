@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dsckpwj6xere7" path="res://sprites/props/paper_lantern.png" id="1_f6bcg"]
 [ext_resource type="Shader" uid="uid://cxlqld44bp5i1" path="res://scripts/shaders/water_placeable.gdshader" id="1_nh4io"]
-[ext_resource type="Script" uid="uid://3ayy4rweexow" path="res://scripts/entities/TorchBehaviour.cs" id="3_cw6h8"]
+[ext_resource type="Script" uid="uid://dlb3gss7rarat" path="res://scripts/entities/LightEntity.cs" id="3_cw6h8"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="4_22s0n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cw6h8"]
@@ -41,18 +41,24 @@ animations = [{
 "speed": 2.0
 }]
 
-[node name="paper_lantern" type="AnimatedSprite2D" node_paths=PackedStringArray("light")]
+[node name="paper_lantern" type="AnimatedSprite2D"]
 material = SubResource("ShaderMaterial_cw6h8")
 sprite_frames = SubResource("SpriteFrames_xq6ro")
 frame_progress = 0.890249
 offset = Vector2(0, -16)
-script = ExtResource("3_cw6h8")
-light = NodePath("light")
 metadata/allow_water = true
 metadata/id = "paper_lantern"
 
+[node name="light_controller" type="VisibleOnScreenEnabler2D" parent="." node_paths=PackedStringArray("light")]
+rect = Rect2(-298, -177, 600, 391)
+show_rect = false
+enable_node_path = NodePath("../light")
+script = ExtResource("3_cw6h8")
+light = NodePath("../light")
+
 [node name="light" type="PointLight2D" parent="."]
 process_priority = 100
+enabled = false
 color = Color(1, 0.862745, 0.647059, 1)
 blend_mode = 2
 range_z_min = -2000

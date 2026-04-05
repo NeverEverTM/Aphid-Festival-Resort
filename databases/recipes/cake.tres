@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://xpeoeu2fh056"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_wpom3"]
-[ext_resource type="Resource" path="res://databases/food/flour_bag.tres" id="2_bt6md"]
-[ext_resource type="Resource" path="res://databases/food/plant_sap.tres" id="3_tkvq4"]
-[ext_resource type="Resource" path="res://databases/food/cake.tres" id="4_80kyb"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="5_ssqv1"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_wpom3"]
+[ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="2_bt6md"]
+[ext_resource type="Resource" uid="uid://bxsnv6hiuvxic" path="res://databases/food/plant_sap.tres" id="3_tkvq4"]
+[ext_resource type="Resource" uid="uid://dkw045vnorqkv" path="res://databases/food/cake.tres" id="4_80kyb"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_ssqv1"]
 
 [resource]
 script = ExtResource("5_ssqv1")

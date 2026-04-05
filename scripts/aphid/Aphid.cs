@@ -55,6 +55,7 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 	public bool IsDisabled { get; private set; }
 	public readonly static RandomNumberGenerator CORE_RNG = new();
 	public readonly static RandomNumberGenerator MISC_RNG = new();
+	private double current_time;
 
 	public AudioStream AudioDynamic_Idle
 	{
@@ -82,7 +83,8 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 
 	public override void _EnterTree()
 	{
-		SetMeta(StringNames.TagMeta, (int)StringNames.GlobalTags.Aphid);
+		SetMeta(StringNames.TagMeta, (int)Tag);
+		current_time = Time.GetUnixTimeFromSystem();
 	}
 	public void SetReady()
 	{
@@ -91,22 +93,8 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		skin.SetSkin("idle");
 		SetTimers();
 
-		// patches
-		if (Instance.Genes.Skills.Count == 0)
-			Instance.Genes.GenerateSkills();
-
-		if (Instance.Genes.Traits.Count == 0)
-			Instance.Genes.GenerateTraits();
-
-		if (Instance.Status.LastTimeLoaded == 0)
-			Instance.Status.LastTimeLoaded = GameManager.Data.Playtime;
-
 		// setup triggers and decays
 		OnInteractOnly.Add(InteractByPlayer);
-		interactArea.BodyEntered += OnTriggerEnter;
-		interactArea.AreaEntered += OnTriggerEnter;
-		AreaEvents.Add(new AphidFriendhsip());
-		AreaEvents.Add(new HungryState.FoodTrigger());
 
 		Timers.Add(new HungerDecay(BASE_FOOD_DECAY));
 		Timers.Add(new ThirstDecay(BASE_THIRST_DECAY));
@@ -128,7 +116,7 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 			_pair.Value.Awake(this);
 		State.Enter(this, StateEnum.Idle, null);
 
-		// setup postload
+		// translate trait IDs as their class equivalent
 		for (int i = 0; i < Instance.Genes.Traits.Count; i++)
 		{
 			Traits.Add(GetTraitByName(Instance.Genes.Traits[i]));
@@ -144,8 +132,6 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		// update lifetime from last time it was loaded
 		Instance.Status.Age -= (float)(GameManager.Data.Playtime - Instance.Status.LastTimeLoaded);
 		Instance.Status.LastTimeLoaded = GameManager.Data.Playtime;
-
-		
 	}
 	private void SetTimers()
 	{
@@ -197,8 +183,10 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		Instance.Status.PositionX = GlobalPosition.X;
 		Instance.Status.PositionY = GlobalPosition.Y;
 
+		float _timeDifference = (float)(Time.GetUnixTimeFromSystem() - current_time);
+		current_time = Time.GetUnixTimeFromSystem();
 		for (int i = 0; i < Timers.Count; i++)
-			Timers[i].Process(this, _delta);
+			Timers[i].Process(this, _timeDifference);
 	}
 	public override void _PhysicsProcess(double delta)
 	{
@@ -212,6 +200,8 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		if (!MovementDirection.IsEqualApprox(Vector2.Zero))
 			skin.SetFlipDirection(MovementDirection);
 
+		RefreshNearbyBodies();
+
 		// trait update process
 		for (int i = 0; i < Traits.Count; i++)
 			Traits[i].OnProcess(this, _delta);
@@ -221,15 +211,36 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		MoveAndSlide();
 		skin.StartWalk(MovementDirection);
 	}
+	private void RefreshNearbyBodies()
+	{
+		var _areasList = interactArea.GetOverlappingAreas();
+		var _bodiesList = interactArea.GetOverlappingBodies();
+		List<ulong> ids = [];
+
+		foreach(var _area in _areasList)
+		{
+			if (ids.Contains(_area.GetInstanceId()))
+				continue;
+			OnTriggerStay(_area);
+			ids.Add(_area.GetInstanceId());
+		}
+		foreach(var _body in _bodiesList)
+		{
+			if (ids.Contains(_body.GetInstanceId()))
+				continue;
+			OnTriggerStay(_body);
+			ids.Add(_body.GetInstanceId());
+		}
+	}
 
 	/// <param name="_newState">The state to be set</param>
 	/// <param name="_specialArgs">The special parameters to be given, remember that each state manages its special parameters differently or not at all</param>
 	/// <returns>Wheter or not the state was able to be set</returns>
 	public bool SetState(StateEnum _newState, EventArgs _specialArgs = null)
 	{
-		StateEnum _lastState = State.Type;
-		if (IsDisabled)
+		if (IsDisabled || State.Type == _newState)
 			return false;
+		StateEnum _lastState = State.Type;
 
 		if (!State.CanTransitionInto(_newState))
 		{
@@ -260,10 +271,10 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		MovementDirection = _absolute ? (_to - GlobalPosition).Normalized() : _to.Normalized();
 	public void CallTowards(Vector2 _position)
 	{
-		if (State.Is(StateEnum.Idle) == State.Is(StateEnum.Train))
+		if (!State.Is(StateEnum.Idle))
 			return;
 
-		SetState(StateEnum.Idle);
+		SetState(StateEnum.Idle, new IdleState.IdleArgs(_position));
 		skin.DoHop();
 	}
 	public bool WakeUp(bool _forcefully = false, bool _byPassHeavySleeper = false)
@@ -327,23 +338,24 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 	}
 	public virtual void Harvest()
 	{
-		IsReadyForHarvest = false;
 		// result
+		IsReadyForHarvest = false;
 		Instance.Status.HarvestBuildup = 0;
 		float _multiplier = 0.5f + (Instance.Status.Hunger + Instance.Status.Thirst) / 200;
-		PlayerData.AddCurrency(Mathf.CeilToInt((Instance.Status.IsAdult ?
+		Player.AddCurrency(Mathf.CeilToInt((Instance.Status.IsAdult ?
 				HARVEST_VALUE_ADULT : HARVEST_VALUE_BABY)
 				* _multiplier));
 		Timers.Find((t) => t is HarvestTimer).Start();
-		CanvasManager.RemoveControlPrompt(StringNames.GlobalTagsNames[(int)StringNames.GlobalTags.Aphid]);
-		CanvasManager.AddControlPrompt("pet", StringNames.GlobalTagsNames[(int)StringNames.GlobalTags.Aphid], InputNames.Interact);
+
 		// visuals
-		skin.DoSquish();
+		CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.HarvestAphid);
+		CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.PetAphid);
 		skin.Material = null;
 		if (harvest_effect != null)
 			harvest_effect.OneShot = true;
 		harvest_effect = null;
 		skin.LightMask = 1;
+		skin.DoSquish();
 	}
 	// The actual breed that causes an egg to spawn, also sets aphids back to normal
 	public void LayAnEgg(AphidInstance _father, bool _alone = false)
@@ -384,28 +396,23 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 			_timer.ProcessMode = ProcessModeEnum.Pausable;
 		return _timer;
 	}
-	public void OnTriggerEnter(Node2D _node)
+
+	public void OnTriggerStay(Node2D _node)
 	{
-		if (_node.Equals(this) || !_node.HasMeta(StringNames.TagMeta))
+		if (_node.GetInstanceId().Equals(GetInstanceId()) || !_node.HasMeta(StringNames.TagMeta))
 			return;
 		StringNames.GlobalTags _tag = (StringNames.GlobalTags)(int)_node.GetMeta(StringNames.TagMeta);
 
 		for (int i = 0; i < AreaEvents.Count; i++)
 		{
 			if (AreaEvents[i].Tag == _tag)
-				AreaEvents[i].OnNodeEntered(this, _node);
+				AreaEvents[i].OnNodeStay(this, _node);
 		}
 	}
 	public void InteractByPlayer() // player interaction
 	{
 		if (IsDisabled)
 			return;
-
-		if (State.Is(StateEnum.Train))
-		{
-			SetState(StateEnum.Idle);
-			return;
-		}
 
 		if (IsReadyForHarvest) // Harvest behaviour
 		{

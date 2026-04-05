@@ -8,49 +8,23 @@
         "type": "tabs",
         "children": [
           {
-            "id": "357e83301bc223f8",
+            "id": "83bee00586a23cb4",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "4 - Development Log.md",
-                "mode": "source",
-                "source": false
+                "file": "Aphid Info Logic Graph.canvas",
+                "viewState": {
+                  "x": -764.8246050487327,
+                  "y": 1042.983727784639,
+                  "zoom": -0.7302967318434069
+                }
               },
-              "icon": "lucide-file",
-              "title": "4 - Development Log"
-            }
-          },
-          {
-            "id": "b0f0144edb79ef88",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "4 - Development Log.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "4 - Development Log"
-            }
-          },
-          {
-            "id": "57d1dc1c0f082d90",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "4 - Development Log.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "4 - Development Log"
+              "icon": "lucide-layout-dashboard",
+              "title": "Aphid Info Logic Graph"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -73,7 +47,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "Explorador de archivos"
             }
           },
           {
@@ -90,7 +64,7 @@
                 "sortOrder": "alphabetical"
               },
               "icon": "lucide-search",
-              "title": "Search"
+              "title": "Buscar"
             }
           },
           {
@@ -184,27 +158,30 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "bases:Create new base": false,
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Crear nueva base": false
     }
   },
-  "active": "57d1dc1c0f082d90",
+  "active": "83bee00586a23cb4",
   "lastOpenFiles": [
-    "3 - Major Version Goals.md",
-    "1 - Welcome.md",
-    "2 - Changelogs.md",
-    "wip ideas.md",
-    "How it feels to play MEDIC.md",
-    "4 - Development Log.md",
-    "SaveData Documentation.md",
-    "Extra Content Implementation.md",
-    "Atlas Packager Usage.md",
+    "5 - Current Changelog.md",
+    "Aphid Info Logic Graph.canvas",
     "Aphid Behaviour.md",
+    "4 - Development Log.md",
+    "1 - Welcome.md",
+    "Misc. Notes.md",
+    "SaveData Documentation.md",
+    "Atlas Packager Usage.md",
+    "Extra Content Implementation.md",
+    "3 - Roadmap.md",
+    "2 - Version History.md",
+    "Test Sticker.md",
+    "How it feels to play MEDIC.md",
     "Structure Implementation.md",
     "databases/structures_translation.ods",
     "databases/items_translation - copia.ods",

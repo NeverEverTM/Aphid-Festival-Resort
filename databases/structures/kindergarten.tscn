@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://w7x7ar1jllwc"]
 
 [ext_resource type="Texture2D" uid="uid://c1hrmta7qaaf" path="res://sprites/props/kindergarten.png" id="1_mvlf1"]
-[ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillInteractable.cs" id="1_v0sp4"]
+[ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillStructure.cs" id="1_v0sp4"]
 
 [sub_resource type="Animation" id="Animation_sin52"]
 length = 0.001

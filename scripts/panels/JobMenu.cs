@@ -16,10 +16,10 @@ public partial class JobMenu : Control
     [Export] private ShaderMaterial job_completion_material, job_current_material;
     [ExportGroup("Information Display")]
     [Export] private Control aphid_node;
-    [Export] private Label description_label, reward_label, timer_label, assign_label;
+    [Export] private Label description_label, reward_label, timer_label;
+    [Export] private Button assign_button;
     [Export] private TextureRect request_background;
     [Export] private TextureRect[] job_skills;
-    [Export] private GlowButton assign_button;
     [ExportGroup("Slot Customization")]
     [Export] private Color[] difficulty_colors;
     [Export] private int[] difficulty_rand_ranges;
@@ -106,6 +106,13 @@ public partial class JobMenu : Control
     {
         Instance = this;
         last_time_tick = Time.GetUnixTimeFromSystem();
+
+        SaveModule = new("jobs", new JobDataModule(), 500)
+        {
+            DisposeMode = SaveSystem.SaveMetadata.DisposeMethod.OnRoomTransition
+        };
+        SaveSystem.AddSaveModule(SaveModule);
+
         menu = new("jobs", animation_player,
         Open: (_) =>
         {
@@ -127,9 +134,6 @@ public partial class JobMenu : Control
         null,
         Dispose: () => ClearInterface(true));
 
-        SaveModule = new("jobs", new JobDataModule(), 500);
-        SaveSystem.AddSaveModule(SaveModule);
-
         for (int i = 0; i < job_skills.Length; i++)
         {
             job_skills_icons[i] = job_skills[i].GetChild<TextureRect>(0);
@@ -141,7 +145,6 @@ public partial class JobMenu : Control
     }
     public override void _ExitTree()
     {
-        SaveSystem.RemoveSaveModule(SaveModule);
         Instance = null;
     }
     public override void _Process(double delta)
@@ -211,7 +214,7 @@ public partial class JobMenu : Control
             {
                 CreateRequestGrid();
                 SoundManager.CreateSound("ui/button_fail");
-                GlobalManager.CreatePopup("lobby_job_noaphids", this);
+                GlobalManager.CREATE_POPUP("lobby_job_noaphids", this);
                 return;
             }
             DisplayAphid(current_aphid.GUID);
@@ -234,10 +237,9 @@ public partial class JobMenu : Control
         {
             if (_pair.Value.Status.Mode != AphidData.EntityStatusType.Passive)
                 continue;
-                
+
             var _pair_clone = _pair;
-            if (current_aphid == null)
-                current_aphid = _pair_clone.Value;
+            current_aphid ??= _pair_clone.Value;
             var _slot = CanvasManager.CreateAphidSlot(_pair_clone.Key, false, DisplayAphid);
             slot_container.AddChild(_slot);
 
@@ -279,7 +281,7 @@ public partial class JobMenu : Control
         assign_button.Show();
         timer_label.SelfModulate = new Color("gold");
         timer_label.Text = "lobby_job_timerdone";
-        assign_label.Text = "lobby_job_finish";
+        assign_button.Text = "lobby_job_finish";
         _request.Slot.GetChild<Control>(1).Material = job_completion_material;
         is_current_done = true;
     }
@@ -354,8 +356,7 @@ public partial class JobMenu : Control
     }
     private JobRequest GenerateRandomRequest(JobDifficulty _difficulty)
     {
-        int _id = 0;
-        JobData _job = FetchRandomJob(_difficulty, out _id);
+        JobData _job = FetchRandomJob(_difficulty, out int _id);
 
         // attempt to fetch a data pack that doesnt exist in the board already
         while (Data.Available.Exists(r => r.Difficulty == _difficulty && r.DataID == _id))
@@ -366,7 +367,7 @@ public partial class JobMenu : Control
             DataID = _id,
             Skills = new string[_job.Skills.Count],
             MinimumLevels = new int[_job.Skills.Count],
-            TimeLeft = GlobalManager.RNG.RandiRange((int)(_job.BaseTime * 0.91f), (int)(_job.BaseTime * 1.09f)),
+            TimeLeft = _job.BaseTime,
             Difficulty = _difficulty,
             ChanceToSucceed = 1,
             Data = _job
@@ -469,7 +470,7 @@ public partial class JobMenu : Control
         {
             timer_label.SelfModulate = timer_default_color;
             timer_label.Text = _request.GetFormattedTimeLeft();
-            assign_label.Text = "lobby_job_select";
+            assign_button.Text = "lobby_job_select";
             description_label.Text = Tr($"job_{_request.Difficulty.ToString().ToLower()}_{_request.DataID}");
             assign_button.Show();
             if (aphid_node.GetChildCount() > 0)
@@ -526,7 +527,7 @@ public partial class JobMenu : Control
         }
 
         // set all labels
-        assign_label.Text = "lobby_job_assign";
+        assign_button.Text = "lobby_job_assign";
         string[] _list = [$"{Tr("lobby_job_aphidname")}: {GameManager.Aphids[_key].Genes.Name}",
                 $"{Tr("lobby_job_successchance")}: {(int)(current_request.ChanceToSucceed * 100)}%"];
         description_label.Text = string.Join("\n", _list);
@@ -595,7 +596,7 @@ public partial class JobMenu : Control
 
             if (_rollForInitiative <= ChanceToSucceed)
             {
-                PlayerData.AddCurrency(Data.BaseReward);
+                Player.AddCurrency(Data.BaseReward);
                 SoundManager.CreateSound("ui/kitchen_success");
             }
             else
@@ -605,7 +606,7 @@ public partial class JobMenu : Control
             // if the aphid is higher level, then decrease the amount gained from a low level request
             for (int i = 0; i < Skills.Length; i++)
                 _aphid.Genes.Skills[Skills[i]].GivePoints(BASE_SKILL_GAIN * /* Multiply by 1 or less */
-                        Mathf.Min(1, (MinimumLevels[i] + 1) / (_aphid.Genes.Skills[Skills[i]].Level + 1))); 
+                        Mathf.Min(1, (MinimumLevels[i] + 1) / (_aphid.Genes.Skills[Skills[i]].Level + 1)));
         }
     }
 }

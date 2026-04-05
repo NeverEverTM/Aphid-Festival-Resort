@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3 uid="uid://bne2mdr56du2m"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_pjsja"]
-[ext_resource type="Resource" path="res://databases/food/danger_spud.tres" id="2_ce0ld"]
-[ext_resource type="Resource" path="res://databases/food/baked_yam.tres" id="3_hntre"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="4_qwq8t"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_pjsja"]
+[ext_resource type="Resource" uid="uid://1ffbbw024334" path="res://databases/food/danger_spud.tres" id="2_ce0ld"]
+[ext_resource type="Resource" uid="uid://rcm2ah3qrpis" path="res://databases/food/baked_yam.tres" id="3_hntre"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_qwq8t"]
 
 [resource]
 script = ExtResource("4_qwq8t")

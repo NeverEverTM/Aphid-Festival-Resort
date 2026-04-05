@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://c72hevppynihg"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_25j2i"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_25j2i"]
 
 [resource]
 script = ExtResource("1_25j2i")
 ID = "tangy_carpaccio"
 Cost = 20
 LevelRequirement = 2
-Tag = 1
-Shop = 0
+Category = 1
 ShopOrderPriority = 39

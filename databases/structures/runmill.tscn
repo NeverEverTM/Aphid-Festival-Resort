@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://b4bya6a01lx1q"]
 
-[ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillInteractable.cs" id="1_yrewt"]
+[ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillStructure.cs" id="1_yrewt"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0dms6"]
 load_path = "res://.godot/imported/hot_bathtub.png-1d02dc58ccafe26e93b4f787713d310d.ctex"

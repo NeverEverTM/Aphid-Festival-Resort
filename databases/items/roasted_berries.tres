@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://b1ie3ye13xrfh"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_r6ynv"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_r6ynv"]
 
 [resource]
 script = ExtResource("1_r6ynv")
 ID = "roasted_berries"
 Cost = 4
-LevelRequirement = 0
-Tag = 1
-Shop = 0
+Category = 1
 ShopOrderPriority = 40

@@ -17,10 +17,10 @@ domain_warp_fractal_type = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0d8l4"]
 generate_mipmaps = false
+noise = SubResource("FastNoiseLite_ga32o")
+color_ramp = SubResource("Gradient_7pwys")
 seamless = true
 seamless_blend_skirt = 0.111
-color_ramp = SubResource("Gradient_7pwys")
-noise = SubResource("FastNoiseLite_ga32o")
 
 [resource]
 shader = ExtResource("1_drbtt")

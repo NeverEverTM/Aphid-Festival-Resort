@@ -1,7 +1,8 @@
-[gd_scene load_steps=79 format=3 uid="uid://dsw70b8747xh8"]
+[gd_scene load_steps=80 format=3 uid="uid://dsw70b8747xh8"]
 
 [ext_resource type="Script" uid="uid://7tuds0dv1fbo" path="res://scripts/controllers/ResortManager.cs" id="1_fm5xd"]
 [ext_resource type="PackedScene" uid="uid://dd1kgkvs8hkc6" path="res://scenes/prefabs/ui/resort_canvas.tscn" id="2_bmica"]
+[ext_resource type="PackedScene" uid="uid://7oo48cet73pb" path="res://scenes/prefabs/aphid.tscn" id="2_twxmx"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="4_3bx12"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="6_g2h40"]
 [ext_resource type="PackedScene" uid="uid://bl2n8sc5rwjyy" path="res://scenes/prefabs/npc.tscn" id="7_vbg0e"]
@@ -14,9 +15,6 @@
 [ext_resource type="AudioStream" uid="uid://dr8pjwr0i4kbv" path="res://sfx/ambience/river_ambience.mp3" id="17_lvyt4"]
 [ext_resource type="AudioStream" uid="uid://snn7cy1t6bia" path="res://sfx/ambience/wind_ambience.mp3" id="18_uwu6l"]
 [ext_resource type="PackedScene" uid="uid://ckqm3dpr64x3k" path="res://scenes/prefabs/room_trigger.tscn" id="19_h6b2m"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_uh6ig"]
-size = Vector2(92, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gtaxy"]
 atlas = ExtResource("8_u05ww")
@@ -93,8 +91,8 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7w54"]
-size = Vector2(63, 35)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uh6ig"]
+size = Vector2(92, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_djjg3"]
 atlas = ExtResource("12_uplil")
@@ -180,6 +178,9 @@ animations = [{
 "name": &"talk",
 "speed": 5.0
 }]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7w54"]
+size = Vector2(63, 35)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tttmd"]
 atlas = ExtResource("13_qsbex")
@@ -524,6 +525,7 @@ Resort = "golden"
 EntityRoot = NodePath("entityPit")
 StructureRoot = NodePath("tilemap_resort/structurePit")
 SpawnPoint = NodePath("spawnpoint")
+aphidEntity = ExtResource("2_twxmx")
 
 [node name="tilemap_resort" parent="." node_paths=PackedStringArray("Doors") instance=ExtResource("4_3bx12")]
 process_priority = -1000
@@ -538,16 +540,22 @@ interactArea = NodePath("../../item_shop_trigger")
 interactArea2D = NodePath("../../kitchen_trigger")
 
 [node name="spawnpoint" type="Marker2D" parent="."]
-position = Vector2(-1811, 90)
+position = Vector2(-785, 85)
 
 [node name="entityPit" type="Node2D" parent="."]
 y_sort_enabled = true
 
+[node name="kut" parent="." instance=ExtResource("7_vbg0e")]
+position = Vector2(503, -225)
+sprite_frames = SubResource("SpriteFrames_ckexh")
+ID = "kut"
+DialogueMode = 2
+
 [node name="kitchen_trigger" type="Area2D" parent="."]
-position = Vector2(-498, -172)
+position = Vector2(486, -196)
 monitoring = false
 script = ExtResource("6_g2h40")
-Tag = 8
+Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_trigger"]
 z_index = 4096
@@ -555,17 +563,17 @@ position = Vector2(16, 17.5)
 shape = SubResource("RectangleShape2D_uh6ig")
 debug_color = Color(0.887741, 0.273012, 0.475381, 0.42)
 
-[node name="kut" parent="." instance=ExtResource("7_vbg0e")]
-position = Vector2(-483, -206)
-sprite_frames = SubResource("SpriteFrames_ckexh")
-ID = "kut"
+[node name="azzy" parent="." instance=ExtResource("7_vbg0e")]
+position = Vector2(399, 169)
+sprite_frames = SubResource("SpriteFrames_eps0x")
+ID = "azzy"
 DialogueMode = 2
 
 [node name="item_shop_trigger" type="Area2D" parent="."]
-position = Vector2(-521, 166)
+position = Vector2(463, 166)
 monitoring = false
 script = ExtResource("6_g2h40")
-Tag = 8
+Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="item_shop_trigger"]
 z_index = 4096
@@ -573,17 +581,8 @@ position = Vector2(14.5, 33.5)
 shape = SubResource("RectangleShape2D_p7w54")
 debug_color = Color(0.887741, 0.273012, 0.475381, 0.42)
 
-[node name="azzy" parent="." instance=ExtResource("7_vbg0e")]
-position = Vector2(-577, 169)
-sprite_frames = SubResource("SpriteFrames_eps0x")
-animation = &"talk"
-frame = 1
-frame_progress = 0.92029
-ID = "azzy"
-DialogueMode = 2
-
 [node name="joy" parent="." instance=ExtResource("7_vbg0e")]
-position = Vector2(-994, -28)
+position = Vector2(-1, -35)
 sprite_frames = SubResource("SpriteFrames_ue4ko")
 autoplay = "default"
 frame_progress = 0.0952482
@@ -591,7 +590,7 @@ ID = "joy"
 DialogueMode = 2
 
 [node name="crystal" parent="." instance=ExtResource("14_adb5u")]
-position = Vector2(-915, -8)
+position = Vector2(222, 6)
 maxWanderRange = 210.0
 
 [node name="NPC" parent="crystal" index="0"]
@@ -605,7 +604,7 @@ position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_bpu2g")
 
 [node name="echo" parent="." instance=ExtResource("7_vbg0e")]
-position = Vector2(-1635, -8)
+position = Vector2(-821, 171)
 sprite_frames = SubResource("SpriteFrames_jk5p2")
 autoplay = "default"
 frame = 2
@@ -616,7 +615,7 @@ DialogueMode = 2
 flipDirection = true
 
 [node name="river_ambience" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-1906, -320)
+position = Vector2(-930, -320)
 stream = ExtResource("17_lvyt4")
 volume_db = -5.0
 autoplay = true
@@ -625,7 +624,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience2" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-1896, 139)
+position = Vector2(-920, 139)
 stream = ExtResource("17_lvyt4")
 volume_db = -5.0
 autoplay = true
@@ -634,7 +633,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience3" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-1604, 527)
+position = Vector2(-628, 527)
 stream = ExtResource("17_lvyt4")
 volume_db = -5.0
 autoplay = true
@@ -643,7 +642,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience4" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-923, 555)
+position = Vector2(53, 555)
 stream = ExtResource("17_lvyt4")
 volume_db = -5.0
 autoplay = true
@@ -652,7 +651,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience5" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(-238, 644)
+position = Vector2(738, 644)
 stream = ExtResource("17_lvyt4")
 volume_db = -5.0
 autoplay = true
@@ -661,7 +660,7 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience10" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(19, 100)
+position = Vector2(995, 100)
 stream = ExtResource("17_lvyt4")
 volume_db = -5.0
 autoplay = true
@@ -670,47 +669,12 @@ attenuation = 0.5
 bus = &"Ambience"
 
 [node name="river_ambience11" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(11, -508)
+position = Vector2(987, -508)
 stream = ExtResource("17_lvyt4")
 volume_db = -5.0
 autoplay = true
 max_distance = 500.0
 attenuation = 0.5
-bus = &"Ambience"
-
-[node name="river_ambience6" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(532, 630)
-stream = ExtResource("17_lvyt4")
-volume_db = -5.0
-autoplay = true
-max_distance = 500.0
-attenuation = 0.5
-bus = &"Ambience"
-
-[node name="river_ambience7" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(1092, 582)
-stream = ExtResource("17_lvyt4")
-volume_db = -5.0
-autoplay = true
-max_distance = 500.0
-attenuation = 0.5
-bus = &"Ambience"
-
-[node name="river_ambience8" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(1855, 487)
-stream = ExtResource("17_lvyt4")
-volume_db = -5.0
-autoplay = true
-max_distance = 500.0
-attenuation = 0.5
-bus = &"Ambience"
-
-[node name="river_ambience9" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(2010, -134)
-stream = ExtResource("17_lvyt4")
-volume_db = -5.0
-autoplay = true
-max_distance = 500.0
 bus = &"Ambience"
 
 [node name="wind_ambience" type="AudioStreamPlayer" parent="."]
@@ -720,7 +684,7 @@ autoplay = true
 bus = &"Ambience"
 
 [node name="bridge_trigger" parent="." instance=ExtResource("19_h6b2m")]
-position = Vector2(-1962, 91)
+position = Vector2(-986, 91)
 roomToGo = "golden_hallway"
 
 [node name="CollisionShape2D" parent="bridge_trigger" index="0"]
@@ -731,7 +695,7 @@ shape = SubResource("RectangleShape2D_rpwmo")
 shape = SubResource("WorldBoundaryShape2D_g2h40")
 
 [node name="lobby_trigger" parent="." instance=ExtResource("19_h6b2m")]
-position = Vector2(-768, -392)
+position = Vector2(216, -388)
 roomToGo = "golden_lobby"
 entryDirection = Vector2(0, -1)
 

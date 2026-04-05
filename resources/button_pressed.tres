@@ -1,0 +1,13 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://cay0m3ejy1fat"]
+
+[ext_resource type="Texture2D" uid="uid://dbwm4hhysoybd" path="res://sprites/ui/buttons/button_pressed.PNG" id="1_lfa6s"]
+
+[resource]
+texture = ExtResource("1_lfa6s")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(0.5758206, 0.08257771, 0.24251124, 1)

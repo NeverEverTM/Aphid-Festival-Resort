@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Godot;
 
 public partial class PauseMenu : Control
@@ -89,7 +88,7 @@ public partial class PauseMenu : Control
 	}
 	public override void _Input(InputEvent @event)
 	{
-		if (GlobalManager.IsBusy || SceneManager.IsBusy || FreeCameraManager.Enabled || DialogManager.IsActive)
+		if (GlobalManager.IsBusy || SceneManager.IsBusy || FreeCameraManager.Enabled || DialogManager.IsActive || CutsceneManager.IsActive)
 			return;
 
 		if (CanvasManager.Menus.Current == null)

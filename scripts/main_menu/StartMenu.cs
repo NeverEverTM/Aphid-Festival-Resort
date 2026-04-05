@@ -42,6 +42,17 @@ public partial class StartMenu : Control
 	{
 		Instance = this;
 
+		// event listeners
+		if (OptionsManager.SaveModule.Loaded)
+			E_CreateContinueButton();
+		else
+			OptionsManager.SaveModule.AddEventListener((_) => E_CreateContinueButton(), SaveSystem.SaveEventsEnum.OnLoadFinish);
+
+		if (ControlsManager.SaveModule.Loaded)
+			ReadyUp();
+		else
+			ControlsManager.SaveModule.AddEventListener((_) => E_SetStartButton(), SaveSystem.SaveEventsEnum.OnLoadFinish);
+
 		// set menu interface
 		menu = new("start", anim_player);
 		_ = Menus.SetTo(menu);
@@ -86,26 +97,10 @@ public partial class StartMenu : Control
 	}
 	public override void _Ready()
 	{
-		// create continue button
-		if (!string.IsNullOrEmpty(OptionsManager.Settings.LastPlayedResort))
-		{
-			SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
-			if (DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
-			{
-				CreateWheelAction(WheelCategories.Continue, MainMenu.Instance.ContinueGame);
-				SetWheelCategory(WheelCategories.Continue, true);
-			}
-		}
-
 		CreateWheelAction(WheelCategories.Options, (options_panel as IMenuInstance).Create());
 		CreateWheelAction(WheelCategories.Controls, (controls_panel as IMenuInstance).Create());
 		CreateWheelAction(WheelCategories.Credits, credits_menu);
 		CreateWheelAction(WheelCategories.Exit, MainMenu.Instance.ExitGame);
-		wheel_actions = wheel_actions.OrderBy(a => a.Key).ToDictionary();
-
-		string _translation = string.Format(Tr("press_start"),
-			ControlsManager.GetLocalizedActionName(InputNames.Interact));
-		start_label.Text = $"[wave][center]{_translation}[/center][/wave]";
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
@@ -152,6 +147,9 @@ public partial class StartMenu : Control
 		}
 	}
 
+	/// <summary>
+	/// Exits intro text and shows the title screen after user input, intro only appears at the start of the program so this will not be called again later.
+	/// </summary>
 	public void ReadyUp()
 	{
 		IsReady = true;
@@ -160,12 +158,33 @@ public partial class StartMenu : Control
 		SetWheelText();
 		SoundManager.CreateSound("aphid/idle");
 	}
+	private void E_CreateContinueButton()
+	{
+		if (!string.IsNullOrEmpty(OptionsManager.Settings.LastPlayedResort))
+		{
+			SaveSystem.SelectProfile(OptionsManager.Settings.LastPlayedResort);
+			if (DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
+			{
+				CreateWheelAction(WheelCategories.Continue, MainMenu.Instance.ContinueGame);
+				SetWheelCategory(WheelCategories.Continue, true);
+			}
+		}
+	}
+	private void E_SetStartButton()
+	{
+		string _translation = string.Format(Tr("press_start"),
+			ControlsManager.GetLocalizedActionName(InputNames.Interact));
+		start_label.Text = $"[wave][center]{_translation}[/center][/wave]";
+	}
 
 	// MARK: UI Handling
 	public static void CreateWheelAction(WheelCategories _key, MenuInstance _menu) =>
-		Instance.wheel_actions.Add(_key, () => _ = Instance.Menus.SetTo(_menu));
-	public static void CreateWheelAction(WheelCategories _key, Action _action) =>
+		CreateWheelAction(_key, () => _ = Instance.Menus.SetTo(_menu));		
+	public static void CreateWheelAction(WheelCategories _key, Action _action)
+	{
 		Instance.wheel_actions.Add(_key, _action);
+		Instance.wheel_actions = Instance.wheel_actions.OrderBy(a => a.Key).ToDictionary();
+	}
 	public static void RemoveWheelAction(WheelCategories _key)
 	{
 		Instance.wheel_actions.Remove(_key);

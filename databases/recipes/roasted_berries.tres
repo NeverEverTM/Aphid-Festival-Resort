@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3 uid="uid://x023evk1a3sy"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_bsxrq"]
-[ext_resource type="Resource" path="res://databases/food/berry.tres" id="2_uj1or"]
-[ext_resource type="Resource" path="res://databases/food/roasted_berries.tres" id="3_gu80q"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="4_rdpw1"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_bsxrq"]
+[ext_resource type="Resource" uid="uid://db3fe3vrac52l" path="res://databases/food/berry.tres" id="2_uj1or"]
+[ext_resource type="Resource" uid="uid://c8vdniuehpe40" path="res://databases/food/roasted_berries.tres" id="3_gu80q"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_rdpw1"]
 
 [resource]
 script = ExtResource("4_rdpw1")

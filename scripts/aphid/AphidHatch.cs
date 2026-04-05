@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Godot;
 
-public partial class AphidHatch : InteractableArea2D, SaveSystem.IDataModule
+public partial class AphidHatch : InteractableArea2D, SaveSystem.IGenericDataModule
 {
 	public bool IsNatural;
 	private Timer hatch;
@@ -21,10 +21,10 @@ public partial class AphidHatch : InteractableArea2D, SaveSystem.IDataModule
 			{
 				given_genes = new()
 				{
-					AntennaColor = AphidData.Genes.LerpColor(colors[0],colors[0]),
-					EyeColor = AphidData.Genes.LerpColor(colors[1],colors[1]),
-					BodyColor = AphidData.Genes.LerpColor(colors[2],colors[2]),
-					LegColor = AphidData.Genes.LerpColor(colors[3],colors[3]),
+					AntennaColor = AphidData.Genes.MixAphidColor(colors[0],colors[0]),
+					EyeColor = AphidData.Genes.MixAphidColor(colors[1],colors[1]),
+					BodyColor = AphidData.Genes.MixAphidColor(colors[2],colors[2]),
+					LegColor = AphidData.Genes.MixAphidColor(colors[3],colors[3]),
 					AntennaType = parts_ids[0],
 					EyeType = parts_ids[1],
 					BodyType = parts_ids[2],

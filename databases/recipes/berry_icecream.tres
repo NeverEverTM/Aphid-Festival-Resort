@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://ynvc7rajdi01"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_p48mm"]
-[ext_resource type="Resource" path="res://databases/food/icecream.tres" id="2_6dby6"]
-[ext_resource type="Resource" path="res://databases/food/berry.tres" id="3_bif4o"]
-[ext_resource type="Resource" path="res://databases/food/shaved_ice.tres" id="4_ad4dy"]
-[ext_resource type="Resource" path="res://databases/food/berry_icecream.tres" id="5_mm75p"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="6_axg28"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_p48mm"]
+[ext_resource type="Resource" uid="uid://b5iduokkrd3b8" path="res://databases/food/icecream.tres" id="2_6dby6"]
+[ext_resource type="Resource" uid="uid://db3fe3vrac52l" path="res://databases/food/berry.tres" id="3_bif4o"]
+[ext_resource type="Resource" uid="uid://mfvgn8dlbk6t" path="res://databases/food/shaved_ice.tres" id="4_ad4dy"]
+[ext_resource type="Resource" uid="uid://ccbdoevojgsws" path="res://databases/food/berry_icecream.tres" id="5_mm75p"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="6_axg28"]
 
 [resource]
 script = ExtResource("6_axg28")

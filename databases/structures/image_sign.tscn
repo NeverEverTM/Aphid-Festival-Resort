@@ -29,7 +29,7 @@ shape = SubResource("RectangleShape2D_3vroc")
 
 [node name="Area2D" type="Area2D" parent="."]
 script = ExtResource("3_h2uk8")
-Tag = 2
+Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(0, -2.5)

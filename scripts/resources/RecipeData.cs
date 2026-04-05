@@ -1,7 +1,7 @@
 using Godot;
 using Godot.Collections;
 
-[GlobalClass]
+[GlobalClass][Tool]
 public partial class RecipeData : Resource
 {
     [Export(PropertyHint.ResourceType, "FoodData")]
@@ -15,16 +15,5 @@ public partial class RecipeData : Resource
     {
         this.Owner = Owner;
         this.Combinations = Combinations;
-    }
-    public RecipeData(string _id, string _ingredient1, string _ingredient2)
-    {
-        Owner = GlobalManager.G_FOOD[_id];
-        Array<FoodData> _list = [];
-        if (!string.IsNullOrWhiteSpace(_ingredient1))
-            _list.Add(GlobalManager.G_FOOD[_ingredient1]);
-        if (!string.IsNullOrWhiteSpace(_ingredient2))
-            _list.Add(GlobalManager.G_FOOD[_ingredient2]);
-
-        Combinations = [_list];
     }
 }

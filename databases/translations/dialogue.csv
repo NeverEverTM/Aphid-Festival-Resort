@@ -10,29 +10,31 @@ Esta es una version temprana del juego y no refleja actualizaciones futuras.
 O conversa con los personjes para saber más!
 >Puedes encontrar actualizaciones en la pagina de Itch.io del juego!
 Cualquier feedback es agradecido."
-joy_welcome_0,">Hello!(...) You are (name), right? Come on in!(...)
+welcome_0,">Hello!(...) You are (name), right? Come on in!(...)
 I'll give you a quick tour around!",">Hola!(...) Tu tienes que ser (name), ¿no? Adelante!(...)
 Te dare un paseo!"
-joy_welcome_1,">Here it is. The aphid resort!(...)
+welcome_1,">Here it is. The aphid resort!(...)
 So,(...) what do you think?
 >It's not a lot, but you can go ahead and play around it!(...)
-As a premium member, it is your right to do so, after all.
->Here in the kitchen you can turn ingredients into full course meals if you want
+As a member, it is your right to do so, after all.
+",">Y aqui esta, el complejo de áfidos!
+Agradable, ¿no?
+>No es mucho... ¡pero puedes arreglar cosas a tu gusto!"
+welcome_2,">Here in the kitchen you can turn ingredients into full course meals if you want
 your aphids to grow even stronger!
->To the side we have the lobby! 
+",
+welcome_3,">To the side we have the lobby! 
 Here you can check on the latest changes we do, exchange aphids with other guests
 and even send them to needed jobs and get a cut out of it.
 >The owner is not around for the moment but be sure to say hello if
-you see him! Otherwise, we have plenty of guests you can interact with.
->That over there is the resort's shop, you can use your berries to buy supplies and toys
+you see him! Otherwise, we have plenty of guests you can interact with.",
+welcome_4,">That over there is the resort's shop, you can use your berries to buy supplies and toys
 for the little ones!
 >We would also offer hats but... those have not reached us yet(...)
 Sorry for the incoveniences.
 >Well! If you need me, I'll be just here on watch duty!(...)
 Don't be afraid to talk to any of us if you need help with something(...)
-They may even know a few things about aphids!",">Y aqui esta, el complejo de áfidos!
-Agradable, ¿no?
->No es mucho... ¡pero puedes arreglar cosas a tu gusto!"
+They may even know a few things about aphids!",
 joy_flavor_0,">Quite a cozy place, isn’t it (name)?(...)
 It’s such a joy to work as a keeper for the lil buddies. (...)
 [wave amp=50.0 freq=5.0 connected=1]They even let me have my own one![/wave]
@@ -88,6 +90,13 @@ I really like to take in the air...",">Mmh...(...)
 Oh perdona, no te vi llegar!
 >A veces se me va mucho el pensamiento.(...)
 Realmente me gusta disfrutar el tiempo..."
+,">Did you know you can call your aphids to you by whistling?(...)
+Try it out!
+>You just have to...(...) [color=red]“hold the interaction button”[/color](...)
+Atleast, that's how Azzy explained it...",">¿Sabias que puedes llamar a tus áfidos solo silbando?(...)
+¡Intentalo!
+>Solo tienes que...(...) [color=red]“dejar presionado el boton de interactuar”[/color](...)
+Por lo menos así lo describio Azzy..."
 azzy_flavor_0,">(name)! Hello, Hello!
 If you need anything, I have it right here!
 And if I don't, maybe later. 
@@ -129,6 +138,11 @@ Les traje al asentamiento para relajarse por un tiempo.
 >Pero en ocasion, algo de estres se llevan.
 >[color=grey][wave amp=25.0 freq=5.0 connected=1]suspiro[/wave][/color] . Aprecio que lo intenten.(...)
 Tiempos dificiles, ¿sabes?"
+azzy_flavor_4,">I got a lil' bird to tell me about how life in the Capitol are.(...)
+Let me tell you, that place is bonkers!
+>It's such a walk there but I do have another friend that lives there(...)
+And she is considering joining us over here!
+",>WIP
 kut_flavor_0,">No one in this town has proved more expert taste than the aphids.
 They are the best customers I ever had.
 >They even gather around to see my craft.(...)
@@ -212,20 +226,34 @@ You can tell because I'm not like anyone else!
 >I'm strong(...), fast(...), intelligent(...), and strong!",">Vengo de [wave amp=50.0 freq=5.0 connected=0]muuuuuy lejos[/wave](...)
 Puedes notarlo porque no soy como los demas!
 >Soy fuerte(...), veloz(...), intelligente(...) y fuerte!"
-tanjy_flavor_2,">They said the hats would come today, but I don't see them!
-How dare they!
+tanjy_flavor_2,">They told me my stand is NOT ready yet!
+My dissapoinment is inmesurable, and my day is ruined
 >Until then, your aphids will be hatless(...)
-Sad!",">Dijeron que los sombreros vendrían hoy, ¡pero no los veo!
-¡Cómo se atreven!
->Hasta entonces, tus áfidos estaran calvos.(...)
+Sad!",">Me han dicho que mi puesto NO esta listo!
+Me lleva!
+>Hasta entonces, tus áfidos quedaran calvos.(...)
 ¡Que pena!"
-tanjy_flavor_3,">I would be inside but  the guard at the entrance won't let me.
-Rude!
->I could beat them myself but...(...)
-I do need my hats, where are they!",">Entraria, pero el guarda en la entrada no me deja.
-Terrible!
->Podria hacer algo al respecto pero...(...)
-De verdad que necesito mis sombreros ¡Donde estan!"
+tanjy_flavor_3,">I would be outside but  the guard at the entrance won't let me.
+They told me that I am “trouble” and “not enough pay”
+>I could beat them in a fight!(...)
+But I am TOO kind and benelovent to do that(...)
+Of course!",">Estaría fuera, pero el guarda de la entrada no me deja.
+Dice que soy “problematico” y “no suficiente paga”
+>Podria superarles en una batalla!(...)
+Pero soy demsiado BUENO y BENEVOLENTE para hacer eso(...)
+Claro!"
+theresa_flavor_0,">...(...)Mmh?
+>You are talking to me?",">...(...)Mmh?
+>¿Me hablas a mi?"
+theresa_flavor_1,">Day in, day out(...), I could do with a hot drink right now.
+>Several if needed.",>WIP
+theresa_flavor_2,">You do know that you can talk to me from across the desk, right?
+>That or you lost something(...)
+Sorry, I-(...) [shake]we[/shake] do not do refunds.",>WIP
+theresa_flavor_3,">Let me see...(...) you are (name)(...), right?
+>Now I know what to put in the report card.
+>...Just a joke, ha ha ha...(...[0.8])
+Don't look me like that and tell me what do you need instead.",
 job_easy_0,"I require the assistance of brave, intrepid aphids, to mow the grass!
 This grass tufts are blocking my whole yard and I need them OUT.","Necesito la asistencia de intrepidos y valerosos áfidos, para cortar hierba!
 Estos mates estan invadiendo mi jardín y los quiero FUERA."
@@ -241,7 +269,8 @@ No se necesitan habilidades, solo un monton de entusiasmo!"
 job_easy_4,"In need of delivery bugs. We need them now and fast!
 We got lots of packages already, so please contact us 
 as soon as you can.","Necesitamos bichos de servicio. Ahora o nunca!
-Tenemos varios paquetes que se acumulan, así que porfavor, contactenos lo más rapido que se pueda."
+Tenemos varios paquetes acumulados, así que porfavor, 
+contactenos lo más rapido que pueda."
 job_easy_5,"Looking to rent an aphid for a school class. The children would love it!
 Just need it to be well behaved. ","Viendo si puedo rentar un áfido para una clase.
 Estoy segura que a los chicos les encantara!
@@ -253,12 +282,16 @@ job_medium_0,"Requesting aphids for general therapy and support services.
 Only requirement is for them to understand my orders.","Requerio áfidos para fines de terapia y servicios de salud.
 Unico requerimiento es que entiendan mis ordenes."
 job_medium_1,"Local workers needing a hand for land renovation!
-Sapling, grass and rock eaters welcome.",WIP
-job_medium_2,"Having a problem with some unwanted guests!
-Requesting some aphids that can slice the life out of this weeds.",WIP
-job_medium_3,"We need a hand for berry transport.
-We'll even give you a part of the supply as thanks! (Just don't tell the queen)",WIP
-job_medium_4,Emergency crew in need of a trained searcher for the rescue of lost explorers.,WIP
+Cleaning the area is gonna be hard so, any strong arms appreciated.","Trabajadores locales necesitan una mano para renovación de parcela!
+Limpiar el area sera duro, pero cualquier par de brazos fuertes se agradece."
+job_medium_2,"Having a problem with unwanted plant residents!
+Need someone who can slice the life out of this weeds.","Tengo un problema con inquilinos plantiferos no deseados!
+Necesito alguien que pueda cortar estas hierbas desde la raiz."
+job_medium_3,"Berry transport cargo in need of mules.
+We'll even give you a part of the supply as thanks! (Just don't tell the queen)","Transporte de cargamento de bayas en necesidad de mulas.
+Te daremos una parte del encargo como agradecimiento! (Solo no lo digas a la reina)"
+job_medium_4,Emergency crew in need of a trained searcher for the rescue of lost explorers.,"Equipo de emergencia requiere de un buscador entrenado para el
+rescate de exploradores perdidos."
 job_medium_5,"Work in the tunnels is getting rough.
 Will be needing some extra hands on board.",WIP
 job_hard_0,"Help Wanted! The theater requires actors, great and handsome actors!
@@ -272,7 +305,7 @@ She states that “they look like little adorable fellas” and such demands a d
 Bring one of great mind alike!",WIP
 job_hard_4,"The chomp infestation is getting out of hands.
 Requesting the strongest bugs the settlement can send, quick!",WIP
-job_expert_0,"Going on a hunt for golden seedlings, and I will need an aphid companion,
+job_expert_0,"Going on a hunt for golden seedlings, and I will need a companion
 who is tougher than the toughies, smarter than the smarties,
 and sharper than the sharpies.",WIP
 job_expert_1,"Threat arises from the shadows, requesting strong companions for
@@ -280,12 +313,14 @@ pest control.",
 job_expert_2,"I need someone to go fetch me some ingredients, and it better be quick!
 Just leave them by the door.",
 job_expert_3,"Scout teams need to follow a trace for a potential nest of mantidflies, 
-and they could with someone that has a better sense of smell.",
+and they could do with a bug with incredible hunting skills.",
 job_master_0,"Attacks by the deadlanders have obliterated our camps.
 We plead for a loyal guard who can keep them at bay.",WIP
 job_master_1,"Adventuring deeper on unknown areas, and as the paths become more puzzling,
 we need a companion who can wiggle us out of trouble.",WIP
 job_master_2,"(The request note is barely legible but you can see the crude drawing of an aphid)
-(It also has a berry symbol on it so I guess is not a threat either)",
+(It also has a berry symbol, so they pay for sure!)",
 job_master_3,"Needing some test subjects for sustained battle simulations
 and I heard from a friend one of you could grant me one worthy subject.",
+job_master_4,"Sir Maki is looking to “test” some newcomers with a rather eccentric way of
+combat, his idea, not mine!",

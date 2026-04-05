@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using Godot;
 
 public static class DebugLogger
@@ -9,11 +10,26 @@ public static class DebugLogger
 	public enum LogPriorityMode { All, Verbose, Default, Warnings, Exceptions }
 
 	/// <summary>
-	/// Minor: Execute a custom function to correct yourself (the first argument in the object args)
-	/// Major: Exits to menu
-	/// Complete: Exits the game
+	/// Determines how does the game handle a termination of process.
 	/// </summary>
-	public enum GameTermination { Minor, Major, Complete }
+	public enum GameTermination {
+		/// <summary>
+		/// Execute a custom function to correct yourself (the first argument in the object args)
+		/// </summary>
+		Custom,
+		/// <summary>
+		/// Loads player into the "golden hallway" room as a temporal solution.
+		/// </summary>
+		Minor,
+		/// <summary>
+		/// Exits to menu, losing all unsaved progress.
+		/// </summary>
+		Major,
+		/// <summary>
+		/// Inmediately terminates the whole game, losing all unsaved progress and runtime variables.
+		/// </summary>
+		Complete
+		}
 	public static LogPriorityMode LogMode { get; set; }
 	private static readonly string[] LOG_STARTERS = [
 		"[DEBUG]:",
@@ -57,12 +73,15 @@ public static class DebugLogger
 
 		switch (mode)
 		{
-			case GameTermination.Minor:
+			case GameTermination.Custom:
 				if (args.Length > 0 && args[0] is Action)
 					(args[0] as Action)();
 				break;
+			case GameTermination.Minor:
+				Task.Run(() => SceneManager.Load("golden_hallway", new("golden_hallway", 0, Vector2.Left, new())));
+				break;
 			case GameTermination.Major:
-				_ = SceneManager.Switch("menu", false);
+				Task.Run(() => SceneManager.Switch("menu", false));
 				break;
 			case GameTermination.Complete:
 				GlobalManager.Instance.GetTree().Quit(1);

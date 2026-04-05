@@ -152,8 +152,8 @@ load_path = "res://.godot/imported/eyes_idle.png-0a2df93b13bd78a8b78ac77a5908e76
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_daav4"]
 load_path = "res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9f87e.ctex"
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_7a8x1"]
-radius = 77.0584
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cj77s"]
+size = Vector2(103, 74)
 
 [node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "interactArea")]
 collision_layer = 7
@@ -211,13 +211,13 @@ offset = Vector2(0, -16)
 
 [node name="TriggerArea" type="Area2D" parent="." node_paths=PackedStringArray("aphid")]
 position = Vector2(0, -8)
-collision_layer = 3
 collision_mask = 2
 monitorable = false
 script = ExtResource("3_d51lm")
 aphid = NodePath("..")
-Tag = 6
+Tag = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerArea"]
-shape = SubResource("CircleShape2D_7a8x1")
+position = Vector2(-0.5, 11)
+shape = SubResource("RectangleShape2D_cj77s")
 debug_color = Color(0.756863, 0.364706, 0.556863, 0.290196)

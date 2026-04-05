@@ -1,57 +1,57 @@
-using Godot;
 using System;
+using Godot;
 
-public partial class BedBehaviour : Sprite2D, IStructureAphid
+public partial class BedBehaviour : Sprite2D, SaveSystem.IGenericDataModule, IAphidAccess
 {
     [Export] private Marker2D restingPosition;
     [Export] private float staminaRecoveryCooldown = -1;
+    [ExportGroup("Inmutables")]
+    [Export] private InteractableArea2D interactArea;
 
-    public bool IsInterruptable { get; set; } = true;
-    public Aphid SelectedAphid { get; set; }
-    public Guid SelectedAphidID { get; set; }
+    public bool IsAphidAvailable { get; set; }
+    public Aphid MyAphid { get; set; }
+    public Guid MyAphidID { get; set; }
 
     private float stamina_recovery_timer;
 
-    public void Enter()
+    public override void _EnterTree()
     {
-        SelectedAphid.skin.SetFlipDirection(Vector2.Left);
-        SelectedAphid.GlobalPosition = restingPosition.GlobalPosition;
-        stamina_recovery_timer = staminaRecoveryCooldown;
+        interactArea.OnInteractOnly.Add((this as IAphidAccess).OnInteractOnly);
     }
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!IsAphidAvailable)
+            return;
 
-    public void Exit()
-    {
-        SelectedAphid.GlobalPosition = restingPosition.GlobalPosition + new Vector2(0, 20);
-    }
-    public void Process(float delta)
-    {
         if (staminaRecoveryCooldown < 0) // is disabled?
             return;
 
         if (stamina_recovery_timer > 0)
-            stamina_recovery_timer -= delta;
+            stamina_recovery_timer -= (float)delta;
         else
         {
             stamina_recovery_timer = staminaRecoveryCooldown;
-            SelectedAphid.Instance.AddTiredness(-1);
+            MyAphid.Instance.AddTiredness(-1);
         }
     }
 
-    public void Interact() =>
-        (this as IStructureAphid).InteractWithAnAphid();
+    public void Enter()
+    {
+        MyAphid.skin.SetFlipDirection(Vector2.Left);
+        MyAphid.GlobalPosition = restingPosition.GlobalPosition;
+        stamina_recovery_timer = staminaRecoveryCooldown;
+    }
+    public void Exit()
+    {
+        return;
+    }
 
     public void Set(string _data)
     {
-        SelectedAphidID = new Guid(_data);
-        if (SelectedAphidID != Guid.Empty && GameManager.Aphids[SelectedAphidID].Status.Mode == AphidData.EntityStatusType.Active)
-        {
-            SelectedAphid = GameManager.Aphids[SelectedAphidID].Entity; 
-            Enter();
-        }
+        (this as IAphidAccess).SetAphid(_data);
     }
-
     public string Get()
     {
-        return SelectedAphidID.ToString();
+        return (this as IAphidAccess).GetAphid();
     }
 }

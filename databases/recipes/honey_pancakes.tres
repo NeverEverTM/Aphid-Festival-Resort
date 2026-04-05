@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://vnbldmiyy0tt"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_j57sf"]
-[ext_resource type="Resource" path="res://databases/food/glazed_honey.tres" id="2_gchi7"]
-[ext_resource type="Resource" path="res://databases/food/flour_bag.tres" id="3_tbbcr"]
-[ext_resource type="Resource" path="res://databases/food/honey_pancakes.tres" id="4_m6k25"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="5_cfpr8"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_j57sf"]
+[ext_resource type="Resource" uid="uid://b6xnudllhu78l" path="res://databases/food/glazed_honey.tres" id="2_gchi7"]
+[ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="3_tbbcr"]
+[ext_resource type="Resource" uid="uid://3hqoay8cyqkq" path="res://databases/food/honey_pancakes.tres" id="4_m6k25"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_cfpr8"]
 
 [resource]
 script = ExtResource("5_cfpr8")

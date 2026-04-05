@@ -11,9 +11,8 @@ internal partial class GlobalManager : Node2D
 {
 	public static GlobalManager Instance { get; private set; }
 	public readonly static RandomNumberGenerator RNG = new();
-	public const uint GAME_VERSION = 220;
+	public const uint GAME_VERSION = 301;
 	public static bool IsBusy { get; internal set; } = true;
-	public static bool IsInGame { get; internal set; } = false;
 
 	public const string
 		LEAF_LOADING_SCENE = "uid://ddfk4hhfrlxpa",
@@ -87,31 +86,22 @@ internal partial class GlobalManager : Node2D
 	public override void _Ready()
 	{
 		spaceState = GetWorld2D().DirectSpaceState;
-		ControlsManager.InputBinds.Load();
-		OptionsManager.Module.Load();
-
-		// due to an issue with storing shader globals (https://github.com/godotengine/godot/issues/93164)
-		// we must manually set this value manually on startup
-		RenderingServer.GlobalShaderParameterSet("noise", ResourceLoader.Load("uid://bxle0qlu7wodf"));
+		OptionsManager.SaveModule.Load();
+		ControlsManager.SaveModule.Load();
 	}
 	public override void _Process(double delta)
 	{
 		// Cleans particles periodically once finished
-		for (int i = 0; i < ACTIVE_PARTICLES_CACHED.Count; i++)
+		for (int i = ACTIVE_PARTICLES_CACHED.Count - 1; i >= 0; i--)
 		{
-			bool _valid = IsInstanceValid(ACTIVE_PARTICLES_CACHED[i]);
-			if (_valid && ACTIVE_PARTICLES_CACHED[i].Emitting)
-				continue;
-			if (_valid)
-				ACTIVE_PARTICLES_CACHED[i].QueueFree();
-			ACTIVE_PARTICLES_CACHED.RemoveAt(i);
+			if (!IsInstanceValid(ACTIVE_PARTICLES_CACHED[i]) || ACTIVE_PARTICLES_CACHED[i].IsQueuedForDeletion())
+				ACTIVE_PARTICLES_CACHED.RemoveAt(i);
 		}
 	}
 
 	// MARK: Game Initialization
 	/// <summary>
-	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of its wake up.
-	/// In order to be called again, BOOT_LOADING_LABEL must be set to a valid text display node.
+	/// Initializes primary systems and loads values to memory. MainMenu triggers it as part of the game intro.
 	/// </summary>
 	public async static Task INTIALIZE_GAME_PROCESS()
 	{
@@ -126,6 +116,7 @@ internal partial class GlobalManager : Node2D
 			await LOAD_STRUCTURES();
 			await LOAD_PARTICLES();
 			await LOAD_TRAITS();
+
 			IsBusy = false;
 		}
 		catch (Exception _err)
@@ -205,6 +196,7 @@ internal partial class GlobalManager : Node2D
 				continue;
 			string _id = _filename.Split('.')[0];
 
+#if DEBUG
 			if (G_ITEMS.ContainsKey(_id))
 			{
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> is duplicated.");
@@ -214,7 +206,7 @@ internal partial class GlobalManager : Node2D
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> has no name.");
 			if (Instance.Tr(_id + "_desc") == _id + "_desc")
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> has no description.");
-
+#endif
 			G_ITEMS.Add(_id, ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _filename));
 		}
 		return Task.CompletedTask;
@@ -266,6 +258,7 @@ internal partial class GlobalManager : Node2D
 			string _filename = _foods[i].Replace(".import", string.Empty);
 			string _id = _filename.Split('.')[0];
 
+# if DEBUG
 			if (G_FOOD.ContainsKey(_id))
 			{
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"FoodDatabase: <{_id}> is duplicated.");
@@ -276,6 +269,7 @@ internal partial class GlobalManager : Node2D
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"FoodDatabase: <{_id}> does not exist as an item.");
 				continue;
 			}
+#endif
 
 			G_FOOD.Add(_id, ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _filename));
 		}
@@ -321,126 +315,126 @@ internal partial class GlobalManager : Node2D
 	}
 
 	// # MARK: Debug
-	public static string[][] FETCH_CSV_DATABASE(string _path)
-	{
-		using FileAccess _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
-		List<string[]> _document = [];
+	// public static string[][] FETCH_CSV_DATABASE(string _path)
+	// {
+	// 	using FileAccess _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
+	// 	List<string[]> _document = [];
 
-		while (_file.GetPosition() < _file.GetLength())
-			_document.Add(_file.GetCsvLine());
+	// 	while (_file.GetPosition() < _file.GetLength())
+	// 		_document.Add(_file.GetCsvLine());
 
-		return [.. _document];
-	}
-	public static Task EXPORT_ITEM_DATABASE(string[][] _document)
-	{
-		for (int i = 1; i < _document.Length; i++)
-		{
-			string[] _info = _document[i];
-			string _tag = _info[3], _id = _info[0];
+	// 	return [.. _document];
+	// }
+	// public static Task EXPORT_ITEM_DATABASE(string[][] _document)
+	// {
+	// 	for (int i = 1; i < _document.Length; i++)
+	// 	{
+	// 		string[] _info = _document[i];
+	// 		string _tag = _info[3], _id = _info[0];
 
-			int _cost = int.Parse(_info[1]),
-				_unlockableLevel = int.Parse(_info[2]);
-			StringNames.GlobalTags _itemTag = _tag switch
-			{
-				"item" => StringNames.GlobalTags.Item,
-				"food" => StringNames.GlobalTags.Food,
-				"decoration" => StringNames.GlobalTags.Decoration,
-				"equipment" => StringNames.GlobalTags.Equipment,
-				"playground" => StringNames.GlobalTags.Playground,
-				"interactable" => StringNames.GlobalTags.Interactable,
-				_ => throw new Exception()
-			};
-			ItemData.ShopOwner _shop = _info[4] switch
-			{
-				"item" => ItemData.ShopOwner.Item,
-				"furniture" => ItemData.ShopOwner.Furniture,
-				_ => ItemData.ShopOwner.NoShop
-			};
-			ItemData _data = new()
-			{
-				ID = _id,
-				Cost = _cost,
-				LevelRequirement = _unlockableLevel,
-				Tag = _itemTag,
-				Shop = _shop,
-				ShopOrderPriority = i
-			};
+	// 		int _cost = int.Parse(_info[1]),
+	// 			_unlockableLevel = int.Parse(_info[2]);
+	// 		StringNames.GlobalTags _itemTag = _tag switch
+	// 		{
+	// 			"item" => StringNames.GlobalTags.Item,
+	// 			"food" => StringNames.GlobalTags.Food,
+	// 			"decoration" => StringNames.GlobalTags.Decoration,
+	// 			"equipment" => StringNames.GlobalTags.Equipment,
+	// 			"playground" => StringNames.GlobalTags.Playground,
+	// 			"interactable" => StringNames.GlobalTags.Interactable,
+	// 			_ => throw new Exception()
+	// 		};
+	// 		ItemData.ShopOwner _shop = _info[4] switch
+	// 		{
+	// 			"item" => ItemData.ShopOwner.Item,
+	// 			"furniture" => ItemData.ShopOwner.Furniture,
+	// 			_ => ItemData.ShopOwner.NoShop
+	// 		};
+	// 		ItemData _data = new()
+	// 		{
+	// 			ID = _id,
+	// 			Cost = _cost,
+	// 			LevelRequirement = _unlockableLevel,
+	// 			Tag = _itemTag,
+	// 			Shop = _shop,
+	// 			ShopOrderPriority = i
+	// 		};
 
-			bool _isItem = _itemTag == StringNames.GlobalTags.Item || _itemTag == StringNames.GlobalTags.Food;
-			string _resourcePath = (_isItem ? ABSOLUTE_ITEMS_DB_PATH : ABSOLUTE_STRUCTURES_DB_PATH) + _id;
-			ResourceSaver.Save(_data, _resourcePath + ".tres");
-		}
-		return Task.CompletedTask;
-	}
-	public static Task EXPORT_FOOD_DATABASE(string[][] _document)
-	{
-		for (int i = 1; i < _document.Length; i++)
-		{
-			string[] _info = _document[i];
+	// 		bool _isItem = _itemTag == StringNames.GlobalTags.Item || _itemTag == StringNames.GlobalTags.Food;
+	// 		string _resourcePath = (_isItem ? ABSOLUTE_ITEMS_DB_PATH : ABSOLUTE_STRUCTURES_DB_PATH) + _id;
+	// 		ResourceSaver.Save(_data, _resourcePath + ".tres");
+	// 	}
+	// 	return Task.CompletedTask;
+	// }
+	// public static Task EXPORT_FOOD_DATABASE(string[][] _document)
+	// {
+	// 	for (int i = 1; i < _document.Length; i++)
+	// 	{
+	// 		string[] _info = _document[i];
 
-			Dictionary<string, int> _converter = new() { { "speed", 0 }, { "strength", 1 }, { "intelligence", 2 }, { "stamina", 3 } };
-			string[] _skills_names = string.IsNullOrWhiteSpace(_info[4]) ? [] : _info[4].Split(','),
-			_skills_values = string.IsNullOrWhiteSpace(_info[5]) ? [] : _info[5].Split(',');
+	// 		Dictionary<string, int> _converter = new() { { "speed", 0 }, { "strength", 1 }, { "intelligence", 2 }, { "stamina", 3 } };
+	// 		string[] _skills_names = string.IsNullOrWhiteSpace(_info[4]) ? [] : _info[4].Split(','),
+	// 		_skills_values = string.IsNullOrWhiteSpace(_info[5]) ? [] : _info[5].Split(',');
 
-			var _keys = Array.ConvertAll(_skills_names, s => (AphidData.SkillEnum)_converter[s]);
-			var _values = Array.ConvertAll(_skills_values, int.Parse);
+	// 		var _keys = Array.ConvertAll(_skills_names, s => (AphidData.SkillEnum)_converter[s]);
+	// 		var _values = Array.ConvertAll(_skills_values, int.Parse);
 
-			Godot.Collections.Dictionary<AphidData.SkillEnum, int> _dict = [];
-			for (int s = 0; s < _keys.Length; s++)
-				_dict.Add(_keys[s], _values[s]);
+	// 		Godot.Collections.Dictionary<AphidData.SkillEnum, int> _dict = [];
+	// 		for (int s = 0; s < _keys.Length; s++)
+	// 			_dict.Add(_keys[s], _values[s]);
 
-			FoodData _data = new()
-			{
-				Item = ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _info[0] + ".tres"),
-				Type = (AphidData.FoodType)int.Parse(_info[1]),
-				FoodValue = int.Parse(_info[2]),
-				DrinkValue = int.Parse(_info[3]),
-				Skills = _dict
-			};
+	// 		FoodData _data = new()
+	// 		{
+	// 			Item = ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _info[0] + ".tres"),
+	// 			Type = (AphidData.FoodType)int.Parse(_info[1]),
+	// 			FoodValue = int.Parse(_info[2]),
+	// 			DrinkValue = int.Parse(_info[3]),
+	// 			Skills = _dict
+	// 		};
 
-			ResourceSaver.Save(_data, ABSOLUTE_FOODS_DB_PATH + _info[0] + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
-		}
+	// 		ResourceSaver.Save(_data, ABSOLUTE_FOODS_DB_PATH + _info[0] + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
+	// 	}
 
-		return Task.CompletedTask;
-	}
-	public static Task EXPORT_RECIPES_DATABASE(string[][] _document)
-	{
-		Dictionary<string, List<string[]>> _recipes = [];
-		for (int i = 1; i < _document.Length; i++)
-		{
-			string[] _info = _document[i];
+	// 	return Task.CompletedTask;
+	// }
+	// public static Task EXPORT_RECIPES_DATABASE(string[][] _document)
+	// {
+	// 	Dictionary<string, List<string[]>> _recipes = [];
+	// 	for (int i = 1; i < _document.Length; i++)
+	// 	{
+	// 		string[] _info = _document[i];
 
-			if (!_recipes.ContainsKey(_info[0]))
-				_recipes.Add(_info[0], [[_info[1], _info[2]]]);
-			else
-				_recipes[_info[0]].Add([_info[1], _info[2]]);
-		}
+	// 		if (!_recipes.ContainsKey(_info[0]))
+	// 			_recipes.Add(_info[0], [[_info[1], _info[2]]]);
+	// 		else
+	// 			_recipes[_info[0]].Add([_info[1], _info[2]]);
+	// 	}
 
-		foreach (var _pair in _recipes)
-		{
-			RecipeData _data = new(Owner: ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Key + ".tres"),
-				Combinations: []);
+	// 	foreach (var _pair in _recipes)
+	// 	{
+	// 		RecipeData _data = new(Owner: ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Key + ".tres"),
+	// 			Combinations: []);
 
-			for (int i = 0; i < _pair.Value.Count; i++)
-			{
-				GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres");
-				GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres");
-				Godot.Collections.Array<FoodData> _combination = [];
-				_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres"));
-				if (!string.IsNullOrWhiteSpace(_pair.Value[i][1]))
-					_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres"));
+	// 		for (int i = 0; i < _pair.Value.Count; i++)
+	// 		{
+	// 			GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres");
+	// 			GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres");
+	// 			Godot.Collections.Array<FoodData> _combination = [];
+	// 			_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres"));
+	// 			if (!string.IsNullOrWhiteSpace(_pair.Value[i][1]))
+	// 				_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres"));
 
-				_data.Combinations.Add(_combination);
-			}
+	// 			_data.Combinations.Add(_combination);
+	// 		}
 
-			ResourceSaver.Save(_data, ABSOLUTE_RECIPES_DB_PATH + _pair.Key + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
-		}
-		return Task.CompletedTask;
-	}
+	// 		ResourceSaver.Save(_data, ABSOLUTE_RECIPES_DB_PATH + _pair.Key + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
+	// 	}
+	// 	return Task.CompletedTask;
+	// }
 
 	// MARK: Dedicated Util Functions
 	/// <summary>
-	/// Spawns a set of particles and manages its place in memory. Used to handle long-lasting particles in memory automatically.
+	/// Emits a set of particles from the database. Automatically disposes of particles upon finish of a oneshot or when moving scenes.
 	/// </summary>
 	/// <param name="_name">Name of the particles prefab</param>
 	/// <param name="_position">Position to spawn them in</param>
@@ -451,16 +445,21 @@ internal partial class GlobalManager : Node2D
 			=> EmitParticles(_name, _position, Instance, _essential);
 	public static GpuParticles2D EmitParticles(string _name, Vector2 _position, Node2D _parent, bool _essential = true)
 	{
-		var _item = (G_PARTICLES.GetResource(_name) as PackedScene).Instantiate() as GpuParticles2D;
-		_item.GlobalPosition = _position;
-		_item.Emitting = true;
-		_item.ProcessMode = ProcessModeEnum.Pausable;
-		_parent.AddChild(_item);
+		var _particle = (G_PARTICLES.GetResource(_name) as PackedScene).Instantiate() as GpuParticles2D;
+		_particle.GlobalPosition = _position;
+		_particle.Emitting = true;
+		_particle.ProcessMode = ProcessModeEnum.Pausable;
+		_parent.AddChild(_particle);
 
-		ACTIVE_PARTICLES_CACHED.Add(_item);
+		ACTIVE_PARTICLES_CACHED.Add(_particle);
 		if (!_essential && ACTIVE_PARTICLES_CACHED.Count > 20)
-			_item.Visible = false;
-		return _item;
+			_particle.Hide();
+		_particle.Finished += () =>
+		{
+			ACTIVE_PARTICLES_CACHED.Remove(_particle);
+			_particle.QueueFree();
+		};
+		return _particle;
 	}
 	public static void CleanAllParticles()
 	{
@@ -515,7 +514,7 @@ internal partial class GlobalManager : Node2D
 		_dialog.PopupCentered();
 		DebugLogger.Print(DebugLogger.LogPriority.Error, _err);
 	}
-	public static void CreatePopup(string _translation_key, Node _parent)
+	public static void CREATE_POPUP(string _translation_key, Node _parent)
 	{
 		Control _popup = ResourceLoader.Load<PackedScene>(POPUP_WINDOW_SCENE).Instantiate() as Control;
 		_popup.Position = CameraManager.SCREEN_CENTER_CANVAS - _popup.Size / 2;
@@ -619,36 +618,32 @@ internal partial class GlobalManager : Node2D
 		/// <summary>
 		/// Calls the listeners on the refered list with the given arguments, can optionally clear the list of all listeners after doing so.
 		/// </summary>
-		public static Task InvokeAwaitableEventListeners<T>(ref List<Action<T>> _list, T _args, bool _clearOnFinish = false)
+		public static Task InvokeAwaitableEventListeners<T>(List<Action<T>> _list, T _args, bool _clearOnFinish = false)
 		{
-			for (int i = 0; i < _list.Count; i++)
+			try
 			{
-				try
-				{
-					_list[i](_args);
-				}
-				catch (Exception _error)
-				{
-					DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
-				}
+				for (int i = 0; i < _list.Count; i++)
+					_list[i].Invoke(_args);
+			}
+			catch (Exception _error)
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
 			}
 
 			if (_clearOnFinish)
 				_list.Clear();
 			return Task.CompletedTask;
 		}
-		public static void InvokeEventListeners<T>(ref List<Action<T>> _list, T _args, bool _clearOnFinish = false)
+		public static void InvokeEventListeners<T>(List<Action<T>> _list, T _args, bool _clearOnFinish = false)
 		{
-			for (int i = 0; i < _list.Count; i++)
+			try
 			{
-				try
-				{
-					_list[i](_args);
-				}
-				catch (Exception _error)
-				{
-					DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
-				}
+				for (int i = 0; i < _list.Count; i++)
+					_list[i].Invoke(_args);
+			}
+			catch (Exception _error)
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Error, _error);
 			}
 
 			if (_clearOnFinish)

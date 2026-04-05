@@ -23,6 +23,7 @@ public static class InputNames
 	public readonly static StringName Sell = new("sell");
 	public readonly static StringName Store = new("store");
 	public readonly static StringName Pull = new("pull");
+	public readonly static StringName ShowInfo = new("show_info");
 	public readonly static StringName AlignToGrid = new("align_to_grid");
 	public readonly static StringName ChangeMode = new("change_mode");
 	public readonly static StringName QuickAction1 = new("quick_action_1");

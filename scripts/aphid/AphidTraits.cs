@@ -9,36 +9,39 @@ using static AphidData;
 public partial class AphidTraits : Aphid
 {
     public interface ITrait
-	{
+    {
         public string ID { get; }
-		public string[] IncompatibleTraits { get; }
+        public string[] IncompatibleTraits { get; }
 
         /// <summary>
         /// Called when an active aphid is instantiated.
         /// </summary>
-		public virtual void OnEnter(Aphid _aphid) {
+		public virtual void OnEnter(Aphid _aphid)
+        {
             return;
         }
         /// <summary>
         /// Called when an aphid changes state.
         /// </summary>
-		public virtual void OnStateChange(Aphid _aphid, StateEnum _previousState) {
+		public virtual void OnStateChange(Aphid _aphid, StateEnum _previousState)
+        {
             return;
         }
         /// <summary>
         /// Process method. Must be called manually by aphid.
         /// </summary>
-		public virtual void OnProcess(Aphid _aphid, float _delta) {
+		public virtual void OnProcess(Aphid _aphid, float _delta)
+        {
             return;
         }
 
-		public bool IsIncompatibleWith(string _ID)
-		{
-			if (IncompatibleTraits == null)
-				return false;
-			return IncompatibleTraits.Contains(_ID);
-		}
-	}
+        public bool IsIncompatibleWith(string _ID)
+        {
+            if (IncompatibleTraits == null)
+                return false;
+            return IncompatibleTraits.Contains(_ID);
+        }
+    }
     /// <summary>
     /// An optional version of ITrait that allows changing behaviours on passive aphids.
     /// </summary>
@@ -47,19 +50,22 @@ public partial class AphidTraits : Aphid
         /// <summary>
         /// Called when an active aphid is instantiated.
         /// </summary>
-		public virtual void OnEnter(AphidPassive _aphid) {
+		public virtual void OnEnter(AphidPassive _aphid)
+        {
             return;
         }
         /// <summary>
         /// Called when an aphid changes state.
         /// </summary>
-		public virtual void OnStateChange(AphidPassive _aphid, StateEnum _previousState) {
+		public virtual void OnStateChange(AphidPassive _aphid, StateEnum _previousState)
+        {
             return;
         }
         /// <summary>
         /// Process method. Must be called manually by aphid.
         /// </summary>
-		public virtual void OnProcess(AphidPassive _aphid, float _delta) {
+		public virtual void OnProcess(AphidPassive _aphid, float _delta)
+        {
             return;
         }
     }
@@ -78,7 +84,7 @@ public partial class AphidTraits : Aphid
         new MoneyMaker(),
         new FastLearner()
     ];
-    
+
     public static ITrait GetTraitByName(string _name)
     {
         Type _type = G_TRAITS[_name];
@@ -90,7 +96,7 @@ public partial class AphidTraits : Aphid
         _name = _type.Key;
         return (ITrait)Activator.CreateInstance(_type.Value);
     }
-    
+
     public class HeavySleeper : ITrait
     {
         public string ID => "heavysleeper";
@@ -166,9 +172,9 @@ public partial class AphidTraits : Aphid
                 {
                     interaction_timer = new();
                     _aphid.AddChild(interaction_timer);
-                    interaction_timer.Start();
                 }
-                if (!_aphid.State.Is(StateEnum.Idle) || interaction_timer.TimeLeft > 0.1f)
+
+                if (!_aphid.State.Is(StateEnum.Idle) || !interaction_timer.IsStopped() && interaction_timer.TimeLeft > 0.01)
                     return;
 
                 interaction_timer.Start(interaction_cd);
@@ -184,7 +190,10 @@ public partial class AphidTraits : Aphid
                         break;
                 }
             }
-
+            public void OnNodeStay(Aphid _aphid, Node2D _node)
+            {
+                return;
+            }
             public void OnNodeExited(Aphid _aphid, Node2D _node)
             {
                 return;
@@ -193,7 +202,7 @@ public partial class AphidTraits : Aphid
     }
     public class Lazy : ITrait
     {
-        public string[] IncompatibleTraits => [ "hyperactive" ];
+        public string[] IncompatibleTraits => ["hyperactive"];
         public string ID => "lazy";
 
         bool lazy_emote_active = false;
@@ -217,7 +226,7 @@ public partial class AphidTraits : Aphid
                     aphid.skin.Position = new(0, 2);
                 }
             }
-            else 
+            else
             {
                 if (lazy_emote_active)
                 {

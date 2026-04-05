@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://2k0vsdw6oh8t"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_apbp3"]
+[ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="2_64v7j"]
+
+[node name="recipe_slot" type="HBoxContainer"]
+custom_minimum_size = Vector2(440, 120)
+offset_right = 440.0
+offset_bottom = 120.0
+alignment = 1
+
+[node name="ing1_bg" type="NinePatchRect" parent="."]
+self_modulate = Color(0.44371906, 0.19241583, 0.26544592, 1)
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+texture = ExtResource("1_apbp3")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="ing1_icon" type="TextureRect" parent="ing1_bg"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_64v7j")
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ing2_bg" type="NinePatchRect" parent="."]
+self_modulate = Color(0.44371906, 0.19241583, 0.26544592, 1)
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+texture = ExtResource("1_apbp3")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="ing2_icon" type="TextureRect" parent="ing2_bg"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_64v7j")
+stretch_mode = 4

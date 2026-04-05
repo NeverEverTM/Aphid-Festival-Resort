@@ -1,15 +1,16 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 public partial class GameManager : Node
 {
 	public static GameManager Instance { get; private set; }
-	public const string ID = "main";
+	public const string SAVEMODULE_ID = "main";
+	internal static bool IsANewSavefile { get; set; }
 
-	internal static bool IsNewGame { get; set; }
-	internal static bool APPLY_OUTOFBOUND_PATCH = false;
+	public Timer autoSaveTimer;
 
 	public static GameData Data { get; private set; }
 	/// <summary>
@@ -18,18 +19,29 @@ public partial class GameManager : Node
 	/// </summary>
 	public static Dictionary<Guid, AphidInstance> Aphids { get; private set; } = [];
 	public static Dictionary<Guid, AphidData.Genes> AphidArchive { get; set; } = [];
+	public static Dictionary<string, GlobalUpgrades.UpgradeModule> Upgrades { get; set; } = new(){
+		{ "membership_tier", new(1) }
+	};
+	
+	public GameSaveModule GameSavefile = new(SAVEMODULE_ID, new GameDataModule(), 9999);
+	public AphidSaveModule AphidSavefile = new("aphids", new AphidDataModule(), 3008)
+	{
+		RelativePath = SaveSystem.PROFILE_APHIDS_DIR,
+	};
+	public GenerationsSaveModule GenerationsSavefile = new("generations", new GenerationsDataModule(), 2038)
+	{
+		Extension = SaveSystem.SAVEFILE_EXTENSION,
+		RelativePath = SaveSystem.PROFILE_APHIDS_DIR,
+	};
+	public SaveSystem.SaveModule<Dictionary<string, GlobalUpgrades.UpgradeModule>> UpgradesSavefile = new("upgrades", new UpgradesDataModule(), 1985);
 
-	public static GameSaveModule GameModule { get; private set; }
-	public static AphidSaveModule AphidModule { get; private set; }
-	public static GenerationsSaveModule GenerationsModule { get; private set; }
-
-	// MARK: SaveModules
+	// MARK: SaveModule Declarations
 	public class GameSaveModule(string ID, SaveSystem.IDataModule<GameData> _module, int LoadPriority = 0) :
 		SaveSystem.SaveModule<GameData>(ID, _module, LoadPriority)
 	{
 		public override GameData PostLoad(string _raw_data)
 		{
-			if (GameVersion < GlobalManager.GAME_VERSION)
+			if (GameVersion < 301)
 			{
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, "GameManager: Applied Out of Bounds Patch ");
 				APPLY_OUTOFBOUND_PATCH = true;
@@ -70,7 +82,9 @@ public partial class GameManager : Node
 		}
 		public override Dictionary<Guid, AphidInstance> PostLoad(string _raw_data)
 		{
-			if (GameVersion < 220)
+			// v2.1 changed how these variables were named
+			// https://github.com/NeverEverTM/Aphid-Festival-Resort/commit/66917b3eff6561269db6c8ccd5044d49475839b1#diff-aece67fc4fc2d3a973f0e7be27a335d3142a29cd16fa4d73631188706b6292dd
+			if (GameVersion < 210)
 			{
 				_raw_data = _raw_data.Replace("MilkBuildup", "HarvestBuildup");
 
@@ -82,7 +96,26 @@ public partial class GameManager : Node
 				_raw_data = _raw_data.Replace("{\"Name\":\"intelligence\"", "\"intelligence\":{\"Name\":\"intelligence\"");
 				_raw_data = _raw_data.Replace("{\"Name\":\"speed\"", "\"speed\":{\"Name\":\"speed\"");
 			}
-			return base.PostLoad(_raw_data);
+
+			// v3.0 changed the variables "Mother" and "Father" types
+			if (GameVersion < 300)
+			{
+				_raw_data.Replace("\"Father\":\"", "\"Unusued1\":\""); // TODO: change this to recover parents instead
+				_raw_data.Replace("\"Mother\":\"", "\"Unusued2\":\"");
+			}
+
+			Dictionary<Guid, AphidInstance> _aphidData = base.PostLoad(_raw_data);
+			// Patch runtime variables
+			if (GameVersion != GlobalManager.GAME_VERSION)
+			{
+				foreach (var _aphid in _aphidData)
+				{
+					_aphid.Value.Genes.StartPatch(GameVersion);
+					_aphid.Value.Status.StartPatch(GameVersion);
+				}
+			}
+
+			return _aphidData;
 		}
 	}
 	public class AphidDataModule : SaveSystem.IDataModule<Dictionary<Guid, AphidInstance>>
@@ -92,11 +125,11 @@ public partial class GameManager : Node
 		{
 			Aphids = _data;
 			foreach (var aphid in Aphids)
-            {
+			{
 				if (aphid.Value.Status.Mode != AphidData.EntityStatusType.Busy)
 					aphid.Value.Status.Mode = AphidData.EntityStatusType.Passive;
 				aphid.Value.PassiveEntity = new(aphid.Value);
-            }
+			}
 		}
 		public Dictionary<Guid, AphidInstance> Get() => Aphids;
 	}
@@ -132,6 +165,12 @@ public partial class GameManager : Node
 			AphidArchive = _data;
 		}
 	}
+	public class UpgradesDataModule : SaveSystem.IDataModule<Dictionary<string, GlobalUpgrades.UpgradeModule>>
+	{
+		public Dictionary<string, GlobalUpgrades.UpgradeModule> Default() => [];
+		public Dictionary<string, GlobalUpgrades.UpgradeModule> Get() => Upgrades;
+		public void Set(Dictionary<string, GlobalUpgrades.UpgradeModule> _data) => Upgrades = _data;
+	}
 
 	public record GameData
 	{
@@ -147,37 +186,37 @@ public partial class GameManager : Node
 		public int ItemsSold { get; set; } = 0;
 		public int SavefileBoots { get; set; } = 0;
 	}
-
-	public Timer autoSaveTimer;
-
+	//public enum ResortUpgradesEnum
+	//{
+	//    PlayerLevel,
+	//    JobBoardLevel,
+	//    GOLDEN_AutoCareService,
+	//    GOLDEN_EastWing,
+	//}
+	//// To be implemented later on
+	//// GOLDEN_DrinkService
+	//// GOLDEN_MinigameLevel
+	//// GOLDEN_HatsShop
+	
 	// MARK: Body
 	public override void _EnterTree()
 	{
 		Instance = this;
-		GameModule = new(ID, new GameDataModule(), 9999);
-		AphidModule = new("aphids", new AphidDataModule(), 3008)
-		{
-			RelativePath = SaveSystem.PROFILE_APHIDS_DIR
-		};
-		GenerationsModule = new("generations", new GenerationsDataModule(), 2038)
-		{
-			Extension = SaveSystem.SAVEFILE_EXTENSION,
-			RelativePath = SaveSystem.PROFILE_APHIDS_DIR
-		};
-		SaveSystem.AddSaveModule(GameModule);
-		SaveSystem.AddSaveModule(AphidModule);
-		SaveSystem.AddSaveModule(GenerationsModule);
-		SceneManager.AddEventListener(StartGame, SceneManager.EventEnum.OnGameInit);
-		SceneManager.AddEventListener((_) => Instance.autoSaveTimer?.QueueFree(), SceneManager.EventEnum.OnGameFinish);
+		APPLY_OUTOFBOUND_PATCH = false;
+
+		SceneManager.AddEventListener(OnGameInit, SceneManager.EventEnum.OnGameInit);
+		SceneManager.AddEventListener(OnGameFinish, SceneManager.EventEnum.OnGameFinish);
 	}
 	public override async void _Notification(int what)
 	{
 		// responsible for saving the game when closing the window or exiting the application
-		if (what == NotificationWMCloseRequest && GlobalManager.IsInGame)
+		if (SceneManager.CurrentlyInGame && what == NotificationWMCloseRequest)
 			await SaveSystem.SaveProfile();
 	}
 	public override void _Process(double delta)
 	{
+		if (!SceneManager.CurrentlyInGame)
+			return;
 		float _delta = (float)delta;
 		foreach (var aphid in Aphids)
 		{
@@ -187,60 +226,83 @@ public partial class GameManager : Node
 		}
 	}
 
-	public static async void StartGame(SceneManager.SceneArgs _args)
+	private void OnGameInit(SceneManager.SceneArgs _args)
 	{
-		// On New game, put intro cutscene, otherwise just load normally
-		if (!IsNewGame)
-			CheckForGameOver();
+		SaveSystem.AddSaveModule(GameSavefile);
+		SaveSystem.AddSaveModule(AphidSavefile);
+		SaveSystem.AddSaveModule(GenerationsSavefile);
+		SaveSystem.AddSaveModule(UpgradesSavefile);
+
+		if (IsANewSavefile)
+			StartNewGameCutscene();
 		else
+			SceneManager.AddEventListener((_) => CheckForGameOver(), SceneManager.EventEnum.OnPostLoad);
+
+		static void _addBootCount(SceneManager.SceneArgs _)
 		{
-			var _last = CameraManager.Instance.PositionSmoothingSpeed;
-			Player.Instance.SetDisabled(true);
-			Player.Instance.GlobalPosition = ResortManager.Current.SpawnPoint.GlobalPosition;
-			CameraManager.ForceCameraPosition(Player.Instance.GlobalPosition + new Vector2(1000, 0));
-			CameraManager.Instance.PositionSmoothingSpeed = 0;
-
-			// we set new game data
-			await SaveSystem.SetProfileData();
-			PlayerInventory.StoreItem("aphid_egg");
-			PlayerInventory.StoreItem("aphid_egg");
-			await SaveSystem.SaveProfile();
-			await Task.Delay(1750);
-
-			Player.Instance.SetMovementDirection(Vector2.Right);
-			CameraManager.Instance.PositionSmoothingSpeed = 0.75f;
-			while (CameraManager.Instance.GetScreenCenterPosition().DistanceSquaredTo(CameraManager.Instance.GetTargetPosition()) > 340)
-			{
-				CameraManager.Instance.PositionSmoothingSpeed += 0.01f;
-				await Task.Delay(1);
-			}
-			Player.Instance.SetMovementDirection(Vector2.Zero);
-			await Task.Delay(200);
-			CameraManager.Instance.PositionSmoothingSpeed = _last;
-			await DialogManager.Instance.OpenDialogBox("intro_welcome");
-			Player.Instance.SetDisabled(false);
-			IsNewGame = false;
+			Data.SavefileBoots++;
 		}
+		SceneManager.AddEventListener(_addBootCount, SceneManager.EventEnum.OnPostLoad);
 
 		Instance.autoSaveTimer = new();
 		Instance.autoSaveTimer.Timeout += () => _ = SaveSystem.SaveProfile(true);
 		Instance.AddChild(Instance.autoSaveTimer);
 		Instance.autoSaveTimer.Start(300);
-		Data.SavefileBoots++;
+	}
+	private void OnGameFinish(SceneManager.SceneArgs _args)
+	{
+		if (IsInstanceValid(Instance.autoSaveTimer))
+			Instance.autoSaveTimer.QueueFree();
+	}
+
+	// MARK: Temp Cutscenes
+	private static async void StartNewGameCutscene()
+	{
+		CutsceneManager.IsActive = true;
+		Player.Instance.SetDisabled(true);
+		var _last = CameraManager.Instance.PositionSmoothingSpeed;
+		Player.Instance.GlobalPosition = ResortManager.Current.SpawnPoint.GlobalPosition;
+		CameraManager.ForceCameraPosition(Player.Instance.GlobalPosition + new Vector2(1000, 0));
+		CameraManager.Instance.PositionSmoothingSpeed = 0;
+		CanvasManager.SetHUDTo(false);
+
+		// we set new game data
+		await SaveSystem.SetProfileData();
+		PlayerInventory.StoreItem("aphid_egg");
+		PlayerInventory.StoreItem("aphid_egg");
+		await SaveSystem.SaveProfile(false, true);
+		await Task.Delay(1750);
+
+		Player.Instance.SetMovementDirection(Vector2.Right);
+		CameraManager.Instance.PositionSmoothingSpeed = 0.75f;
+		while (CameraManager.Instance.GetScreenCenterPosition().DistanceSquaredTo(CameraManager.Instance.GetTargetPosition()) > 340)
+		{
+			CameraManager.Instance.PositionSmoothingSpeed += 0.01f;
+			await Task.Delay(1);
+		}
+		Player.Instance.SetMovementDirection(Vector2.Zero);
+		await Task.Delay(200);
+		CameraManager.Instance.PositionSmoothingSpeed = _last;
+		await DialogManager.Instance.OpenDialogBox("intro_welcome");
+		Player.Instance.SetDisabled(false);
+		CanvasManager.SetHUDTo(true);
+		IsANewSavefile = false;
+		CutsceneManager.IsActive = false;
 	}
 	public static void CheckForGameOver()
 	{
-		// check for lose condition
-		int _maxCost = 0;
+		int _totalWorth = 0;
 		for (int i = 0; i < Player.Data.Inventory.Count; i++)
 		{
 			int _cost = GlobalManager.G_ITEMS[Player.Data.Inventory[i]].Cost / 2;
-			_maxCost += _cost;
+			_totalWorth += _cost;
 		}
 
-		if (Aphids.Count == 0 && Player.Data.Currency + _maxCost < 50)
+		if (Aphids.Count == 0 && !Player.Data.Inventory.Exists((s) => s.Contains("aphid_egg")) && Player.Data.Currency + _totalWorth < 50)
 			GameOver.OhNo();
 	}
+
+	// MARK: General Functions
 	/// <summary>
 	/// Checks if the given position intersects with any geometry that is considered "solid"
 	/// </summary>
@@ -277,8 +339,8 @@ public partial class GameManager : Node
 	public static bool IsOutOfBounds(Vector2 _position)
 	{
 		float _x = _position.X, _y = _position.Y,
-				_xtp = FieldManager.Instance.TopLeft.GlobalPosition.X, _ytp = FieldManager.Instance.TopLeft.GlobalPosition.Y,
-				_xbr = FieldManager.Instance.BottomRight.GlobalPosition.X, _ybr = FieldManager.Instance.BottomRight.GlobalPosition.Y;
+				_xtp = RoomInstance.Instance.TopLeft.GlobalPosition.X, _ytp = RoomInstance.Instance.TopLeft.GlobalPosition.Y,
+				_xbr = RoomInstance.Instance.BottomRight.GlobalPosition.X, _ybr = RoomInstance.Instance.BottomRight.GlobalPosition.Y;
 		if (_x < _xtp || _x > _xbr ||
 				_y < _ytp || _y > _ybr)
 			return true;
@@ -329,4 +391,21 @@ public partial class GameManager : Node
 			ResortManager.Current.Aphids.Remove(value.Entity);
 		Aphids.Remove(_guid);
 	}
+	public static GlobalUpgrades.UpgradeModule GetUpgrade(string _id)
+	{
+		if (!HasUpgrade(_id))
+			return new(0);
+		return Upgrades[_id];
+	}
+	public static bool HasUpgrade(string _id)
+	{
+		return Upgrades.ContainsKey(_id);
+	}
+
+	// Backwards Compability related
+	internal static bool APPLY_OUTOFBOUND_PATCH = false;
+	[GeneratedRegex("(?<=\"Father\":\")([^\"]+)")]
+	private static partial Regex FATHER_RECOVERY();
+	[GeneratedRegex("(?<=\"Mother\":\")([^\"]+)")]
+	private static partial Regex MOTHER_RECOVERY();
 }

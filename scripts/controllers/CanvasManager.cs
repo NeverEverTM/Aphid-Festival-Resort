@@ -8,19 +8,7 @@ public partial class CanvasManager : CanvasLayer
 	public static CanvasManager Instance { get; private set; }
 	public static MenuHandler Menus { get; private set; } = new();
 	public const string APHID_SLOT_PREFAB = "uid://d7m5e6tlxyve";
-
-	/// <summary>
-	/// Colors for the weather popup
-	/// </summary>
-	public readonly static Color[] WeatherColors =
-	[
-		new(0.22f, 0.608f, 0.898f), // Morning
-			new(0.984f, 0.796f, 0.039f), // Noon
-			new(0.987f, 0.371f, 0), // Afternoon
-			new(0.8f, 0.1f, 0.8f), // Sunset
-			new(0.435f, 0.33f, 0.823f) // Night
-	];
-
+	
 	[Export] private Control hud_element;
 	[Export] private TextureRect photo_display;
 	[Export] private AnimationPlayer photo_anim_player;
@@ -33,29 +21,94 @@ public partial class CanvasManager : CanvasLayer
 	[Export] private Label weather_text;
 	[Export] private Texture2D[] weather_sprites;
 	[Export] private TextureRect weather_bg;
+    [Export] private Color[] weather_popup_colors =
+    [
+        new(0.22f, 0.608f, 0.898f), // Morning
+			new(0.984f, 0.796f, 0.039f), // Noon
+			new(0.987f, 0.371f, 0), // Afternoon
+			new(0.8f, 0.1f, 0.8f), // Sunset
+			new(0.435f, 0.33f, 0.823f) // Night
+	];
 
-	public readonly Dictionary<string, Control> PromptList = [];
 	private Timer vanish_screenshot_timer;
+
+	public enum ControlPrompt
+	{
+		None = -1,
+		Interact,
+		OpenMenu,
+		TalkToNPC,
+		PetAphid,
+		HarvestAphid,
+		ShowInfo,
+		CloseInfo,
+		PickupItem,
+		DropItem,
+		SellBuilding,
+		StoreBuilding,
+		AlignToGridBuilding
+	}
+	private struct ControlPromptData(string ID, string TranslationKey, string ActionKey)
+	{
+		// The identifier for this control prompt, use the same one to override others when needed.
+		public string ID = ID;
+		/// <summary>
+		/// <summary>
+		/// The key to the translated text to show.
+		/// </summary>
+		public string TranslationKey = TranslationKey;
+		/// The keybind that this control prompt shows.
+		/// </summary>
+		public string ActionKey = ActionKey;
+	}
+	private record ControlPromptRuntimeData(Control Node, int Priority)
+	{
+		public Control Node = Node;
+		public int Priority = Priority;
+	}
+	private readonly Dictionary<ControlPrompt, ControlPromptData> available_prompts = new()
+	{
+		{ ControlPrompt.Interact, new("interact", "interact", InputNames.Interact ) },
+		{ ControlPrompt.OpenMenu, new("interact", "open_menu", InputNames.Interact ) },
+		{ ControlPrompt.TalkToNPC, new("interact", "talk", InputNames.Interact ) },
+		{ ControlPrompt.PetAphid, new("interact", "pet", InputNames.Interact ) },
+		{ ControlPrompt.HarvestAphid, new("interact", "harvest", InputNames.Interact ) },
+		{ ControlPrompt.ShowInfo, new("info", "show_info", InputNames.ShowInfo ) },
+		{ ControlPrompt.CloseInfo, new("info", "close_info", InputNames.ShowInfo ) },
+		{ ControlPrompt.PickupItem, new("pickup", "pickup", InputNames.Pickup ) },
+		{ ControlPrompt.DropItem, new("pickup", "drop", InputNames.Pickup ) },
+		{ ControlPrompt.SellBuilding, new("sell", "sell", InputNames.Sell ) },
+		{ ControlPrompt.StoreBuilding, new("store", "store", InputNames.Store ) },
+		{ ControlPrompt.AlignToGridBuilding, new("align_to_grid", "align_to_grid", InputNames.AlignToGrid ) },
+	};
+	private readonly Dictionary<string, ControlPromptRuntimeData> prompt_list = [];
 
 	public override void _EnterTree()
 	{
 		Instance = this;
 		screenshot_button.Pressed += TakeScreenshot;
-		Menus.OnSwitch.Add(OnSwitchMenu);
 
+		// events
+		SceneManager.AddEventListener((_) => UpdateCurrency(), SceneManager.EventEnum.OnPostLoad);
+		RoomInstance.Instance.AddEventListener(StartWeatherPopup, RoomInstance.TimeEvents.OnHourChange);
 	}
 	public override void _ExitTree()
 	{
 		Menus = new();
 		Instance = null;
 	}
-	public override void _Ready()
+	
+	public static async Task INSTANTIATE_CANVAS()
 	{
-		FieldManager.Instance.OnTimeChange.Add(StartWeatherPopup);
+        CanvasLayer _canvas = (await GlobalManager.PRELOAD_RESOURCE(GlobalManager.CANVAS_PREFAB, true) as PackedScene).Instantiate() as CanvasLayer;
+        GlobalManager.Instance.GetTree().CurrentScene.AddChild(_canvas);
 	}
 
 	public override void _Input(InputEvent @event)
 	{
+		if (GlobalManager.IsBusy || CutsceneManager.IsActive)
+			return;
+
 		if (@event.IsActionPressed(InputNames.TakeScreenshot))
 			TakeScreenshot();
 
@@ -64,20 +117,6 @@ public partial class CanvasManager : CanvasLayer
 			_ = Menus.GoBack();
 			GetViewport().SetInputAsHandled();
 		}
-	}
-	private void OnSwitchMenu(MenuInstance _lastMenu, MenuInstance _currentMenu)
-	{
-		if (_currentMenu?.Name == "pause")
-			return;
-
-		if (Menus.IsActive)
-		{
-			SetHudElements(false);
-			ClearControlPrompts();
-		}
-		// dont set them back in if we are in free camera mode
-		else if (!IsInstanceValid(FreeCameraManager.Instance) || !FreeCameraManager.Enabled)
-			SetHudElements(true);
 	}
 
 	public static async void TakeScreenshot()
@@ -88,7 +127,7 @@ public partial class CanvasManager : CanvasLayer
 		Instance.photo_display.Hide();
 		if (_is_free_camera)
 		{
-			FreeCameraManager.SetFreeCameraHud(false, true);
+			FreeCameraManager.SetHUDTo(false, true);
 			AphidInfo.Instance.Hide();
 		}
 
@@ -134,26 +173,26 @@ public partial class CanvasManager : CanvasLayer
 
 		if (_is_free_camera)
 		{
-			FreeCameraManager.SetFreeCameraHud(true, true);
+			FreeCameraManager.SetHUDTo(true, true);
 			AphidInfo.Instance.Show();
 		}
 		Instance.photo_display.Show();
 		Instance.Show();
 	}
-	public static void SetHudElements(bool _state)
+	public static void SetHUDTo(bool _state)
 	{
 		if (_state == Instance.hud_element.Visible)
 			return;
 
-		if (_state)
-			Instance.hud_element.Show();
-		else
-			Instance.hud_element.Hide();
+		Instance.hud_element.Visible = _state;
 	}
 	public static void UpdateCurrency()
 	{
 		if (Instance == null)
+		{
+			GD.PrintErr("CanvasManager is null");
 			return;
+		}
 
 		if (Player.Data.Currency >= 10000)
 			Instance.currency_text.Text = (Player.Data.Currency / 1000).ToString("00K");
@@ -162,9 +201,9 @@ public partial class CanvasManager : CanvasLayer
 	}
 
 	// opens weather overlay and creates timer to hide it automatically
-	public void StartWeatherPopup(FieldManager.DayHourMode _hour)
+	public void StartWeatherPopup(RoomInstance.TimeArgs _args)
 	{
-		OpenWeather(_hour);
+		OpenWeather(RoomInstance.TimeArgs.TimeOfDay);
 		Timer _timer = new()
 		{
 			OneShot = true
@@ -177,10 +216,10 @@ public partial class CanvasManager : CanvasLayer
 		AddChild(_timer);
 		_timer.Start(5);
 	}
-	public void OpenWeather(FieldManager.DayHourMode _hour)
+	public void OpenWeather(RoomInstance.DayHourMode _hour)
 	{
-		weather_bg.SelfModulate = WeatherColors[(int)_hour];
-		if (_hour == FieldManager.DayHourMode.Night)
+		weather_bg.SelfModulate = weather_popup_colors[(int)_hour];
+		if (_hour == RoomInstance.DayHourMode.Night)
 			weather_bg.Texture = weather_sprites[1];
 		else
 			weather_bg.Texture = weather_sprites[0];
@@ -195,47 +234,65 @@ public partial class CanvasManager : CanvasLayer
 			weather_player.Play(StringNames.CloseAnim);
 	}
 
-
 	/// <summary>
-	/// Adds a control prompt ui element to point out interactables nearby and possible interactions.
+	/// Adds a control prompt for possible interactions.
 	/// </summary>
-	/// <param name="_tr_key">A translation key for the text that indicates what the respective input action does.</param>
-	/// <param name="_id">The id of this prompt, used to remove this component if provided in RemoveControlPrompt.</param>
-	/// <param name="_action_key">A key to indicate which input action should show as.</param>
-	public static void AddControlPrompt(string _tr_key, string _id, string _action_key)
+	public static void AddControlPrompt(ControlPrompt _prompt, int _priority = 0)
 	{
-		if (Instance == null || Instance.PromptList.ContainsKey(_id))
+		if (Instance == null)
 			return;
+		ControlPromptData _promptData = Instance.available_prompts[_prompt];
+		
+		if (Instance.prompt_list.TryGetValue(_promptData.ID, out ControlPromptRuntimeData value))
+		{
+			if (value.Priority >= _priority)
+				return;
+			else
+			{
+				value.Node.QueueFree();
+				Instance.prompt_list.Remove(_promptData.ID);
+			}
+		}
 
-		Control _node = Instance.prompt_element.Instantiate<Control>();
+		Instance.prompt_list.Add(_promptData.ID, new(Instance.CreateControlPromptNode(_promptData.TranslationKey, _promptData.ActionKey), _priority));
+	}
+	public static bool HasControlPrompt(string _id) => Instance.prompt_list.ContainsKey(_id);
+	private Control CreateControlPromptNode(string _trKey, string _actionKey)
+	{
+		Control _node = prompt_element.Instantiate<Control>();
 		_node.Modulate = new(1, 1, 1, 0);
-		(_node.GetChild(0) as RichTextLabel).Text = ControlsManager.GetLocalizedActionName(_action_key);
-		(_node.GetChild(1) as RichTextLabel).Text = "prompt_" + _tr_key;
+		_node.GetChild<RichTextLabel>(0).Text = ControlsManager.GetLocalizedActionName(_actionKey);
+		_node.GetChild<RichTextLabel>(1).Text = "prompt_" + _trKey;
 		Tween tween = _node.CreateTween();
 		tween.SetEase(Tween.EaseType.Out);
 		tween.SetTrans(Tween.TransitionType.Linear);
 		tween.TweenProperty(_node, "modulate", new Color(1, 1, 1, 1), 0.2f);
-		Instance.prompt_grid.AddChild(_node);
-		Instance.PromptList.Add(_id, _node);
+		prompt_grid.AddChild(_node);
+		return _node;
 	}
-	public static bool HasControlPrompt(string _id) => Instance.PromptList.ContainsKey(_id);
-	public static void RemoveControlPrompt(string _id)
+	/// <summary>
+	/// Removes a prompt from the interface. The enum may differ but most prompts share a common ID, meaning selecting any alts will remove that ID from the list.
+	/// </summary>
+	/// <param name="_prompt">The prompt to remove, check the common ID in available_prompts to see which you can use.</param>
+	public static void RemoveControlPrompt(ControlPrompt _prompt)
 	{
-		if (Instance == null || !Instance.PromptList.TryGetValue(_id, out Control value))
+		if (Instance == null)
 			return;
-		value.QueueFree();
-		Instance.PromptList.Remove(_id);
+		ControlPromptData _promptData = Instance.available_prompts[_prompt];
+		if (!Instance.prompt_list.TryGetValue(_promptData.ID, out ControlPromptRuntimeData value))
+			return;
+		value.Node.QueueFree();
+		Instance.prompt_list.Remove(_promptData.ID);
 	}
 	public static void ClearControlPrompts()
 	{
 		if (Instance == null)
 			return;
-		foreach (var _pair in Instance.PromptList)
-			_pair.Value.QueueFree();
+		foreach (var _pair in Instance.prompt_list)
+			_pair.Value.Node.QueueFree();
 
-		Instance.PromptList.Clear();
+		Instance.prompt_list.Clear();
 	}
-
 
 	/// <summary>
 	/// Generates a TextureButton that displays an aphid's current skin.

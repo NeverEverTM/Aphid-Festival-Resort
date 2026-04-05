@@ -1,0 +1,11 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://b3u1nc0w1yjgo"]
+
+[ext_resource type="Texture2D" uid="uid://dbwm4hhysoybd" path="res://sprites/ui/buttons/button_pressed.PNG" id="1_ta454"]
+
+[resource]
+texture = ExtResource("1_ta454")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+modulate_color = Color(0.9019608, 0.14117648, 0.36862746, 1)

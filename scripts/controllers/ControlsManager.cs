@@ -6,7 +6,15 @@ using System.Collections.Generic;
 /// </summary>
 public static class ControlsManager
 {
-	public class DataModule : SaveSystem.IDataModule<Dictionary<string, string>>
+	internal static Godot.Collections.Dictionary<string, InputEvent> Binds = [];
+	internal readonly static SaveSystem.SaveModule<Dictionary<string, string>> SaveModule = new("controls", new ControlsDataModule())
+	{
+		RelativePath = SaveSystem.CONFIG_DIR,
+		Extension = SaveSystem.CONFIGFILE_EXTENSION,
+		DisposeMode = SaveSystem.SaveMetadata.DisposeMethod.NotApplicable
+	};
+
+	public class ControlsDataModule : SaveSystem.IDataModule<Dictionary<string, string>>
 	{
 		public void Set(Dictionary<string, string> _data)
 		{
@@ -60,13 +68,7 @@ public static class ControlsManager
 	public delegate void ControlEventHandler(string _name, StringName _action);
 	public static event ControlEventHandler OnControlChanged;
 
-	internal static Godot.Collections.Dictionary<string, InputEvent> Binds = [];
-	internal readonly static SaveSystem.SaveModule<Dictionary<string, string>> InputBinds = new("controls", new DataModule())
-	{
-		RelativePath = SaveSystem.CONFIG_DIR,
-		Extension = SaveSystem.CONFIGFILE_EXTENSION
-	};
-
+	// MARK: Static Functions
     /// <summary>
     /// Cleans action names under specific requirements.
     /// </summary>

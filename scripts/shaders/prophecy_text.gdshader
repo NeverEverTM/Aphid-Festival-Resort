@@ -5,7 +5,7 @@ render_mode unshaded;
 uniform sampler2D sample : repeat_enable;
 uniform float speed = 1.0;
 uniform vec2 scroll_direction = vec2(1.0, 1.0);
-uniform int hologram_pixelization : hint_range(1,200) = 40;
+uniform int hologram_pixelization : hint_range(1,800) = 40;
 
 vec4 get_holotexture(vec2 uv, vec2 screen_uv, sampler2D texture)
 {
@@ -26,7 +26,7 @@ void vertex() {
 }
 
 void fragment(){
-	vec4 texture_sample = get_holotexture(UV, SCREEN_UV, TEXTURE);
-	if (COLOR == vec4(1.0,1.0,1.0,1.0))
-		COLOR = texture_sample; // actual sprite
+		float _alpha = COLOR.a;
+		COLOR = get_holotexture(UV, SCREEN_UV, TEXTURE);
+		COLOR.a = _alpha;
 }

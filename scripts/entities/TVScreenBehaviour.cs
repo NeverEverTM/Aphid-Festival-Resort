@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class TVScreenBehaviour : Sprite2D, SaveSystem.IDataModule
+public partial class TVScreenBehaviour : Sprite2D, SaveSystem.IGenericDataModule
 {
 	[Export] private InteractableArea2D changeChannelButton, powerButton;
 	[Export] private Light2D light;

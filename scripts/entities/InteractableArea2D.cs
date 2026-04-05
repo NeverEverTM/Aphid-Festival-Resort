@@ -7,6 +7,7 @@ using Godot;
 /// </summary>
 public partial class InteractableArea2D : Area2D
 {
+    public bool IsInteractable { get; set; } = true;
     /// <summary>
     /// List of events to trigger if this object is interacted with. Includes the entity reference and entity tag of whomst it was interacted by.
     /// </summary>
@@ -24,29 +25,16 @@ public partial class InteractableArea2D : Area2D
 
     public void Interact(Node2D _entity, StringNames.GlobalTags _tag)
     {
-        for (int i = 0; i < OnInteract.Count; i++)
+        try
         {
-            try
-            {
-                OnInteract[i].Invoke(_entity, _tag);
-            }
-            catch (Exception _err)
-            {
-                GD.Print(_err);
-            }
-        }
-
-
-        for (int i = 0; i < OnInteractOnly.Count; i++)
-        {
-            try
-            {
+            for (int i = 0; i < OnInteractOnly.Count; i++)
                 OnInteractOnly[i].Invoke();
-            }
-            catch (Exception _err)
-            {
-                GD.Print(_err);
-            }
+            for (int i = 0; i < OnInteract.Count; i++)
+                OnInteract[i].Invoke(_entity, _tag);
+        }
+        catch (Exception _err)
+        {
+            DebugLogger.Print(DebugLogger.LogPriority.Error, "InteractableArea: Error when invoking event.", _err);
         }
     }
 }
@@ -65,28 +53,16 @@ public interface IInteractableArea
 
     public void Interact(Node2D _entity, StringNames.GlobalTags _tag)
     {
-        for (int i = 0; i < OnInteract.Count; i++)
+        try
         {
-            try
-            {
-                OnInteract[i].Invoke(_entity, _tag);
-            }
-            catch (Exception _err)
-            {
-                GD.Print(_err);
-            }
-        }
-
-        for (int i = 0; i < OnInteractOnly.Count; i++)
-        {
-            try
-            {
+            for (int i = 0; i < OnInteractOnly.Count; i++)
                 OnInteractOnly[i].Invoke();
-            }
-            catch (Exception _err)
-            {
-                GD.Print(_err);
-            }
+            for (int i = 0; i < OnInteract.Count; i++)
+                OnInteract[i].Invoke(_entity, _tag);
+        }
+        catch (Exception _err)
+        {
+            GD.Print(_err);
         }
     }
 }

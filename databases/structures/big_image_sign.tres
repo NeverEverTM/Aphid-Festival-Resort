@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://dq18uoj2ptkfq"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_ikt81"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_ikt81"]
 
 [resource]
 script = ExtResource("1_ikt81")
 ID = "big_image_sign"
 Cost = 25
-LevelRequirement = 0
-Tag = 2
+TierRequirement = 1
 Shop = 2
 ShopOrderPriority = 63

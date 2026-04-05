@@ -11,12 +11,12 @@ config_version=5
 [application]
 
 config/name="Aphid Festival Resort"
-config/description="Aphid Festival Demo"
-config/version="0.2.1.0"
+config/description="A game about raising aphids."
+config/version="0.3.0"
 config/tags=PackedStringArray("2d", "earlyaccess")
 run/main_scene="res://scenes/rooms/menu.tscn"
-config/project_settings_override="user://settings.godot"
-config/features=PackedStringArray("4.4", "C#", "Forward Plus")
+config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+run/max_fps=60
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 config/icon="res://sprites/ui/leaf_cover.png"
@@ -31,16 +31,15 @@ buses/default_bus_layout="res://resources/default_bus_layout.tres"
 CommandConsole="*res://scenes/panels/command_console.tscn"
 GlobalManager="*res://scripts/GlobalManager.cs"
 SoundManager="*res://scripts/controllers/SoundManager.cs"
-GameManager="*res://scripts/controllers/GameManager.cs"
-RoomManager="*res://scripts/controllers/SceneManager.cs"
+SceneManager="*res://scripts/controllers/SceneManager.cs"
 Camera="*res://scenes/prefabs/camera.tscn"
+GameManager="*res://scripts/controllers/GameManager.cs"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/mode=2
-window/energy_saving/keep_screen_on=false
 window/stretch/mode="viewport"
 
 [dotnet]
@@ -79,10 +78,10 @@ import/blender/enabled=false
 
 [gui]
 
-theme/custom="res://resources/default_theme.tres"
-theme/custom_font="uid://bni8k8sk1r4bd"
 theme/default_font_multichannel_signed_distance_field=true
 theme/default_font_generate_mipmaps=true
+theme/custom="res://resources/default_theme.tres"
+theme/custom_font="uid://bni8k8sk1r4bd"
 
 [input]
 
@@ -198,6 +197,16 @@ take_screenshot={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194332,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+pull={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"location":0,"echo":false,"script":null)
+]
+}
+show_info={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
+]
+}
 select={
 "deadzone": 0.5,
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(111, 18),"global_position":Vector2(114, 50),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
@@ -213,11 +222,6 @@ store={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
 ]
 }
-pull={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":82,"key_label":0,"unicode":114,"location":0,"echo":false,"script":null)
-]
-}
 align_to_grid={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194326,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
@@ -225,7 +229,7 @@ align_to_grid={
 }
 change_mode={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194326,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
 quick_action_1={
@@ -246,7 +250,7 @@ quick_action_3={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation", "res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation")
+locale/translations=PackedStringArray("res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation", "res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation")
 locale/test="en"
 
 [layer_names]
@@ -272,4 +276,8 @@ wind={
 noise={
 "type": "sampler2D",
 "value": "res://resources/wind_noise.tres"
+}
+accesibility_menubgwaviness={
+"type": "float",
+"value": 1.0
 }

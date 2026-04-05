@@ -1,57 +1,50 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 
 public partial class BuildMenu : Control
 {
 	internal static BuildMenu Instance { get; private set; }
-	internal readonly static StringName WATER_PLACEABLE = new("allow_water"), WALL_PLACEABLE = new("allow_wallmount");
-	internal static bool DEBUG_SHOW_RECTS { get; set; }
 	internal static MenuInstance Menu { get; private set; }
 
 	[Export] private GridContainer storageContainer;
-	[Export] public AnimationPlayer menuPlayer;
+	[Export] private AnimationPlayer menuPlayer;
 	[Export] private TextureButton buildButton, storageButton;
 	[Export] private Label controlPrompt;
-	private const string ITEM_CONTAINER_SCENE = "uid://cn7d8wjyx78a3";
-	private PackedScene item_container;
+	[Export] private PackedScene itemContainer;
 
-	// Variables
-	internal bool IsStorageOpen;
+	internal readonly static StringName WATER_PLACEABLE = new("allow_water"), WALL_PLACEABLE = new("allow_wallmount");
+	internal static bool DEBUG_SHOW_RECTS { get; set; }
+	private enum BuildingRemovalMode { Sell, Store }
+
 	private readonly List<Building> active_buildings = [];
-	private enum RemoveMode { Sell, Store }
 
 	private Building selected_building;
 	private Vector2 mouse_offset, last_valid_position = new();
-	private bool is_hovering_building, is_moving_building;
+	private bool is_hovering_building, is_moving_building, is_storage_open;
 
 	// last properties of current structure
 	private int previous_light_mask;
 	private Material previous_material;
-	private uint previous_collision_layer;
+	private uint previous_collision_layer; // TODO: Check if this doesnt cause any issues (shouldnt it be just deacct phyiscs?)
 
 	public override void _EnterTree()
 	{
 		Instance = this;
-		item_container = ResourceLoader.Load(ITEM_CONTAINER_SCENE) as PackedScene;
-		Menu = new MenuInstance("build", menuPlayer,
-			_ => OnOpenMenu(), OnCloseMenu);
-
-		buildButton.Pressed += () => _ = CanvasManager.Menus.SetTo(Menu);
 		storageButton.Pressed += SetStorage;
 		controlPrompt.Text = ControlsManager.GetLocalizedActionName(InputNames.OpenInventory);
-
-		SaveSystem.OnFinish += APPLY_OUTOFBOUND_PATCH;
 	}
-	public override void _ExitTree()
-	{
-		SaveSystem.OnFinish -= APPLY_OUTOFBOUND_PATCH;
-	}
+    public override void _Ready()
+    {
+		Menu = new MenuInstance("build", menuPlayer,
+			_ => OnOpenMenu(), OnCloseMenu);
+		buildButton.Pressed += () => _ = CanvasManager.Menus.SetTo(Menu);
+        ResortManager.Current.SaveModule.AddEventListener(APPLY_OUTOFBOUND_PATCH, SaveSystem.SaveEventsEnum.OnLoadFinish);
+    }
 
 	public void OnOpenMenu()
 	{
-		IsStorageOpen = false;
-		FreeCameraManager.SetFreeCameraHud(false);
+		is_storage_open = false;
+		FreeCameraManager.SetHUDTo(false);
 		if (IsInstanceValid(CameraManager.FocusedObject))
 			FreeCameraManager.StopFocus();
 
@@ -64,19 +57,19 @@ public partial class BuildMenu : Control
 	public bool OnCloseMenu(MenuInstance _next)
 	{
 		// close storage if open first
-		if (IsStorageOpen)
+		if (is_storage_open)
 		{
 			SetStorage(false);
 			return false;
 		}
 		if (_next == null)
-			FreeCameraManager.SetFreeCameraHud(true);
+			FreeCameraManager.SetHUDTo(true);
 
 		ClearBuildingList();
 
 		return true;
 	}
-	public void APPLY_OUTOFBOUND_PATCH()
+	public void APPLY_OUTOFBOUND_PATCH(SaveSystem.SaveEventArgs _)
 	{
 		if (!GameManager.APPLY_OUTOFBOUND_PATCH)
 			return;
@@ -96,7 +89,7 @@ public partial class BuildMenu : Control
 		// Sets the storage inventory
 		for (int i = _startIndex; i < Player.Data.Storage.Count; i++)
 		{
-			TextureButton _item = item_container.Instantiate<TextureButton>();
+			TextureButton _item = itemContainer.Instantiate<TextureButton>();
 			string _structure = Player.Data.Storage[i];
 			_item.TooltipText = GlobalManager.Utils.GetTooltipText(_structure);
 			(_item.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(_structure);
@@ -265,16 +258,16 @@ public partial class BuildMenu : Control
 		active_buildings.Add(_building);
 		return _building;
 	}
-	private void RemoveBuilding(RemoveMode _mode)
+	private void RemoveBuilding(BuildingRemovalMode _mode)
 	{
 		active_buildings.Remove(selected_building);
 
-		if (_mode == RemoveMode.Sell)
+		if (_mode == BuildingRemovalMode.Sell)
 		{
-			PlayerData.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].Cost / 2);
+			Player.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].Cost / 2);
 			SoundManager.CreateSound("ui/kaching");
 		}
-		if (_mode == RemoveMode.Store)
+		if (_mode == BuildingRemovalMode.Store)
 		{
 			Player.Data.Storage.Add(selected_building.Self.GetMeta(StringNames.IdMeta).ToString());
 			UpdateStorage(Player.Data.Storage.Count - 1);
@@ -323,7 +316,7 @@ public partial class BuildMenu : Control
 	}
 	private void UnassignBuilding()
 	{
-		CameraManager.Instance.EnableMouseFollow = false;
+		CameraManager.EnableMouseFollow = false;
 		StopMoveBuilding();
 
 		if (selected_building != null)
@@ -371,9 +364,9 @@ public partial class BuildMenu : Control
 			StopMoveBuilding();
 
 		if (Input.IsActionJustPressed(InputNames.Sell))
-			RemoveBuilding(RemoveMode.Sell);
+			RemoveBuilding(BuildingRemovalMode.Sell);
 		else if (Input.IsActionJustPressed(InputNames.Store))
-			RemoveBuilding(RemoveMode.Store);
+			RemoveBuilding(BuildingRemovalMode.Store);
 	}
 	private bool SelectBuilding()
 	{
@@ -388,7 +381,7 @@ public partial class BuildMenu : Control
 	private void StartMoveBuilding()
 	{
 		// setup the interface
-		CameraManager.Instance.EnableMouseFollow = true;
+		CameraManager.EnableMouseFollow = true;
 		is_moving_building = true;
 		mouse_offset = selected_building.Self.GlobalPosition - CameraManager.GetMouseToWorldPosition();
 		last_valid_position = selected_building.Self.GlobalPosition;
@@ -400,20 +393,18 @@ public partial class BuildMenu : Control
 		}
 
 		// add corresponding possible actions
-		CanvasManager.AddControlPrompt(InputNames.Sell, InputNames.Sell, InputNames.Sell);
-		CanvasManager.AddControlPrompt(InputNames.Store, InputNames.Store, InputNames.Store);
-		CanvasManager.AddControlPrompt(InputNames.AlignToGrid, InputNames.AlignToGrid, InputNames.AlignToGrid);
+		CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.SellBuilding);
+		CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.StoreBuilding);
+		CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.AlignToGridBuilding);
 	}
 	private void StopMoveBuilding()
 	{
 		// set interface back to normal
-		CameraManager.Instance.EnableMouseFollow = false;
+		CameraManager.EnableMouseFollow = false;
 		is_moving_building = false;
 
 		// remove possible action prompts
-		CanvasManager.RemoveControlPrompt(InputNames.Sell);
-		CanvasManager.RemoveControlPrompt(InputNames.Store);
-		CanvasManager.RemoveControlPrompt(InputNames.AlignToGrid);
+		CanvasManager.ClearControlPrompts();
 
 		// prevent furniture from being placed in invalid areas
 		if (IsBeingObstructed(selected_building))
@@ -435,14 +426,12 @@ public partial class BuildMenu : Control
 		{
 			if (active_buildings[i].Rect.HasPoint(_mousePosition))
 			{
-				if (active_buildings[i].Self is IStructureAphid)
+				// furniture that implements holding an aphid, cannot be moved while aphid is present
+				if (active_buildings[i].Self is IAphidAccess)
 				{
-					IStructureAphid _furniture = active_buildings[i].Self as IStructureAphid;
-					if (_furniture.SelectedAphid != null)
-					{
-						SoundManager.CreateSound("ui/button_fail");
+					IAphidAccess _furniture = active_buildings[i].Self as IAphidAccess;
+					if (_furniture.IsAphidAvailable)
 						continue;
-					}
 				}
 				return active_buildings[i];
 			}
@@ -510,7 +499,7 @@ public partial class BuildMenu : Control
 		Building _building = CreateBuilding(_structure);
 		if (_building == null)
 		{
-			GlobalManager.CreatePopup("warning_invalid_building", this);
+			GlobalManager.CREATE_POPUP("warning_invalid_building", this);
 			_structure.QueueFree();
 			return;
 		}
@@ -523,14 +512,14 @@ public partial class BuildMenu : Control
 	}
 	public void SetStorage(bool _state)
 	{
-		if (_state == IsStorageOpen)
+		if (_state == is_storage_open)
 			return;
-		IsStorageOpen = _state;
-		if (IsStorageOpen)
+		is_storage_open = _state;
+		if (is_storage_open)
 			menuPlayer.Play("open_bar");
 		else
 			menuPlayer.Play("close_bar");
 	}
 	public void SetStorage() =>
-		SetStorage(!IsStorageOpen);
+		SetStorage(!is_storage_open);
 }

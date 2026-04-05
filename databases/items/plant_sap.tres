@@ -1,12 +1,13 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://byw2ktpy75yx"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_akgjg"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_akgjg"]
 
 [resource]
 script = ExtResource("1_akgjg")
 ID = "plant_sap"
 Cost = 5
 LevelRequirement = 1
-Tag = 1
+TierRequirement = 1
+Category = 1
 Shop = 1
 ShopOrderPriority = 8

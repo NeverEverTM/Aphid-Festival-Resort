@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
 [ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/entities/TVScreenBehaviour.cs" id="2_3qsjy"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_buikv"]
-[ext_resource type="PackedScene" uid="uid://dka1ip2cyn76r" path="res://scenes/tv_channels/channel_off.tscn" id="5_sxrii"]
+[ext_resource type="PackedScene" uid="uid://dka1ip2cyn76r" path="res://scenes/prefabs/tv_channels/channel_off.tscn" id="5_sxrii"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="8_uml7d"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1namf"]
@@ -37,7 +37,7 @@ shape = SubResource("RectangleShape2D_1namf")
 position = Vector2(-58.4907, -2.66216)
 monitoring = false
 script = ExtResource("3_buikv")
-Tag = 2
+Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="switchChannel"]
 position = Vector2(-0.821625, -1.42693)
@@ -49,7 +49,7 @@ metadata/tag = "interactable"
 position = Vector2(54.291, -2.56063)
 monitoring = false
 script = ExtResource("3_buikv")
-Tag = 2
+Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="powerButton"]
 position = Vector2(-0.821625, -1.42693)

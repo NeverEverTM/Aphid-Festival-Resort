@@ -36,7 +36,7 @@ animations = [{
 "speed": 2.0
 }]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lc44r"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8iklc"]
 light_mode = 1
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bn075"]
@@ -71,26 +71,39 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_yissn"]
 radius = 7.0
 
-[node name="torch" type="AnimatedSprite2D" node_paths=PackedStringArray("light", "flame")]
+[node name="torch" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_4bf7d")
-frame_progress = 0.0675311
-offset = Vector2(0, -29)
-script = ExtResource("2_pkvx2")
-light = NodePath("light")
-flame = NodePath("flame")
+offset = Vector2(0, -30)
 metadata/id = "torch"
 
 [node name="flame" type="AnimatedSprite2D" parent="."]
+editor_description = "Requires CanvasItemMaterial Unshaded to stay lit."
+visible = false
 show_behind_parent = true
 light_mask = 0
-material = SubResource("CanvasItemMaterial_lc44r")
+material = SubResource("CanvasItemMaterial_8iklc")
 position = Vector2(-8, -43)
 sprite_frames = SubResource("SpriteFrames_4s1js")
 autoplay = "default"
-frame_progress = 0.756197
+frame = 1
+frame_progress = 0.06042942
+
+[node name="light_controller" type="VisibleOnScreenEnabler2D" parent="." node_paths=PackedStringArray("torch", "flame", "light")]
+position = Vector2(2.0000005, -0.9999993)
+scale = Vector2(22.65, 13.588392)
+rect = Rect2(-14.569538, -10.523689, 29.161152, 23.77029)
+show_rect = false
+enable_node_path = NodePath("../light")
+script = ExtResource("2_pkvx2")
+torch = NodePath("..")
+flame = NodePath("../flame")
+light = NodePath("../light")
 
 [node name="light" type="PointLight2D" parent="."]
 process_priority = 100
+position = Vector2(0, -3.5000038)
+scale = Vector2(1, 1.1919643)
+enabled = false
 color = Color(0.994436, 0.849271, 0.661955, 1)
 blend_mode = 2
 range_z_min = -2000
@@ -107,7 +120,3 @@ position = Vector2(-9, -3)
 light_mask = 0
 position = Vector2(10, -3)
 shape = SubResource("CircleShape2D_yissn")
-
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenEnabler2D" parent="."]
-position = Vector2(-0.500012, -2.00001)
-scale = Vector2(22.65, 11.4)

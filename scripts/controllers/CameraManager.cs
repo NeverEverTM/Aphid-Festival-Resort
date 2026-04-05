@@ -23,8 +23,8 @@ public partial class CameraManager : Camera2D
     public static float SCREEN_RENDER_DISTANCE { get; private set; }
     public static float SCREEN_RENDER_DISTANCE_SQR { get; private set; }
 
-    public bool EnableFreeRoam { get; set; }
-    public bool EnableMouseFollow { get; set; }
+    public static bool EnableFreeRoam { get; set; }
+    public static bool EnableMouseFollow { get; set; }
 
     public const float DEFAULT_CAMERA_ZOOM = 2;
 
@@ -46,7 +46,7 @@ public partial class CameraManager : Camera2D
 
     public override void _Process(double delta)
     {
-        if (!IsInstanceValid(FieldManager.Instance))
+        if (!IsInstanceValid(RoomInstance.Instance))
             return;
 
         if (!IsInstanceValid(FocusedObject))
@@ -59,12 +59,12 @@ public partial class CameraManager : Camera2D
 
         // we still clamp the camera's position because, while the actual camera respects the bounds,
         //  its actual global position does not
-        Instance.GlobalPosition = Instance.GlobalPosition.Clamp(FieldManager.Instance.TopLeft.GlobalPosition + SCREEN_CENTER_GLOBAL,
-            FieldManager.Instance.BottomRight.GlobalPosition - SCREEN_CENTER_GLOBAL);
+        Instance.GlobalPosition = Instance.GlobalPosition.Clamp(RoomInstance.Instance.TopLeft.GlobalPosition + SCREEN_CENTER_GLOBAL,
+            RoomInstance.Instance.BottomRight.GlobalPosition - SCREEN_CENTER_GLOBAL);
     }
     private void ProcessFreeCamera()
     {
-        // for moving buildings and stuff (yes, its intentional that it stacks with arrow movement)
+        // for moving buildings and stuff (yes, it is intentional that it stacks up with arrow movement)
         if (EnableMouseFollow)
         {
             Vector2 _movement = GetMouseToWorldPosition() - Instance.GetScreenCenterPosition();
@@ -81,7 +81,7 @@ public partial class CameraManager : Camera2D
         Instance.ForceUpdateScroll();
         Instance.ResetSmoothing();
 
-        if (!FieldManager.Instance.IsInside)
+        if (!RoomInstance.Instance.IsInside)
         {
             Instance.cameraParticles.Visible = true;
             // force particle spawn at new location
@@ -91,11 +91,14 @@ public partial class CameraManager : Camera2D
             Instance.cameraParticles.Visible = false;
     }
     /// <summary>
-    /// Call this function to force an instant snap to target position.
+    /// Call this function to force an instant snap to tthe focus target position.
     /// </summary>
     public static void ForceCameraPosition() =>
         ForceCameraPosition(Instance.GetTargetPosition());
-    // Sets current focus target for the camera. If is an aphid, it fills the current focused aphid too.
+    /// <summary>
+    /// Sets current focus target for the camera. If is an aphid, FocusedAphid will be set too.
+    /// </summary>
+    /// <param name="_focusObject">Object to be focus target, can be anything.</param>
     public static void Focus(Node2D _focusObject)
     {
         if (!IsInstanceValid(_focusObject))

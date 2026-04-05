@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://bvtef2wpl6bh5"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_q425j"]
-[ext_resource type="Resource" path="res://databases/food/danger_spud.tres" id="2_p2ko0"]
-[ext_resource type="Resource" path="res://databases/food/flour_bag.tres" id="3_i4ieq"]
-[ext_resource type="Resource" path="res://databases/food/baked_yam.tres" id="4_7ju7l"]
-[ext_resource type="Resource" path="res://databases/food/yam_bread.tres" id="5_obsmp"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="6_1uogy"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_q425j"]
+[ext_resource type="Resource" uid="uid://1ffbbw024334" path="res://databases/food/danger_spud.tres" id="2_p2ko0"]
+[ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="3_i4ieq"]
+[ext_resource type="Resource" uid="uid://rcm2ah3qrpis" path="res://databases/food/baked_yam.tres" id="4_7ju7l"]
+[ext_resource type="Resource" uid="uid://dakdjfbrrmgw6" path="res://databases/food/yam_bread.tres" id="5_obsmp"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="6_1uogy"]
 
 [resource]
 script = ExtResource("6_1uogy")

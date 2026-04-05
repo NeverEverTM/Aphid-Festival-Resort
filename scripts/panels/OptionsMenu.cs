@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -7,87 +8,154 @@ public partial class OptionsMenu : Control, IMenuInstance
 	private MenuInstance menu;
 
 	[Export] private AnimationPlayer anim_player;
-	[Export] private Slider masterSlider, musicSlider, soundSlider, ambienceSlider, uiSlider;
-	[Export] private TextureButton saveFolderButton;
+	[Export] private BaseButton saveFolderButton;
+	[ExportGroup("Sliders")]
+	[Export] private Control[] volumeSliders;
+	[Export] private Control wavinessSlider;
+	[ExportGroup("MultiOption")]
 	[Export] private OptionButton windowMode, language;
-	[Export] private BaseButton autoRun;
+	[ExportGroup("CheckBox")]
+	[Export] private CheckButton[] genericCheckButtons;
 
-	public readonly Dictionary<string, int> locales = new()
+	private readonly List<SettingSlider> Sliders = [];
+	private readonly List<SettingOptionButton> OptionButtons = [];
+	private readonly List<SettingCheckButton> CheckButttons = [];
+
+	public override void _EnterTree()
 	{
-		{ "en_US" , 0 },
-		{ "es_ES", 1  }
-	};
-
-	public readonly Dictionary<int, DisplayServer.WindowMode> display = new()
-	{
-		{ 0, DisplayServer.WindowMode.Maximized },
-		{ 1, DisplayServer.WindowMode.ExclusiveFullscreen }
-	};
-
-	/* To create a setting you must:
-	- Create a new serializeable variable in the Savefile config
-	- Create a menu element that allows the user to modify it (aka Slider, Select, Check)
-	- Create a function that sets the value both in the savefile and in-game
-	*/
-	public override void _Ready()
-	{
-		masterSlider.ValueChanged += OnMasterSlider;
-		musicSlider.ValueChanged += OnMusicSlider;
-		soundSlider.ValueChanged += OnSoundSlider;
-		ambienceSlider.ValueChanged += OnAmbienceSlider;
-		uiSlider.ValueChanged += OnUISlider;
-
-		windowMode.ItemSelected += OnDisplaySelect;
-		language.ItemSelected += OnLocaleSelect;
-		autoRun.Toggled += OnAutoRunToggle;
-
 		saveFolderButton.Pressed += () => OS.ShellOpen(ProjectSettings.GlobalizePath("user://"));
+		if (!OptionsManager.SaveModule.Loaded)
+			OptionsManager.SaveModule.AddEventListener((_) => InitMenu(), SaveSystem.SaveEventsEnum.OnLoadFinish);
+		else
+			InitMenu();
+	}
+	private void InitMenu()
+	{
+		for (int i = 0; i < volumeSliders.Length; i++)
+		{
+			var _index = i;
+			Sliders.Add(new SliderVolume(volumeSliders[i], _index));
+		}
+
+		Sliders.Add(new SliderWaviness(wavinessSlider));
+
+		OptionButtons.Add(new OptionButtonWindowMode(windowMode));
+		OptionButtons.Add(new OptionButtonLocale(language));
+
+		for (int i = 0; i < genericCheckButtons.Length; i++)
+			CheckButttons.Add(new(genericCheckButtons[i]));
 	}
 
-	private void OnMasterSlider(double value)
+	public class SettingSlider
 	{
-		AudioServer.SetBusVolumeDb(0, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.VolumeMaster = (float)value;
+		public string Name;
+
+		public SettingSlider(Control SliderParent)
+		{
+			Slider _slider = SliderParent.GetNode<Slider>("slider");
+			Name = SliderParent.Name.ToString();
+
+			SliderParent.GetNode<Label>("label").Text = "options_" + Name.ToLower();
+			_slider.ValueChanged += (_value) => OnValueChanged((float)_value);
+			_slider.Value = OptionsManager.Settings.FloatFlags[Name].Value;
+		}
+
+		/// <summary>
+		/// Make sure to execute the base method to apply the setting to the config file properly.
+		/// </summary>
+		public virtual void OnValueChanged(float _value)
+		{
+			OptionsManager.Settings.FloatFlags[Name].Value = _value;
+		}
 	}
-	private void OnMusicSlider(double value)
+	public class SliderVolume(Control SliderParent, int BusID) : SettingSlider(SliderParent)
 	{
-		AudioServer.SetBusVolumeDb(1, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.VolumeMusic = (float)value;
+		public int BusID = BusID;
+
+		public override void OnValueChanged(float _value)
+		{
+			AudioServer.SetBusVolumeDb(BusID, Mathf.LinearToDb(_value));
+			if (!GlobalManager.IsBusy)
+				SoundManager.CreateSound("player/step", false).Bus = Name;
+			OptionsManager.Settings.FloatFlags[Name].Value = _value;
+		}
 	}
-	private void OnSoundSlider(double value)
+	public class SliderWaviness(Control SliderParent) : SettingSlider(SliderParent)
 	{
-		AudioServer.SetBusVolumeDb(2, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.VolumeSound = (float)value;
-		SoundManager.CreateSound("audio/step", false).Bus = "Sounds";
-	}
-	private void OnAmbienceSlider(double value)
-	{
-		AudioServer.SetBusVolumeDb(3, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.VolumeAmbience = (float)value;
-		SoundManager.CreateSound("audio/step", false).Bus = "Ambience";
-	}
-	private void OnUISlider(double value)
-	{
-		AudioServer.SetBusVolumeDb(4, Mathf.LinearToDb((float)value));
-		OptionsManager.Settings.VolumeUI = (float)value;
-		SoundManager.CreateSound("audio/step");
+		public override void OnValueChanged(float _value)
+		{
+			RenderingServer.GlobalShaderParameterSet("accesibility_menubgwaviness", _value);
+			base.OnValueChanged(_value);
+		}
 	}
 
-	private void OnDisplaySelect(long _index)
+	public class SettingOptionButton
 	{
-		DisplayServer.WindowSetMode(display[(int)_index]);
-		OptionsManager.Settings.DisplayMode = display[(int)_index];
+		public string Name;
+
+		public SettingOptionButton(OptionButton Parent)
+		{
+			Name = Parent.Name.ToString();
+			Parent.ItemSelected += (_value) => OnItemSelected((int)_value);
+			Parent.Select(OptionsManager.Settings.IntFlags[Name].Value);
+			OnItemSelected(OptionsManager.Settings.IntFlags[Name].Value);
+		}
+
+		/// <summary>
+		/// Make sure to execute the base method to apply the setting to the config file properly.
+		/// </summary>
+		public virtual void OnItemSelected(int _index)
+		{
+			OptionsManager.Settings.IntFlags[Name].Value = _index;
+		}
 	}
-	private void OnAutoRunToggle(bool _toggledOn)
+	public class OptionButtonWindowMode(OptionButton Parent) : SettingOptionButton(Parent)
 	{
-		OptionsManager.Settings.SettingAutoRun = _toggledOn;
-		SoundManager.CreateSound("ui/lock");
+		protected static readonly DisplayServer.WindowMode[] display =
+		{
+			DisplayServer.WindowMode.Maximized,
+			DisplayServer.WindowMode.ExclusiveFullscreen
+		};
+
+		public override void OnItemSelected(int _index)
+		{
+			DisplayServer.WindowSetMode(display[_index]);
+			base.OnItemSelected(_index);
+		}
 	}
-	private void OnLocaleSelect(long _index)
+	public class OptionButtonLocale(OptionButton Parent) : SettingOptionButton(Parent)
 	{
-		string _locale = locales.Keys.ToList()[(int)_index];
-		TranslationServer.SetLocale(_locale);
-		OptionsManager.Settings.Locale = _locale;
+		protected string[] locales = [
+			"en_US", "es_ES"
+		];
+		public override void OnItemSelected(int _index)
+		{
+			string _locale = locales[_index];
+			TranslationServer.SetLocale(_locale);
+			base.OnItemSelected(_index);
+		}
+	}
+
+	public class SettingCheckButton
+	{
+		public string Name;
+
+		public SettingCheckButton(CheckButton Parent)
+		{
+			Name = Parent.Name.ToString();
+			Parent.Toggled += OnToggle;
+			Parent.ButtonPressed = OptionsManager.Settings.BoolFlags[Name].Value;
+		}
+
+		/// <summary>
+		/// Make sure to execute the base method to apply the setting to the config file properly.
+		/// </summary>
+		public virtual void OnToggle(bool _value)
+		{
+			OptionsManager.Settings.BoolFlags[Name].Value = _value;
+			if (!GlobalManager.IsBusy)
+				SoundManager.CreateSound("ui/lock");
+		}
 	}
 
 	// ===| Menu Interface |===
@@ -98,24 +166,7 @@ public partial class OptionsMenu : Control, IMenuInstance
 	}
 	public void Open(MenuInstance _last)
 	{
-		masterSlider.GrabFocus();
-		masterSlider.Value = OptionsManager.Settings.VolumeMaster;
-		musicSlider.Value = OptionsManager.Settings.VolumeMusic;
-		soundSlider.Value = OptionsManager.Settings.VolumeSound;
-		ambienceSlider.Value = OptionsManager.Settings.VolumeAmbience;
-		uiSlider.Value = OptionsManager.Settings.VolumeUI;
-
-		foreach (KeyValuePair<int, DisplayServer.WindowMode> _pair in display)
-		{
-			if (_pair.Value.Equals(OptionsManager.Settings.DisplayMode))
-			{
-				windowMode.Select(_pair.Key);
-				break;
-			}
-		}
-
-		language.Select(locales[OptionsManager.Settings.Locale]);
-		autoRun.SetPressedNoSignal(OptionsManager.Settings.SettingAutoRun);
+		genericCheckButtons[0].GrabFocus();
 	}
 	public bool TryClose(MenuInstance _next)
 	{
@@ -123,6 +174,6 @@ public partial class OptionsMenu : Control, IMenuInstance
 	}
 	public void Close(MenuInstance _next)
 	{
-		OptionsManager.Module.Save();
+		OptionsManager.SaveModule.Save();
 	}
 }

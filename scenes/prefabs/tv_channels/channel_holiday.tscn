@@ -1,0 +1,114 @@
+[gd_scene load_steps=10 format=3 uid="uid://cnaebt5rh285e"]
+
+[ext_resource type="Texture2D" uid="uid://dr45064vbpa5n" path="res://sprites/props/tv_bg_2.png" id="1_5bw5d"]
+[ext_resource type="Texture2D" uid="uid://d0rlw1lt7bukx" path="res://sprites/ui/aphid_template.png" id="2_b8yv7"]
+[ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="3_c8th5"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_5bw5d"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_b8yv7"]
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_b8yv7"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(12.7826, 6.89376)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.150098]
+}
+
+[sub_resource type="Animation" id="Animation_5bw5d"]
+resource_name = "default"
+length = 0.2
+loop_mode = 2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(13.2731, 6.40324), Vector2(17.5243, 3.29659), Vector2(23.0836, 6.56675)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 0.5, 1),
+"update": 0,
+"values": [-0.150098, 0.119437, 0.200713]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_c8th5"]
+_data = {
+&"RESET": SubResource("Animation_b8yv7"),
+&"default": SubResource("Animation_5bw5d")
+}
+
+[node name="background" type="Sprite2D"]
+clip_children = 2
+light_mask = 0
+material = SubResource("CanvasItemMaterial_qug4s")
+texture = ExtResource("1_5bw5d")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+light_mask = 0
+material = SubResource("CanvasItemMaterial_5bw5d")
+position = Vector2(12.7826, 6.89376)
+rotation = -0.150098
+texture = ExtResource("2_b8yv7")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+light_mask = 0
+material = SubResource("CanvasItemMaterial_b8yv7")
+position = Vector2(0.488655, -41.306)
+rotation = 1.59035
+amount = 200
+texture = ExtResource("3_c8th5")
+lifetime = 10.0
+preprocess = 2.25
+fract_delta = false
+emission_shape = 3
+emission_rect_extents = Vector2(1, 50)
+gravity = Vector2(0, 0)
+initial_velocity_min = 9.61
+initial_velocity_max = 38.46
+scale_amount_min = 0.01
+scale_amount_max = 0.03
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_c8th5")
+}
+autoplay = "default"
+speed_scale = 0.5

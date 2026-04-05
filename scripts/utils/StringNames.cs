@@ -4,33 +4,64 @@ using Godot;
 /// </summary>
 public static class StringNames
 {
-    public enum GlobalTags { 
-        None = -1, 
-        Item, 
-        Food, 
-        Interactable, 
-        Decoration, 
-        Equipment, 
-        Playground, 
-        Aphid, 
-        NPC, 
-        Menu, 
+    /// <summary>
+    /// Universal tag system
+    /// </summary>
+    public enum GlobalTags {
+        None = -1,
+        /// <summary>
+        /// Marks object as a pickup
+        /// </summary>
+        Item,
+        /// <summary>
+        /// Allows aphids to consume it, plus marks it as an Item too
+        /// </summary>
+        Food,
+        /// <summary>
+        /// Used for invisible triggers that can activate menus via user input
+        /// </summary>
+        MenuTrigger,
+        /// <summary>
+        /// Used by structures or items that can be interacted via user input
+        /// </summary>
+        Interactable,
+        /// <summary>
+        /// Marks this as an aphid and thus must be handled diffrently, essentially a unique handling Item.
+        /// </summary>
+        Aphid,
+        /// <summary>
+        /// Used by triggers that activate NPC dialog via user input.
+        /// </summary>
+        NPC,
+        /// <summary>
+        /// Self explanatory.
+        /// </summary>
         Player
     }
     public readonly static string[] GlobalTagsNames =
     [
         "item",
         "food",
+        "menu",
         "interactable",
-        "decoration",
-        "equipment",
-        "playground",
         "aphid",
         "npc",
-        "menu",
         "player"
     ];
-
+    /// <summary>
+    /// Category tags for Items, used only for cosmetic ordering.
+    /// </summary>
+    public enum CategoryTags
+    {
+        None = -1,
+        Item,
+        Food,
+        Toy,
+        Decoration,
+        Equipment, 
+        Playground
+    }
+    
     /// <summary>
     /// The Tags flag define the type of the entity. Entities with the tag "Aphid" will be managed as such.
     /// </summary>
@@ -56,6 +87,11 @@ public static class StringNames
     public readonly static StringName PickupAnim = new("pickup");
 
     public const string DefaultPlayerName = "Mello";
+    public static string[] DefaultPlayerPronouns { get => GlobalManager.Instance.Tr("pronouns_nonbinary").Split("/"); }
     public const string EnglishLocale = "en_US";
     public const string SpanishLocale = "es_ES";
+
+    public const string BerryTextIcon = "[img height=50]res://sprites/ui/berries.tres[/img]";
+    public const string StrengthTextIcon = "[img height=50]res://sprites/icons/strength.tres[/img]";
+    public const string UnknownTextIcon = "[img height=50]res://sprites/icons/unknown.tres[/img]";
 }

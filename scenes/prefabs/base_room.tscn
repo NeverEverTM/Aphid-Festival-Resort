@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c6hlqyvj3a8n0"]
 
-[ext_resource type="Script" uid="uid://pohaec3n3ypy" path="res://scripts/controllers/FieldManager.cs" id="1_43ixu"]
+[ext_resource type="Script" uid="uid://pohaec3n3ypy" path="res://scripts/controllers/RoomInstance.cs" id="1_43ixu"]
 
 [node name="BaseRoom" type="Node2D" node_paths=PackedStringArray("ColorCube", "TopLeft", "BottomRight")]
 y_sort_enabled = true

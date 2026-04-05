@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-public partial class ImageSign : Sprite2D, SaveSystem.IDataModule
+public partial class ImageSign : Sprite2D, SaveSystem.IGenericDataModule
 {
     [Export] private Sprite2D billboard;
     [Export] private InteractableArea2D interactArea2D;

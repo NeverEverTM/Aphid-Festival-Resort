@@ -31,14 +31,19 @@ public partial class LoadGameMenu : Control
 
 	public override void _EnterTree()
 	{
-		menu = new(Enum.GetName(StartMenu.WheelCategories.LoadGame), anim_player, (_) =>
+		menu = new(Enum.GetName(StartMenu.WheelCategories.LoadGame), anim_player, Open: (_) =>
 		{
 			scroll.ScrollVertical = 0;
 			GenerateSaveSlots();
-		}, null, (_) => scroll.ScrollVertical = 0, null, true);
+		}, TryClose: null, Close: null, Dispose: () => 
+		{
+			scroll.ScrollVertical = 0;
+			// savefiles load once and are not disposed of when menu is closed, only after game transition
+			
+		}, true);
 
 		for (int i = 0; i < container.GetChildCount(); i++)
-			container.GetChild(i).QueueFree();
+				container.GetChild(i).QueueFree();
 
 		if (DirAccess.GetDirectoriesAt(SaveSystem.PROFILES_DIR).Length > 0)
 			StartMenu.CreateWheelAction(StartMenu.WheelCategories.LoadGame, menu);
@@ -47,7 +52,7 @@ public partial class LoadGameMenu : Control
 	private void GenerateSaveSlots()
 	{
 		file_names = DirAccess.Open(SaveSystem.PROFILES_DIR).GetDirectories();
-		SaveSystem.SaveModule<GameManager.GameData> _module = new(GameManager.ID, new GameManager.GameDataModule(), 0);
+		SaveSystem.SaveModule<GameManager.GameData> _module = new(GameManager.SAVEMODULE_ID, new GameManager.GameDataModule(), 0);
 
 		for (int i = 0; i < file_names.Length; i++)
 		{
@@ -143,6 +148,7 @@ public partial class LoadGameMenu : Control
 				StartMenu.RemoveWheelAction(StartMenu.WheelCategories.LoadGame);
 				StartMenu.RemoveWheelAction(StartMenu.WheelCategories.Continue);
 				StartMenu.Instance.GoBack();
+				StartMenu.Instance.SetWheelCategory(StartMenu.WheelCategories.NewGame);
 			}
 
 		}, null, ConfirmationPopup.ConfirmationEnum.Safe);

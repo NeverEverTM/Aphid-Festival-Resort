@@ -1,0 +1,45 @@
+[gd_scene load_steps=9 format=3 uid="uid://d2xlcl4arbiqg"]
+
+[ext_resource type="Texture2D" uid="uid://b5qjb2gotp4fq" path="res://sprites/props/tv_bg_0.png" id="1_dp0qj"]
+[ext_resource type="Material" uid="uid://cd23iyvhe7fmn" path="res://resources/prophecy_material_0.tres" id="2_7pwys"]
+[ext_resource type="Texture2D" uid="uid://d0rlw1lt7bukx" path="res://sprites/ui/aphid_template.png" id="3_6icdl"]
+[ext_resource type="Material" uid="uid://bso2uhxo4wa1o" path="res://resources/prophecy_material_1.tres" id="4_ga32o"]
+[ext_resource type="FontFile" uid="uid://fxmtex6n0atp" path="res://sprites/fonts/PROPHECYTYPE.ttf" id="5_ywivw"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="6_4bf1a"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qug4s"]
+light_mode = 1
+
+[sub_resource type="LabelSettings" id="LabelSettings_eyqv6"]
+font = ExtResource("5_ywivw")
+font_size = 20
+
+[node name="background" type="Sprite2D"]
+clip_children = 2
+light_mask = 0
+material = SubResource("CanvasItemMaterial_qug4s")
+texture = ExtResource("1_dp0qj")
+
+[node name="prophecy_aphid" type="Sprite2D" parent="."]
+material = ExtResource("2_7pwys")
+position = Vector2(-1, 8)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_6icdl")
+
+[node name="RichTextLabel" type="Label" parent="prophecy_aphid"]
+material = ExtResource("4_ga32o")
+offset_left = -129.80002
+offset_top = -59.401108
+offset_right = 136.19998
+offset_bottom = -26.401108
+text = "tv_channel_prophecy"
+label_settings = SubResource("LabelSettings_eyqv6")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="prophecy_aphid"]
+modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+position = Vector2(-2.5, -11)
+scale = Vector2(13.6875, 12.8889)
+texture = ExtResource("6_4bf1a")

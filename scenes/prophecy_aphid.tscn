@@ -22,10 +22,10 @@ domain_warp_fractal_type = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gorjh"]
 generate_mipmaps = false
+noise = SubResource("FastNoiseLite_eyqv6")
+color_ramp = SubResource("Gradient_3fj7c")
 seamless = true
 seamless_blend_skirt = 0.111
-color_ramp = SubResource("Gradient_3fj7c")
-noise = SubResource("FastNoiseLite_eyqv6")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_eyqv6"]
 shader = ExtResource("1_2yoal")
@@ -44,10 +44,10 @@ filter_clip = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0d8l4"]
 generate_mipmaps = false
+noise = SubResource("FastNoiseLite_eyqv6")
+color_ramp = SubResource("Gradient_3fj7c")
 seamless = true
 seamless_blend_skirt = 0.111
-color_ramp = SubResource("Gradient_3fj7c")
-noise = SubResource("FastNoiseLite_eyqv6")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4r8vb"]
 shader = ExtResource("3_ae1nw")

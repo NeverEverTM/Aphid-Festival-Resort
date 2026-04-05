@@ -30,7 +30,7 @@ public abstract class CustomBaseTimer<T>
     public CustomBaseTimer(float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true)
     {
         this.BaseTime = BaseTime;
-        this.TimeLeft = TimeLeft <= 0 ? GetTimerTime() : TimeLeft;
+        this.TimeLeft = TimeLeft < 0 ? GetTimerTime() : TimeLeft;
         this.OneShot = OneShot;
         IsStopped = !autostart;
     }
@@ -59,7 +59,10 @@ public abstract class CustomBaseTimer<T>
                 return;
 
             if (OneShot)
+            {
+                TimeLeft = 0;
                 IsFinished = true;
+            }
             else
                 TimeLeft = GetTimerTime();
             Finish(entity);
@@ -72,8 +75,8 @@ public abstract class CustomBaseTimer<T>
     /// <param name="_timeLeft">Predetermined time left. Defaults to given base time.</param>
     public virtual void Start(float BaseTime = -1, float TimeLeft = -1)
     {
-        this.BaseTime = BaseTime <= 0 ? this.BaseTime : BaseTime;
-        this.TimeLeft = TimeLeft <= 0 ? GetTimerTime() : TimeLeft;
+        this.BaseTime = BaseTime < 0 ? this.BaseTime : BaseTime;
+        this.TimeLeft = TimeLeft < 0 ? GetTimerTime() : TimeLeft;
         IsStopped = IsFinished = false;
     }
     /// <summary>

@@ -4,11 +4,11 @@
 [ext_resource type="Script" uid="uid://co0e1gb8uuuxb" path="res://scripts/gui/ConfirmationPopup.cs" id="2_8dn0h"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="2_87n6b"]
 [ext_resource type="Texture2D" uid="uid://d3lxookj6y8bl" path="res://sprites/ui/logos/pc_dotted_bg.png" id="2_n8f61"]
-[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/pause_menu_bg.png" id="3_5mj36"]
-[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/menu_clipboard.png" id="5_n8f61"]
+[ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/backgrounds/pause_menu_bg.png" id="3_5mj36"]
+[ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/backgrounds/menu_clipboard.png" id="5_n8f61"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="6_2mxcw"]
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="6_i5hp4"]
-[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/menu_bar.png" id="7_bpalb"]
+[ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/backgrounds/menu_bar.png" id="7_bpalb"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="8_wa0ti"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="9_fmhb2"]
 
@@ -21,38 +21,38 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("load_bg:material:shader_parameter/color")
+tracks/0/path = NodePath("theme:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 0)]
+"values": [Vector2(1, 1e-05)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("theme:scale")
+tracks/1/path = NodePath("load_bg2:material:shader_parameter/color")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(1, 1e-05)]
+"values": [Color(0.623529, 0.227451, 0.396078, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("load_bg2:material:shader_parameter/color")
+tracks/2/path = NodePath("load_bg:self_modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(0.623529, 0.227451, 0.396078, 0)]
+"values": [Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_p0jdc"]
@@ -61,38 +61,38 @@ length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("load_bg:material:shader_parameter/color")
+tracks/0/path = NodePath("theme:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(-2, 1),
-"update": 0,
-"values": [Color(0.623529, 0.227451, 0.396078, 0), Color(0.657327, 0.113077, 0.517643, 1)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("theme:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.233333, 0.5),
 "transitions": PackedFloat32Array(-2, 0.5, 1),
 "update": 0,
 "values": [Vector2(1, 1e-05), Vector2(1.1, 1.1), Vector2(1, 1)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("load_bg2:material:shader_parameter/color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.623529, 0.227451, 0.396078, 0), Color(0.55, 0.55, 0.55, 0.34901962)]
+}
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("load_bg2:material:shader_parameter/color")
+tracks/2/path = NodePath("load_bg:self_modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Color(0.623529, 0.227451, 0.396078, 0), Color(0.658824, 0.0784314, 0.54902, 0.34902)]
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.78431374)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xsq78"]
@@ -106,7 +106,8 @@ shader = ExtResource("2_87n6b")
 shader_parameter/speed = -0.15
 shader_parameter/direction = Vector2(-1, 1)
 shader_parameter/node_size = Vector2(2, 2)
-shader_parameter/color = Color(1, 1, 1, 0)
+shader_parameter/color = Color(0.64, 0.64, 0.64, 1)
+shader_parameter/useModulateAlpha = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4jkpg"]
 shader = ExtResource("2_87n6b")
@@ -114,6 +115,7 @@ shader_parameter/speed = 0.2
 shader_parameter/direction = Vector2(-1, 1)
 shader_parameter/node_size = Vector2(2, 2)
 shader_parameter/color = Color(0.623529, 0.227451, 0.396078, 0)
+shader_parameter/useModulateAlpha = false
 
 [node name="confirmation_panel" type="CanvasLayer" node_paths=PackedStringArray("player", "cancel_button", "yes_button", "no_button", "confirmation_edit", "confirmation_label", "progress")]
 process_mode = 3
@@ -136,6 +138,7 @@ libraries = {
 [node name="load_bg" type="TextureRect" parent="."]
 self_modulate = Color(1, 1, 1, 0)
 light_mask = 0
+texture_repeat = 2
 material = SubResource("ShaderMaterial_8ja0j")
 anchors_preset = 15
 anchor_right = 1.0

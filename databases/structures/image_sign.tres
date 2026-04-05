@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://cyok82f1lnxox"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_eqbnd"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_eqbnd"]
 
 [resource]
 script = ExtResource("1_eqbnd")
 ID = "image_sign"
 Cost = 10
-LevelRequirement = 0
 Tag = 2
 Shop = 2
 ShopOrderPriority = 62

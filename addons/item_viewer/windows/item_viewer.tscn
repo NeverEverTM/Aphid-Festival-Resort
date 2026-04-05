@@ -1,0 +1,306 @@
+[gd_scene load_steps=7 format=3 uid="uid://f7gdm4yd2spb"]
+
+[ext_resource type="Script" uid="uid://be21ohdif0nq1" path="res://addons/item_viewer/ItemViewer.cs" id="1_gwe7d"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="2_nxrx2"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="3_xwjhu"]
+[ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="4_e8edq"]
+[ext_resource type="PackedScene" uid="uid://c140r8dv4t86f" path="res://addons/item_viewer/prefabs/item_slot.tscn" id="4_xwjhu"]
+[ext_resource type="PackedScene" uid="uid://2k0vsdw6oh8t" path="res://addons/item_viewer/prefabs/recipe_slot.tscn" id="5_nxrx2"]
+
+[node name="FoodGUI" type="Window" node_paths=PackedStringArray("search_bar", "sorting_options", "item_grid", "create_item", "modify_item", "icon", "name", "item_stats", "food_stats", "recipe_grid")]
+oversampling_override = 1.0
+title = "Item Database"
+initial_position = 1
+size = Vector2i(1030, 625)
+unresizable = true
+script = ExtResource("1_gwe7d")
+search_bar = NodePath("item_viewer/search_bar")
+sorting_options = NodePath("item_viewer/sorting")
+item_grid = NodePath("item_viewer/item_grid/ScrollContainer/VBoxContainer")
+create_item = NodePath("item_viewer/item_grid/create_item")
+modify_item = NodePath("item_viewer/info_bg/modify_item")
+icon = NodePath("item_viewer/info_bg/icon_bg/icon")
+name = NodePath("item_viewer/info_bg/name")
+item_stats = NodePath("item_viewer/info_bg/item_stats")
+food_stats = NodePath("item_viewer/info_bg/food_stats")
+recipe_grid = NodePath("item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer")
+
+[node name="bg" type="NinePatchRect" parent="."]
+self_modulate = Color(0.55, 0, 0.26583347, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -43.0
+offset_top = -36.0
+offset_right = 66.0
+offset_bottom = 26.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_nxrx2")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="item_viewer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -425.0
+offset_top = -258.5
+offset_right = 535.0
+offset_bottom = 306.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 0.75)
+theme = ExtResource("3_xwjhu")
+
+[node name="search_bar" type="LineEdit" parent="item_viewer"]
+layout_mode = 0
+offset_left = 158.66667
+offset_top = -35.66661
+offset_right = 1182.6666
+offset_bottom = 20.33339
+placeholder_text = "Search Recipes By Name, Cost, Tier"
+
+[node name="sorting" type="OptionButton" parent="item_viewer"]
+layout_mode = 0
+offset_left = -86.666664
+offset_top = -40.66667
+offset_right = 223.33334
+offset_bottom = 47.33333
+scale = Vector2(0.75, 0.75)
+selected = 0
+item_count = 3
+popup/item_0/text = "Name "
+popup/item_0/id = 0
+popup/item_1/text = "Cost"
+popup/item_1/id = 2
+popup/item_2/text = "Tier"
+popup/item_2/id = 3
+
+[node name="item_grid" type="Panel" parent="item_viewer"]
+layout_mode = 0
+offset_left = -86.666664
+offset_top = 62.33333
+offset_right = 617.3333
+offset_bottom = 676.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="item_viewer/item_grid"]
+layout_mode = 0
+offset_right = 728.0
+offset_bottom = 613.6667
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="GridContainer" parent="item_viewer/item_grid/ScrollContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="food_slot" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot2" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot3" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot4" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot5" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot6" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot7" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot8" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot9" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot10" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot11" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot12" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot13" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot14" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="food_slot15" parent="item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+layout_mode = 2
+
+[node name="create_item" type="Button" parent="item_viewer/item_grid"]
+layout_mode = 0
+offset_left = -1.6666374
+offset_top = 627.00024
+offset_right = 299.33334
+offset_bottom = 715.00024
+scale = Vector2(0.75, 0.75)
+text = "Create Item"
+
+[node name="show_all_recipes" type="Button" parent="item_viewer/item_grid"]
+layout_mode = 0
+offset_left = 275.66672
+offset_top = 627.00024
+offset_right = 576.66675
+offset_bottom = 715.00024
+scale = Vector2(0.75, 0.75)
+text = "Show All Recipes"
+
+[node name="show_balance_list" type="Button" parent="item_viewer/item_grid"]
+layout_mode = 0
+offset_left = 510.33337
+offset_top = 627.00024
+offset_right = 811.3334
+offset_bottom = 715.00024
+scale = Vector2(0.75, 0.75)
+text = "Show Balance List"
+
+[node name="info_bg" type="Panel" parent="item_viewer"]
+layout_mode = 0
+offset_left = 686.6667
+offset_top = 62.33333
+offset_right = 1182.6667
+offset_bottom = 672.0
+
+[node name="icon_bg" type="TextureRect" parent="item_viewer/info_bg"]
+self_modulate = Color(0.95349556, 0, 0.38157868, 1)
+layout_mode = 0
+offset_left = 310.6667
+offset_top = 68.33332
+offset_right = 461.33344
+offset_bottom = 217.66663
+texture = ExtResource("2_nxrx2")
+
+[node name="icon" type="TextureRect" parent="item_viewer/info_bg/icon_bg"]
+texture_filter = 1
+layout_mode = 0
+offset_right = 152.0
+offset_bottom = 149.33331
+texture = ExtResource("4_e8edq")
+stretch_mode = 4
+
+[node name="name" type="Label" parent="item_viewer/info_bg"]
+layout_mode = 0
+offset_left = 45.333313
+offset_top = 8.333328
+offset_right = 425.33337
+offset_bottom = 56.33333
+text = "Honey Drop"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="item_stats" type="RichTextLabel" parent="item_viewer/info_bg"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 34.666687
+offset_top = 68.33334
+offset_right = 297.3333
+offset_bottom = 217.66666
+bbcode_enabled = true
+text = "Cost: 2 (1)
+Category: Food
+Shop: None"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="food_stats" type="RichTextLabel" parent="item_viewer/info_bg"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 34.666687
+offset_top = 223.00006
+offset_right = 456.0
+offset_bottom = 331.00006
+bbcode_enabled = true
+text = "H 1 W 1 (Sweet)
+S 1 S1 I1 E3"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="recipes" type="NinePatchRect" parent="item_viewer/info_bg"]
+self_modulate = Color(0.33601663, 0.07577477, 0.21054527, 1)
+layout_mode = 0
+offset_left = 26.666687
+offset_top = 339.3332
+offset_right = 469.33344
+offset_bottom = 603.0
+texture = ExtResource("2_nxrx2")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="item_viewer/info_bg/recipes"]
+layout_mode = 0
+offset_top = 9.333313
+offset_right = 442.66675
+offset_bottom = 253.00018
+
+[node name="VBoxContainer" type="VBoxContainer" parent="item_viewer/info_bg/recipes/ScrollContainer"]
+layout_mode = 2
+
+[node name="recipe_slot" parent="item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+layout_mode = 2
+
+[node name="recipe_slot2" parent="item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+layout_mode = 2
+
+[node name="recipe_slot3" parent="item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+layout_mode = 2
+
+[node name="recipe_slot4" parent="item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+layout_mode = 2
+
+[node name="modify_item" type="Button" parent="item_viewer/info_bg"]
+layout_mode = 0
+offset_left = 281.00018
+offset_top = 627.0003
+offset_right = 582.0002
+offset_bottom = 715.0003
+scale = Vector2(0.75, 0.75)
+text = "Modify Item"
+
+[node name="add_recipe" type="Button" parent="item_viewer/info_bg"]
+layout_mode = 0
+offset_left = 46.666687
+offset_top = 626.9999
+offset_right = 347.6667
+offset_bottom = 714.9999
+scale = Vector2(0.75, 0.75)
+text = "Add Recipe"
+
+[node name="recipe_list" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_xwjhu")
+
+[connection signal="text_changed" from="item_viewer/search_bar" to="." method="SEARCH_ITEM_ID"]
+[connection signal="pressed" from="item_viewer/item_grid/create_item" to="." method="SUMMON_ITEM_CREATOR" binds= [false]]
+[connection signal="pressed" from="item_viewer/info_bg/modify_item" to="." method="SUMMON_ITEM_CREATOR" binds= [true]]

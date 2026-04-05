@@ -36,16 +36,13 @@ public partial class SoundManager : Node
 		ProcessMode = ProcessModeEnum.Always;
 
 		Instance.AddChild(MusicPlayer);
-		MusicPlayer.Finished += () =>
+		MusicPlayer.Finished += () => // game music loop
 		{
-			if (GlobalManager.IsInGame)
+			if (SceneManager.CurrentlyInGame)
 				SetRandomSong();
 		};
-		SceneManager.AddEventListener((_args) =>
-		{
-			if (_args.IsSwitching && _args.NextCurrentScene != "menu")
-				SetRandomSong();
-		}, SceneManager.EventEnum.OnGameInit);
+		SceneManager.AddEventListener((_) => SetRandomSong(), SceneManager.EventEnum.OnGameInit);
+		SceneManager.AddEventListener((_) => StopSong(), SceneManager.EventEnum.OnGameFinish);
 	}
 	public override void _Process(double delta)
 	{
@@ -76,16 +73,17 @@ public partial class SoundManager : Node
 		sound2d_entities.Clear();
 	}
 
-	public static void SetRandomSong()
+	private static void SetRandomSong()
 	{
 		string _song;
-		if (FieldManager.TimeOfDay == FieldManager.DayHourMode.Night)
+		if (RoomInstance.TimeOfDay == RoomInstance.DayHourMode.Night)
 			_song = "night_" + GlobalManager.RNG.RandiRange(0, 0);
 		else
 			_song = "day_" + GlobalManager.RNG.RandiRange(0, 1);
 
 		PlaySong("music/" + _song);
 	}
+	
 	public static void ResumeSong()
 	{
 		if (IsInstanceValid(transitionTween))

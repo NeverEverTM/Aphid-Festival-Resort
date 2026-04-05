@@ -1,0 +1,164 @@
+[gd_scene load_steps=2 format=3 uid="uid://dj83ykd2nsijq"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_86evk"]
+
+[node name="Window" type="Window"]
+oversampling_override = 1.0
+size = Vector2i(740, 365)
+
+[node name="bg" type="NinePatchRect" parent="."]
+self_modulate = Color(0.55, 0, 0.26583347, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -27.0
+offset_top = -36.0
+offset_right = 31.0
+offset_bottom = 26.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_86evk")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="food_options" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 382.0
+offset_top = 122.0
+offset_right = 422.0
+offset_bottom = 162.0
+
+[node name="food_slider" type="Label" parent="food_options"]
+layout_mode = 0
+offset_left = -350.0
+offset_top = -91.0
+offset_right = -217.0
+offset_bottom = -43.0
+text = "Food: 10"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="food_options/food_slider"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 338.0
+offset_bottom = 78.0
+rounded = true
+
+[node name="thirst_slider" type="Label" parent="food_options"]
+layout_mode = 0
+offset_left = -350.0
+offset_top = -19.000183
+offset_right = -214.0
+offset_bottom = 28.999817
+text = "Thirst: 10"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="food_options/thirst_slider"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 338.0
+offset_bottom = 78.0
+rounded = true
+
+[node name="flavor" type="OptionButton" parent="food_options"]
+layout_mode = 0
+offset_left = -209.00003
+offset_top = 77.50037
+offset_right = 69.0
+offset_bottom = 165.50037
+scale = Vector2(0.75, 0.75)
+selected = 0
+item_count = 1
+popup/item_0/text = "No Shop"
+popup/item_0/id = 0
+
+[node name="Label" type="Label" parent="food_options/flavor"]
+layout_mode = 0
+offset_left = -150.0
+offset_top = 16.0
+offset_right = -5.0
+offset_bottom = 64.0
+text = "Flavor:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="strength" type="CheckButton" parent="food_options"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -101.000015
+offset_right = 369.0
+offset_bottom = -13.000015
+scale = Vector2(0.75, 0.75)
+text = "Strength"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/strength"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2
+
+[node name="speed" type="CheckButton" parent="food_options"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = -29.0
+offset_right = 369.0
+offset_bottom = 59.0
+scale = Vector2(0.75, 0.75)
+text = "Speed"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/speed"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2
+
+[node name="stamina" type="CheckButton" parent="food_options"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = 43.0
+offset_right = 369.0
+offset_bottom = 131.0
+scale = Vector2(0.75, 0.75)
+text = "Stamina"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/stamina"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2
+
+[node name="intelligence" type="CheckButton" parent="food_options"]
+layout_mode = 0
+offset_left = 153.0
+offset_top = 115.0
+offset_right = 399.0
+offset_bottom = 203.0
+scale = Vector2(0.75, 0.75)
+text = "Intelligence"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/intelligence"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2

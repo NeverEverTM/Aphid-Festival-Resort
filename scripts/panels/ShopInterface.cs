@@ -11,10 +11,10 @@ public partial class ShopInterface : Control
 	[Export] protected AnimationPlayer storePlayer;
 	[Export] protected GridContainer itemGrid;
 	[Export] protected RichTextLabel itemName, itemDescription;
-	[Export] protected Label itemCost;
+	[Export] protected RichTextLabel itemCost;
 	[Export] protected TextureRect itemIcon;
 	[Export] protected PackedScene itemContainer;
-	[Export] protected TextureButton itemBuyButton;
+	[Export] protected BaseButton itemBuyButton;
 	[ExportCategory("Customizables")]
 	[Export] protected ItemData.ShopOwner shopTag;
 	[Export] protected Color bgColorSlot = new("cyan");
@@ -38,7 +38,7 @@ public partial class ShopInterface : Control
 			null,
 			Close: _ => CleanShelf()
 		);
-		itemBuyButton.Pressed += () => SelectItem(current_item);
+		itemBuyButton.Pressed += TryPurchase;
 		if (IsInstanceValid(interactArea))
 			interactArea.OnInteractOnly.Add(SetMenu);
 	}
@@ -87,16 +87,14 @@ public partial class ShopInterface : Control
 		// set this as current displayed item
 		if (current_item != _item)
 			SetItem(_item);
-		else // but if is already displayed, then buy it
-			TryPurchase();
 	}
 	protected virtual void SetItem(ItemData _item)
 	{
 		current_item = _item;
 
-		itemCost.Text = _item.Cost.ToString();
-		itemName.Text = Tr(_item.ID + "_name");
-		itemDescription.Text = Tr(_item.ID + "_desc");
+		itemCost.Text = $"{StringNames.BerryTextIcon} {_item.Cost}";
+		itemName.Text = _item.ID + "_name";
+		itemDescription.Text = _item.ID + "_desc";
 		itemIcon.Texture = GlobalManager.GetIcon(_item.ID);
 
 		itemBuyButton.Show();
@@ -131,7 +129,7 @@ public partial class ShopInterface : Control
 	/// </summary>
 	protected virtual void Purchase()
 	{
-		PlayerData.AddCurrency(-current_item.Cost);
+		Player.RemoveCurrency(current_item.Cost);
 		SoundManager.CreateSound("ui/kaching");
 	}
 

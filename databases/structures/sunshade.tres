@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://djdiu710l75ux"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_kb0sc"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_kb0sc"]
 
 [resource]
 script = ExtResource("1_kb0sc")
 ID = "sunshade"
 Cost = 15
-LevelRequirement = 0
-Tag = 3
+TierRequirement = 1
 Shop = 2
 ShopOrderPriority = 57

@@ -9,6 +9,6 @@ cellular_return_type = 5
 
 [resource]
 generate_mipmaps = false
+noise = SubResource("FastNoiseLite_acdi0")
 seamless = true
 seamless_blend_skirt = 1.0
-noise = SubResource("FastNoiseLite_acdi0")

@@ -1,12 +1,11 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://ca5ug4q5vs35w"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_s6kx0"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_s6kx0"]
 
 [resource]
 script = ExtResource("1_s6kx0")
 ID = "yam_bread"
 Cost = 6
 LevelRequirement = 1
-Tag = 1
-Shop = 0
+Category = 1
 ShopOrderPriority = 37

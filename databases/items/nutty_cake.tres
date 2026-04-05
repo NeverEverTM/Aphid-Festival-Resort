@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://nto4126jbe2j"]
 
-[ext_resource type="Script" path="res://scripts/resources/ItemData.cs" id="1_4f216"]
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_4f216"]
 
 [resource]
 script = ExtResource("1_4f216")
 ID = "nutty_cake"
 Cost = 6
-LevelRequirement = 0
-Tag = 1
-Shop = 0
+Category = 1
 ShopOrderPriority = 35

@@ -27,11 +27,17 @@ public partial class NewGameMenu : Control
 	{
 		menu = new(Enum.GetName(StartMenu.WheelCategories.NewGame), anim_player, Open, null, Close, null, true);
 		StartMenu.CreateWheelAction(StartMenu.WheelCategories.NewGame, menu);
+		NewName = StringNames.DefaultPlayerName;
+		NewPronouns = StringNames.DefaultPlayerPronouns;
 	}
 	public override void _Ready()
 	{
 		SetProcessInput(false);
 		new_game_button.Pressed += CreateResort;
+		player_name_input.TextChanged += () => SoundManager.CreateSound("ui/key_type", false);
+		pronouns_input.TextChanged += () => SoundManager.CreateSound("ui/key_type", false);
+		resort_name_input.TextChanged += () => SoundManager.CreateSound("ui/key_type", false);
+		new_game_button.Pressed += () => SoundManager.CreateSound("ui/lock");
     }
 
 	public void Open(MenuInstance _next)
@@ -66,6 +72,7 @@ public partial class NewGameMenu : Control
 				else
 					new_game_button.GrabFocus();
 				AcceptEvent();
+				SoundManager.CreateSound("ui/button_select");
 				return;
 			}
 
@@ -77,7 +84,10 @@ public partial class NewGameMenu : Control
 				(_playerIsFocused && player_name_input.Text.Length >= name_char_limit) || // Player Name Char Limit
 				(_pronounsIsFocused && (pronouns_input.Text.Split('/').Length > 4 // Pronouns Max Elements
 					|| pronouns_input.Text.Length >= pronouns_char_limit))) // Pronouns Char Limit
+			{
 				AcceptEvent();
+				SoundManager.CreateSound("ui/button_fail");
+			}
 		}
 	}
 	private async void CreateResort()
@@ -89,7 +99,7 @@ public partial class NewGameMenu : Control
 			return;
 
 		// Start the game
-		GameManager.IsNewGame = true;
+		GameManager.IsANewSavefile = true;
 		SaveSystem.SelectProfile(_resortName);
 		NewName = SanitizePlayerName();
 		NewPronouns = SanitizePronouns();
@@ -119,14 +129,14 @@ public partial class NewGameMenu : Control
 		// Invalid resort names
 		if (string.IsNullOrWhiteSpace(_resortName) || _resortName.EndsWith('.') || !_resortName.IsValidFileName())
 		{
-			GlobalManager.CreatePopup("warning_invalid_name", popup_anchor);
+			GlobalManager.CREATE_POPUP("warning_invalid_name", popup_anchor);
 			return false;
 		}
 
 		// Already Exists
 		if (DirAccess.DirExistsAbsolute(SaveSystem.GetProfilePath(_resortName)))
 		{
-			GlobalManager.CreatePopup("warning_already_exists", popup_anchor);
+			GlobalManager.CREATE_POPUP("warning_already_exists", popup_anchor);
 			return false;
 		}
 
@@ -148,7 +158,7 @@ public partial class NewGameMenu : Control
 		string[] _pronouns;
 
 		if (string.IsNullOrWhiteSpace(pronouns_input.Text))
-			_pronouns = Tr("pronouns_nonbinary").Split("/");
+			_pronouns = StringNames.DefaultPlayerPronouns;
 		else
 			_pronouns = pronouns_input.Text.Split("/");
 		_pronouns[0].Capitalize();

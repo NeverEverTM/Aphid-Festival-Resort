@@ -1,0 +1,202 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2x6cpn14j87m"]
+
+[ext_resource type="Script" uid="uid://q7tpv4wkffkr" path="res://addons/exportimages/AtlasGui.cs" id="1_r0mhr"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="2_mvydm"]
+
+[node name="AtlasGui" type="Window" node_paths=PackedStringArray("add_folder_button", "loadall_folder_button", "clear_list_button", "get_atlaspath_button", "get_outputpath_button", "export_button", "folder_paths_container", "output_label", "atlas_label", "sizeXedit", "sizeYedit", "filterClipButton")]
+disable_3d = true
+oversampling_override = 1.0
+title = "Atlas Packager GUI"
+position = Vector2i(193, 36)
+size = Vector2i(675, 620)
+min_size = Vector2i(500, 500)
+script = ExtResource("1_r0mhr")
+add_folder_button = NodePath("anchor/add_folder")
+loadall_folder_button = NodePath("anchor/load_all_from")
+clear_list_button = NodePath("anchor/reset_folders")
+get_atlaspath_button = NodePath("anchor/atlas/get_atlas_path")
+get_outputpath_button = NodePath("anchor/output/get_output_path")
+export_button = NodePath("anchor/export_button")
+folder_paths_container = NodePath("anchor/folder_container/ScrollContainer/path_grid")
+output_label = NodePath("anchor/output/output_text")
+atlas_label = NodePath("anchor/atlas/atlas_text")
+sizeXedit = NodePath("anchor/texture_size/X")
+sizeYedit = NodePath("anchor/texture_size/Y")
+filterClipButton = NodePath("anchor/enable")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="anchor" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 667.0
+offset_bottom = 514.0
+scale = Vector2(0.5, 0.5)
+theme = ExtResource("2_mvydm")
+
+[node name="add_folder" type="Button" parent="anchor"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 32.0
+offset_right = 338.0
+offset_bottom = 120.0
+tooltip_text = "Adds a single entry to the folder list, all its contents are loaded as one."
+text = "Add Folder..."
+
+[node name="load_all_from" type="Button" parent="anchor"]
+layout_mode = 0
+offset_left = 352.0
+offset_top = 32.0
+offset_right = 659.0
+offset_bottom = 120.0
+tooltip_text = "Loads subfolders from a root as individual entries in the folder list. Similar to adding a folder one by one."
+text = "Load All From..."
+
+[node name="reset_folders" type="Button" parent="anchor"]
+layout_mode = 0
+offset_left = 676.0
+offset_top = 32.0
+offset_right = 1001.0
+offset_bottom = 120.0
+text = "Clear List"
+
+[node name="folder_container" type="Panel" parent="anchor"]
+clip_children = 2
+layout_mode = 0
+offset_left = 32.0
+offset_top = 146.0
+offset_right = 1286.0
+offset_bottom = 582.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="anchor/folder_container"]
+layout_mode = 0
+offset_right = 1254.0
+offset_bottom = 436.0
+
+[node name="path_grid" type="VBoxContainer" parent="anchor/folder_container/ScrollContainer"]
+layout_mode = 2
+
+[node name="atlas" type="Panel" parent="anchor"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 634.0
+offset_right = 1286.0
+offset_bottom = 694.0
+
+[node name="get_atlas_path" type="Button" parent="anchor/atlas"]
+layout_mode = 0
+offset_left = 960.0
+offset_top = 74.0
+offset_right = 1276.0
+offset_bottom = 162.0
+text = "Set Atlas Path"
+
+[node name="atlas_text" type="Label" parent="anchor/atlas"]
+layout_mode = 0
+offset_left = 7.0
+offset_right = 1246.0
+offset_bottom = 60.0
+text = "res://addons/exportimages/atlas.res"
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="output" type="Panel" parent="anchor"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 842.0
+offset_right = 1286.0
+offset_bottom = 904.0
+
+[node name="get_output_path" type="Button" parent="anchor/output"]
+layout_mode = 0
+offset_left = 960.0
+offset_top = 74.0
+offset_right = 1271.0
+offset_bottom = 162.0
+text = "Set Output Path"
+
+[node name="output_text" type="Label" parent="anchor/output"]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 1246.0
+offset_bottom = 62.0
+text = "res://addons/exportimages/output"
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="texture_size" type="Control" parent="anchor"]
+anchors_preset = 0
+offset_left = 62.0
+offset_top = 1052.0
+offset_right = 344.0
+offset_bottom = 1097.0
+
+[node name="text" type="Label" parent="anchor/texture_size"]
+layout_mode = 0
+offset_left = 68.0
+offset_top = -6.0
+offset_right = 256.0
+offset_bottom = 50.0
+text = "Image Size:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="X" type="LineEdit" parent="anchor/texture_size"]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 60.0
+offset_right = 151.4375
+offset_bottom = 116.0
+placeholder_text = "00"
+alignment = 1
+
+[node name="text" type="Label" parent="anchor/texture_size/X"]
+layout_mode = 0
+offset_left = -42.0
+offset_top = 2.0
+offset_right = 2.0
+offset_bottom = 58.0
+text = "X"
+vertical_alignment = 1
+
+[node name="Y" type="LineEdit" parent="anchor/texture_size"]
+layout_mode = 0
+offset_left = 218.0
+offset_top = 60.0
+offset_right = 351.4375
+offset_bottom = 116.0
+placeholder_text = "00"
+alignment = 1
+
+[node name="text" type="Label" parent="anchor/texture_size/Y"]
+layout_mode = 0
+offset_left = -38.0
+offset_top = 4.0
+offset_right = 6.0
+offset_bottom = 60.0
+text = "Y"
+vertical_alignment = 1
+
+[node name="enable" type="CheckButton" parent="anchor"]
+layout_mode = 0
+offset_left = 492.0
+offset_top = 1084.0
+offset_right = 821.0
+offset_bottom = 1172.0
+button_pressed = true
+text = "Enable Filter Clip"
+
+[node name="export_button" type="Button" parent="anchor"]
+layout_mode = 0
+offset_left = 1102.0
+offset_top = 1106.0
+offset_right = 1298.0
+offset_bottom = 1194.0
+text = "Export"

@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://rdns1gvi1org"]
 
 [ext_resource type="Texture2D" uid="uid://b1d7ect1nysfr" path="res://sprites/props/jump_rope.png" id="1_k8fxx"]
-[ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillInteractable.cs" id="1_r4swb"]
+[ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillStructure.cs" id="1_r4swb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k8fxx"]
 atlas = ExtResource("1_k8fxx")

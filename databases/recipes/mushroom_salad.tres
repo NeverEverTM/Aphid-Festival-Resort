@@ -1,12 +1,12 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://c2xkahyrg4rg4"]
 
-[ext_resource type="Script" path="res://scripts/resources/FoodData.cs" id="1_fesfs"]
-[ext_resource type="Resource" path="res://databases/food/leaf.tres" id="2_tjgpl"]
-[ext_resource type="Resource" path="res://databases/food/shroom.tres" id="3_0hqo6"]
-[ext_resource type="Resource" path="res://databases/food/cooked_shroom.tres" id="4_bw0a6"]
-[ext_resource type="Resource" path="res://databases/food/leaf_salad.tres" id="5_a2pqc"]
-[ext_resource type="Resource" path="res://databases/food/mushroom_salad.tres" id="6_gpb7k"]
-[ext_resource type="Script" path="res://scripts/resources/RecipeData.cs" id="7_arvwg"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_fesfs"]
+[ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="2_tjgpl"]
+[ext_resource type="Resource" uid="uid://dhikw41b4qvsa" path="res://databases/food/shroom.tres" id="3_0hqo6"]
+[ext_resource type="Resource" uid="uid://c0fnhlqttwbim" path="res://databases/food/cooked_shroom.tres" id="4_bw0a6"]
+[ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="5_a2pqc"]
+[ext_resource type="Resource" uid="uid://c35evb18yx73x" path="res://databases/food/mushroom_salad.tres" id="6_gpb7k"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="7_arvwg"]
 
 [resource]
 script = ExtResource("7_arvwg")
