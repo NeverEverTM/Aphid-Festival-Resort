@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_2xhh1")
 ID = "water"
+Type = 2
 Cost = 2
 Category = 1
 Shop = 1

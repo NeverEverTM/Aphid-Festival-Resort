@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://bki85o612bbu4"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_ojumq"]
+[ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="2_l6ll5"]
+
+[node name="recipe_full_slot" type="NinePatchRect"]
+custom_minimum_size = Vector2(300, 100)
+texture = ExtResource("1_ojumq")
+
+[node name="ing1_icon" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 116.0
+offset_bottom = 108.0
+texture = ExtResource("2_l6ll5")
+stretch_mode = 4
+
+[node name="ing2_icon" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 180.0
+offset_top = 8.0
+offset_right = 280.0
+offset_bottom = 108.0
+texture = ExtResource("2_l6ll5")
+stretch_mode = 4
+
+[node name="Label" type="Label" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 96.0
+offset_top = 13.0
+offset_right = 196.0
+offset_bottom = 107.0
+theme_override_font_sizes/font_size = 80
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1

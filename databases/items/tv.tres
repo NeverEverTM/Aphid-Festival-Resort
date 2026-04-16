@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://5s8brgefm27r"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_stfc6"]
+
+[resource]
+script = ExtResource("1_stfc6")
+ID = "tv"
+Type = 1
+Cost = 25
+TierRequirement = 1
+Category = 3
+Shop = 2
+ShopOrderPriority = 64

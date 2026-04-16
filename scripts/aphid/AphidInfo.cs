@@ -91,7 +91,7 @@ public partial class AphidInfo : Control
 		Player.Instance.AddEventListener(OnDrop, Player.PickupEvents.OnDrop);
 		Player.Instance.AddEventListener(OnInteractableEnter, Player.InteractableEvents.OnInteractableEnter);
 		Player.Instance.AddEventListener(OnInteractableExit, Player.InteractableEvents.OnInteractableExit);
-		CanvasManager.Menus.AddEventListener(OnMenuChange, MenuHandler.MenuEvents.OnMenuChange);
+		CanvasManager.Menus.AddEventListener(OnMenuChange, MenuHandler.MenuEvents.OnPostSwitch);
 	}
 	private void OnPickup(Player.PickupArgs _args)
 	{

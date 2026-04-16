@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_gcpcq")
 ID = "honey_pancakes"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 26

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_0sdl6")
 ID = "icecream"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 27

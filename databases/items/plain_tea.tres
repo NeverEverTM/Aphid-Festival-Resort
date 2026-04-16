@@ -5,6 +5,5 @@
 [resource]
 script = ExtResource("1_cvfih")
 ID = "plain_tea"
+Type = 2
 Cost = 6
-Category = 1
-ShopOrderPriority = 36

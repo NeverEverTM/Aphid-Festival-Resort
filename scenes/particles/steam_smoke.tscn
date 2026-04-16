@@ -57,4 +57,5 @@ texture = SubResource("AtlasTexture_1gyq2")
 lifetime = 8.0
 randomness = 0.5
 interpolate = false
+local_coords = true
 process_material = SubResource("ParticleProcessMaterial_41uej")

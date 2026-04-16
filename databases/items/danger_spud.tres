@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_a8di8")
 ID = "danger_spud"
+Type = 2
 Cost = 4
-LevelRequirement = 1
 TierRequirement = 1
 Category = 1
 Shop = 1

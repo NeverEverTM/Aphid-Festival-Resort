@@ -1,12 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://cr7ypl2glxegu"]
+[gd_scene load_steps=10 format=3 uid="uid://cr7ypl2glxegu"]
 
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/backgrounds/pause_menu_bg.png" id="1_lu87u"]
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="2_lu87u"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="3_ap2gs"]
-[ext_resource type="Material" uid="uid://bso2uhxo4wa1o" path="res://resources/prophecy_material_1.tres" id="4_ap2gs"]
+[ext_resource type="Shader" uid="uid://cxlqld44bp5i1" path="res://scripts/shaders/water_placeable.gdshader" id="4_ap2gs"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="4_kjhgs"]
 [ext_resource type="Texture2D" uid="uid://b47krcimyyuy7" path="res://sprites/ui/aphid_outline.png" id="5_kjhgs"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="5_wtscx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kjhgs"]
+shader = ExtResource("4_ap2gs")
+shader_parameter/frequency = 2.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_thxrm"]
 atlas = ExtResource("5_wtscx")
@@ -57,7 +61,7 @@ patch_margin_bottom = 10
 
 [node name="slot_aphid" type="TextureRect" parent="slot_frame"]
 light_mask = 0
-material = ExtResource("4_ap2gs")
+material = SubResource("ShaderMaterial_kjhgs")
 layout_mode = 0
 offset_left = 12.0
 offset_top = 10.0
@@ -66,7 +70,13 @@ offset_bottom = 164.0
 texture = ExtResource("5_kjhgs")
 stretch_mode = 5
 
-[node name="slot_bg_icon_0" type="TextureRect" parent="."]
+[node name="skill_icons" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+
+[node name="slot_bg_icon_0" type="TextureRect" parent="skill_icons"]
 visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
@@ -80,7 +90,7 @@ texture = ExtResource("4_kjhgs")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_0"]
+[node name="slot_icon" type="TextureRect" parent="skill_icons/slot_bg_icon_0"]
 layout_mode = 0
 offset_left = 13.0
 offset_top = 7.0
@@ -89,7 +99,7 @@ offset_bottom = 43.0
 texture = SubResource("AtlasTexture_thxrm")
 stretch_mode = 5
 
-[node name="slot_bg_icon_1" type="TextureRect" parent="."]
+[node name="slot_bg_icon_1" type="TextureRect" parent="skill_icons"]
 visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
@@ -103,7 +113,7 @@ texture = ExtResource("4_kjhgs")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_1"]
+[node name="slot_icon" type="TextureRect" parent="skill_icons/slot_bg_icon_1"]
 layout_mode = 0
 offset_left = 13.0
 offset_top = 7.0
@@ -112,7 +122,7 @@ offset_bottom = 43.0
 texture = SubResource("AtlasTexture_thxrm")
 stretch_mode = 5
 
-[node name="slot_bg_icon_2" type="TextureRect" parent="."]
+[node name="slot_bg_icon_2" type="TextureRect" parent="skill_icons"]
 visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
@@ -126,7 +136,7 @@ texture = ExtResource("4_kjhgs")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_2"]
+[node name="slot_icon" type="TextureRect" parent="skill_icons/slot_bg_icon_2"]
 layout_mode = 0
 offset_left = 13.0
 offset_top = 7.0
@@ -135,7 +145,7 @@ offset_bottom = 43.0
 texture = SubResource("AtlasTexture_thxrm")
 stretch_mode = 5
 
-[node name="slot_bg_icon_3" type="TextureRect" parent="."]
+[node name="slot_bg_icon_3" type="TextureRect" parent="skill_icons"]
 visible = false
 self_modulate = Color(0.252572, 0.397929, 0.735053, 1)
 texture_filter = 1
@@ -149,7 +159,7 @@ texture = ExtResource("4_kjhgs")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="slot_icon" type="TextureRect" parent="slot_bg_icon_3"]
+[node name="slot_icon" type="TextureRect" parent="skill_icons/slot_bg_icon_3"]
 layout_mode = 0
 offset_left = 13.0
 offset_top = 7.0

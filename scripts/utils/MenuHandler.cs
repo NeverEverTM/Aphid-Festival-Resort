@@ -34,11 +34,13 @@ public class MenuHandler
 	}
 	public enum MenuEvents
 	{
-		OnMenuChange
+		OnPreSwitch,
+		OnPostSwitch
 	}
 	protected Dictionary<MenuEvents, List<Action<MenuArgs>>> Events = new()
 	{
-		{ MenuEvents.OnMenuChange, new() }
+		{ MenuEvents.OnPreSwitch, new() },
+		{ MenuEvents.OnPostSwitch, new() }
 	};
 
 	public void AddEventListener(Action<MenuArgs> _action, MenuEvents _event) =>
@@ -81,6 +83,58 @@ public class MenuHandler
 	{
 		Pending.MenuPlayer.AnimationFinished -= OnOpenDisconnect;
 		IsOnCallback = false;
+	}
+	protected async Task CallPreLoad()
+	{
+		IsOnCallback = true;
+		Callable _actionCall = Callable.From(() =>
+		{
+			try
+			{
+				GlobalManager.Utils.InvokeEventListeners(Events[MenuEvents.OnPreSwitch], new()
+				{
+					Current = Current,
+					Next = Pending,
+					IsActive = Pending != null,
+					WasActive = IsActive
+				});
+			}
+			catch (Exception _error)
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Error, "MenuHandler: Unable to invoke event.", _error);
+			}
+
+			IsOnCallback = false;
+		});
+		_actionCall.CallDeferred();
+		while (IsOnCallback)
+			await Task.Delay(1);
+	}
+	protected async Task CallPostLoad(MenuInstance _lastMenu)
+	{
+		IsOnCallback = true;
+		Callable _actionCall = Callable.From(() =>
+		{
+			try
+			{
+				GlobalManager.Utils.InvokeEventListeners(Events[MenuEvents.OnPostSwitch], new()
+				{
+					Current = _lastMenu,
+					Next = Current,
+					IsActive = Available.Count > 0,
+					WasActive = IsActive
+				});
+			}
+			catch (Exception _error)
+			{
+				DebugLogger.Print(DebugLogger.LogPriority.Error, "MenuHandler: Unable to invoke event.", _error);
+			}
+
+			IsOnCallback = false;
+		});
+		_actionCall.CallDeferred();
+		while (IsOnCallback)
+			await Task.Delay(1);
 	}
 
 	/// <summary>
@@ -172,6 +226,8 @@ public class MenuHandler
 
 		MenuInstance _lastMenu = Current;
 
+		await CallPreLoad();
+
 		// Open new menu
 		if (Pending != null)
 		{
@@ -202,32 +258,9 @@ public class MenuHandler
 			Current.IsOpen = false;
 		Current = Pending;
 
-		// call all OnSwitch events
-		IsOnCallback = true;
-		Callable _actionCall = Callable.From(() =>
-		{
-			try
-			{
-				GlobalManager.Utils.InvokeEventListeners(Events[MenuEvents.OnMenuChange], new()
-				{
-					Current = _lastMenu,
-					Next = Current,
-					IsActive = Available.Count > 0,
-					WasActive = IsActive
-				});
-			}
-			catch (Exception _error)
-			{
-				DebugLogger.Print(DebugLogger.LogPriority.Error, "MenuHandler: Unable to invoke event.", _error);
-			}
+		await CallPostLoad(_lastMenu);
 
-			IsActive = Available.Count > 0;
-			IsOnCallback = false;
-		});
-		_actionCall.CallDeferred();
-		while (IsOnCallback)
-			await Task.Delay(1);
-
+		IsActive = Available.Count > 0;
 		Pending = null;
 		return true;
 	}

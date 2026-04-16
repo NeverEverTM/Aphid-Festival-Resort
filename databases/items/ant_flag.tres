@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://c582gm7buvoql"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_r4h3c"]
+
+[resource]
+script = ExtResource("1_r4h3c")
+ID = "ant_flag"
+Type = 1
+Cost = 15
+Shop = 2
+ShopOrderPriority = 60

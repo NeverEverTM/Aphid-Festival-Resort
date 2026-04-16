@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_alsei"]
 [ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="2_u8epl"]
 [ext_resource type="Resource" uid="uid://bmvfpwj2jospk" path="res://databases/food/water.tres" id="3_1q31c"]
-[ext_resource type="Resource" uid="uid://b7hm7cgdd4bl" path="res://databases/food/plain_tea.tres" id="4_2p5jl"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_g0ubl"]
+[ext_resource type="Resource" uid="uid://l2xntqo2w5eq" path="res://databases/items/plain_tea.tres" id="5_u8epl"]
 
 [resource]
 script = ExtResource("5_g0ubl")
-Owner = ExtResource("4_2p5jl")
+Owner = ExtResource("5_u8epl")
 Combinations = Array[Array]([Array[ExtResource("1_alsei")]([ExtResource("2_u8epl"), ExtResource("3_1q31c")])])

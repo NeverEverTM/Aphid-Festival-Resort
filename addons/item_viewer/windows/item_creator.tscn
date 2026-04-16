@@ -3,22 +3,31 @@
 [ext_resource type="Script" uid="uid://nsjni7h6lbi" path="res://addons/item_viewer/ItemCreator.cs" id="1_4vng8"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="1_hsucj"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_vicio"]
-[ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="3_oh0l6"]
+[ext_resource type="Texture2D" uid="uid://dl6y7yf6p2p06" path="res://sprites/icons/unknown.tres" id="4_4vng8"]
 
-[node name="item_creator" type="Window" node_paths=PackedStringArray("fileNameEdit", "nameEdit", "costEdit", "descriptionEdit", "iconTexture", "categoryOptions", "shopOptions", "finishButton")]
+[node name="item_creator" type="Window" node_paths=PackedStringArray("fileNameEdit", "nameEdit", "costEdit", "shopOrderEdit", "descriptionEdit", "iconTexture", "tierOptions", "categoryOptions", "shopOptions", "typeOptions", "finishButton", "deleteButton", "foodPanel", "hungerSlider", "thirstSlider", "flavorOptions", "skillsNode")]
 oversampling_override = 1.0
 title = "Item Creator"
 initial_position = 4
-size = Vector2i(730, 415)
+size = Vector2i(490, 275)
 script = ExtResource("1_4vng8")
 fileNameEdit = NodePath("item_options/filename")
 nameEdit = NodePath("translation/name")
 costEdit = NodePath("item_options/cost")
+shopOrderEdit = NodePath("item_options/shop_order")
 descriptionEdit = NodePath("translation/description")
 iconTexture = NodePath("item_options/icon_bg/icon_texture")
+tierOptions = NodePath("item_options/tier")
 categoryOptions = NodePath("item_options/category")
 shopOptions = NodePath("item_options/shop")
-finishButton = NodePath("item_options/Button")
+typeOptions = NodePath("translation/typeOptions")
+finishButton = NodePath("finishButton")
+deleteButton = NodePath("destroyButton")
+foodPanel = NodePath("food_options")
+hungerSlider = NodePath("food_options/hunger_node/hunger_slider")
+thirstSlider = NodePath("food_options/thirst_node/thirst_slider")
+flavorOptions = NodePath("food_options/flavor")
+skillsNode = NodePath("food_options/skills")
 
 [node name="bg" type="NinePatchRect" parent="."]
 self_modulate = Color(0.55, 0, 0.26583347, 1)
@@ -38,25 +47,25 @@ patch_margin_right = 10
 patch_margin_bottom = 10
 
 [node name="translation" type="Panel" parent="."]
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 19.0
-offset_top = -183.5
-offset_right = 447.00003
-offset_bottom = 229.83331
-grow_vertical = 2
-scale = Vector2(0.75, 0.75)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -234.5
+offset_top = 8.0
+offset_right = 193.5
+offset_bottom = 421.3333
+grow_horizontal = 2
+scale = Vector2(0.5, 0.5)
 theme = ExtResource("1_hsucj")
 
 [node name="name" type="LineEdit" parent="translation"]
 layout_mode = 0
-offset_left = 125.16669
-offset_top = 21.111124
-offset_right = 391.1667
+offset_left = 129.16666
+offset_top = 21.111126
+offset_right = 395.16666
 offset_bottom = 77.11113
 theme_override_font_sizes/font_size = 30
-placeholder_text = "ex. Abomihoney"
+placeholder_text = "ex. Test Item"
 alignment = 2
 max_length = 15
 
@@ -73,35 +82,49 @@ vertical_alignment = 1
 [node name="description_label" type="Label" parent="translation"]
 layout_mode = 0
 offset_left = 25.33358
-offset_top = 93.44444
+offset_top = 82.77777
 offset_right = 393.66623
-offset_bottom = 141.44444
+offset_bottom = 130.77777
 text = "Description:"
 vertical_alignment = 1
 
 [node name="description" type="TextEdit" parent="translation"]
 layout_mode = 0
 offset_left = 25.333328
-offset_top = 138.44444
+offset_top = 133.11108
 offset_right = 396.0
-offset_bottom = 401.77783
+offset_bottom = 312.0
 theme_override_font_sizes/font_size = 30
-placeholder_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+placeholder_text = "Here goes an item description."
 wrap_mode = 1
 
+[node name="typeOptions" type="OptionButton" parent="translation"]
+layout_mode = 0
+offset_left = 171.00002
+offset_top = 322.0
+offset_right = 397.0
+offset_bottom = 410.0
+
+[node name="Label" type="Label" parent="translation/typeOptions"]
+layout_mode = 0
+offset_left = -88.000046
+offset_top = 18.0
+offset_right = -8.000046
+offset_bottom = 66.0
+text = "Type:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="item_options" type="Panel" parent="."]
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 2.499939
-offset_top = -183.5
-offset_right = 465.1667
-offset_bottom = 229.83331
+offset_left = 3.166626
+offset_top = 8.0
+offset_right = 465.83337
+offset_bottom = 421.3333
 grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.75, 0.75)
+scale = Vector2(0.5, 0.5)
 theme = ExtResource("1_hsucj")
 
 [node name="filename" type="LineEdit" parent="item_options"]
@@ -111,14 +134,14 @@ offset_top = 20.0
 offset_right = 436.00015
 offset_bottom = 76.0
 theme_override_font_sizes/font_size = 30
-placeholder_text = "ex. honey_drop"
+placeholder_text = "ex. test_item"
 alignment = 2
 
 [node name="Label2" type="Label" parent="item_options/filename"]
 layout_mode = 0
-offset_left = -148.00003
+offset_left = -154.66669
 offset_top = 2.666687
-offset_right = -8.0000305
+offset_right = -14.666687
 offset_bottom = 50.666687
 text = "Filename:"
 horizontal_alignment = 2
@@ -127,10 +150,10 @@ vertical_alignment = 1
 [node name="icon_bg" type="NinePatchRect" parent="item_options"]
 self_modulate = Color(0.99999994, 0.29770806, 0.5935775, 1)
 layout_mode = 0
-offset_left = 34.666786
-offset_top = 88.66661
-offset_right = 141.33336
-offset_bottom = 193.99997
+offset_left = 25.777802
+offset_top = 85.33334
+offset_right = 132.44437
+offset_bottom = 190.66672
 texture = ExtResource("1_vicio")
 patch_margin_left = 10
 patch_margin_top = 10
@@ -144,16 +167,17 @@ offset_left = 14.6666565
 offset_top = 12.0
 offset_right = 93.33334
 offset_bottom = 89.333374
-texture = ExtResource("3_oh0l6")
+texture = ExtResource("4_4vng8")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="cost" type="LineEdit" parent="item_options"]
 layout_mode = 0
-offset_left = 299.3334
-offset_top = 115.99992
-offset_right = 436.0
-offset_bottom = 171.99992
+offset_left = 331.33337
+offset_top = 83.99989
+offset_right = 467.99997
+offset_bottom = 139.9999
+scale = Vector2(0.75, 0.75)
 placeholder_text = "00000"
 alignment = 2
 
@@ -167,22 +191,47 @@ text = "Cost:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="tier" type="OptionButton" parent="item_options"]
+layout_mode = 0
+offset_left = 337.77783
+offset_top = 133.33339
+offset_right = 468.2223
+offset_bottom = 221.33339
+scale = Vector2(0.75, 0.75)
+selected = 0
+item_count = 4
+popup/item_0/text = "0"
+popup/item_0/id = 0
+popup/item_1/text = "1"
+popup/item_1/id = 1
+popup/item_2/text = "2"
+popup/item_2/id = 2
+popup/item_3/text = "3"
+popup/item_3/id = 3
+
+[node name="Label" type="Label" parent="item_options/tier"]
+layout_mode = 0
+offset_left = -158.88892
+offset_top = 16.0
+offset_right = -13.888916
+offset_bottom = 64.0
+text = "Tier:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="category" type="OptionButton" parent="item_options"]
 layout_mode = 0
-offset_left = 164.00015
-offset_top = 217.99997
-offset_right = 442.00015
-offset_bottom = 305.99997
-selected = 0
-item_count = 1
-popup/item_0/text = "Shop"
-popup/item_0/id = 0
+offset_left = 227.11115
+offset_top = 208.00009
+offset_right = 505.11115
+offset_bottom = 296.0001
+scale = Vector2(0.75, 0.75)
 
 [node name="Label" type="Label" parent="item_options/category"]
 layout_mode = 0
-offset_left = -150.0
+offset_left = -158.88892
 offset_top = 16.0
-offset_right = -5.0
+offset_right = -13.888916
 offset_bottom = 64.0
 text = "Category:"
 horizontal_alignment = 2
@@ -190,29 +239,259 @@ vertical_alignment = 1
 
 [node name="shop" type="OptionButton" parent="item_options"]
 layout_mode = 0
-offset_left = 164.00015
-offset_top = 314.0
-offset_right = 442.00015
-offset_bottom = 402.0
-selected = 0
-item_count = 1
-popup/item_0/text = "No Shop"
-popup/item_0/id = 0
+offset_left = 227.11115
+offset_top = 271.99997
+offset_right = 505.11115
+offset_bottom = 359.99997
+scale = Vector2(0.75, 0.75)
 
 [node name="Label" type="Label" parent="item_options/shop"]
 layout_mode = 0
-offset_left = -150.0
+offset_left = -158.88892
 offset_top = 16.0
-offset_right = -5.0
+offset_right = -13.888916
 offset_bottom = 64.0
 text = "Shop:"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Button" type="Button" parent="item_options"]
+[node name="shop_order" type="LineEdit" parent="item_options"]
 layout_mode = 0
-offset_left = -105.99994
-offset_top = 428.0
-offset_right = 58.00006
-offset_bottom = 516.0
+offset_left = 333.22937
+offset_top = 350.66653
+offset_right = 466.66687
+offset_bottom = 406.66653
+scale = Vector2(0.75, 0.75)
+placeholder_text = "000"
+alignment = 2
+
+[node name="Label" type="Label" parent="item_options/shop_order"]
+layout_mode = 0
+offset_left = -284.44446
+offset_top = 3.555603
+offset_right = -9.444458
+offset_bottom = 51.555603
+text = "Shop Order Index:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="food_options" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 53.0
+offset_top = -40.0
+offset_right = 93.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+theme = ExtResource("1_hsucj")
+
+[node name="hunger_node" type="Label" parent="food_options"]
+layout_mode = 0
+offset_left = -561.0
+offset_top = -268.0
+offset_right = -428.0
+offset_bottom = -220.0
+text = "Hunger:"
+vertical_alignment = 1
+
+[node name="hunger_slider" type="HSlider" parent="food_options/hunger_node"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 338.0
+offset_bottom = 78.0
+min_value = -100.0
+rounded = true
+
+[node name="hunger_count" type="Label" parent="food_options/hunger_node"]
+layout_mode = 0
+offset_left = 278.0
+offset_right = 375.0
+offset_bottom = 48.0
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="thirst_node" type="Label" parent="food_options"]
+layout_mode = 0
+offset_left = -561.0
+offset_top = -196.00018
+offset_right = -425.0
+offset_bottom = -148.00018
+text = "Thirst:"
+vertical_alignment = 1
+
+[node name="thirst_slider" type="HSlider" parent="food_options/thirst_node"]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 338.0
+offset_bottom = 78.0
+min_value = -100.0
+rounded = true
+
+[node name="thirst_count" type="Label" parent="food_options/thirst_node"]
+layout_mode = 0
+offset_left = 278.0
+offset_top = 0.00018310547
+offset_right = 375.0
+offset_bottom = 48.000183
+text = "0"
+horizontal_alignment = 2
+
+[node name="flavor" type="OptionButton" parent="food_options"]
+layout_mode = 0
+offset_left = -474.0
+offset_top = -116.0
+offset_right = -195.99997
+offset_bottom = -28.0
+scale = Vector2(0.75, 0.75)
+
+[node name="Label" type="Label" parent="food_options/flavor"]
+layout_mode = 0
+offset_left = -150.0
+offset_top = 16.0
+offset_right = -5.0
+offset_bottom = 64.0
+text = "Flavor:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="skills" type="Control" parent="food_options"]
+anchors_preset = 0
+offset_left = -8.0
+offset_right = 32.0
+offset_bottom = 40.0
+
+[node name="speed" type="CheckButton" parent="food_options/skills"]
+layout_mode = 0
+offset_left = 182.0
+offset_top = -259.0
+offset_right = 428.66663
+offset_bottom = -171.0
+scale = Vector2(0.75, 0.75)
+text = "Speed"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/skills/speed"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2
+
+[node name="strength" type="CheckButton" parent="food_options/skills"]
+layout_mode = 0
+offset_left = 182.0
+offset_top = -187.0
+offset_right = 428.66663
+offset_bottom = -99.0
+scale = Vector2(0.75, 0.75)
+text = "Strength"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/skills/strength"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2
+
+[node name="intelligence" type="CheckButton" parent="food_options/skills"]
+layout_mode = 0
+offset_left = 182.0
+offset_top = -115.0
+offset_right = 428.0
+offset_bottom = -27.0
+scale = Vector2(0.75, 0.75)
+text = "Intelligence"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/skills/intelligence"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2
+
+[node name="stamina" type="CheckButton" parent="food_options/skills"]
+layout_mode = 0
+offset_left = 182.0
+offset_top = -43.0
+offset_right = 428.66663
+offset_bottom = 45.0
+scale = Vector2(0.75, 0.75)
+text = "Stamina"
+
+[node name="LineEdit" type="LineEdit" parent="food_options/skills/stamina"]
+layout_mode = 0
+offset_left = -145.66669
+offset_top = 14.0
+offset_right = -12.229187
+offset_bottom = 70.0
+placeholder_text = "00"
+alignment = 2
+max_length = 2
+
+[node name="finishButton" type="Button" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -236.0
+offset_top = -51.0
+offset_right = -71.99994
+offset_bottom = 37.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+theme = ExtResource("1_hsucj")
 text = "Create"
+
+[node name="destroyButton" type="Button" parent="."]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -148.0
+offset_top = -51.0
+offset_right = 16.000061
+offset_bottom = 37.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+theme = ExtResource("1_hsucj")
+text = "Delete"
+
+[connection signal="item_selected" from="translation/typeOptions" to="." method="ON_SELECTED"]
+[connection signal="focus_exited" from="item_options/filename" to="." method="IS_VALID_FILENAME" flags=18]
+[connection signal="text_submitted" from="item_options/filename" to="." method="IS_VALID_FILENAME" flags=18]
+[connection signal="focus_exited" from="item_options/cost" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="text_submitted" from="item_options/cost" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="focus_exited" from="item_options/shop_order" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="text_submitted" from="item_options/shop_order" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="value_changed" from="food_options/hunger_node/hunger_slider" to="food_options/hunger_node/hunger_count" method="set_text"]
+[connection signal="value_changed" from="food_options/thirst_node/thirst_slider" to="food_options/thirst_node/thirst_count" method="set_text"]
+[connection signal="focus_exited" from="food_options/skills/speed/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="text_submitted" from="food_options/skills/speed/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="focus_exited" from="food_options/skills/strength/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="text_submitted" from="food_options/skills/strength/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="focus_exited" from="food_options/skills/intelligence/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="text_submitted" from="food_options/skills/intelligence/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="focus_exited" from="food_options/skills/stamina/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="text_submitted" from="food_options/skills/stamina/LineEdit" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="pressed" from="finishButton" to="." method="CREATE_ITEM"]
+[connection signal="pressed" from="destroyButton" to="." method="CONFIRM_DELETION"]

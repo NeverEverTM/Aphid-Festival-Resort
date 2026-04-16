@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_hy2e3")
 ID = "cake"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 21

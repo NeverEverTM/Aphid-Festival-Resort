@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -25,7 +24,7 @@ public partial class LobbyMenu : Control
     [Export] private Label pronounsDisplay, nameDisplay;
 
     private enum CategoriesEnum { Aphid, Upgrades, Stats }
-    private CategoriesEnum Category;
+    private CategoriesEnum current_category;
     private Guid current_key;
     private Control current_slot;
     private MenuInstance menu;
@@ -84,12 +83,12 @@ public partial class LobbyMenu : Control
         _ = CanvasManager.Menus.SetTo(menu);
     private void SetCategory(CategoriesEnum _category, bool _force = false)
     {
-        if (_category.Equals(Category) && !_force)
+        if (_category.Equals(current_category) && !_force)
             return;
-        int _current = (int)Category, _new = (int)_category;
+        int _current = (int)current_category, _new = (int)_category;
 
         categoryNodes[_current].Hide();
-        Category = _category;
+        current_category = _category;
         categoryNodes[_new].Show();
         if (!_force)
             SoundManager.CreateSound("ui/button_switch");
@@ -205,8 +204,11 @@ public partial class LobbyMenu : Control
     }
     private void ClearUpdatePanel()
     {
+        current_upgrade = null;
         upgradeNameLabel.Text = string.Empty;
         upgradeDescLabel.Text = string.Empty;
+        upgradeBuyButton.Hide();
+
         for (int i = 0; i < upgradeSlotsGrid.GetChildCount(); i++)
             upgradeSlotsGrid.GetChild(i).QueueFree();
     }
@@ -221,7 +223,7 @@ public partial class LobbyMenu : Control
         if (_playerUpgrade.Level < _upgrade.MaxLevel)
         {
             int _cost = _upgrade.Costs[_playerUpgrade.Level];
-            _slot.GetChild<RichTextLabel>(2).Text = $"{StringNames.BerryTextIcon} {_cost}";
+            _slot.GetChild<RichTextLabel>(2).Text = $"{StringNames.BerryIcon} {_cost}";
         }
 
         // level
@@ -229,9 +231,9 @@ public partial class LobbyMenu : Control
         for (int level = 1; level <= _upgrade.MaxLevel; level++)
         {
             if (level <= _playerUpgrade.Level)
-                _levelLabel.Text += StringNames.BerryTextIcon;
+                _levelLabel.Text += StringNames.StarIcon;
             else
-                _levelLabel.Text += StringNames.UnknownTextIcon;
+                _levelLabel.Text += StringNames.EmptyStarIcon;
         }
 
         Color _origColor = _slot.GetChild<Control>(0).SelfModulate;
@@ -255,7 +257,7 @@ public partial class LobbyMenu : Control
     }
     private void ShowUpgrade(GlobalUpgrades.IUpgradeModuleCore _upgrade, bool _force = false)
     {
-        if (_upgrade == current_upgrade && !_force)
+        if (_upgrade == null || _upgrade == current_upgrade && !_force)
             return;
 
         GlobalUpgrades.UpgradeModule _playerUpgrade = GameManager.GetUpgrade(_upgrade.ID);
@@ -267,7 +269,7 @@ public partial class LobbyMenu : Control
             upgradeNameLabel.AppendText("\n");
             // cost for next level
             int _cost = _upgrade.Costs[_playerUpgrade.Level];
-            upgradeNameLabel.AppendText($"{Tr("lobby_upgrade_cost")}: {StringNames.BerryTextIcon} {_cost}");
+            upgradeNameLabel.AppendText($"{Tr("lobby_upgrade_cost")}: {StringNames.BerryIcon} {_cost}");
 
             // tier for next level
             if (GameManager.GetUpgrade("membership_tier").Level < _upgrade.MinimumTiersRequired[_playerUpgrade.Level])

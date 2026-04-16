@@ -1,5 +1,245 @@
-[gd_scene format=3 uid="uid://bmg1lo68dy4xl"]
+[gd_scene load_steps=6 format=3 uid="uid://bmg1lo68dy4xl"]
 
-[node name="RecipeCombinator" type="Window"]
+[ext_resource type="Script" uid="uid://27nh8ur0dp68" path="res://addons/item_viewer/RecipeCreator.cs" id="1_mfaek"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_ystqg"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="2_102fa"]
+[ext_resource type="Texture2D" uid="uid://by731h48tm8a0" path="res://sprites/icons/abomihoney.tres" id="3_102fa"]
+[ext_resource type="PackedScene" uid="uid://c140r8dv4t86f" path="res://addons/item_viewer/prefabs/item_slot.tscn" id="4_jttmb"]
+
+[node name="RecipeCombinator" type="Window" node_paths=PackedStringArray("itemGrid", "slotsNode", "plusLabel")]
 oversampling_override = 1.0
-size = Vector2i(545, 455)
+title = "Recipe Creator"
+initial_position = 1
+size = Vector2i(600, 600)
+script = ExtResource("1_mfaek")
+itemGrid = NodePath("item_grid/ScrollContainer/GridContainer")
+slotsNode = NodePath("recipe/slots")
+plusLabel = NodePath("recipe/plus")
+
+[node name="bg" type="NinePatchRect" parent="."]
+self_modulate = Color(0.55, 0, 0.26583347, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -27.0
+offset_top = -36.0
+offset_right = 31.0
+offset_bottom = 26.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ystqg")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="recipe" type="Panel" parent="."]
+offset_left = 98.0
+offset_top = 20.0
+offset_right = 493.0
+offset_bottom = 100.0
+theme = ExtResource("2_102fa")
+
+[node name="slots" type="Control" parent="recipe"]
+anchors_preset = 0
+offset_left = -32.0
+offset_top = -3.0
+offset_right = 8.0
+offset_bottom = 37.0
+
+[node name="ingredient1" type="TextureRect" parent="recipe/slots"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 34.0
+offset_top = 5.0
+offset_right = 109.0
+offset_bottom = 80.0
+texture = ExtResource("3_102fa")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Button" type="Button" parent="recipe/slots/ingredient1"]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 35.0
+offset_right = 125.0
+offset_bottom = 123.0
+scale = Vector2(0.5, 0.5)
+text = "X"
+
+[node name="ingredient2" type="TextureRect" parent="recipe/slots"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 186.0
+offset_top = 5.0
+offset_right = 261.0
+offset_bottom = 80.0
+texture = ExtResource("3_102fa")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Button2" type="Button" parent="recipe/slots/ingredient2"]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 35.0
+offset_right = 123.0
+offset_bottom = 123.0
+scale = Vector2(0.5, 0.5)
+text = "X"
+
+[node name="result" type="TextureRect" parent="recipe/slots"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 338.0
+offset_top = 5.0
+offset_right = 413.0
+offset_bottom = 80.0
+texture = ExtResource("3_102fa")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Button3" type="Button" parent="recipe/slots/result"]
+visible = false
+layout_mode = 0
+offset_left = 56.0
+offset_top = 35.0
+offset_right = 122.0
+offset_bottom = 123.0
+scale = Vector2(0.5, 0.5)
+text = "X"
+
+[node name="plus" type="Label" parent="recipe"]
+layout_mode = 0
+offset_left = 103.0
+offset_top = 19.0
+offset_right = 143.0
+offset_bottom = 67.0
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="equal" type="Label" parent="recipe"]
+layout_mode = 0
+offset_left = 256.0
+offset_top = 19.0
+offset_right = 296.0
+offset_bottom = 67.0
+text = "="
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="search_bar" type="LineEdit" parent="."]
+offset_left = 20.0
+offset_top = 121.0
+offset_right = 578.0
+offset_bottom = 177.0
+theme = ExtResource("2_102fa")
+placeholder_text = "Search..."
+
+[node name="item_grid" type="Panel" parent="."]
+offset_left = 20.0
+offset_top = 200.0
+offset_right = 578.0
+offset_bottom = 520.0
+theme = ExtResource("2_102fa")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="item_grid"]
+layout_mode = 0
+offset_right = 1073.0769
+offset_bottom = 615.3846
+scale = Vector2(0.52, 0.52)
+
+[node name="GridContainer" type="GridContainer" parent="item_grid/ScrollContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="food_slot" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot6" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot7" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot8" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot9" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot10" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot11" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot12" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot13" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot14" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot15" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot16" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot17" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot18" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot19" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot20" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot21" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot22" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot23" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot2" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot3" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot4" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="food_slot5" parent="item_grid/ScrollContainer/GridContainer" instance=ExtResource("4_jttmb")]
+layout_mode = 2
+
+[node name="createButton" type="Button" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -69.0
+offset_right = 83.0
+offset_bottom = 19.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.75, 0.75)
+theme = ExtResource("2_102fa")
+text = "Create"
+
+[connection signal="pressed" from="recipe/slots/ingredient1/Button" to="." method="EMPTY_SLOT" binds= [0]]
+[connection signal="pressed" from="recipe/slots/ingredient2/Button2" to="." method="EMPTY_SLOT" binds= [1]]
+[connection signal="pressed" from="recipe/slots/result/Button3" to="." method="EMPTY_SLOT" binds= [2]]
+[connection signal="text_changed" from="search_bar" to="." method="SEARCH_ITEM_ID"]
+[connection signal="pressed" from="createButton" to="." method="CREATE_RECIPE"]

@@ -113,7 +113,6 @@ internal partial class GlobalManager : Node2D
 			await LOAD_ITEMS();
 			await LOAD_FOOD();
 			await LOAD_RECIPES();
-			await LOAD_STRUCTURES();
 			await LOAD_PARTICLES();
 			await LOAD_TRAITS();
 
@@ -185,7 +184,7 @@ internal partial class GlobalManager : Node2D
 			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(ABSOLUTE_SFX_PATH + _fileName) as AudioStream);
 		}
 	}
-	private static Task LOAD_ITEMS()
+	private static async Task LOAD_ITEMS()
 	{
 		string[] _items = DirAccess.GetFilesAt(ABSOLUTE_ITEMS_DB_PATH);
 
@@ -196,58 +195,65 @@ internal partial class GlobalManager : Node2D
 				continue;
 			string _id = _filename.Split('.')[0];
 
+			ItemData _data = ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _filename);
 #if DEBUG
-			if (G_ITEMS.ContainsKey(_id))
-			{
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> is duplicated.");
+			if (_data.Type == ItemData.ItemType.Structure && await STRUCTURE_CHECK_FAILED(_id))
 				continue;
-			}
-			if (Instance.Tr(_id + "_name") == _id + "_name")
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> has no name.");
-			if (Instance.Tr(_id + "_desc") == _id + "_desc")
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> has no description.");
+			else if (await ITEM_CHECK_FAILED(_id))
+				continue;
+			await TRANSLATION_CHECK(_id);
 #endif
-			G_ITEMS.Add(_id, ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _filename));
+			if (_data.Type == ItemData.ItemType.Structure)
+			{
+				Node _node = (await PRELOAD_RESOURCE(ABSOLUTE_STRUCTURES_DB_PATH + _id + ".tscn") as PackedScene).Instantiate<Node>();
+
+				// load current texture if an icon doesnt exist already
+				if (!G_ICONS.ContainsKey(_id))
+				{
+					if (_node.IsClass("Sprite2D") && (_node as Sprite2D) != null)
+						G_ICONS.Add(_id, (_node as Sprite2D).Texture);
+					else if (_node.IsClass("AnimatedSprite2D") && (_node as AnimatedSprite2D) != null)
+						G_ICONS.Add(_id, (_node as AnimatedSprite2D).SpriteFrames.GetFrameTexture("default", 0));
+					else
+						DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> does not have a valid icon, nor could one be set up.");
+				}
+				G_STRUCTURES.Add(_id, _data);
+				_node.QueueFree();
+			}
+			else
+			{
+				G_ITEMS.Add(_id, _data);
+			}
 		}
-		return Task.CompletedTask;
+		return;
 	}
-	private static async Task LOAD_STRUCTURES()
+	private static Task<bool> STRUCTURE_CHECK_FAILED(string _id)
 	{
-		string[] _structures = DirAccess.GetFilesAt(ABSOLUTE_STRUCTURES_DB_PATH);
-
-		for (int i = 0; i < _structures.Length; i++)
+		if (G_STRUCTURES.ContainsKey(_id))
 		{
-			string _filename = _structures[i].Replace(".import", string.Empty);
-			if (_filename.EndsWith(".tscn"))
-				continue;
-			string _id = _filename.Split('.')[0];
-
-			if (G_STRUCTURES.ContainsKey(_id))
-			{
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> is duplicated.");
-				continue;
-			}
-			if (Instance.Tr(_id + "_name") == _id + "_name")
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> has no name.");
-			if (Instance.Tr(_id + "_desc") == _id + "_desc")
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> has no description.");
-
-			Node _node = (await PRELOAD_RESOURCE(ABSOLUTE_STRUCTURES_DB_PATH + _id + ".tscn") as PackedScene).Instantiate<Node>();
-
-			// load current texture if an icon doesnt exist already
-			if (!G_ICONS.ContainsKey(_id))
-			{
-				if (_node.IsClass("Sprite2D") && (_node as Sprite2D) != null)
-					G_ICONS.Add(_id, (_node as Sprite2D).Texture);
-				else if (_node.IsClass("AnimatedSprite2D") && (_node as AnimatedSprite2D) != null)
-					G_ICONS.Add(_id, (_node as AnimatedSprite2D).SpriteFrames.GetFrameTexture("default", 0));
-				else
-					DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> does not have a valid icon, nor could one be set up.");
-			}
-
-			G_STRUCTURES.Add(_id, ResourceLoader.Load<ItemData>(ABSOLUTE_STRUCTURES_DB_PATH + _filename));
-			_node.QueueFree();
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"StructureDatabase: <{_id}> is duplicated.");
+			return Task.FromResult(true);
 		}
+
+		return Task.FromResult(false);
+	}
+	private static Task<bool> ITEM_CHECK_FAILED(string _id)
+	{
+		if (G_ITEMS.ContainsKey(_id))
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"ItemDatabase: <{_id}> is duplicated.");
+			return Task.FromResult(true);
+		}
+
+		return Task.FromResult(false);
+	}
+	private static Task TRANSLATION_CHECK(string _id)
+	{
+		if (Instance.Tr(_id + "_name") == _id + "_name")
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"Database: <{_id}> has no name.");
+		if (Instance.Tr(_id + "_desc") == _id + "_desc")
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"Database: <{_id}> has no description.");
+		return Task.CompletedTask;
 	}
 	private static Task LOAD_FOOD()
 	{
@@ -258,7 +264,7 @@ internal partial class GlobalManager : Node2D
 			string _filename = _foods[i].Replace(".import", string.Empty);
 			string _id = _filename.Split('.')[0];
 
-# if DEBUG
+#if DEBUG
 			if (G_FOOD.ContainsKey(_id))
 			{
 				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"FoodDatabase: <{_id}> is duplicated.");
@@ -546,16 +552,14 @@ internal partial class GlobalManager : Node2D
 
 	public static class Utils
 	{
-		public static Godot.Collections.Dictionary RaycastBetween(Vector2 from, Vector2 to,
-				Godot.Collections.Array<Rid> _excludeList)
+		public static Godot.Collections.Dictionary RaycastBetween(Vector2 from, Vector2 to, Godot.Collections.Array<Rid> _excludeList)
 		{
 			var query = PhysicsRayQueryParameters2D.Create(from, to);
 			query.HitFromInside = true;
 			query.Exclude = _excludeList;
 			return Instance.spaceState.IntersectRay(query);
 		}
-		public static Godot.Collections.Dictionary RaycastTowards(Vector2 _position, Vector2 _direction,
-				Godot.Collections.Array<Rid> _excludeList)
+		public static Godot.Collections.Dictionary RaycastTowards(Vector2 _position, Vector2 _direction, Godot.Collections.Array<Rid> _excludeList)
 		{
 			var query = PhysicsRayQueryParameters2D.Create(_position, _position + _direction);
 			query.HitFromInside = true;
@@ -565,6 +569,37 @@ internal partial class GlobalManager : Node2D
 		public static Godot.Collections.Dictionary Raycast(PhysicsRayQueryParameters2D _query)
 		{
 			return Instance.spaceState.IntersectRay(_query);
+		}
+		public static List<Godot.Collections.Dictionary> RaycastRect(Rect2 _rect, Godot.Collections.Array<Rid> _excludeList)
+		{
+			Vector2 _topRight = _rect.Position + new Vector2(_rect.Size.X, 0), _bottomLeft = _rect.Position + new Vector2(0, _rect.Size.Y);
+
+			Vector2[][] _points =
+			[
+				[ _rect.Position, _topRight ],
+				[ _topRight, _rect.End, ],
+				[ _rect.End, _bottomLeft ],
+				[ _bottomLeft, _rect.Position ],
+				[ _rect.Position, _rect.End ],
+				[  _bottomLeft, _topRight ],
+			];
+
+			List<Godot.Collections.Dictionary> _intersectedColliders = [];
+
+			for (int i = 0; i < _points.Length; i++)
+			{
+				var query = PhysicsRayQueryParameters2D.Create(_points[i][0], _points[i][1]);
+				query.HitFromInside = true;
+				query.Exclude = _excludeList;
+
+				var _collisionCheck = Instance.spaceState.IntersectRay(query);
+				if (_collisionCheck.Count > 0)
+					_intersectedColliders.Add(_collisionCheck);
+				else
+					_intersectedColliders.Add(null);
+			}
+	
+			return _intersectedColliders;
 		}
 
 		public static int GetRandomByWeight(float[] weights) =>

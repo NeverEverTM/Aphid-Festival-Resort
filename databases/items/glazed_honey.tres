@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_yo6jc")
 ID = "glazed_honey"
+Type = 2
 Cost = 4
-LevelRequirement = 2
 TierRequirement = 2
 Category = 1
 Shop = 1

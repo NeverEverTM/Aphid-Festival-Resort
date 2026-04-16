@@ -5,10 +5,10 @@
 [ext_resource type="Resource" uid="uid://dhikw41b4qvsa" path="res://databases/food/shroom.tres" id="3_0hqo6"]
 [ext_resource type="Resource" uid="uid://c0fnhlqttwbim" path="res://databases/food/cooked_shroom.tres" id="4_bw0a6"]
 [ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="5_a2pqc"]
-[ext_resource type="Resource" uid="uid://c35evb18yx73x" path="res://databases/food/mushroom_salad.tres" id="6_gpb7k"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="7_arvwg"]
+[ext_resource type="Resource" uid="uid://xjexu85cker4" path="res://databases/items/mushroom_salad.tres" id="7_tjgpl"]
 
 [resource]
 script = ExtResource("7_arvwg")
-Owner = ExtResource("6_gpb7k")
+Owner = ExtResource("7_tjgpl")
 Combinations = Array[Array]([Array[ExtResource("1_fesfs")]([ExtResource("2_tjgpl"), ExtResource("3_0hqo6")]), Array[ExtResource("1_fesfs")]([ExtResource("2_tjgpl"), ExtResource("4_bw0a6")]), Array[ExtResource("1_fesfs")]([ExtResource("5_a2pqc"), ExtResource("3_0hqo6")]), Array[ExtResource("1_fesfs")]([ExtResource("5_a2pqc"), ExtResource("4_bw0a6")])])

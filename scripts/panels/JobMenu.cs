@@ -15,7 +15,7 @@ public partial class JobMenu : Control
     [Export] private PackedScene slot_prefab;
     [Export] private ShaderMaterial job_completion_material, job_current_material;
     [ExportGroup("Information Display")]
-    [Export] private Control aphid_node;
+    [Export] private Control aphid_node, skill_bar_bg, request_background_frame;
     [Export] private Label description_label, reward_label, timer_label;
     [Export] private Button assign_button;
     [Export] private TextureRect request_background;
@@ -50,14 +50,14 @@ public partial class JobMenu : Control
     {
         public List<JobRequest> Current { get; set; } = [];
         public List<JobRequest> Available { get; set; } = [];
-        public Dictionary<JobDifficulty, int> MaxAmounts { get; set; }
+        [JsonIgnore] public Dictionary<JobDifficulty, int> MaxAmounts;
 
         public Savefile()
         {
             MaxAmounts = new()
             {
-                { JobDifficulty.Easy, 5 },
-                { JobDifficulty.Medium, 3 },
+                { JobDifficulty.Easy, 3 },
+                { JobDifficulty.Medium, 2 },
                 { JobDifficulty.Hard, 1 },
                 { JobDifficulty.Expert, 0 },
                 { JobDifficulty.Master, 0 },
@@ -73,12 +73,12 @@ public partial class JobMenu : Control
             Data = _data;
 
             for (int i = 0; i < Data.Available.Count; i++)
-                Data.Available[i].Data = FetchJob(Data.Available[i].Difficulty, Data.Available[i].DataID);
+                Data.Available[i].Data = FetchJob(Data.Available[i].Difficulty, Data.Available[i].Index);
 
             for (int i = 0; i < Data.Current.Count; i++)
             {
                 Data.Current[i].IsCurrent = true;
-                Data.Current[i].Data = FetchJob(Data.Current[i].Difficulty, Data.Current[i].DataID);
+                Data.Current[i].Data = FetchJob(Data.Current[i].Difficulty, Data.Current[i].Index);
                 Data.Current[i].AccountForPassedTime();
             }
 
@@ -343,12 +343,12 @@ public partial class JobMenu : Control
         }
 
         // display skill icons on slot
-        for (int i = 0; i < _request.Skills.Length; i++)
+        foreach (var _pair in _request.Data.Skills)
         {
-            TextureRect _icon = _slot.GetChild<TextureRect>(i + 2);
+            TextureRect _icon = _slot.GetNode("skill_icons").GetChild<TextureRect>((int)_pair.Key);
             _icon.Visible = true;
             _icon.SelfModulate = difficulty_colors[(int)_request.Difficulty];
-            _icon.GetChild<TextureRect>(0).Texture = GlobalManager.GetIcon(_request.Skills[i]);
+            _icon.GetChild<TextureRect>(0).Texture = GlobalManager.GetIcon(_pair.Key.ToString().ToLower());
         }
 
         _slot.Pressed += () => DisplayRequest(_request);
@@ -359,12 +359,12 @@ public partial class JobMenu : Control
         JobData _job = FetchRandomJob(_difficulty, out int _id);
 
         // attempt to fetch a data pack that doesnt exist in the board already
-        while (Data.Available.Exists(r => r.Difficulty == _difficulty && r.DataID == _id))
+        while (Data.Available.Exists(r => r.Difficulty == _difficulty && r.Index == _id))
             _job = FetchRandomJob(_difficulty, out _id);
 
         JobRequest _request = new()
         {
-            DataID = _id,
+            Index = _id,
             Skills = new string[_job.Skills.Count],
             MinimumLevels = new int[_job.Skills.Count],
             TimeLeft = _job.BaseTime,
@@ -381,7 +381,7 @@ public partial class JobMenu : Control
             _request.MinimumLevels[i] = Math.Clamp(
                 GlobalManager.RNG.RandiRange(_pair.Value - difficulty_rand_ranges[(int)_request.Difficulty],
                     _pair.Value + difficulty_rand_ranges[(int)_request.Difficulty]), difficulty_range_mins[(int)_request.Difficulty], 100);
-            var _value = AphidData.SkillNames[(int)_pair.Key];
+            string _value = AphidData.SkillNames[(int)_pair.Key];
             _request.Skills[i] = _value;
             i++;
         }
@@ -471,12 +471,13 @@ public partial class JobMenu : Control
             timer_label.SelfModulate = timer_default_color;
             timer_label.Text = _request.GetFormattedTimeLeft();
             assign_button.Text = "lobby_job_select";
-            description_label.Text = Tr($"job_{_request.Difficulty.ToString().ToLower()}_{_request.DataID}");
+            description_label.Text = Tr($"job_{_request.Difficulty.ToString().ToLower()}_{_request.Index}");
             assign_button.Show();
             if (aphid_node.GetChildCount() > 0)
                 aphid_node.GetChild(0).QueueFree();
         }
 
+        skill_bar_bg.SelfModulate = request_background_frame.SelfModulate = difficulty_colors[(int)_request.Difficulty];
         request_background.Texture = _request.Data.Background;
         reward_label.Text = _request.Data.BaseReward.ToString("000");
 
@@ -489,6 +490,7 @@ public partial class JobMenu : Control
                 continue;
             }
             job_skills_icons[i].Texture = GlobalManager.GetIcon(_request.Skills[i]);
+            job_skills_icons[i].GetParent<Control>().SelfModulate = difficulty_colors[(int)_request.Difficulty];
             job_skills_labels[i].Text = _request.MinimumLevels[i].ToString();
             job_skills_labels[i].SelfModulate = new Color("white");
             job_skills[i].Visible = true;
@@ -555,15 +557,13 @@ public partial class JobMenu : Control
 
     public class JobRequest
     {
-        // Static custom values set at creation, do not change after
-        public int DataID { get; set; }
+        // Savefile variables, saved per taken request
+        public int Index { get; set; }
         public string[] Skills { get; set; }
         public int[] MinimumLevels { get; set; }
         public JobDifficulty Difficulty { get; set; }
         public Guid AssignedAphid { get; set; }
         public float ChanceToSucceed { get; set; }
-
-        // Dynamic variables, change constantly while the request is active
         public double TimeLeft { get; set; }
         /// <summary>
         /// Last playtime registered for this request, do not uses real time, instead is based on played time.

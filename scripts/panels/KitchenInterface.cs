@@ -135,7 +135,7 @@ public partial class KitchenInterface : Control
 		if (_toggle)
 		{
 			// Cancel toggle if not result is being displayed or the recipe is still unknown
-			if (current_recipe == null || !Player.Data.RecipesDiscovered.Contains(current_recipe.Owner.Item.ID))
+			if (current_recipe == null || !Player.Data.RecipesDiscovered.Contains(current_recipe.Owner.ID))
 			{
 				redoRecipe.SetPressedNoSignal(false);
 				return;
@@ -166,20 +166,20 @@ public partial class KitchenInterface : Control
 			Player.Data.Inventory.Remove(ingredient2);
 
 		// store item
-		if (PlayerInventory.StoreItem(current_recipe.Owner.Item.ID))
+		if (PlayerInventory.StoreItem(current_recipe.Owner.ID))
 			CreateInventory();
 		else // cant fit it, drop it in the floor
-			ResortManager.CreateItem(current_recipe.Owner.Item.ID, Player.Instance.GlobalPosition);
+			ResortManager.CreateItem(current_recipe.Owner.ID, Player.Instance.GlobalPosition);
 
 		PlayAnim("cook");
-		if (!Player.Data.RecipesDiscovered.Contains(current_recipe.Owner.Item.ID))
-			Player.Data.RecipesDiscovered.Add(current_recipe.Owner.Item.ID);
+		if (!Player.Data.RecipesDiscovered.Contains(current_recipe.Owner.ID))
+			Player.Data.RecipesDiscovered.Add(current_recipe.Owner.ID);
 
 		SoundManager.CreateSound("ui/steam_sizzle");
 		// set interface to clear, dont clear if redo is active
 		if (!redoRecipe.ButtonPressed)
 		{
-			if (GlobalManager.G_FOOD[current_recipe.Owner.Item.ID].Flavor == AphidData.FoodType.Vile)
+			if (GlobalManager.G_FOOD.TryGetValue(current_recipe.Owner.ID, out FoodData value) && value.Flavor == AphidData.FoodType.Vile)
 			{
 				dialogBox.Text = "kitchen_fail";
 				SoundManager.CreateSound("ui/kitchen_fail");
@@ -223,7 +223,7 @@ public partial class KitchenInterface : Control
 		// mistakes and big mistakes used as ingredients yields bad results
 		if (ingredient1 == MISTAKE_RECIPE || ingredient2 == MISTAKE_RECIPE || ingredient1 == BIG_MISTAKE_RECIPE || ingredient2 == BIG_MISTAKE_RECIPE)
 		{
-			current_recipe = new(GlobalManager.G_FOOD[BIG_MISTAKE_RECIPE], []);
+			current_recipe = new(GlobalManager.G_ITEMS[BIG_MISTAKE_RECIPE], []);
 			return BIG_MISTAKE_RECIPE;
 		}
 
@@ -253,9 +253,9 @@ public partial class KitchenInterface : Control
 			return false;
 		});
 
-		current_recipe ??= new(GlobalManager.G_FOOD[MISTAKE_RECIPE], []);
+		current_recipe ??= new(GlobalManager.G_ITEMS[MISTAKE_RECIPE], []);
 
-		return current_recipe.Owner.Item.ID;
+		return current_recipe.Owner.ID;
 	}
 	private void PlayAnim(string _anim)
 	{

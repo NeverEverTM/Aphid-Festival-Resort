@@ -86,6 +86,11 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		SetMeta(StringNames.TagMeta, (int)Tag);
 		current_time = Time.GetUnixTimeFromSystem();
 	}
+    public override void _ExitTree()
+    {
+        Instance.Entity = null;
+    }
+
 	public void SetReady()
 	{
 		MovementSpeed = 20;
@@ -274,6 +279,7 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		if (!State.Is(StateEnum.Idle))
 			return;
 
+		SetState(StateEnum.Busy); // force new state
 		SetState(StateEnum.Idle, new IdleState.IdleArgs(_position));
 		skin.DoHop();
 	}

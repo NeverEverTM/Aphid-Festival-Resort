@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_le4u0")
 ID = "cooked_shroom"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 23

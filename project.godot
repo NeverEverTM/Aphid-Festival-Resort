@@ -53,7 +53,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/exportimages/plugin.cfg", "res://addons/glowbutton/plugin.cfg")
+enabled=PackedStringArray("res://addons/exportimages/plugin.cfg", "res://addons/glowbutton/plugin.cfg", "res://addons/item_viewer/plugin.cfg")
 
 [file_customization]
 
@@ -250,7 +250,7 @@ quick_action_3={
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation", "res://databases/translations/structures.en.translation", "res://databases/translations/structures.es.translation")
+locale/translations=PackedStringArray("res://databases/translations/dialogue.en.translation", "res://databases/translations/dialogue.es.translation", "res://databases/translations/essentials.en.translation", "res://databases/translations/essentials.es.translation", "res://databases/translations/items.en.translation", "res://databases/translations/items.es.translation")
 locale/test="en"
 
 [layer_names]

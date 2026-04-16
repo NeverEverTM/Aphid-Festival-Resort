@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_egfcc")
 ID = "big_mistake"
+Type = 2
 Cost = 1
 Category = 1
 ShopOrderPriority = 20

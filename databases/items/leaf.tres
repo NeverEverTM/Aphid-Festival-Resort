@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_ehmhr")
 ID = "leaf"
+Type = 2
 Cost = 2
 Category = 1
 Shop = 1

@@ -16,6 +16,7 @@ public partial class CanvasManager : CanvasLayer
 	[Export] private TextureButton screenshot_button;
 	[Export] private Container prompt_grid;
 	[Export] private PackedScene prompt_element;
+	[Export] private AnimationPlayer autosave_player;
 	[ExportGroup("Weather")]
 	[Export] private AnimationPlayer weather_player;
 	[Export] private Label weather_text;
@@ -136,18 +137,18 @@ public partial class CanvasManager : CanvasLayer
 		{
 			Image _capture = Instance.GetViewport().GetTexture().GetImage();
 
-			string _filename = SaveSystem.ProfilePath + SaveSystem.PROFILE_ALBUM_DIR;
+			string _path = SaveSystem.ProfilePath + SaveSystem.PROFILE_ALBUM_DIR;
 			if (_is_free_camera && IsInstanceValid(CameraManager.FocusedAphid))
 			{
-				_filename += $"/{CameraManager.FocusedAphid.Instance.ID}/";
-				if (!DirAccess.DirExistsAbsolute(_filename))
-					DirAccess.MakeDirAbsolute(_filename);
+				_path += $"{CameraManager.FocusedAphid.Instance.ID}/";
+				if (!DirAccess.DirExistsAbsolute(_path))
+					DirAccess.MakeDirAbsolute(_path);
 			}
-			_filename += $"screenshot-{Time.GetDatetimeStringFromSystem().Replace(":", "-")}.png";
-			if (FileAccess.FileExists(_filename))
-				_filename.Replace(".png", Time.GetTicksMsec() + ".png");
+			string _filename = $"screenshot-{Time.GetDatetimeStringFromSystem().Replace(":", "-")}.png";
+            if (FileAccess.FileExists(_path + _filename))
+                _filename = _filename.Replace(".png", Time.GetTicksMsec() + ".png");
 
-			_capture.SavePng(_filename);
+			_capture.SavePng(_path + _filename);
 			SoundManager.CreateSound("ui/camera-flash");
 			Instance.photo_display.Texture = ImageTexture.CreateFromImage(_capture);
 			Instance.photo_anim_player.Play("popup");
@@ -200,7 +201,22 @@ public partial class CanvasManager : CanvasLayer
 			Instance.currency_text.Text = Player.Data.Currency.ToString("000");
 	}
 
-	// opens weather overlay and creates timer to hide it automatically
+	// MARK: Popups
+	public static void StartAutosavePopup()
+	{
+		Instance.autosave_player.Play(StringNames.OpenAnim);
+		Timer _timer = new()
+		{
+			OneShot = true
+		};
+		_timer.Timeout += () =>
+		{
+			Instance.autosave_player.Play(StringNames.CloseAnim);
+			_timer.QueueFree();
+		};
+		Instance.AddChild(_timer);
+		_timer.Start(3);
+	}
 	public void StartWeatherPopup(RoomInstance.TimeArgs _args)
 	{
 		OpenWeather(RoomInstance.TimeArgs.TimeOfDay);

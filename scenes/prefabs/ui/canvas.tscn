@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://bufmc14xek8uk"]
+[gd_scene load_steps=105 format=3 uid="uid://bufmc14xek8uk"]
 
 [ext_resource type="Script" uid="uid://du1wf6ua7yxdx" path="res://scripts/controllers/CanvasManager.cs" id="1_vek4n"]
 [ext_resource type="Texture2D" uid="uid://c0myyt5nua8lb" path="res://sprites/ui/weather_sunny.png" id="2_gvumt"]
@@ -17,7 +17,10 @@
 [ext_resource type="AudioStream" uid="uid://dsaxgq5cwd034" path="res://sfx/dialog/dev_idle.wav" id="12_fyjyg"]
 [ext_resource type="Texture2D" uid="uid://5jk15kym7mrn" path="res://sprites/ui/leaf_cover.png" id="13_7k46k"]
 [ext_resource type="Shader" uid="uid://dw8sws2xkkyr6" path="res://scripts/shaders/outline.gdshader" id="13_8siup"]
+[ext_resource type="Texture2D" uid="uid://eatbgmr2y7qu" path="res://sprites/ui/photo_frame.png" id="13_x2yum"]
+[ext_resource type="Texture2D" uid="uid://cd7hpe52x13fp" path="res://sprites/ui/portraits/landscape_golden.png" id="14_50hc1"]
 [ext_resource type="Script" uid="uid://c1bew1k35gsxj" path="res://scripts/panels/PauseMenu.cs" id="14_uvp6r"]
+[ext_resource type="Texture2D" uid="uid://dxj37h3o52ixp" path="res://sprites/aphid.svg" id="15_o7j8h"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="17_g6i7k"]
 [ext_resource type="Texture2D" uid="uid://4n4rotaskrdw" path="res://sprites/ui/gui_icons/icon_sell.png" id="17_y86om"]
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/backgrounds/pause_menu_bg.png" id="18_i8b57"]
@@ -206,6 +209,189 @@ _data = {
 font_size = 40
 outline_size = 10
 outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_6x2xv"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("atuosave_icon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("atuosave_icon:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("autosave_label:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(25.46455, 81.00677)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("autosave_label:visible_ratio")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_xtvn6"]
+resource_name = "close"
+length = 0.3
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("atuosave_icon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.22),
+"transitions": PackedFloat32Array(2, 1),
+"update": 0,
+"values": [Vector2(200, 0), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("autosave_label:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.22),
+"transitions": PackedFloat32Array(2, 0.5),
+"update": 0,
+"values": [Vector2(220, 81.007), Vector2(25.46455, 81.00677)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_tens8"]
+resource_name = "loop"
+length = 0.5
+loop_mode = 1
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("atuosave_icon:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.02, 0.26999998, 0.29),
+"transitions": PackedFloat32Array(0.5, -2, 0.5, -2),
+"update": 0,
+"values": [-0.12217304763960309, -0.13962634015954636, 0.12217304763960309, 0.13962634015954636]
+}
+
+[sub_resource type="Animation" id="Animation_o7j8h"]
+resource_name = "open"
+length = 0.5
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("atuosave_icon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(200, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("autosave_label:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.49999997),
+"transitions": PackedFloat32Array(0.5, 1),
+"update": 0,
+"values": [Vector2(25.46455, 81.00677), Vector2(220, 81.007)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("autosave_label:visible_ratio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.49999997),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xtvn6"]
+_data = {
+&"RESET": SubResource("Animation_6x2xv"),
+&"close": SubResource("Animation_xtvn6"),
+&"loop": SubResource("Animation_tens8"),
+&"open": SubResource("Animation_o7j8h")
+}
 
 [sub_resource type="LabelSettings" id="LabelSettings_kugfj"]
 font_size = 75
@@ -1936,7 +2122,7 @@ shader_parameter/node_size = Vector2(4, 4)
 shader_parameter/color = Color(0.568627, 0.239216, 0.117647, 0)
 shader_parameter/useModulateAlpha = true
 
-[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("hud_element", "photo_display", "photo_anim_player", "currency_text", "screenshot_button", "prompt_grid", "weather_player", "weather_text", "weather_bg")]
+[node name="canvas" type="CanvasLayer" node_paths=PackedStringArray("hud_element", "photo_display", "photo_anim_player", "currency_text", "screenshot_button", "prompt_grid", "autosave_player", "weather_player", "weather_text", "weather_bg")]
 process_mode = 1
 script = ExtResource("1_vek4n")
 hud_element = NodePath("hud")
@@ -1946,10 +2132,11 @@ currency_text = NodePath("berries_bar/amount")
 screenshot_button = NodePath("hud/screenshotButton")
 prompt_grid = NodePath("control_prompt_anchor/control_prompt_grid")
 prompt_element = ExtResource("6_2mjwi")
-weather_player = NodePath("datetime/AnimationPlayer")
-weather_text = NodePath("datetime/CanvasGroup/weater_bg/weather_text")
+autosave_player = NodePath("hud/autosave/slide_anim")
+weather_player = NodePath("hud/datetime/AnimationPlayer")
+weather_text = NodePath("hud/datetime/CanvasGroup/weater_bg/weather_text")
 weather_sprites = Array[Texture2D]([ExtResource("2_gvumt"), ExtResource("3_7sasc")])
-weather_bg = NodePath("datetime/CanvasGroup/weater_bg")
+weather_bg = NodePath("hud/datetime/CanvasGroup/weater_bg")
 
 [node name="berries_bar" type="NinePatchRect" parent="."]
 self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
@@ -2122,31 +2309,98 @@ script = ExtResource("8_y632t")
 PressedColor = Color(0.282353, 0.294118, 0.286275, 1)
 HoverColor = Color(0.670588, 0.670588, 0.65098, 1)
 
-[node name="datetime" type="Control" parent="."]
+[node name="autosave" type="Control" parent="hud"]
 visible = false
-layout_mode = 3
+anchors_preset = 0
+offset_left = -176.0
+offset_top = 532.0
+offset_right = -136.0
+offset_bottom = 572.0
+
+[node name="slide_anim" type="AnimationPlayer" parent="hud/autosave"]
+libraries = {
+&"": SubResource("AnimationLibrary_xtvn6")
+}
+
+[node name="atuosave_icon" type="NinePatchRect" parent="hud/autosave"]
+layout_mode = 0
+offset_right = 129.607
+offset_bottom = 75.0
+pivot_offset = Vector2(63.37, 34.15)
+texture = ExtResource("13_x2yum")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 10
+
+[node name="icon_player" type="AnimationPlayer" parent="hud/autosave/atuosave_icon"]
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_xtvn6")
+}
+autoplay = "loop"
+
+[node name="bg_tex" type="TextureRect" parent="hud/autosave/atuosave_icon"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = -12.0
+offset_right = 125.0
+offset_bottom = 78.0
+rotation = 6.2831855
+pivot_offset = Vector2(37, 44.23)
+texture = ExtResource("14_50hc1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="aphid_tex" type="TextureRect" parent="hud/autosave/atuosave_icon"]
+layout_mode = 0
+offset_left = 36.999992
+offset_top = 4.000001
+offset_right = 88.86739
+offset_bottom = 58.566223
+pivot_offset = Vector2(26.525, 32.35)
+texture = ExtResource("15_o7j8h")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="autosave_label" type="Label" parent="hud/autosave"]
+layout_mode = 0
+offset_left = 25.46455
+offset_top = 81.00677
+offset_right = 119.464676
+offset_bottom = 106.00677
+theme_override_font_sizes/font_size = 20
+text = "Autosaving..."
+horizontal_alignment = 1
+vertical_alignment = 1
+visible_characters = 0
+visible_ratio = 0.0
+
+[node name="datetime" type="Control" parent="hud"]
+visible = false
+layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = -224.0
-offset_top = -80.0
+offset_top = 600.0
 offset_right = -224.0
-offset_bottom = -80.0
+offset_bottom = 600.0
 grow_vertical = 0
 
-[node name="CanvasGroup" type="CanvasGroup" parent="datetime"]
+[node name="CanvasGroup" type="CanvasGroup" parent="hud/datetime"]
 
-[node name="weater_bg" type="TextureRect" parent="datetime/CanvasGroup"]
+[node name="weater_bg" type="TextureRect" parent="hud/datetime/CanvasGroup"]
 self_modulate = Color(0.435066, 0.32983, 0.823487, 1)
 offset_left = 224.0
 offset_top = -406.0
-offset_right = 584.999
+offset_right = 584.99927
 offset_bottom = -49.0
 mouse_filter = 2
 texture = ExtResource("2_gvumt")
 stretch_mode = 4
 
-[node name="weather_text" type="Label" parent="datetime/CanvasGroup/weater_bg"]
+[node name="weather_text" type="Label" parent="hud/datetime/CanvasGroup/weater_bg"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -2160,7 +2414,7 @@ theme = ExtResource("6_pcakw")
 text = "02/06"
 label_settings = SubResource("LabelSettings_kugfj")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="datetime"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="hud/datetime"]
 libraries = {
 &"": SubResource("AnimationLibrary_4mtcm")
 }

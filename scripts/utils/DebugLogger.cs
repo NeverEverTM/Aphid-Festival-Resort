@@ -51,16 +51,18 @@ public static class DebugLogger
 		_string.AppendJoin(" ", Array.ConvertAll(args, x => x.ToString()));
 		string _message = string.Format(_string.ToString(), _time, LOG_STARTERS[(int)priority]);
 
-		DebugConsole.Print(_message);
 		switch (priority)
 		{
 			case LogPriority.Warning:
+				DebugConsole.Print("[color=yellow]" + _message + "[/color]");
 				GD.PushWarning(_message);
 				break;
 			case LogPriority.Error:
+				DebugConsole.Print("[color=red]" + _message + "[/color]");
 				GD.PushError(_message);
 				break;
 			default:
+				DebugConsole.Print(_message);
 				GD.Print(_message);
 				break;
 		}

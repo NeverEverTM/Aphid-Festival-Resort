@@ -154,7 +154,7 @@ public static class SaveSystem
 
 			if (!LoadClassData(_profileList[i], _paths))
 			{
-				DebugLogger.Print(DebugLogger.LogPriority.Log, $"ProfileLoad: Failed to load profile <{Profile}> to memory.");
+				DebugLogger.Print(DebugLogger.LogPriority.Error, DebugLogger.GameTermination.Complete, $"ProfileLoad: Failed to load profile <{Profile}> to memory.");
 				return Task.FromException(new("Failed to load profile"));
 			}
 		}
@@ -245,9 +245,9 @@ public static class SaveSystem
 	public static Task CreateProfile()
 	{
 		// Create directories for current profile
-		bool _success = CreateProfileMainDir(ProfilePath) &&
-				CreateProfileMainDir(ProfilePath + PROFILE_BACKUP_DIR, true) &&
-				CreateProfileMainDir(ProfilePath + PROFILE_AUTOSAVE_DIR, true);
+		bool _success = CreateProfileMainDir(ProfilePath, true) &&
+				CreateProfileMainDir(ProfilePath + PROFILE_BACKUP_DIR) &&
+				CreateProfileMainDir(ProfilePath + PROFILE_AUTOSAVE_DIR);
 
 		if (_success)
 			DebugLogger.Print(DebugLogger.LogPriority.Info, $"ProfileCreate: Succesfully created profile of <{Profile}>.");
@@ -283,7 +283,7 @@ public static class SaveSystem
 		if (!CreateProfileSubDir("resorts", _path, ref _mainDir))
 			return false;
 
-		if (!_includeNonEssentials && !CreateProfileSubDir("resorts", _path, ref _mainDir))
+		if (_includeNonEssentials && !CreateProfileSubDir("screenshots", _path, ref _mainDir))
 			return false;
 
 		return true;

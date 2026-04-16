@@ -113,6 +113,15 @@ public partial class ResortManager : Node2D
 
 	private void OnLoadFinish(SaveSystem.SaveEventArgs _)
 	{
+		// spawn aphids
+		foreach (KeyValuePair<Guid, AphidInstance> _pair in GameManager.Aphids)
+		{
+			string _resort = _pair.Value.Status.HomeResort;
+			if (!string.IsNullOrEmpty(_resort) && _resort == Current.Resort
+					&& _pair.Value.Status.Mode != AphidData.EntityStatusType.Busy)
+				SpawnAphid(_pair.Value);
+		}
+
 		// load items
 		for (int i = 0; i < Data.Items?.Length; i++)
 			CreateItem(Data.Items[i].Id, new(Data.Items[i].PositionX, Data.Items[i].PositionY), Data.Items[i].Data);
@@ -124,15 +133,6 @@ public partial class ResortManager : Node2D
 		// spawn structures
 		for (int i = 0; i < Data.Structures?.Length; i++)
 			CreateStructure(Data.Structures[i].Id, new(Data.Structures[i].PositionX, Data.Structures[i].PositionY), Data.Structures[i].Data);
-
-		// spawn aphids
-		foreach (KeyValuePair<Guid, AphidInstance> _pair in GameManager.Aphids)
-		{
-			string _resort = _pair.Value.Status.HomeResort;
-			if (!string.IsNullOrEmpty(_resort) && _resort == Current.Resort
-					&& _pair.Value.Status.Mode != AphidData.EntityStatusType.Busy)
-				SpawnAphid(_pair.Value);
-		}
 	}
 
 	// =========| Object Creation |===============

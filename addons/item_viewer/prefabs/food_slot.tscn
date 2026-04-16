@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=3 uid="uid://xisl5sxxrauc"]
+
+[ext_resource type="Texture2D" uid="uid://by731h48tm8a0" path="res://sprites/icons/abomihoney.tres" id="1_owjd4"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_xnr3n"]
+
+[node name="food_slot" type="NinePatchRect"]
+self_modulate = Color(1, 0.31, 0.31, 1)
+custom_minimum_size = Vector2(500, 50)
+offset_right = 500.0
+offset_bottom = 50.0
+texture = ExtResource("1_xnr3n")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 4.0
+offset_top = 5.0
+offset_right = 44.0
+offset_bottom = 45.0
+texture = ExtResource("1_owjd4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 5.0
+offset_right = 139.0
+offset_bottom = 45.0
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "F: 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 141.0
+offset_top = 5.0
+offset_right = 233.0
+offset_bottom = 45.0
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "W: 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 229.0
+offset_top = 5.0
+offset_right = 321.0
+offset_bottom = 45.0
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[color=yellow]Sour[/color]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 301.0
+offset_top = 5.0
+offset_right = 393.0
+offset_bottom = 45.0
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "Tier 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RichTextLabel5" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 373.0
+offset_top = 5.0
+offset_right = 503.0
+offset_bottom = 45.0
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "C: 100"
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1

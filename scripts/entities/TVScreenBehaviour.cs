@@ -21,6 +21,7 @@ public partial class TVScreenBehaviour : Sprite2D, SaveSystem.IGenericDataModule
 		changeChannelButton.OnInteractOnly.Add(SwitchChannels);
 		powerButton.OnInteractOnly.Add(SetActiveState);
 	}
+
 	public override void _PhysicsProcess(double delta)
 	{
 		if (active)

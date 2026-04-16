@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_b8wwa"]
 [ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="2_4mix1"]
-[ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="3_qx5wo"]
+[ext_resource type="Resource" uid="uid://b5jvfooqr8ah" path="res://databases/items/leaf_salad.tres" id="4_4mix1"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_80c0u"]
 
 [resource]
 script = ExtResource("4_80c0u")
-Owner = ExtResource("3_qx5wo")
+Owner = ExtResource("4_4mix1")
 Combinations = Array[Array]([Array[ExtResource("1_b8wwa")]([ExtResource("2_4mix1")])])

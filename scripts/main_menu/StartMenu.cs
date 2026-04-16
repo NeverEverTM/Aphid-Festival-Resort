@@ -43,10 +43,10 @@ public partial class StartMenu : Control
 		Instance = this;
 
 		// event listeners
-		if (OptionsManager.SaveModule.Loaded)
-			E_CreateContinueButton();
-		else
+		if (!OptionsManager.SaveModule.Loaded)
 			OptionsManager.SaveModule.AddEventListener((_) => E_CreateContinueButton(), SaveSystem.SaveEventsEnum.OnLoadFinish);
+		else
+			E_CreateContinueButton();
 
 		if (ControlsManager.SaveModule.Loaded)
 			ReadyUp();
@@ -179,11 +179,14 @@ public partial class StartMenu : Control
 
 	// MARK: UI Handling
 	public static void CreateWheelAction(WheelCategories _key, MenuInstance _menu) =>
-		CreateWheelAction(_key, () => _ = Instance.Menus.SetTo(_menu));		
+		CreateWheelAction(_key, () => _ = Instance.Menus.SetTo(_menu));
 	public static void CreateWheelAction(WheelCategories _key, Action _action)
 	{
 		Instance.wheel_actions.Add(_key, _action);
+		// order by enum
 		Instance.wheel_actions = Instance.wheel_actions.OrderBy(a => a.Key).ToDictionary();
+		// update current wheel index pointer
+		Instance.wheel_index = Instance.wheel_actions.Keys.ToList().IndexOf(Instance.current_category);
 	}
 	public static void RemoveWheelAction(WheelCategories _key)
 	{
@@ -205,7 +208,7 @@ public partial class StartMenu : Control
 
 		if (_direction == WheelDirection.Left)
 			wheel_index--;
-		else
+		else if (_direction == WheelDirection.Right)
 			wheel_index++;
 
 		if (wheel_index < 0)
@@ -225,7 +228,7 @@ public partial class StartMenu : Control
 		SetWheelText();
 
 		if (_setIndex)
-			wheel_index = wheel_actions.Keys.ToList().IndexOf(current_category);
+		wheel_index = wheel_actions.Keys.ToList().IndexOf(current_category);
 	}
 	public void SetWheelText() =>
 		wheel_label.Text = $"[center]<| [wave]{Tr("start_" + current_category.ToString().ToLower())}[/wave] |>[/center]";

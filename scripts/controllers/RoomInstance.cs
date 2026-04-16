@@ -18,6 +18,7 @@ public partial class RoomInstance : Node2D
 	[Export] public Node2D TopLeft, BottomRight;
 	[Export] public RoomDoor[] Doors = [];
 
+	public static Rect2 RoomBounds;
 	public enum DayHourMode { Morning, Noon, Afternoon, Sunset, Night }
 	public static DayHourMode TimeOfDay { get; set; }
 	/// <summary>
@@ -61,6 +62,9 @@ public partial class RoomInstance : Node2D
 	public override void _EnterTree()
 	{
 		Instance = this;
+		float _distanceX = TopLeft.GlobalPosition.DistanceTo(new(BottomRight.GlobalPosition.X, 0)),
+			_distanceY = TopLeft.GlobalPosition.DistanceTo(new(0, BottomRight.GlobalPosition.Y));
+		RoomBounds = new(TopLeft.GlobalPosition.X, TopLeft.GlobalPosition.Y, _distanceX, _distanceY);
 	}
 	public override void _ExitTree()
 	{

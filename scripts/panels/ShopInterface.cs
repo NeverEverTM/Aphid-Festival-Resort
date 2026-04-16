@@ -92,7 +92,7 @@ public partial class ShopInterface : Control
 	{
 		current_item = _item;
 
-		itemCost.Text = $"{StringNames.BerryTextIcon} {_item.Cost}";
+		itemCost.Text = $"{StringNames.BerryIcon} {_item.Cost}";
 		itemName.Text = _item.ID + "_name";
 		itemDescription.Text = _item.ID + "_desc";
 		itemIcon.Texture = GlobalManager.GetIcon(_item.ID);

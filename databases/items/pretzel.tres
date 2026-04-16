@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_e2qd3")
 ID = "pretzel"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 34

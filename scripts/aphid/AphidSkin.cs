@@ -118,7 +118,8 @@ public partial class AphidSkin : Node2D
 		front_legs.Position = front_legs_position + (legsStep ? new Vector2(0, -1) : Vector2.Zero);
 		back_legs.Position = back_legs_position + (legsStep ? Vector2.Zero : new Vector2(0, -1));
 
-		SoundManager.CreateSound2D("aphid/step", GlobalPosition).VolumeDb = -10;
+		if (SceneManager.CurrentlyInGame)
+			SoundManager.CreateSound2D("aphid/step", GlobalPosition).VolumeDb = -10;
 	}
 	/// <summary>
 	/// Properly handles walking during movement. 

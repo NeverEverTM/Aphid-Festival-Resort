@@ -36,6 +36,9 @@ animations = [{
 "speed": 2.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8iklc"]
+size = Vector2(23, 11)
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8iklc"]
 light_mode = 1
 
@@ -68,13 +71,18 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_yissn"]
-radius = 7.0
-
 [node name="torch" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_4bf7d")
 offset = Vector2(0, -30)
 metadata/id = "torch"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+light_mask = 0
+position = Vector2(-2, -3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+light_mask = 0
+shape = SubResource("RectangleShape2D_8iklc")
 
 [node name="flame" type="AnimatedSprite2D" parent="."]
 editor_description = "Requires CanvasItemMaterial Unshaded to stay lit."
@@ -111,12 +119,3 @@ range_z_max = 2000
 texture = ExtResource("2_o66eh")
 texture_scale = 3.5
 height = 10.0
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-light_mask = 0
-position = Vector2(-9, -3)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-light_mask = 0
-position = Vector2(10, -3)
-shape = SubResource("CircleShape2D_yissn")

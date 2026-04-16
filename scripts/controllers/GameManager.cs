@@ -186,17 +186,6 @@ public partial class GameManager : Node
 		public int ItemsSold { get; set; } = 0;
 		public int SavefileBoots { get; set; } = 0;
 	}
-	//public enum ResortUpgradesEnum
-	//{
-	//    PlayerLevel,
-	//    JobBoardLevel,
-	//    GOLDEN_AutoCareService,
-	//    GOLDEN_EastWing,
-	//}
-	//// To be implemented later on
-	//// GOLDEN_DrinkService
-	//// GOLDEN_MinigameLevel
-	//// GOLDEN_HatsShop
 	
 	// MARK: Body
 	public override void _EnterTree()
@@ -245,7 +234,11 @@ public partial class GameManager : Node
 		SceneManager.AddEventListener(_addBootCount, SceneManager.EventEnum.OnPostLoad);
 
 		Instance.autoSaveTimer = new();
-		Instance.autoSaveTimer.Timeout += () => _ = SaveSystem.SaveProfile(true);
+		Instance.autoSaveTimer.Timeout += () =>
+		{
+			CanvasManager.StartAutosavePopup();
+			_ = SaveSystem.SaveProfile(true);
+		};
 		Instance.AddChild(Instance.autoSaveTimer);
 		Instance.autoSaveTimer.Start(300);
 	}

@@ -80,7 +80,7 @@ public partial class PauseMenu : Control
 				Hide();
 		});
 
-		menu_button.Pressed += () => _ = CanvasManager.Menus.SetTo(menu);
+		menu_button.Pressed += PauseMenuButton;
 	}
 	public override void _ExitTree()
 	{
@@ -103,6 +103,11 @@ public partial class PauseMenu : Control
 		}
 	}
 
+	private void PauseMenuButton()
+	{
+		if (!CanvasManager.Menus.IsActive && !GlobalManager.IsBusy)
+			_ = CanvasManager.Menus.SetTo(menu);
+	}
 	private async void SaveButton()
 	{
 		if (await SaveSystem.SaveProfile())

@@ -1,13 +1,17 @@
-[gd_scene load_steps=10 format=3 uid="uid://ck2vsvff1txwp"]
+[gd_scene load_steps=11 format=3 uid="uid://ck2vsvff1txwp"]
 
 [ext_resource type="Texture2D" uid="uid://dsckpwj6xere7" path="res://sprites/props/paper_lantern.png" id="1_f6bcg"]
 [ext_resource type="Shader" uid="uid://cxlqld44bp5i1" path="res://scripts/shaders/water_placeable.gdshader" id="1_nh4io"]
-[ext_resource type="Script" uid="uid://dlb3gss7rarat" path="res://scripts/entities/LightEntity.cs" id="3_cw6h8"]
+[ext_resource type="Script" uid="uid://bi55nujvsnu46" path="res://scripts/entities/LanternBehaviour.cs" id="3_cw6h8"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="4_22s0n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cw6h8"]
 shader = ExtResource("1_nh4io")
 shader_parameter/frequency = 2.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xq6ro"]
+atlas = ExtResource("1_f6bcg")
+region = Rect2(96, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cw6h8"]
 atlas = ExtResource("1_f6bcg")
@@ -25,6 +29,14 @@ region = Rect2(64, 0, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_xq6ro")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_cw6h8")
 }, {
 "duration": 1.0,
@@ -37,23 +49,24 @@ animations = [{
 "texture": SubResource("AtlasTexture_3k681")
 }],
 "loop": true,
-"name": &"default",
+"name": &"on",
 "speed": 2.0
 }]
 
 [node name="paper_lantern" type="AnimatedSprite2D"]
 material = SubResource("ShaderMaterial_cw6h8")
 sprite_frames = SubResource("SpriteFrames_xq6ro")
-frame_progress = 0.890249
+autoplay = "default"
 offset = Vector2(0, -16)
-metadata/allow_water = true
 metadata/id = "paper_lantern"
+metadata/placeable_area = 1
 
-[node name="light_controller" type="VisibleOnScreenEnabler2D" parent="." node_paths=PackedStringArray("light")]
+[node name="light_controller" type="VisibleOnScreenEnabler2D" parent="." node_paths=PackedStringArray("lantern", "light")]
 rect = Rect2(-298, -177, 600, 391)
 show_rect = false
 enable_node_path = NodePath("../light")
 script = ExtResource("3_cw6h8")
+lantern = NodePath("..")
 light = NodePath("../light")
 
 [node name="light" type="PointLight2D" parent="."]

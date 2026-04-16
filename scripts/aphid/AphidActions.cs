@@ -455,6 +455,7 @@ public partial class AphidActions : Aphid
 		public Vector2 target_position;
 		public IdleTimer idle_timer;
 		public CustomTimer<Aphid> timeout_timer;
+		private bool is_chasing = false;
 
 		public void Awake(Aphid aphid)
 		{
@@ -474,6 +475,7 @@ public partial class AphidActions : Aphid
 			{
 				target_position = (_args as IdleArgs).IdleSpot;
 				GoToIdlePoint(aphid);
+				is_chasing = true;
 			}
 			else
 				StandStill(aphid);
@@ -486,7 +488,7 @@ public partial class AphidActions : Aphid
 		}
 		public void Process(Aphid aphid, float delta)
 		{
-			if (!idle_timer.IsFinished)
+			if (!idle_timer.IsFinished && !is_chasing)
 				return;
 
 			// once we get close to our idle position, stand still
@@ -499,6 +501,7 @@ public partial class AphidActions : Aphid
 
 		public void StandStill(Aphid aphid)
 		{
+			is_chasing = false;
 			aphid.SetMovementDirection(Vector2.Zero);
 			// when finished, the idle timer will generate a new point and the cycle repeats
 			idle_timer.Start();
@@ -646,11 +649,8 @@ public partial class AphidActions : Aphid
 					if (!IsInstanceIdValid(ignored[i]))
 						ignored.RemoveAt(i);
 				}
-
-				if (nearby_food.Count > 0 && !_aphid.State.Is(StateEnum.Eat))
-					_aphid.SetState(StateEnum.Hungry);
-				else
-					AnalyzeItem(_aphid, _node);
+				
+				AnalyzeItem(_aphid, _node);
 			}
 			public void OnNodeExited(Aphid _aphid, Node2D _node)
 			{
@@ -1084,7 +1084,7 @@ public partial class AphidActions : Aphid
 		public StateEnum Type => StateEnum.Train;
 		public StateEnum[] TransitionList => [StateEnum.Idle];
 		public bool TransitionToAnything => false;
-		public bool CanBeStartingState => true;
+		public bool CanBeStartingState => false;
 
 		private TrainTimer train_timer;
 
@@ -1101,16 +1101,11 @@ public partial class AphidActions : Aphid
 			train_timer.last_level = aphid.Instance.Genes.Skills[train_timer.skill_name].Level;
 
 			train_timer.Start(aphid.Instance.Status.CurrentTraining.BaseTime);
-			// prevent interaction with the aphid
-			aphid.RemoveMeta(StringNames.TagMeta);
-			aphid.SetMeta(StringNames.PickupMeta, false); 
 		}
 		public void Exit(Aphid aphid, StateEnum _next)
 		{
 			aphid.Timers.Remove(train_timer);
 			aphid.skin.OverrideMovementAnim = false;
-			aphid.SetMeta(StringNames.TagMeta, (int)aphid.Tag);
-			aphid.SetMeta(StringNames.PickupMeta, true); 
 		}
 		public void Process(Aphid aphid, float delta)
 		{
@@ -1160,7 +1155,7 @@ public partial class AphidActions : Aphid
 		}
 		public void Exit(Aphid aphid, StateEnum _next)
 		{
-			return;
+			aphid.skin.OverrideMovementAnim = false;
 		}
 		public void Process(Aphid aphid, float delta)
 		{

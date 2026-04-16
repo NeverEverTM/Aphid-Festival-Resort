@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_s6kx0")
 ID = "yam_bread"
+Type = 2
 Cost = 6
-LevelRequirement = 1
 Category = 1
 ShopOrderPriority = 37

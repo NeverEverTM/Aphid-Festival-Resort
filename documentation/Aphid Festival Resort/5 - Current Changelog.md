@@ -43,9 +43,10 @@ I cannot keep track of all changes I do, and certainly could not keep track of t
 ## Fixed
 - [MAJOR] Aphid eggs no longer lose their genes when reloading the game.
 - [MAJOR] An aphid's parents are now referenced directly by ID instead of just saving the name, this is so it reflects the parent's current status properly (before, you could change a parent's name and it would not be reflected in the bio of their children).
-- Inheriting skills was *not* working before, it should do now.
-- Aphids recently born no longer get 5 or more traits from parents (The biography panel only shows 4 at a time but you can notice by behaviour).
-- Aphid Food Preferences were not actually working properly either and it would always favor Sweet as their favorite, along with giving them the proper weight chances to all, Vile also now has a positive effect in the case the aphid has a food prefence for it. (On top of changing their behaviours, so the food values per preference are easier to tell apart)
+- [MAJOR] Inheriting skills was *not* working before, it should do now.
+- [MAJOR] Aphids recently born no longer get 5 or more traits from parents (The biography panel only shows 4 at a time but you can notice by behaviour).
+- [MAJOR] Aphid Food Preferences were not actually working properly either and it would always favor Sweet as their favorite, along with giving them the proper weight chances to all, Vile also now has a positive effect in the case the aphid has a food prefence for it. (On top of changing their behaviours, so the food values per preference are easier to tell apart)
+- Buildings on the resort can once again, be sold.
 - Fixed some collision checks with aphids, causing them to trigger an area event for the same object several times within a tick.
 - Camera bounds would remain stuck if you were to zoom during the free camera and then exit the mode without manually setting it back, making you unable to look near the borders of the map..
 - Generations Panel could softlock itself by either showing photos or passing page while in a busy state.

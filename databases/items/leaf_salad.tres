@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_v34v1")
 ID = "leaf_salad"
+Type = 2
 Cost = 4
 Category = 1
 ShopOrderPriority = 30

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://devru1mxa5bns"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_6s282"]
+
+[resource]
+script = ExtResource("1_6s282")
+ID = "bee_flag"
+Type = 1
+Cost = 15
+Category = 3
+Shop = 2
+ShopOrderPriority = 59

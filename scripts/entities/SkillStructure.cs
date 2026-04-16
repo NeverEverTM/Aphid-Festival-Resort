@@ -6,15 +6,15 @@ using Godot;
 /// </summary>
 public partial class SkillStructure : Sprite2D, SaveSystem.IGenericDataModule, IAphidAccess
 {
-    [Export] private Marker2D restingPosition;
-    [Export] private AnimationPlayer animator;
-    [ExportCategory("Customizables")]
     [Export] private AphidData.SkillEnum trainingSkill = AphidData.SkillEnum.Speed;
     [Export] private float trainingTime = 10;
     [Export] private int trainingPoints = 1;
-    [ExportGroup("Inmutables")]
+    [ExportGroup("Essentials")]
+    [Export] private Marker2D restingPosition;
+    [Export] private AnimationPlayer animator;
     [Export] private InteractableArea2D interactArea;
 
+    public Node2D AphidAccess_Owner => this;
     public bool IsAphidAvailable { get; set; }
     public Aphid MyAphid { get; set; }
     public Guid MyAphidID { get; set; }

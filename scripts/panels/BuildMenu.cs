@@ -12,12 +12,11 @@ public partial class BuildMenu : Control
 	[Export] private Label controlPrompt;
 	[Export] private PackedScene itemContainer;
 
-	internal readonly static StringName WATER_PLACEABLE = new("allow_water"), WALL_PLACEABLE = new("allow_wallmount");
 	internal static bool DEBUG_SHOW_RECTS { get; set; }
-	private enum BuildingRemovalMode { Sell, Store }
+	private enum RemovalMode { Sell, Store }
+	public enum PlaceableArea { NotValid = -1, Ground, Water, Wall }
 
 	private readonly List<Building> active_buildings = [];
-
 	private Building selected_building;
 	private Vector2 mouse_offset, last_valid_position = new();
 	private bool is_hovering_building, is_moving_building, is_storage_open;
@@ -33,13 +32,13 @@ public partial class BuildMenu : Control
 		storageButton.Pressed += SetStorage;
 		controlPrompt.Text = ControlsManager.GetLocalizedActionName(InputNames.OpenInventory);
 	}
-    public override void _Ready()
-    {
+	public override void _Ready()
+	{
 		Menu = new MenuInstance("build", menuPlayer,
 			_ => OnOpenMenu(), OnCloseMenu);
 		buildButton.Pressed += () => _ = CanvasManager.Menus.SetTo(Menu);
-        ResortManager.Current.SaveModule.AddEventListener(APPLY_OUTOFBOUND_PATCH, SaveSystem.SaveEventsEnum.OnLoadFinish);
-    }
+		ResortManager.Current.SaveModule.AddEventListener(APPLY_OUTOFBOUND_PATCH, SaveSystem.SaveEventsEnum.OnLoadFinish);
+	}
 
 	public void OnOpenMenu()
 	{
@@ -156,19 +155,14 @@ public partial class BuildMenu : Control
 			_bottomLeft = CameraManager.GetWorldToCanvasPosition(selected_building.Rect.Position + new Vector2(0, selected_building.Rect.Size.Y)),
 			_position_self = CameraManager.GetWorldToCanvasPosition(selected_building.Self.GlobalPosition);
 
-		// line of obstruction
-		if (selected_building.IsCollideable)
-			DrawLine(_bottomLeft, _bottomRight, new Color("green"), 3);
-		else
-			DrawLine(_position, _bottomRight, new Color("green"), 3);
 		// line from its real global position to its offset
 		DrawLine(_position_self, CameraManager.GetWorldToCanvasPosition(selected_building.Self.Position + selected_building.Offset), new Color("red"));
-		// hitbox
+		// bounding box
 		DrawPolyline([_position, _topRight, _bottomRight, _bottomLeft, _position], new Color("blue"));
 	}
 
 	// MARK: Building Creation & Manipulation
-	public record class Building(Rect2 Rect, Node2D Self, Vector2 Offset, Building.PlaceableArea Area, bool Exclusive, bool IsCollideable, PhysicsBody2D Collider = null)
+	public record class Building(Rect2 Rect, Node2D Self, Vector2 Offset, PlaceableArea Area, CollisionObject2D Collider = null)
 	{
 		/// <summary>
 		/// The rect that can be picked up by the mouse
@@ -186,16 +180,11 @@ public partial class BuildMenu : Control
 		/// The terrain in which a building can be put on.
 		/// </summary>
 		public PlaceableArea Area { get; set; } = Area;
-		public enum PlaceableArea { Default, Water, WallMounted }
+		
 		/// <summary>
 		/// The physical collider of this building.
 		/// </summary>
-		public PhysicsBody2D Collider { get; set; } = Collider;
-		/// <summary>
-		/// Dictates if it can only be placed within the selected placeable area
-		/// </summary>
-		public bool Exclusive { get; set; } = Exclusive;
-		public bool IsCollideable { get; set; } = IsCollideable;
+		public CollisionObject2D Collider { get; set; } = Collider;
 	}
 	private Building CreateBuilding(Node2D _self)
 	{
@@ -220,37 +209,28 @@ public partial class BuildMenu : Control
 		}
 		else
 		{
-			DebugLogger.Print(DebugLogger.LogPriority.Warning, "BuildMenu: ", $"{_self.Name} does not have the needed properties to create its Rect bounding box");
+			DebugLogger.Print(DebugLogger.LogPriority.Warning, "BuildMenu: ",
+				$"{_self.Name} does not have the needed properties to create its Rect bounding box");
 			return null;
 		}
 
-		Building.PlaceableArea _area = Building.PlaceableArea.Default;
-		bool _exclusive = false;
+		PlaceableArea _area = _self.HasMeta(StringNames.PlaceableAreaMeta) ?
+			(PlaceableArea)(int)_self.GetMeta(StringNames.PlaceableAreaMeta)
+			: PlaceableArea.Ground;
 
-		if (_self.HasMeta(WATER_PLACEABLE))
-		{
-			_exclusive = (bool)_self.GetMeta(WATER_PLACEABLE);
-			_area = Building.PlaceableArea.Water;
-		}
-		else if (_self.HasMeta(WALL_PLACEABLE))
-		{
-			_exclusive = (bool)_self.GetMeta(WALL_PLACEABLE);
-			_area = Building.PlaceableArea.WallMounted;
-		}
-
+		// get StaticBody2D
 		PhysicsBody2D _body = null;
-		// get physicsbody2d
 		for (int i = 0; i < _self.GetChildCount(); i++)
 		{
-			if (_self.GetChild(i) is PhysicsBody2D)
+			if (_self.GetChild(i) is StaticBody2D)
 			{
-				_body = _self.GetChild(i) as PhysicsBody2D;
+				_body = _self.GetChild<StaticBody2D>(i);
 				break;
 			}
 		}
 
 		Vector2 _origin = _self.GlobalPosition - _size / 2 + _offset;
-		Building _building = new(new Rect2(_origin, _size), _self, _offset, _area, _exclusive, _offset.Y < 0, _body);
+		Building _building = new(new Rect2(_origin, _size), _self, _offset, _area, _body);
 
 		if (IsBeingObstructed(_building))
 			return null;
@@ -258,16 +238,16 @@ public partial class BuildMenu : Control
 		active_buildings.Add(_building);
 		return _building;
 	}
-	private void RemoveBuilding(BuildingRemovalMode _mode)
+	private void RemoveBuilding(RemovalMode _mode)
 	{
 		active_buildings.Remove(selected_building);
 
-		if (_mode == BuildingRemovalMode.Sell)
+		if (_mode == RemovalMode.Sell)
 		{
-			Player.AddCurrency(GlobalManager.G_ITEMS[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].Cost / 2);
+			Player.AddCurrency(GlobalManager.G_STRUCTURES[selected_building.Self.GetMeta(StringNames.IdMeta).ToString()].Cost / 2);
 			SoundManager.CreateSound("ui/kaching");
 		}
-		if (_mode == BuildingRemovalMode.Store)
+		if (_mode == RemovalMode.Store)
 		{
 			Player.Data.Storage.Add(selected_building.Self.GetMeta(StringNames.IdMeta).ToString());
 			UpdateStorage(Player.Data.Storage.Count - 1);
@@ -316,7 +296,6 @@ public partial class BuildMenu : Control
 	}
 	private void UnassignBuilding()
 	{
-		CameraManager.EnableMouseFollow = false;
 		StopMoveBuilding();
 
 		if (selected_building != null)
@@ -364,9 +343,9 @@ public partial class BuildMenu : Control
 			StopMoveBuilding();
 
 		if (Input.IsActionJustPressed(InputNames.Sell))
-			RemoveBuilding(BuildingRemovalMode.Sell);
+			RemoveBuilding(RemovalMode.Sell);
 		else if (Input.IsActionJustPressed(InputNames.Store))
-			RemoveBuilding(BuildingRemovalMode.Store);
+			RemoveBuilding(RemovalMode.Store);
 	}
 	private bool SelectBuilding()
 	{
@@ -386,11 +365,7 @@ public partial class BuildMenu : Control
 		mouse_offset = selected_building.Self.GlobalPosition - CameraManager.GetMouseToWorldPosition();
 		last_valid_position = selected_building.Self.GlobalPosition;
 
-		if (selected_building.Collider != null)
-		{
-			previous_collision_layer = selected_building.Collider.CollisionLayer;
-			selected_building.Collider.CollisionLayer = 0;
-		}
+		selected_building.Self.ProcessMode = ProcessModeEnum.Disabled;
 
 		// add corresponding possible actions
 		CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.SellBuilding);
@@ -399,23 +374,15 @@ public partial class BuildMenu : Control
 	}
 	private void StopMoveBuilding()
 	{
-		// set interface back to normal
-		CameraManager.EnableMouseFollow = false;
 		is_moving_building = false;
-
-		// remove possible action prompts
+		if (selected_building != null)
+			selected_building.Self.ProcessMode = ProcessModeEnum.Inherit;
 		CanvasManager.ClearControlPrompts();
+		CameraManager.EnableMouseFollow = false;
 
 		// prevent furniture from being placed in invalid areas
 		if (IsBeingObstructed(selected_building))
 			MoveBuilding(last_valid_position, false);
-
-		if (selected_building == null)
-			return;
-
-		// give collision back if any
-		if (selected_building.Collider != null)
-			selected_building.Collider.CollisionLayer = previous_collision_layer;
 	}
 
 	private Building GetStructureUnderMouse()
@@ -443,51 +410,63 @@ public partial class BuildMenu : Control
 		if (_building == null)
 			return false;
 
-		// raycast starting at the most-left of the building sprite, 
-		// cast it to the right, for as big as size is
-		Vector2 _start = _building.IsCollideable ?
-					_building.Rect.Position + new Vector2(0, _building.Rect.Size.Y) :
-					_building.Rect.Position;
-		Godot.Collections.Dictionary _list = GlobalManager.Utils.RaycastBetween(_start,
-				_building.Rect.End, _building.Collider != null ? [_building.Collider.GetRid()] : null);
-
-		string _collider = _list.Count > 0 ? _list["collider"].ToString() : null;
-
-		// for objects that go "under" (aka, ground items like rugs/carpets)
-		if (!_building.IsCollideable)
-		{
-			if (_collider == null)
-				return false;
-			if (_collider.Contains("ground"))
-				return true;
-			if (_collider.Contains("wall"))
-				return true;
-
-			// only checks for level geometry, otherwise ignore
-			return false;
-		}
-
-		// check for special collision types, and wheter they are exclusive to that type of terrain
-		if (_building.Area == Building.PlaceableArea.Water)
-		{
-			if (_collider == null)
-				return _building.Exclusive;
-			if (_collider.Contains("ground"))
-				return false;
-		}
-		if (_building.Area == Building.PlaceableArea.WallMounted)
-		{
-			if (_collider == null)
-				return _building.Exclusive;
-			if (_collider.Contains("wall"))
-				return false;
-		}
-
-		// if there was no collision of any kind, its free to go, otherwise, block
-		if (_collider == null)
-			return false;
-		else
+		if (!_building.Rect.Intersects(RoomInstance.RoomBounds)) // outside the bounds
 			return true;
+
+		List<Godot.Collections.Dictionary> _colliders;
+		// build raycast rect that will check for collisions
+		if (_building.Collider != null)
+		{
+			var _collisionBox = _building.Collider.GetChild<CollisionShape2D>(0);
+			Vector2 _size = _collisionBox.Shape.GetRect().Size;
+			Vector2 _origin = _building.Self.GlobalPosition - _size / 2 + _collisionBox.Position;
+			// physical collision rect that the player and other objects collide with
+			_colliders = GlobalManager.Utils.RaycastRect(new Rect2(_origin, _size), [_building.Collider.GetRid()]);
+		}
+		else
+		{
+			// visual rect decided by sprite
+			_colliders = GlobalManager.Utils.RaycastRect(_building.Rect, null);
+		}
+
+		for (int i = 0; i < _colliders.Count; i++)
+		{
+			if (_colliders[i] == null)
+			{
+				if (_building.Area != PlaceableArea.Ground)
+					return true;
+				else
+					continue;
+			}
+
+			Node _collider = _colliders[i]["collider"].As<Node>();
+			PlaceableArea _colliderTerrainType = PlaceableArea.NotValid;
+			
+			if (_collider.HasMeta(StringNames.PlaceableAreaMeta))
+				_colliderTerrainType = (PlaceableArea)(int)_collider.GetMeta(StringNames.PlaceableAreaMeta);
+
+			if (_building.Collider == null)
+			{
+				// for objects that have no collision box (aka, structures like rugs/carpets)
+				if (_building.Area == PlaceableArea.Ground && 
+					(_colliderTerrainType == PlaceableArea.Ground || _colliderTerrainType == PlaceableArea.NotValid))
+					continue;
+
+				// only checks for level geometry, otherwise ignore
+				if (_colliderTerrainType == _building.Area)
+					continue;
+				else
+					return true;
+			}
+			else
+			{
+				if (_colliderTerrainType != PlaceableArea.Ground)
+					return true;
+			}
+		}
+
+		// if there was no collision of any kind, its free to go
+		return false;
 	}
 
 	// MARK: Storage Related

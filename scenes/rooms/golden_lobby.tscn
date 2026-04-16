@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=4 uid="uid://bylkngpvchsr5"]
+[gd_scene load_steps=118 format=4 uid="uid://bylkngpvchsr5"]
 
 [ext_resource type="PackedScene" uid="uid://c6hlqyvj3a8n0" path="res://scenes/prefabs/base_room.tscn" id="1_muv3f"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="2_8r5qb"]
@@ -45,6 +45,7 @@
 [ext_resource type="Texture2D" uid="uid://clx1ig1xwjor6" path="res://sprites/ui/portraits/landscape_grass.png" id="31_j2uo7"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="32_7o284"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="32_bxqmb"]
+[ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="32_kqy6y"]
 [ext_resource type="FontFile" uid="uid://44wnex0jkv1f" path="res://sprites/fonts/CabinCondensed-Regular.ttf" id="33_70sut"]
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="33_tt23e"]
 [ext_resource type="LabelSettings" uid="uid://cpif8qwkwkso5" path="res://resources/outline_label.tres" id="34_rnwkl"]
@@ -1776,7 +1777,7 @@ FocusColor = Color(0.789173, 0.789172, 0.789172, 1)
 HoverColor = Color(0.800491, 0.800491, 0.800491, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
-[node name="job_menu" type="Control" parent="CanvasLayer" index="2" node_paths=PackedStringArray("interactArea", "animation_player", "slot_container", "aphid_node", "description_label", "reward_label", "timer_label", "assign_button", "request_background", "job_skills")]
+[node name="job_menu" type="Control" parent="CanvasLayer" index="2" node_paths=PackedStringArray("interactArea", "animation_player", "slot_container", "aphid_node", "skill_bar_bg", "request_background_frame", "description_label", "reward_label", "timer_label", "assign_button", "request_background", "job_skills")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -1793,6 +1794,8 @@ slot_prefab = ExtResource("26_kqy6y")
 job_completion_material = ExtResource("27_dc3ka")
 job_current_material = ExtResource("28_m11w5")
 aphid_node = NodePath("job_display/background/aphid_node")
+skill_bar_bg = NodePath("job_display/skills_bar")
+request_background_frame = NodePath("job_display/background/background_frame")
 description_label = NodePath("job_display/description")
 reward_label = NodePath("job_display/reward")
 timer_label = NodePath("job_display/timer")
@@ -1955,7 +1958,20 @@ scale = Vector2(1.5, 1.5)
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 
-[node name="description" type="Label" parent="CanvasLayer/job_menu/job_display" index="1"]
+[node name="detail_bg" type="NinePatchRect" parent="CanvasLayer/job_menu/job_display" index="1"]
+self_modulate = Color(0, 0, 0, 0.49019608)
+layout_mode = 0
+offset_left = 21.421432
+offset_top = 408.6421
+offset_right = 385.75012
+offset_bottom = 497.3926
+texture = ExtResource("32_kqy6y")
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+
+[node name="description" type="Label" parent="CanvasLayer/job_menu/job_display" index="2"]
 light_mask = 0
 layout_mode = 0
 offset_left = 35.0
@@ -1967,8 +1983,7 @@ label_settings = SubResource("LabelSettings_jyi3d")
 autowrap_mode = 3
 text_overrun_behavior = 3
 
-[node name="reward" type="Label" parent="CanvasLayer/job_menu/job_display" index="2"]
-self_modulate = Color(0.0232547, 0.704494, 0.716155, 1)
+[node name="reward" type="Label" parent="CanvasLayer/job_menu/job_display" index="3"]
 light_mask = 0
 layout_mode = 0
 offset_left = 278.0
@@ -1991,8 +2006,7 @@ texture = ExtResource("9_kdre1")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="timer" type="Label" parent="CanvasLayer/job_menu/job_display" index="3"]
-self_modulate = Color(0.0232547, 0.704494, 0.716155, 1)
+[node name="timer" type="Label" parent="CanvasLayer/job_menu/job_display" index="4"]
 light_mask = 0
 layout_mode = 0
 offset_left = 80.0
@@ -2015,7 +2029,7 @@ texture = SubResource("AtlasTexture_83rcj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="skills_bar" type="NinePatchRect" parent="CanvasLayer/job_menu/job_display" index="4"]
+[node name="skills_bar" type="NinePatchRect" parent="CanvasLayer/job_menu/job_display" index="5"]
 self_modulate = Color(0.654902, 0.321569, 0.513726, 1)
 light_mask = 0
 layout_mode = 0
@@ -2161,7 +2175,7 @@ label_settings = ExtResource("34_rnwkl")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="assign_button" type="Button" parent="CanvasLayer/job_menu/job_display" index="5"]
+[node name="assign_button" type="Button" parent="CanvasLayer/job_menu/job_display" index="6"]
 light_mask = 0
 layout_mode = 0
 offset_left = 51.0

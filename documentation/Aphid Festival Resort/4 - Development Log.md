@@ -77,3 +77,25 @@ Check if:
 - Aphid Death jingle
 - night 2
 - lobby theme
+
+    //public enum ResortUpgradesEnum
+
+    //{
+
+    //    PlayerLevel,
+
+    //    JobBoardLevel,
+
+    //    GOLDEN_AutoCareService,
+
+    //    GOLDEN_EastWing,
+
+    //}
+
+    //// To be implemented later on
+
+    //// GOLDEN_DrinkService
+
+    //// GOLDEN_MinigameLevel
+
+    //// GOLDEN_HatsShop

@@ -1,13 +1,12 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://w1y4t7bnq0ah"]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://w1y4t7bnq0ah"]
 
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_l015e"]
 [ext_resource type="Resource" uid="uid://mfvgn8dlbk6t" path="res://databases/food/shaved_ice.tres" id="2_7ippb"]
-[ext_resource type="Resource" uid="uid://tqr4clao4cij" path="res://databases/food/honey_drop.tres" id="3_j1vnd"]
 [ext_resource type="Resource" uid="uid://bxsnv6hiuvxic" path="res://databases/food/plant_sap.tres" id="4_0vkxh"]
-[ext_resource type="Resource" uid="uid://b5iduokkrd3b8" path="res://databases/food/icecream.tres" id="5_04tah"]
+[ext_resource type="Resource" uid="uid://dcdqkq5gsbg8c" path="res://databases/items/icecream.tres" id="6_7ippb"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="6_hyfkx"]
 
 [resource]
 script = ExtResource("6_hyfkx")
-Owner = ExtResource("5_04tah")
-Combinations = Array[Array]([Array[ExtResource("1_l015e")]([ExtResource("2_7ippb"), ExtResource("3_j1vnd")]), Array[ExtResource("1_l015e")]([ExtResource("2_7ippb"), ExtResource("4_0vkxh")])])
+Owner = ExtResource("6_7ippb")
+Combinations = Array[Array]([Array[ExtResource("1_l015e")]([ExtResource("2_7ippb"), ExtResource("4_0vkxh")])])

@@ -48,37 +48,33 @@ public static class StringNames
         "npc",
         "player"
     ];
-    /// <summary>
-    /// Category tags for Items, used only for cosmetic ordering.
-    /// </summary>
-    public enum CategoryTags
-    {
-        None = -1,
-        Item,
-        Food,
-        Toy,
-        Decoration,
-        Equipment, 
-        Playground
-    }
     
     /// <summary>
-    /// The Tags flag define the type of the entity. Entities with the tag "Aphid" will be managed as such.
+    /// The Tag flag define the type of the entity. Normally managed by middleman modules.
     /// </summary>
     public readonly static StringName TagMeta = new("tag");
     /// <summary>
-    /// The pickup flag makes the entity available to pickup (or to not).
+    /// The Pickup flag allows the entity to be picked up by entities, it can also control whenever pickup is allowed by its bool value.
     /// </summary>
     public readonly static StringName PickupMeta = new("pickup");
     /// <summary>
-    /// The ID flag marks the unique global identifier for this object. Normally for items or structures.
+    /// The ID flag marks the unique global identifier for this object. Normally reserved for items or structures, and modified only by their spawner.
     /// </summary>
     public readonly static StringName IdMeta = new("id");
-    public readonly static StringName OffsetMeta = new("offset");
-    public readonly static StringName SizeMeta = new("size");
+    /// <summary>
+    /// Structures can have an 'offset' and a 'size' meta for custom build mode rects
+    /// </summary>
+    public readonly static StringName OffsetMeta = new("offset"), SizeMeta = new("size");
+    /// <summary>
+    /// Dictates if a tilemaps physics interaction with buildings.
+    /// </summary>
+    public readonly static StringName PlaceableAreaMeta = new("placeable_area");
+
+    // Misc. Anims
     public readonly static StringName DefaultAnim = new("default");
     public readonly static StringName OpenAnim = new("open");
     public readonly static StringName CloseAnim = new("close");
+    // Player Anims
     public readonly static StringName IdleAnim = new("idle");
     public readonly static StringName SitAnim = new("sit");
     public readonly static StringName WalkAnim = new("walk");
@@ -91,7 +87,12 @@ public static class StringNames
     public const string EnglishLocale = "en_US";
     public const string SpanishLocale = "es_ES";
 
-    public const string BerryTextIcon = "[img height=50]res://sprites/ui/berries.tres[/img]";
-    public const string StrengthTextIcon = "[img height=50]res://sprites/icons/strength.tres[/img]";
-    public const string UnknownTextIcon = "[img height=50]res://sprites/icons/unknown.tres[/img]";
+    /// <summary>
+    /// BBCode to display the corresponding icon in a richtextlabel.
+    /// </summary>
+    public const string BerryIcon = "[img height=50]res://sprites/ui/berries.tres[/img]",
+        StarIcon = "[img height=50]res://sprites/ui/star.tres[/img]",
+        EmptyStarIcon = "[img height=50]res://sprites/ui/empty_star.tres[/img]",
+        StrengthIcon = "[img height=50]res://sprites/icons/strength.tres[/img]",
+        UnknownIcon = "[img height=50]res://sprites/icons/unknown.tres[/img]";
 }

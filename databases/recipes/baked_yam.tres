@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3 uid="uid://bne2mdr56du2m"]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://bne2mdr56du2m"]
 
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_pjsja"]
 [ext_resource type="Resource" uid="uid://1ffbbw024334" path="res://databases/food/danger_spud.tres" id="2_ce0ld"]
-[ext_resource type="Resource" uid="uid://rcm2ah3qrpis" path="res://databases/food/baked_yam.tres" id="3_hntre"]
+[ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="3_ce0ld"]
+[ext_resource type="Resource" uid="uid://dj5njobbjicfm" path="res://databases/items/baked_yam.tres" id="4_ce0ld"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_qwq8t"]
 
 [resource]
 script = ExtResource("4_qwq8t")
-Owner = ExtResource("3_hntre")
-Combinations = Array[Array]([Array[ExtResource("1_pjsja")]([ExtResource("2_ce0ld")])])
+Owner = ExtResource("4_ce0ld")
+Combinations = [Array[ExtResource("1_pjsja")]([ExtResource("2_ce0ld"), ExtResource("3_ce0ld")])]

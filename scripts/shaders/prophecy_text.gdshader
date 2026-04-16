@@ -6,6 +6,8 @@ uniform sampler2D sample : repeat_enable;
 uniform float speed = 1.0;
 uniform vec2 scroll_direction = vec2(1.0, 1.0);
 uniform int hologram_pixelization : hint_range(1,800) = 40;
+uniform bool apply_overlay_color;
+uniform vec4 overlay_color : source_color;
 
 vec4 get_holotexture(vec2 uv, vec2 screen_uv, sampler2D texture)
 {
@@ -28,5 +30,7 @@ void vertex() {
 void fragment(){
 		float _alpha = COLOR.a;
 		COLOR = get_holotexture(UV, SCREEN_UV, TEXTURE);
+		if (apply_overlay_color)
+			COLOR *= overlay_color;
 		COLOR.a = _alpha;
 }

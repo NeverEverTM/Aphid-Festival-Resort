@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_2nelp")
 ID = "mushroom_gummies"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 32

@@ -1,0 +1,61 @@
+[gd_scene load_steps=12 format=3 uid="uid://dc1mo764gfrnn"]
+
+[ext_resource type="Texture2D" uid="uid://b47krcimyyuy7" path="res://sprites/ui/aphid_outline.png" id="1_a7an1"]
+[ext_resource type="Shader" uid="uid://dyrqinckyhwid" path="res://scripts/shaders/prophecy_text.gdshader" id="1_vm8rs"]
+[ext_resource type="Texture2D" uid="uid://ux0nvnt0x5iu" path="res://sprites/ui/backgrounds/checkered_pattern.png" id="2_5yali"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a7an1"]
+shader = ExtResource("1_vm8rs")
+shader_parameter/sample = ExtResource("2_5yali")
+shader_parameter/speed = 5.0
+shader_parameter/scroll_direction = Vector2(5, 5)
+shader_parameter/hologram_pixelization = 800
+shader_parameter/apply_overlay_color = true
+shader_parameter/overlay_color = Color(0.97127205, 0, 0.17269403, 1)
+
+[sub_resource type="Curve" id="Curve_a7an1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.9246987, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_vm8rs"]
+curve = SubResource("Curve_a7an1")
+
+[sub_resource type="Curve" id="Curve_5yali"]
+_limits = [0.0, 100.0, 0.0, 1.0]
+_data = [Vector2(0, 1.9455185), 0.0, 32.586678, 0, 0, Vector2(0.47289157, 100), -15.501964, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_8j23f"]
+curve = SubResource("Curve_5yali")
+
+[sub_resource type="Curve" id="Curve_itmi2"]
+_data = [Vector2(0, 0), 0.0, 6.038549, 0, 0, Vector2(0.12951806, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_jjtee"]
+curve = SubResource("Curve_itmi2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vm8rs"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 0.0
+initial_velocity_min = 125.0
+initial_velocity_max = 125.0
+gravity = Vector3(0, 0, 0)
+damping_min = 20.0
+damping_max = 20.0
+damping_curve = SubResource("CurveTexture_8j23f")
+scale_curve = SubResource("CurveTexture_jjtee")
+alpha_curve = SubResource("CurveTexture_vm8rs")
+
+[node name="GPUParticles2D" type="GPUParticles2D"]
+self_modulate = Color(1, 0.25, 0.25, 1)
+z_index = 15
+y_sort_enabled = true
+material = SubResource("ShaderMaterial_a7an1")
+emitting = false
+amount = 1
+texture = ExtResource("1_a7an1")
+lifetime = 5.0
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_vm8rs")

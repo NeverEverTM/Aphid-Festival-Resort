@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_wpagu")
 ID = "leaf_croissant"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 28

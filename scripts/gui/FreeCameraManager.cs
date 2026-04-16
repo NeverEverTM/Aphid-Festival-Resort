@@ -45,6 +45,7 @@ public partial class FreeCameraManager : Control
 	{
 		Instance = null;
 		Enabled = false;
+		IsBusy = false;
 	}
 
 	// MARK: Processing
@@ -305,6 +306,12 @@ public partial class FreeCameraManager : Control
 			return;
 		}
 
+		if (Enabled == _state)
+		{
+			SoundManager.CreateSound("ui/button_fail");
+			return;
+		}
+
 		IsBusy = true;
 		Instance.just_loaded = true;
 		Enabled = _state;
@@ -375,10 +382,10 @@ public partial class FreeCameraManager : Control
 
 		PlayDisableAnim().Finished += () =>
 		{
+			IsBusy = false;
 			CameraManager.Focus(Player.Instance);
 			CameraManager.SetCameraZoom(CameraManager.DEFAULT_CAMERA_ZOOM);
 			Player.Instance.SetDisabled(false, true);
-			IsBusy = false;
 		};
 	}
 

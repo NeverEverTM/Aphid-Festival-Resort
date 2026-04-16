@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_jcngn"]
 [ext_resource type="Resource" uid="uid://dhikw41b4qvsa" path="res://databases/food/shroom.tres" id="2_y7oyn"]
-[ext_resource type="Resource" uid="uid://c0fnhlqttwbim" path="res://databases/food/cooked_shroom.tres" id="3_525iy"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_62oby"]
+[ext_resource type="Resource" uid="uid://bo4wqihlrad47" path="res://databases/items/cooked_shroom.tres" id="4_y7oyn"]
 
 [resource]
 script = ExtResource("4_62oby")
-Owner = ExtResource("3_525iy")
+Owner = ExtResource("4_y7oyn")
 Combinations = Array[Array]([Array[ExtResource("1_jcngn")]([ExtResource("2_y7oyn")])])

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_sy7nn")
 ID = "berry_icecream"
+Type = 2
 Cost = 6
 Category = 1
 ShopOrderPriority = 18

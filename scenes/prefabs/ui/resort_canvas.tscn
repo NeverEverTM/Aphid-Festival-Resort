@@ -1,4 +1,4 @@
-[gd_scene load_steps=88 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=87 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" uid="uid://5lbbq4ta7i38" path="res://scripts/gui/FreeCameraManager.cs" id="1_i0o2h"]
 [ext_resource type="Texture2D" uid="uid://bda8yonlw8knv" path="res://sprites/ui/gui_icons/icon_spectator.png" id="3_5cibe"]
@@ -29,7 +29,6 @@
 [ext_resource type="Texture2D" uid="uid://bu0m4pg4pi2xi" path="res://sprites/ui/backgrounds/menu_book_inverted.png" id="33_xm7h4"]
 [ext_resource type="Script" uid="uid://dlo86l8h7c6q2" path="res://scripts/panels/KitchenInterface.cs" id="34_6qtn6"]
 [ext_resource type="Texture2D" uid="uid://dly6vdhixccsm" path="res://sprites/ui/buttons/checkboxes.PNG" id="35_xm7h4"]
-[ext_resource type="Texture2D" uid="uid://dti80nuad2e5n" path="res://sprites/ui/buttons/button_focus_outline.PNG" id="36_3oyh4"]
 [ext_resource type="Texture2D" uid="uid://g1s4ngp035a8" path="res://sprites/ui/portraits/wasp_portrait.png" id="36_m6tkj"]
 [ext_resource type="Texture2D" uid="uid://doll68sgg6dvl" path="res://sprites/ui/portraits/kut_portrait.png" id="37_8puiq"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/backgrounds/menu_clipboard.png" id="38_aw538"]
@@ -2445,16 +2444,7 @@ offset_left = 10.264381
 offset_top = 557.91345
 offset_right = 459.26468
 offset_bottom = 656.91345
-
-[node name="Label" type="Label" parent="item_shop_panel/item_box/itemBuyButton"]
-layout_mode = 0
-offset_left = 42.0
-offset_top = 16.0
-offset_right = 411.0
-offset_bottom = 71.0
 text = "store_buy"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="item_info" type="Control" parent="item_shop_panel"]
 light_mask = 0
@@ -2507,6 +2497,7 @@ offset_left = 17.0
 offset_top = 7.0
 offset_right = 574.0
 offset_bottom = 65.0
+bbcode_enabled = true
 text = "store_item_shop_name"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2549,11 +2540,16 @@ stretch_mode = 4
 [node name="cost_text" type="RichTextLabel" parent="item_shop_panel/item_info/cost"]
 light_mask = 0
 layout_mode = 0
-offset_left = 69.0
-offset_top = 7.0
+offset_left = 18.0
+offset_top = 5.0
 offset_right = 306.0
-offset_bottom = 55.0
+offset_bottom = 56.0
+bbcode_enabled = true
 text = "$99999999"
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="kitchen_menu" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "ingredient1Button", "ingredient2Button", "resultButton", "redoRecipe", "ingredient1Icon", "ingredient2Icon", "resultIcon", "portrait", "resultName", "dialogBox", "inventoryGrid")]
 visible = false
@@ -2762,7 +2758,6 @@ texture_normal = SubResource("AtlasTexture_d6xlh")
 texture_pressed = SubResource("AtlasTexture_d6xlh")
 texture_hover = SubResource("AtlasTexture_d6xlh")
 texture_disabled = ExtResource("17_wvtt5")
-texture_focused = ExtResource("36_3oyh4")
 stretch_mode = 4
 script = ExtResource("5_i34va")
 PressedColor = Color(0.80093, 0.746527, 0.748261, 1)
@@ -3133,6 +3128,7 @@ offset_right = 1500.0
 offset_bottom = 329.0
 scale = Vector2(1e-05, 1)
 pivot_offset = Vector2(500, 0)
+mouse_filter = 1
 texture = ExtResource("38_aw538")
 patch_margin_left = 30
 patch_margin_top = 30
@@ -3178,6 +3174,7 @@ offset_left = 18.0
 offset_top = -25.0
 offset_right = 58.0
 offset_bottom = 15.0
+mouse_filter = 1
 
 [node name="description" type="NinePatchRect" parent="furniture_menu/anchor_right"]
 self_modulate = Color(0.748499, 0.309524, 0.450425, 1)

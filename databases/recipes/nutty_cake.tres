@@ -4,10 +4,10 @@
 [ext_resource type="Resource" uid="uid://db3fe3vrac52l" path="res://databases/food/berry.tres" id="2_o4515"]
 [ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="3_1oqak"]
 [ext_resource type="Resource" uid="uid://c8vdniuehpe40" path="res://databases/food/roasted_berries.tres" id="4_pa4ms"]
-[ext_resource type="Resource" uid="uid://b0v7vk7nv1ye8" path="res://databases/food/nutty_cake.tres" id="5_4tpdo"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="6_i17ka"]
+[ext_resource type="Resource" uid="uid://nto4126jbe2j" path="res://databases/items/nutty_cake.tres" id="6_o4515"]
 
 [resource]
 script = ExtResource("6_i17ka")
-Owner = ExtResource("5_4tpdo")
+Owner = ExtResource("6_o4515")
 Combinations = Array[Array]([Array[ExtResource("1_gox5u")]([ExtResource("2_o4515"), ExtResource("3_1oqak")]), Array[ExtResource("1_gox5u")]([ExtResource("4_pa4ms"), ExtResource("3_1oqak")])])

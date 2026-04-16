@@ -13,7 +13,9 @@ public partial class ItemGUIInit : EditorPlugin
 
 	public override void _ExitTree()
 	{
-		ItemViewer.ITEM_TRANSLATIONS.Clear();
+		if (IsInstanceValid(ItemViewer.Instance))
+			ItemViewer.Instance.UNLOAD_ALL_DATA();
+		ItemViewer.Instance = null;
 		RemoveToolMenuItem("View Item Database...");
 	}
 
@@ -24,25 +26,17 @@ public partial class ItemGUIInit : EditorPlugin
 		gui.INITIALIZE_INSTANCE();
 	}
 
-	internal static string[][] FETCH_CSV_DATABASE(string _path)
+	internal static Dictionary<string, string[]> FETCH_TRANSLATION_DATABASE(string _path)
 	{
 		using FileAccess _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
-		List<string[]> _document = [];
+		Dictionary<string, string[]> _document = [];
 
 		while (_file.GetPosition() < _file.GetLength())
-			_document.Add(_file.GetCsvLine());
-
-		return [.. _document];
-	}
-	internal static Dictionary<string, string> FETCH_TRANSLATION_DATABASE(string _path)
-	{
-		string[][] _document = FETCH_CSV_DATABASE(_path);
-		Dictionary<string, string> _translationDocument = [];
-		for (int i = 0; i < _document.Length; i++)
 		{
-			_translationDocument.Add(_document[i][0], _document[i][1]);
+			string[] _line = _file.GetCsvLine(); 
+			_document.Add(_line[0], [ _line[1], _line[2] ]);
 		}
-		return _translationDocument;
+		return _document;
 	}
 }
 #endif

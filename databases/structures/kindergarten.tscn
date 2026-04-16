@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://w7x7ar1jllwc"]
+[gd_scene load_steps=9 format=3 uid="uid://w7x7ar1jllwc"]
 
 [ext_resource type="Texture2D" uid="uid://c1hrmta7qaaf" path="res://sprites/props/kindergarten.png" id="1_mvlf1"]
 [ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillStructure.cs" id="1_v0sp4"]
+[ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_uy04q"]
 
 [sub_resource type="Animation" id="Animation_sin52"]
 length = 0.001
@@ -88,12 +89,19 @@ _data = {
 size = Vector2(123, 42)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mvlf1"]
-size = Vector2(97, 19)
+size = Vector2(90, 9)
 
-[node name="kindergarten" type="Sprite2D"]
+[node name="kindergarten" type="Sprite2D" node_paths=PackedStringArray("restingPosition", "animator", "interactArea")]
 texture = ExtResource("1_mvlf1")
-offset = Vector2(0, -18)
+offset = Vector2(0, -12)
 script = ExtResource("1_v0sp4")
+restingPosition = NodePath("Marker2D")
+animator = NodePath("AnimationPlayer")
+interactArea = NodePath("Area2D")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(0, 4)
+gizmo_extents = 39.5
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -107,21 +115,18 @@ position = Vector2(0, -11)
 collision_layer = 3
 collision_mask = 0
 monitoring = false
-metadata/tag = "interactable"
+script = ExtResource("3_uy04q")
+Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(1.5, 12)
 shape = SubResource("RectangleShape2D_yx58p")
 debug_color = Color(0.740182, 0.394256, 0.653542, 0.42)
 
-[node name="Marker2D" type="Marker2D" parent="."]
-position = Vector2(0, 4)
-gizmo_extents = 39.5
-
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 collision_layer = 4
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(0.5, 0.5)
+position = Vector2(0, -3.5)
 shape = SubResource("RectangleShape2D_mvlf1")

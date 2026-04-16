@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_mgdx0")
 ID = "shroom"
+Type = 2
 Cost = 2
 Category = 1
 Shop = 1

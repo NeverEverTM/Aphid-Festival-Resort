@@ -53,7 +53,7 @@ public partial class Player : CharacterBody2D
 	private const int refresh_cooldown_ticks = 10;
 	private StringName current_held_action;
 
-	private bool in_menu;
+	private bool in_menu = false;
 	protected Timer DisabledTimer;
 	private AudioStream audio_step;
 
@@ -102,7 +102,7 @@ public partial class Player : CharacterBody2D
 		SceneManager.AddEventListener(OnPreLoad, SceneManager.EventEnum.OnPreLoad);
 		SceneManager.AddEventListener(OnPostLoad, SceneManager.EventEnum.OnPostLoad);
 		SaveModule.AddEventListener((_) => OnLoadFinish(), SaveSystem.SaveEventsEnum.OnLoadFinish);
-		CanvasManager.Menus.AddEventListener(OnMenuChange, MenuHandler.MenuEvents.OnMenuChange);
+		CanvasManager.Menus.AddEventListener(OnPreSwitch, MenuHandler.MenuEvents.OnPreSwitch);
 	}
 	private void OnLoadFinish()
 	{
@@ -130,7 +130,7 @@ public partial class Player : CharacterBody2D
 	{
 		SaveSystem.AddSaveModule(Instance.SaveModule);
 	}
-	private void OnMenuChange(MenuHandler.MenuArgs _args)
+	private void OnPreSwitch(MenuHandler.MenuArgs _args)
 	{
 		if (_args.Current?.Name == "pause" || _args.Next?.Name == "pause")
 			return;
@@ -139,7 +139,10 @@ public partial class Player : CharacterBody2D
 		{
 			in_menu = _args.IsActive;
 			if (in_menu)
+			{
+				CanvasManager.ClearControlPrompts();
 				SetDisabled(true, true);
+			}
 			else
 				SetDisabled(false);
 		}
@@ -216,18 +219,14 @@ public partial class Player : CharacterBody2D
 	{
 		IsDisabled = QueuedDisabled > 0;
 
-# if DEBUG
-		test_label.Text = "Interactables:\n";
-		interactables_nearby.ForEach((i) => test_label.Text += i.Name + "\n");
-		test_label.Text += "Pickups:\n";
-		pickups_nearby.ForEach((p) => test_label.Text += p.Name + "\n");
-# endif
-
 		// Calculate player movement
-		is_running = !IsDisabled && OptionsManager.Settings.BoolFlags["AutoRun"].Value ?
+		if (!IsDisabled)
+		{
+			is_running = OptionsManager.Settings.BoolFlags["AutoRun"].Value ?
 				!Input.IsActionPressed(InputNames.Run) :
 				Input.IsActionPressed(InputNames.Run);
-
+		}
+		
 		Velocity = !is_moving ?
 				Vector2.Zero :
 				MovementDirection * (MovementSpeed * (is_running ? RunSpeedMultiplier : 1));
@@ -336,7 +335,7 @@ public partial class Player : CharacterBody2D
 			DebugLogger.Print(DebugLogger.LogPriority.Error, "Player was requested to unqueue a disable call, but there was no queued disables!");
 		}
 
-		IsDisabled = QueuedDisabled > 0 || CanvasManager.Menus.IsActive;
+		IsDisabled = QueuedDisabled > 0;
 
 		SetProcessUnhandledInput(!IsDisabled);
 		if (!IsDisabled)
@@ -532,10 +531,10 @@ public partial class Player : CharacterBody2D
 	}
 	private void RemoveInteractable(Node2D _node, CanvasManager.ControlPrompt _prompt = CanvasManager.ControlPrompt.None)
 	{
-		if (!_node.HasMeta(StringNames.TagMeta))
+		interactables_nearby.Remove(_node);
+		if (!IsInstanceValid(_node) || !_node.HasMeta(StringNames.TagMeta))
 			return;
 		StringNames.GlobalTags _tag = (StringNames.GlobalTags)(int)_node.GetMeta(StringNames.TagMeta);
-		interactables_nearby.Remove(_node);
 		InteractableArgs _args = new()
 		{
 			Tag = _tag,
@@ -545,9 +544,9 @@ public partial class Player : CharacterBody2D
 	}
 	private void RemovePickup(Node2D _node)
 	{
-		if (!_node.HasMeta(StringNames.PickupMeta)) // is it a pickup
-			return;
 		pickups_nearby.Remove(_node);
+		if (!IsInstanceValid(_node) || !_node.HasMeta(StringNames.PickupMeta)) // is it a pickup
+			return;
 		if (pickups_nearby.Count == 0 && HeldItem == null)
 			CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.PickupItem);
 	}
