@@ -5,3 +5,4 @@
 [resource]
 atlas = ExtResource("1_dratf")
 region = Rect2(54, 0, 18, 18)
+filter_clip = true

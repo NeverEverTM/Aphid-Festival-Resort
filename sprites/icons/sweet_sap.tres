@@ -1,7 +1,8 @@
 [gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://r3bhpc56ktks"]
 
-[ext_resource type="Texture2D" uid="uid://d14kkwbcyrl83" path="res://sprites/atlases/food_sprites.res" id="1_75bqe"]
+[ext_resource type="Texture2D" uid="uid://d14kkwbcyrl83" path="res://sprites/atlases/food_sprites.res" id="1_i5sm3"]
 
 [resource]
-atlas = ExtResource("1_75bqe")
-region = Rect2(630, 0, 18, 18)
+atlas = ExtResource("1_i5sm3")
+region = Rect2(738, 0, 18, 18)
+filter_clip = true

@@ -8,8 +8,17 @@ public partial class Player : CharacterBody2D
     public enum CurrencyEvents { OnCurrencyGain, OnCurrencyLose, OnCurrencyChange }
     public class CurrencyArgs : EventArgs
     {
+        /// <summary>
+        /// Source of the income
+        /// </summary>
         public CurrencySource Source;
-        public static int Amount { get => VAR_AMOUNT_CURRENCY; set => VAR_AMOUNT_CURRENCY = value; }
+        /// <summary>
+        /// Current amount being charged, directly modify it to apply effects to the final amount.
+        /// </summary>
+        public int Amount { get => VAR_AMOUNT_CURRENCY; set => VAR_AMOUNT_CURRENCY = value; }
+        /// <summary>
+        /// Current amount of money as of before charging the amount.
+        /// </summary>
         public int Current;
     }
     protected Dictionary<CurrencyEvents, List<Action<CurrencyArgs>>> CurrencyEventsList = new()

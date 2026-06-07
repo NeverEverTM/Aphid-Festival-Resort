@@ -25,8 +25,9 @@ public static class SaveSystem
 	PROFILE_AUTOSAVE_DIR = "/_autosave",
 	PROFILE_APHIDS_DIR = "aphids",
 	PROFILE_RESORTS_DIR = "resorts",
-	PROFILE_ALBUM_DIR = "/screenshots/",
-	CONFIG_DIR = "config",
+	PROFILE_SCREENSHOTS_DIR = "/screenshots/",
+	CONFIG_DIR = "user://config",
+	CUSTOM_IMAGES_DIR = "user://img/",
 	CONFIGFILE_EXTENSION = ".cfg",
 	JSONFILE_EXTENSION = ".json",
 	SAVEFILE_EXTENSION = ".data";
@@ -42,12 +43,15 @@ public static class SaveSystem
 			GameVersion = _metadata.GameVersion;
 		}
 	}
-
+	/// <summary>
+	/// Creates essential global directories for the user.
+	/// </summary>
 	public static void CreateBaseDirectories()
 	{
-		DirAccess.MakeDirAbsolute(TEMP_CACHE_DIR);
 		DirAccess.MakeDirAbsolute(PROFILES_DIR);
-		DirAccess.MakeDirAbsolute(System.IO.Path.Combine(USERROOT_DIR + CONFIG_DIR));
+		DirAccess.MakeDirAbsolute(System.IO.Path.Combine(CONFIG_DIR));
+		DirAccess.MakeDirAbsolute(CUSTOM_IMAGES_DIR);
+		DirAccess.MakeDirAbsolute(TEMP_CACHE_DIR);
 	}
 
 	// MARK: Profile Saving
@@ -139,7 +143,7 @@ public static class SaveSystem
 		// verify profile dir creation
 		for (int i = 0; i < _paths.Length; i++)
 		{
-			if (!CreateProfileMainDir(_paths[i], i != 1))
+			if (!CreateProfileMainDir(_paths[i], i == 1))
 			{
 				DebugLogger.Print(DebugLogger.LogPriority.Error, DebugLogger.GameTermination.Complete, "ProfileLoad: Failed to create directories.");
 				return Task.FromException(new("Failed to create directories"));
@@ -236,10 +240,15 @@ public static class SaveSystem
 	}
 	public static void SelectProfile(string _profile)
 	{
-		ProfilePath = GetProfilePath(_profile);
+		ProfilePath = CreatePathFromProfile(_profile);
 		Profile = _profile;
 	}
-	public static string GetProfilePath(string _profile) =>
+	/// <summary>
+	/// Creates a string instance path to where the given profile is. To get the currently loaded profile path, use ProfilePath instead.
+	/// </summary>
+	/// <param name="_profile"></param>
+	/// <returns></returns>
+	public static string CreatePathFromProfile(string _profile) =>
 		$"{PROFILES_DIR}/{_profile}";
 
 	public static Task CreateProfile()
@@ -332,7 +341,7 @@ public static class SaveSystem
 		/// </summary>
 		internal int LoadOrderPriority = LoadOrderPriority;
 		/// <summary>
-		/// Source directory. Usually by modified functions for dynamic pahts (such as, for savefile data). 
+		/// Root directory to which store the data, a RelativePath can be specified along this.
 		/// </summary>
 		public string RootPath = USERROOT_DIR;
 		/// <summary>
@@ -465,7 +474,6 @@ public static class SaveSystem
 	/// Core component to save runtime data to system via Json serialization.
 	/// This class is NOT meant to be the data holder. Instead, it requires the class type of the data to serialize.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	public class SaveModule<T>(string ID, IDataModule<T> _module, int LoadPriority = 0) : SaveMetadata(ID, LoadPriority)
 	{
 		public JsonSerializerOptions JsonOptions = null;

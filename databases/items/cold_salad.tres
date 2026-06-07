@@ -8,4 +8,4 @@ ID = "cold_salad"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 22
+ShopOrderPriority = -1

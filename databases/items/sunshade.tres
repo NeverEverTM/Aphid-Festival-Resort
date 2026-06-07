@@ -6,8 +6,8 @@
 script = ExtResource("1_kb0sc")
 ID = "sunshade"
 Type = 1
-Cost = 15
+Cost = 17
 TierRequirement = 1
 Category = 3
 Shop = 2
-ShopOrderPriority = 57
+ShopOrderPriority = 27

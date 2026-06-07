@@ -11,7 +11,7 @@
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="7_uocqb"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="10_i403g"]
 [ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/backgrounds/mosaic_menu_bg.png" id="11_62duh"]
-[ext_resource type="Script" uid="uid://dy5rc4rnylpi1" path="res://scripts/aphid/AphidInfo.cs" id="12_j87mf"]
+[ext_resource type="Script" uid="uid://dy5rc4rnylpi1" path="res://scripts/panels/AphidInfoPanel.cs" id="12_j87mf"]
 [ext_resource type="Texture2D" uid="uid://01yx7d0fjlxw" path="res://sprites/icons/aphid_child.tres" id="13_g2nlu"]
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="14_d577d"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="15_ghqbq"]
@@ -2278,7 +2278,7 @@ FocusColor = Color(0.311343, 0.535406, 0.77568, 1)
 HoverColor = Color(0.772247, 0.772247, 0.772247, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
-[node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton")]
+[node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton", "animPlayer")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -2295,7 +2295,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("7_uocqb")
 script = ExtResource("28_xm5ie")
-storePlayer = NodePath("store_animator")
 itemGrid = NodePath("item_box/item_box_scroll/item_container")
 itemName = NodePath("item_info/name/name_text")
 itemDescription = NodePath("item_info/desc/desc_text")
@@ -2306,6 +2305,7 @@ itemBuyButton = NodePath("item_box/itemBuyButton")
 shopTag = 1
 bgColorSlot = Color(0.97090286, 0.37863106, 0.635976, 1)
 defaultIcon = ExtResource("36_m6tkj")
+animPlayer = NodePath("store_animator")
 
 [node name="store_animator" type="AnimationPlayer" parent="item_shop_panel"]
 libraries = {
@@ -3077,7 +3077,7 @@ columns = 3
 [node name="item" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 layout_mode = 2
 
-[node name="furniture_menu" type="Control" parent="." node_paths=PackedStringArray("open_button", "storePlayer", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton")]
+[node name="furniture_menu" type="Control" parent="." node_paths=PackedStringArray("open_button", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton", "animPlayer")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -3090,7 +3090,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("41_t8bbk")
 open_button = NodePath("../freeCameraHUD/hud_bg/hud_grid/furnitureButton")
-storePlayer = NodePath("furniture_player")
 itemGrid = NodePath("window/ScrollContainer/GridContainer")
 itemName = NodePath("anchor_right/name/name_label")
 itemDescription = NodePath("anchor_right/description/desc_label")
@@ -3101,6 +3100,7 @@ itemBuyButton = NodePath("window/furnitureBuyButton")
 shopTag = 2
 bgColorSlot = Color(0.996934, 0.936662, 0.910595, 1)
 defaultIcon = ExtResource("40_iuxyn")
+animPlayer = NodePath("furniture_player")
 
 [node name="furniture_player" type="AnimationPlayer" parent="furniture_menu"]
 libraries = {

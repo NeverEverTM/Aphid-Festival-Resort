@@ -6,7 +6,6 @@
 script = ExtResource("1_xfiba")
 ID = "aphid_egg_blue"
 Cost = 100
-LevelRequirement = 2
 TierRequirement = 2
 Shop = 1
-ShopOrderPriority = 16
+ShopOrderPriority = 24

@@ -221,9 +221,9 @@ Why are you giggling!",">¿Que miras?(...)
 ¿Mi cuerno tiene algo?
 >[shake][font_size=80]Ough![/font_size][/shake]
 ¡Por qué te ries!"
-tanjy_flavor_1,">I come from [wave amp=50.0 freq=5.0 connected=0]very faaaar away[/wave](...)
+tanjy_flavor_1,">I come from [wave]very faaaar away[/wave](...)
 You can tell because I'm not like anyone else!
->I'm strong(...), fast(...), intelligent(...), and strong!",">Vengo de [wave amp=50.0 freq=5.0 connected=0]muuuuuy lejos[/wave](...)
+>I'm strong(...), fast(...), intelligent(...), and strong!",">Vengo de [wave]muuuuuy lejos[/wave](...)
 Puedes notarlo porque no soy como los demas!
 >Soy fuerte(...), veloz(...), intelligente(...) y fuerte!"
 tanjy_flavor_2,">They told me my stand is NOT ready yet!
@@ -240,87 +240,24 @@ But I am TOO kind and benelovent to do that(...)
 Of course!",">Estaría fuera, pero el guarda de la entrada no me deja.
 Dice que soy “problematico” y “no suficiente paga”
 >Podria superarles en una batalla!(...)
-Pero soy demsiado BUENO y BENEVOLENTE para hacer eso(...)
-Claro!"
+Pero soy demasiado BENEVOLENTE para hacerlo(...)
+Por supuesto!"
 theresa_flavor_0,">...(...)Mmh?
->You are talking to me?",">...(...)Mmh?
->¿Me hablas a mi?"
-theresa_flavor_1,">Day in, day out(...), I could do with a hot drink right now.
->Several if needed.",>WIP
+>You are talking to me?
+>Do you not have [wave]anything[/wave] better to do?(...)
+They do not pay the chit chat.",">...(...)Mmh?
+>¿Me hablas a mi?
+>Es que no tienes [wave]nada[/wave] mejor que estar haciendo?(...)
+No me pagan por la charla."
+theresa_flavor_1,">Day in, day out(...), I could do with a hot drink right now.",">Mismo chismo, limpio piso, podria hacerme con una bebida ahora mismo."
 theresa_flavor_2,">You do know that you can talk to me from across the desk, right?
 >That or you lost something(...)
-Sorry, I-(...) [shake]we[/shake] do not do refunds.",>WIP
+Sorry, I-(...) [shake]we[/shake] do not do refunds.",">Sabes que me puedes hablar desde el otro lado del escritorio, ¿Verdad?
+>Eso, o algo se te ha perdido(...)
+Perdon, no hag-(...) [shake]hacemos[/shake] rembolsos."
 theresa_flavor_3,">Let me see...(...) you are (name)(...), right?
->Now I know what to put in the report card.
+>Now I know what to put in the report.
 >...Just a joke, ha ha ha...(...[0.8])
-Don't look me like that and tell me what do you need instead.",
-job_easy_0,"I require the assistance of brave, intrepid aphids, to mow the grass!
-This grass tufts are blocking my whole yard and I need them OUT.","Necesito la asistencia de intrepidos y valerosos áfidos, para cortar hierba!
-Estos mates estan invadiendo mi jardín y los quiero FUERA."
-job_easy_1,"Needing a few aphids for crate transportation.
-Preferably, with five years of entry experience.","Necesito un par de áfidos para transporte de suministros.
-Preferiblemente con cinco años de experiencia como practicante."
-job_easy_2,"Doing some research in lesser bugs.
-I just need one who listens well, that's all...","Haciendo una investigación en bichos menores.
-Solo necesito uno que sepa escuchar, eso es todo..."
-job_easy_3,"Needing some advertising on the go!
-No skills required, just a lot of enthusiasm!","Necesitamos publicidad!
-No se necesitan habilidades, solo un monton de entusiasmo!"
-job_easy_4,"In need of delivery bugs. We need them now and fast!
-We got lots of packages already, so please contact us 
-as soon as you can.","Necesitamos bichos de servicio. Ahora o nunca!
-Tenemos varios paquetes acumulados, así que porfavor, 
-contactenos lo más rapido que pueda."
-job_easy_5,"Looking to rent an aphid for a school class. The children would love it!
-Just need it to be well behaved. ","Viendo si puedo rentar un áfido para una clase.
-Estoy segura que a los chicos les encantara!
-Solo lo necesito que sea bien portado."
-job_easy_6,"There's lots of treasure hidden beneath the sands.
-We could do with a few lil scavengers.","Hay varios tesoros enterados debajo de las arenas.
-Nos podrian ser utiles un par de recolletores."
-job_medium_0,"Requesting aphids for general therapy and support services.
-Only requirement is for them to understand my orders.","Requerio áfidos para fines de terapia y servicios de salud.
-Unico requerimiento es que entiendan mis ordenes."
-job_medium_1,"Local workers needing a hand for land renovation!
-Cleaning the area is gonna be hard so, any strong arms appreciated.","Trabajadores locales necesitan una mano para renovación de parcela!
-Limpiar el area sera duro, pero cualquier par de brazos fuertes se agradece."
-job_medium_2,"Having a problem with unwanted plant residents!
-Need someone who can slice the life out of this weeds.","Tengo un problema con inquilinos plantiferos no deseados!
-Necesito alguien que pueda cortar estas hierbas desde la raiz."
-job_medium_3,"Berry transport cargo in need of mules.
-We'll even give you a part of the supply as thanks! (Just don't tell the queen)","Transporte de cargamento de bayas en necesidad de mulas.
-Te daremos una parte del encargo como agradecimiento! (Solo no lo digas a la reina)"
-job_medium_4,Emergency crew in need of a trained searcher for the rescue of lost explorers.,"Equipo de emergencia requiere de un buscador entrenado para el
-rescate de exploradores perdidos."
-job_medium_5,"Work in the tunnels is getting rough.
-Will be needing some extra hands on board.",WIP
-job_hard_0,"Help Wanted! The theater requires actors, great and handsome actors!
-Respond to this request if you think you have what I want.",WIP
-job_hard_1,"Requesting assistance for bridge repair operation.
-The stronger, the better.",WIP
-job_hard_2,"Requesting a playmate for Chompy, let it be known, she plays rough.
-Looking forward to it.",WIP
-job_hard_3,"The queen has requested to see one of your aphids from the resort.
-She states that “they look like little adorable fellas” and such demands a demonstration.
-Bring one of great mind alike!",WIP
-job_hard_4,"The chomp infestation is getting out of hands.
-Requesting the strongest bugs the settlement can send, quick!",WIP
-job_expert_0,"Going on a hunt for golden seedlings, and I will need a companion
-who is tougher than the toughies, smarter than the smarties,
-and sharper than the sharpies.",WIP
-job_expert_1,"Threat arises from the shadows, requesting strong companions for
-pest control.",
-job_expert_2,"I need someone to go fetch me some ingredients, and it better be quick!
-Just leave them by the door.",
-job_expert_3,"Scout teams need to follow a trace for a potential nest of mantidflies, 
-and they could do with a bug with incredible hunting skills.",
-job_master_0,"Attacks by the deadlanders have obliterated our camps.
-We plead for a loyal guard who can keep them at bay.",WIP
-job_master_1,"Adventuring deeper on unknown areas, and as the paths become more puzzling,
-we need a companion who can wiggle us out of trouble.",WIP
-job_master_2,"(The request note is barely legible but you can see the crude drawing of an aphid)
-(It also has a berry symbol, so they pay for sure!)",
-job_master_3,"Needing some test subjects for sustained battle simulations
-and I heard from a friend one of you could grant me one worthy subject.",
-job_master_4,"Sir Maki is looking to “test” some newcomers with a rather eccentric way of
-combat, his idea, not mine!",
+Don't look me like that and tell me what do you need instead.",">Dejame ver...(...), eres (name)(...), verdad?
+>Ahora se que poner en el reporte.
+>...Solo una broma, je je je(...[0.3]).(...[0.3]).(...[0.3])."

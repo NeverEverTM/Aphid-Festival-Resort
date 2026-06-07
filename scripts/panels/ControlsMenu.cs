@@ -8,9 +8,11 @@ using Godot;
 /// <summary>
 /// Panel for the controls menu user interface.
 /// </summary>
-public partial class ControlsMenu : Control, IMenuInstance
+public partial class ControlsMenu : MenuControl
 {
-	[Export] private AnimationPlayer anim_player;
+    public override string ID => "controls";
+    public override bool IsASubMenu => true;
+
 	[Export] private ScrollContainer scroll;
 	[Export] private TextureProgressBar reset_bar;
 	[Export] private BaseButton reset_button;
@@ -24,8 +26,6 @@ public partial class ControlsMenu : Control, IMenuInstance
 	private bool is_remapping, was_modified, was_restarted;
 	private Control current_action;
 	private InputEvent current_keybind;
-
-	private MenuInstance menu;
 
 	public override void _EnterTree()
 	{
@@ -191,16 +191,11 @@ public partial class ControlsMenu : Control, IMenuInstance
 	}
 
 	// ===| Menu Interface |===
-	public MenuInstance Create()
-	{
-		menu ??= new("controls", anim_player, Open, TryClose, Close, null, true);
-		return menu;
-	}
-	public void Open(MenuInstance _last)
+	protected override void Open(MenuInstance _last)
 	{
 		scroll.ScrollVertical = 0;
 	}
-	public bool TryClose(MenuInstance _next)
+	protected override bool TryClose(MenuInstance _next)
 	{
 		if (is_remapping)
 			return false;
@@ -213,7 +208,7 @@ public partial class ControlsMenu : Control, IMenuInstance
 		}
 		return !ConfirmationPopup.IsConfirming;
 	}
-	public void Close(MenuInstance _next)
+	protected override void Close(MenuInstance _next)
 	{
 		if (IsInstanceValid(current_action))
 		{

@@ -1,13 +1,11 @@
+#if DEBUG
 using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Godot.Running;
 using BenchmarkDotNet.Godot.Attributes;
-using BenchmarkDotNet.Godot.Attributes.Jobs;
 using BenchmarkDotNet.Order;
-using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -20,7 +18,7 @@ public partial class DebugConsole : CanvasLayer
 	private static bool IsEnabled;
 	private static string[] lastCommand;
 	private static string lastRawCommand;
-	private static Aphid validAphid;
+	private static AphidInstance validAphid;
 
 	[Export] public LineEdit command_line_input;
 	[Export] public RichTextLabel log_print_text;
@@ -31,8 +29,9 @@ public partial class DebugConsole : CanvasLayer
 		Instance = this;
 #if DEBUG
 		IsEnabled = true;
-#endif
+		Instance.debug_status.Show();
 		Print($"Debug Console Command - {GlobalManager.GAME_VERSION}v\n");
+#endif
 		command_line_input.TextSubmitted += (_text) =>
 		{
 			if (!string.IsNullOrEmpty(_text))
@@ -48,31 +47,36 @@ public partial class DebugConsole : CanvasLayer
 	}
 	public override void _Process(double delta)
 	{
-		if (IsInstanceValid(validAphid))
+		if (validAphid != null)
 		{
 			string[] _list =
 			[
-			 	"Name: " + validAphid.Instance.Genes.Name,
-				"State: " + validAphid.State.Type.ToString(),
-				"Food: " + validAphid.Instance.Status.Hunger,
-				"Water: " + validAphid.Instance.Status.Thirst,
-				"Bondship: " + validAphid.Instance.Status.Bondship,
-				"EntityMode: " + validAphid.Instance.Status.Mode.ToString(),
-				"Age: " + (int)validAphid.Instance.Status.Age + "/" + AphidData.Age_Death,
-				$"BreedBuildup: {(int)validAphid.Instance.Status.BreedBuildup}/{AphidData.Breed_Cooldown}",
-				"BreedMode: " + validAphid.Instance.Status.BreedMode.ToString(),
-				$"HarvestBuildup: {(int)validAphid.Instance.Status.HarvestBuildup}/{AphidData.Harvest_Cooldown}",
-				"FoodPreference: " + validAphid.Instance.Genes.FoodPreference.ToString(),
+			 	"Name: " + validAphid.Genes.Name,
+				"State: " + (validAphid.Entity != null ? validAphid.Entity.State.Type.ToString() : validAphid.Status.LastActiveState),
+				"Hunger: " + validAphid.Status.Hunger,
+				"Thirst: " + validAphid.Status.Thirst,
+				"Rest: " + validAphid.Status.Rest,
+				"Affection: " + validAphid.Status.Affection,
+				"Bondship: " + validAphid.Status.Bondship,
+				"EntityMode: " + validAphid.Status.Mode.ToString(),
+				"Age: " + (int)validAphid.Status.Age + "/" + AphidData.Age_Lifetime,
+				$"BreedBuildup: {(int)validAphid.Status.BreedBuildup}/{AphidData.Breed_Cooldown}",
+				"BreedMode: " + validAphid.Status.BreedMode.ToString(),
+				$"HarvestBuildup: {(int)validAphid.Status.HarvestBuildup}/{AphidData.Harvest_Cooldown}",
+				"FoodPreference: " + validAphid.Genes.FoodPreference.ToString(),
+				"CurrentTrainData: " + (validAphid.Status.LastTraining != null ? $"{validAphid.Status.LastTraining.Skill}, {validAphid.Status.LastTraining.GetPointGain()} every {validAphid.Status.LastTraining.RawBaseTime}s" : "No Data"),
 				"Traits:",
-				validAphid.Instance.Genes.Traits[0],
-				validAphid.Instance.Genes.Traits[1],
-				validAphid.Instance.Genes.Traits[2],
-				validAphid.Instance.Genes.Traits.Count > 3 ? validAphid.Instance.Genes.Traits[3] : string.Empty
+				validAphid.Genes.Traits[0],
+				validAphid.Genes.Traits[1],
+				validAphid.Genes.Traits[2],
+				validAphid.Genes.Traits.Count > 3 ? validAphid.Genes.Traits[3] : string.Empty
 			];
 			debug_status.Text = string.Join("\n", _list);
 		}
 		else
-			validAphid = null;
+		{
+			debug_status.Text = string.Empty;
+		}
 	}
 	public override void _Input(InputEvent @event)
 	{
@@ -80,13 +84,7 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (@event.IsActionPressed(InputNames.Debug1))
 			{
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "IsActive: ", StartMenu.Instance.Menus.IsActive);
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Processing: ", StartMenu.Instance.Menus.Processing);
-
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Current: " + StartMenu.Instance.Menus.Current?.Name);
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Current|IsOpen: " + StartMenu.Instance.Menus.Current?.IsOpen);
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Pending: " + StartMenu.Instance.Menus.Pending?.Name);
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Available: ", StartMenu.Instance.Menus.Available.Count);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Hello Dolly!");
 				return;
 			}
 
@@ -172,7 +170,7 @@ public partial class DebugConsole : CanvasLayer
 		{ "help", new Andrew() },
 		{ "motherload", new Motherload() },
 		{ "time", new DeLorean() },
-		{ "gamerule", new GameRules() },
+		{ "gamerule", new GameRouxls() },
 		{ "aphid", new AphidPrognosis() },
 		{ "give", new GrabBag() },
 		{ "speak", new VisualNovel() },
@@ -185,8 +183,12 @@ public partial class DebugConsole : CanvasLayer
 		{ "run", new Run() }
 	};
 
-	public static void Print(string _message) =>
+	public static void Print(string _message)
+	{
+#if DEBUG
 		Instance?.log_print_text.AppendText(_message + "\n");
+#endif
+	}
 
 	public static string GetArg(int _index, string[] _argList, string _default = "")
 	{
@@ -299,7 +301,7 @@ public partial class DebugConsole : CanvasLayer
 			DebugLogger.Print(DebugLogger.LogPriority.Log, $"In-Game Time is now {args[0]}:{args[1]}");
 		}
 	}
-	private class GameRules : IConsoleCommand
+	private class GameRouxls : IConsoleCommand
 	{
 		public string HelpText => "Modify game and engine rules. <gamerule> [rule_in_snake_case/list] (some rules require a value)";
 		private readonly Dictionary<string, Action<string[]>> game_rules = new()
@@ -336,8 +338,8 @@ public partial class DebugConsole : CanvasLayer
 			},
 			{ "age_death", (args) =>
 				{
-					AphidData.Age_Death = GetInt(1, args, death_default);
-					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: The age for death is now <{AphidData.Age_Death} seconds>");
+					AphidData.Age_Lifetime = GetInt(1, args, death_default);
+					DebugLogger.Print(DebugLogger.LogPriority.Info, $"GameRules: The age for death is now <{AphidData.Age_Lifetime} seconds>");
 				}
 			},
 			{ "log_mode", (args) =>
@@ -355,7 +357,7 @@ public partial class DebugConsole : CanvasLayer
 			},
 		};
 		private static int harvest_default = AphidData.Harvest_Cooldown, breed_default = AphidData.Breed_Cooldown,
-			adult_default = AphidData.Age_Adulthood, death_default = AphidData.Age_Death;
+			adult_default = AphidData.Age_Adulthood, death_default = AphidData.Age_Lifetime;
 
 		public void Execute(string[] args)
 		{
@@ -374,15 +376,21 @@ public partial class DebugConsole : CanvasLayer
 	}
 	private class AphidPrognosis : IConsoleCommand
 	{
-		public string HelpText => "Allows to debug and manipulate aphid behaviour and parameters. Possible commands are:\n"
-		+ "<aphid new (bool Genes) (bool Skin) (bool Color)>\n"
-		+ "<aphid (get/despawn/kill/remove)>\n"
-		+ "<aphid grant [skill] (points)>\n"
-		+ "<aphid leveup [skill] (level)>";
+		public string HelpText => "Allows to debug and manipulate aphid behaviour and parameters. <aphid [command] (params)> Possible commands are:\n"
+		+ "<aphid [new/create] (bool Genes) (bool Skin) (bool Color)> - Creates a new aphid and selects it\n"
+		+ "<aphid [get/select/deselect] ('GUID'/'Name')> Get and display nearest aphid to mouse, can also search based on name \n"
+		+ "<aphid [unload/despawn]> - Unloads the selected aphid entity\n"
+		+ "<aphid [kill]> - Triggers the Kill command on the selected aphid\n"
+		+ "<aphid [remove/destroy]> - Removes selected aphid from the savefile permanently, Kill command is NOT triggered\n"
+		+ "<aphid [grant] [skill] (points)> - Grants skill points\n"
+		+ "<aphid [hunger/thirst/rest/bondship] (amount)> - Add amount to a basic need"
+		+ "<aphid [forceactive]> - Forces an aphid to be active, use if aphid is stuck on limbo";
 
 		public void Execute(string[] args)
 		{
-			switch (GetArg(0, args))
+			string _command = GetArg(0, args);
+
+			switch (_command)
 			{
 				case "new":
 				case "mew":
@@ -390,8 +398,9 @@ public partial class DebugConsole : CanvasLayer
 					AphidData.Genes _genes = new();
 					_genes.DEBUG_Randomize(GetBool(1, args, true), GetBool(2, args, true), GetBool(3, args, true));
 					_genes.Name += ResortManager.Current.Aphids.Count;
-					ResortManager.CreateAphid(CameraManager.GetMouseToWorldPosition(), _genes);
-					break;
+
+					validAphid = ResortManager.CreateAphid(CameraManager.GetMouseToWorldPosition(), _genes).Instance;
+					return;
 				case "get":
 				case "select":
 					if (!GetArg(1, args, out string _name))
@@ -400,78 +409,93 @@ public partial class DebugConsole : CanvasLayer
 						float _shortestDistance = float.PositiveInfinity;
 						validAphid = null;
 
-						foreach (Aphid _aphid in ResortManager.Current.Aphids)
+						if (IsInstanceValid(ResortManager.Current))
 						{
-							float _distance = _mouseposition.DistanceSquaredTo(_aphid.GlobalPosition);
-							if (_distance < _shortestDistance)
+							foreach (Aphid _aphid in ResortManager.Current.Aphids)
 							{
-								validAphid = _aphid;
-								_shortestDistance = _distance;
+								float _distance = _mouseposition.DistanceSquaredTo(_aphid.GlobalPosition);
+								if (_distance < _shortestDistance)
+								{
+									validAphid = _aphid.Instance;
+									_shortestDistance = _distance;
+								}
 							}
 						}
-						if (!IsInstanceValid(validAphid))
-						{
-							Instance.debug_status.Hide();
+						if (validAphid == null)
 							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: No aphid was found.");
-						}
 						else
-						{
-							Instance.debug_status.Show();
-							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: Your current aphid is: <{validAphid.Instance?.Genes.Name ?? "UNKNOWN"}>.");
-						}
+							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: Your current aphid is: <{validAphid?.Genes.Name ?? "UNKNOWN"}>.");
 					}
 					else
 					{
-						validAphid = ResortManager.Current.Aphids.Find((a) => a.Instance.Genes.Name == _name);
-						if (!IsInstanceValid(validAphid))
+						validAphid = GameManager.Aphids.First((a) => a.Value.Genes.Name == _name).Value;
+						if (validAphid == null)
 							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: No aphid was found with the name <{_name}>.");
 					}
-					break;
+					return;
+			}
+
+			if (validAphid != null)
+				ExecuteAphidCommand(_command, args);
+			else
+				Print("Aphid Prognosis: No valid aphid available to modify!");
+		}
+
+		private void ExecuteAphidCommand(string _command, string[] args)
+		{
+			switch (_command)
+			{
+				case "deselect":
+					Print($"AphidPrognosis: Aphid {validAphid.Genes.Name} deselected");
+					validAphid = null;
+					return;
 				case "unload":
 				case "despawn":
-					validAphid?.QueueFree();
-					break;
+					validAphid.Entity?.QueueFree();
+					return;
 				case "kill":
-					if (!IsInstanceValid(validAphid))
-						return;
-					validAphid.PrepareToDie();
+					validAphid.Entity?.PrepareToDie();
 					SoundManager.CreateSound("misc/medic_prognosis", false).VolumeDb = -10;
 					break;
 				case "remove":
-					if (!IsInstanceValid(validAphid))
-						return;
-					GameManager.RemoveAphid(new Guid(validAphid.Instance.ID));
-					validAphid.QueueFree();
+				case "destroy":
+					GameManager.RemoveAphid(new Guid(validAphid.ID));
+					validAphid.Entity?.QueueFree();
 					break;
 				case "grant":
-					if (!IsInstanceValid(validAphid))
-						return;
 					var _skill = GetArg(1, args);
-					validAphid.Instance.Genes.Skills[_skill].GivePoints(Mathf.Clamp(GetInt(2, args, 1), 0, 10));
-					break;
+					if (validAphid.Genes.Skills.ContainsKey(_skill))
+					{
+						Print("AphidPrognosis: No such skill exists!");
+						return;
+					}
+					validAphid.Genes.Skills[_skill].GivePoints(Mathf.Clamp(GetInt(2, args, 1), 0, 10));
+					return;
 				case "hunger":
 				case "h":
-					if (!IsInstanceValid(validAphid))
-						return;
 					var _hunger = GetInt(1, args, 1);
-					validAphid.Instance.AddHunger(_hunger);
-				break;
+					validAphid.AddHunger(_hunger);
+					return;
 				case "thirst":
-				case "th":
-					if (!IsInstanceValid(validAphid))
-						return;
+				case "t":
 					var _thirst = GetInt(1, args, 1);
-					validAphid.Instance.AddThirst(_thirst);
-				break;
-				case "sleep":
-				case "tiredness":
-				case "ti":
-				if (!IsInstanceValid(validAphid))
-						return;
+					validAphid.AddThirst(_thirst);
+					return;
+				case "rest":
+				case "r":
 					var _sleep = GetInt(1, args, 1);
-					validAphid.Instance.AddTiredness(_sleep);
-					break;
+					validAphid.AddRest(_sleep);
+					return;
+				case "bondship":
+				case "b":
+					var _bondship = GetInt(1, args, 1);
+					validAphid.AddBondship(_bondship);
+					return;
+				case "forceactive":
+					validAphid.Status.Mode = AphidData.EntityStatusType.Active;
+					return;
 			}
+			Print("AphidPrgonosis: This command doesn't exist!");
 		}
 	}
 	private class GrabBag : IConsoleCommand
@@ -584,15 +608,16 @@ public partial class DebugConsole : CanvasLayer
 		{
 			switch (GetArg(0, args))
 			{
+				case "clear":
 				case "reset":
 					JobMenu.Data.Available.Clear();
-					JobMenu.Data.Current.Clear();
+					JobMenu.Data.Active.Clear();
 					JobMenu.Instance.SaveModule.CallSet();
 					DebugLogger.Print(DebugLogger.LogPriority.Info, "DebugJob: Reseted jobs.");
 					break;
 				case "complete":
 					int _index = GetInt(1, args, 0);
-					JobMenu.Data.Current[_index].Fulfill();
+					JobMenu.Data.Active[_index].Fulfill();
 					DebugLogger.Print(DebugLogger.LogPriority.Info, $"DebugJob: Completed job {_index}");
 					break;
 			}
@@ -650,17 +675,17 @@ public partial class DebugConsole : CanvasLayer
 		{
 			int _tiredness = 0,
 				_totalWaste = 0,
-				_maxTired = GetInt(0, args, AphidData.MAX_TIREDNESS_SLEEP),
-				_minTired = GetInt(1, args, AphidData.MIN_TIREDNESS_WAKEUP),
-				_maxAge = GetInt(3, args, AphidData.Age_Death),
+				_maxTired = GetInt(0, args, AphidData.MIN_REST_TO_WAKEUP),
+				_minTired = GetInt(1, args, AphidData.MIN_REST_FOR_SLEEP),
+				_maxAge = GetInt(3, args, AphidData.Age_Lifetime),
 				_baseWasteTime = GetInt(2, args, 0),
 				_wasteTime = _baseWasteTime,
-				_baseSleepDecay = (int)(AphidData.BASE_SLEEP_DECAY * 10),
+				_baseSleepDecay = (int)(AphidData.BASE_REST_DECAY * 10),
 				_sleepLossTimer = _baseSleepDecay,
 				_baseTrainTime = 10 * 10,
 				y = 0;
 
-			double _pointsGained = 0, _sleepGainTimer = AphidData.BASE_SLEEP_GAIN,
+			double _pointsGained = 0, _sleepGainTimer = AphidData.BASE_REST_GAIN,
 				_trainTimer = 100, _activeTime = 0, _sleepTime = 0;
 			bool _sleeping = false;
 
@@ -688,7 +713,7 @@ public partial class DebugConsole : CanvasLayer
 							_sleepGainTimer -= 0.1f;
 						else
 						{
-							_sleepGainTimer = AphidData.BASE_SLEEP_GAIN;
+							_sleepGainTimer = AphidData.BASE_REST_GAIN;
 							_tiredness--;
 						}
 					}
@@ -809,3 +834,4 @@ public partial class DebugConsole : CanvasLayer
 		}
 	}
 }
+#endif

@@ -182,7 +182,7 @@ public partial class GenerationsPanel : Control
         {
             warning.Hide();
             // either show aphid specific screenshots or global resort screenshots
-            string _path = SaveSystem.ProfilePath + SaveSystem.PROFILE_ALBUM_DIR;
+            string _path = SaveSystem.ProfilePath + SaveSystem.PROFILE_SCREENSHOTS_DIR;
 
             if (_current)
                 _path += current_key.ToString() + "/";

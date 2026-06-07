@@ -10,19 +10,18 @@ public partial class GameManager : Node
 	public const string SAVEMODULE_ID = "main";
 	internal static bool IsANewSavefile { get; set; }
 
-	public Timer autoSaveTimer;
+	private Timer autoSaveTimer;
+	private double last_tick_time = Time.GetUnixTimeFromSystem();
 
 	public static GameData Data { get; private set; }
 	/// <summary>
 	/// All current aphids available in this savefile. To access aphids currently loaded in the resort,
 	///  go to ResortManager.Current.Aphids instead.
 	/// </summary>
-	public static Dictionary<Guid, AphidInstance> Aphids { get; private set; } = [];
-	public static Dictionary<Guid, AphidData.Genes> AphidArchive { get; set; } = [];
-	public static Dictionary<string, GlobalUpgrades.UpgradeModule> Upgrades { get; set; } = new(){
-		{ "membership_tier", new(1) }
-	};
-	
+	public static Dictionary<Guid, AphidInstance> Aphids { get; private set; }
+	public static Dictionary<Guid, AphidData.Genes> AphidArchive { get; set; }
+	public static Dictionary<string, UpgradeHub.UpgradeModule> Upgrades { get; set; }
+
 	public GameSaveModule GameSavefile = new(SAVEMODULE_ID, new GameDataModule(), 9999);
 	public AphidSaveModule AphidSavefile = new("aphids", new AphidDataModule(), 3008)
 	{
@@ -33,7 +32,7 @@ public partial class GameManager : Node
 		Extension = SaveSystem.SAVEFILE_EXTENSION,
 		RelativePath = SaveSystem.PROFILE_APHIDS_DIR,
 	};
-	public SaveSystem.SaveModule<Dictionary<string, GlobalUpgrades.UpgradeModule>> UpgradesSavefile = new("upgrades", new UpgradesDataModule(), 1985);
+	public SaveSystem.SaveModule<Dictionary<string, UpgradeHub.UpgradeModule>> UpgradesSavefile = new("upgrades", new UpgradesDataModule(), 1985);
 
 	// MARK: SaveModule Declarations
 	public class GameSaveModule(string ID, SaveSystem.IDataModule<GameData> _module, int LoadPriority = 0) :
@@ -58,11 +57,7 @@ public partial class GameManager : Node
 		}
 		public GameData Get()
 		{
-			// calculate the time passed between now and last time you saved playtime and add it to the latter
-			double _currentTime = Time.GetUnixTimeFromSystem();
-			Data.Playtime += _currentTime - Data.LastTimeLoaded;
-			Data.LastTimeLoaded = _currentTime;
-
+			Data.LastTimeLoaded = Time.GetUnixTimeFromSystem();
 			Data.AphidCount = Aphids.Count;
 			Data.LastRoom = SceneManager.CurrentScene;
 			return Data;
@@ -97,11 +92,13 @@ public partial class GameManager : Node
 				_raw_data = _raw_data.Replace("{\"Name\":\"speed\"", "\"speed\":{\"Name\":\"speed\"");
 			}
 
-			// v3.0 changed the variables "Mother" and "Father" types
+			// v3.0 changed the variables "Mother" and "Father" types, and renamed some basic stats
 			if (GameVersion < 300)
 			{
-				_raw_data.Replace("\"Father\":\"", "\"Unusued1\":\""); // TODO: change this to recover parents instead
-				_raw_data.Replace("\"Mother\":\"", "\"Unusued2\":\"");
+				_raw_data = _raw_data.Replace("Tiredness", "Rest");
+
+				_raw_data = _raw_data.Replace("\"Father\":\"", "\"Unusued1\":\""); // TODO: change this to recover parents instead
+				_raw_data = _raw_data.Replace("\"Mother\":\"", "\"Unusued2\":\"");
 			}
 
 			Dictionary<Guid, AphidInstance> _aphidData = base.PostLoad(_raw_data);
@@ -124,12 +121,8 @@ public partial class GameManager : Node
 		public void Set(Dictionary<Guid, AphidInstance> _data)
 		{
 			Aphids = _data;
-			foreach (var aphid in Aphids)
-			{
-				if (aphid.Value.Status.Mode != AphidData.EntityStatusType.Busy)
-					aphid.Value.Status.Mode = AphidData.EntityStatusType.Passive;
-				aphid.Value.PassiveEntity = new(aphid.Value);
-			}
+			foreach (var _pair in Aphids)
+				_pair.Value.Start();
 		}
 		public Dictionary<Guid, AphidInstance> Get() => Aphids;
 	}
@@ -165,11 +158,17 @@ public partial class GameManager : Node
 			AphidArchive = _data;
 		}
 	}
-	public class UpgradesDataModule : SaveSystem.IDataModule<Dictionary<string, GlobalUpgrades.UpgradeModule>>
+	public class UpgradesDataModule : SaveSystem.IDataModule<Dictionary<string, UpgradeHub.UpgradeModule>>
 	{
-		public Dictionary<string, GlobalUpgrades.UpgradeModule> Default() => [];
-		public Dictionary<string, GlobalUpgrades.UpgradeModule> Get() => Upgrades;
-		public void Set(Dictionary<string, GlobalUpgrades.UpgradeModule> _data) => Upgrades = _data;
+		public Dictionary<string, UpgradeHub.UpgradeModule> Default() => new()
+		{
+			{ "membership_tier", new(0) }
+		};
+		public Dictionary<string, UpgradeHub.UpgradeModule> Get() => Upgrades;
+		public void Set(Dictionary<string, UpgradeHub.UpgradeModule> _data)
+		{
+			Upgrades = _data;
+		}
 	}
 
 	public record GameData
@@ -186,7 +185,7 @@ public partial class GameManager : Node
 		public int ItemsSold { get; set; } = 0;
 		public int SavefileBoots { get; set; } = 0;
 	}
-	
+
 	// MARK: Body
 	public override void _EnterTree()
 	{
@@ -201,18 +200,21 @@ public partial class GameManager : Node
 		// responsible for saving the game when closing the window or exiting the application
 		if (SceneManager.CurrentlyInGame && what == NotificationWMCloseRequest)
 			await SaveSystem.SaveProfile();
+
+		if (what == NotificationUnpaused) // update time tick after unpausing
+			last_tick_time = Time.GetUnixTimeFromSystem();
 	}
 	public override void _Process(double delta)
 	{
-		if (!SceneManager.CurrentlyInGame)
+		if (!SceneManager.CurrentlyInGame || !GameSavefile.Loaded)
 			return;
-		float _delta = (float)delta;
+
+		Data.Playtime += Time.GetUnixTimeFromSystem() - last_tick_time;
+		float _timeDifference = (float)(Time.GetUnixTimeFromSystem() - last_tick_time);
+		last_tick_time = Time.GetUnixTimeFromSystem();
+
 		foreach (var aphid in Aphids)
-		{
-			// processes the passive behaviour of the aphid while is gone
-			if (aphid.Value.Status.Mode == AphidData.EntityStatusType.Passive)
-				aphid.Value.PassiveEntity.Process(_delta);
-		}
+			aphid.Value.Update(_timeDifference);
 	}
 
 	private void OnGameInit(SceneManager.SceneArgs _args)
@@ -225,13 +227,7 @@ public partial class GameManager : Node
 		if (IsANewSavefile)
 			StartNewGameCutscene();
 		else
-			SceneManager.AddEventListener((_) => CheckForGameOver(), SceneManager.EventEnum.OnPostLoad);
-
-		static void _addBootCount(SceneManager.SceneArgs _)
-		{
-			Data.SavefileBoots++;
-		}
-		SceneManager.AddEventListener(_addBootCount, SceneManager.EventEnum.OnPostLoad);
+			SceneManager.AddEventListener(OnScenePostLoad, SceneManager.EventEnum.OnPostLoad);
 
 		Instance.autoSaveTimer = new();
 		Instance.autoSaveTimer.Timeout += () =>
@@ -246,6 +242,16 @@ public partial class GameManager : Node
 	{
 		if (IsInstanceValid(Instance.autoSaveTimer))
 			Instance.autoSaveTimer.QueueFree();
+	}
+	private void OnScenePostLoad(SceneManager.SceneArgs _args)
+	{
+		Data.SavefileBoots++;
+		foreach (var _pair in Upgrades)
+		{
+			var _upgrade = UpgradeHub.GetUpgrade(_pair.Key);
+			_upgrade.OnGameLoad(_pair.Value.Level);
+		}
+		CheckForGameOver();
 	}
 
 	// MARK: Temp Cutscenes
@@ -281,6 +287,7 @@ public partial class GameManager : Node
 		CanvasManager.SetHUDTo(true);
 		IsANewSavefile = false;
 		CutsceneManager.IsActive = false;
+		//Instance.GameSavefile.ForceLoaded();
 	}
 	public static void CheckForGameOver()
 	{
@@ -384,13 +391,13 @@ public partial class GameManager : Node
 			ResortManager.Current.Aphids.Remove(value.Entity);
 		Aphids.Remove(_guid);
 	}
-	public static GlobalUpgrades.UpgradeModule GetUpgrade(string _id)
+	public static UpgradeHub.UpgradeModule GetPlayerUpgradeElseEmpty(string _id)
 	{
-		if (!HasUpgrade(_id))
+		if (!HasPlayerUpgrade(_id))
 			return new(0);
 		return Upgrades[_id];
 	}
-	public static bool HasUpgrade(string _id)
+	public static bool HasPlayerUpgrade(string _id)
 	{
 		return Upgrades.ContainsKey(_id);
 	}

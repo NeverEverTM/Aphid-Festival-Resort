@@ -6,7 +6,8 @@
 script = ExtResource("1_brok1")
 ID = "tangy_berry"
 Type = 2
-Cost = 15
+Cost = 10
+TierRequirement = 3
 Category = 1
 Shop = 1
-ShopOrderPriority = 12
+ShopOrderPriority = 14

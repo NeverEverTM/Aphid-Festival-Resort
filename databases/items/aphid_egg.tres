@@ -7,4 +7,4 @@ script = ExtResource("1_cw6lv")
 ID = "aphid_egg"
 Cost = 50
 Shop = 1
-ShopOrderPriority = 13
+ShopOrderPriority = 20

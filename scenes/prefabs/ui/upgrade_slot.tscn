@@ -11,7 +11,7 @@ offset_bottom = 131.0
 mouse_default_cursor_shape = 2
 
 [node name="bg" type="NinePatchRect" parent="."]
-self_modulate = Color(0.87462467, 0.33691216, 0.24695128, 1)
+self_modulate = Color(0.7168025, 0.26489612, 0.2682589, 1)
 light_mask = 0
 layout_mode = 1
 anchors_preset = 15
@@ -35,6 +35,7 @@ offset_top = 12.0
 offset_right = 479.0
 offset_bottom = 65.0
 mouse_filter = 1
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
 text = "rather long name for an upgrade intit"
 scroll_active = false
@@ -46,12 +47,13 @@ vertical_alignment = 1
 light_mask = 0
 layout_mode = 0
 offset_left = 12.0
-offset_top = 72.0
+offset_top = 69.0
 offset_right = 231.0
-offset_bottom = 125.0
+offset_bottom = 122.0
 mouse_filter = 1
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
-text = "1000"
+text = "[img height=40]res://sprites/icons/berry.tres[/img]1000"
 horizontal_alignment = 1
 vertical_alignment = 1
 

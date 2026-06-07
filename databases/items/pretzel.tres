@@ -8,4 +8,4 @@ ID = "pretzel"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 34
+ShopOrderPriority = -1

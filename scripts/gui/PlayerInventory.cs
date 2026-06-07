@@ -102,7 +102,7 @@ public partial class PlayerInventory : Control
 			return;
 		}
 
-		Player.AddCurrency(GlobalManager.G_ITEMS[_item_name].Cost / 2);
+		Player.AddCurrency(GlobalManager.G_ITEMS[_item_name].Cost / 2, Player.CurrencySource.InventorySell);
 		Update();
 
 		GameManager.Data.ItemsSold++;

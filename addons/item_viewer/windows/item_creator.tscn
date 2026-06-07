@@ -5,17 +5,19 @@
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_vicio"]
 [ext_resource type="Texture2D" uid="uid://dl6y7yf6p2p06" path="res://sprites/icons/unknown.tres" id="4_4vng8"]
 
-[node name="item_creator" type="Window" node_paths=PackedStringArray("fileNameEdit", "nameEdit", "costEdit", "shopOrderEdit", "descriptionEdit", "iconTexture", "tierOptions", "categoryOptions", "shopOptions", "typeOptions", "finishButton", "deleteButton", "foodPanel", "hungerSlider", "thirstSlider", "flavorOptions", "skillsNode")]
+[node name="item_creator" type="Window" node_paths=PackedStringArray("fileNameEdit", "enNameEdit", "esNameEdit", "costEdit", "shopOrderEdit", "enDescEdit", "esDescEdit", "iconTexture", "tierOptions", "categoryOptions", "shopOptions", "typeOptions", "finishButton", "deleteButton", "infoLabel", "foodPanel", "hungerSlider", "thirstSlider", "flavorOptions", "skillsNode")]
 oversampling_override = 1.0
 title = "Item Creator"
 initial_position = 4
 size = Vector2i(490, 275)
 script = ExtResource("1_4vng8")
 fileNameEdit = NodePath("item_options/filename")
-nameEdit = NodePath("translation/name")
+enNameEdit = NodePath("translation/en_name")
+esNameEdit = NodePath("translation/es_name")
 costEdit = NodePath("item_options/cost")
 shopOrderEdit = NodePath("item_options/shop_order")
-descriptionEdit = NodePath("translation/description")
+enDescEdit = NodePath("translation/en_description")
+esDescEdit = NodePath("translation/es_description")
 iconTexture = NodePath("item_options/icon_bg/icon_texture")
 tierOptions = NodePath("item_options/tier")
 categoryOptions = NodePath("item_options/category")
@@ -23,6 +25,7 @@ shopOptions = NodePath("item_options/shop")
 typeOptions = NodePath("translation/typeOptions")
 finishButton = NodePath("finishButton")
 deleteButton = NodePath("destroyButton")
+infoLabel = NodePath("finishButton/Label")
 foodPanel = NodePath("food_options")
 hungerSlider = NodePath("food_options/hunger_node/hunger_slider")
 thirstSlider = NodePath("food_options/thirst_node/thirst_slider")
@@ -58,7 +61,17 @@ grow_horizontal = 2
 scale = Vector2(0.5, 0.5)
 theme = ExtResource("1_hsucj")
 
-[node name="name" type="LineEdit" parent="translation"]
+[node name="name_label" type="Label" parent="translation"]
+layout_mode = 0
+offset_left = 23.833206
+offset_top = 23.777813
+offset_right = 117.833206
+offset_bottom = 71.77782
+text = "Name:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="en_name" type="LineEdit" parent="translation"]
 layout_mode = 0
 offset_left = 129.16666
 offset_top = 21.111126
@@ -67,43 +80,71 @@ offset_bottom = 77.11113
 theme_override_font_sizes/font_size = 30
 placeholder_text = "ex. Test Item"
 alignment = 2
-max_length = 15
+max_length = 20
 
-[node name="Label2" type="Label" parent="translation/name"]
+[node name="es_name" type="LineEdit" parent="translation"]
+visible = false
 layout_mode = 0
-offset_left = -105.33345
-offset_top = 2.666687
-offset_right = -11.33345
-offset_bottom = 50.666687
-text = "Name:"
-horizontal_alignment = 1
-vertical_alignment = 1
+offset_left = 129.16666
+offset_top = 21.111126
+offset_right = 395.16666
+offset_bottom = 77.11113
+theme_override_font_sizes/font_size = 30
+placeholder_text = "ex. Testeo"
+alignment = 2
+max_length = 20
 
 [node name="description_label" type="Label" parent="translation"]
 layout_mode = 0
 offset_left = 25.33358
-offset_top = 82.77777
-offset_right = 393.66623
-offset_bottom = 130.77777
+offset_top = 92.77777
+offset_right = 213.00003
+offset_bottom = 140.77777
 text = "Description:"
 vertical_alignment = 1
 
-[node name="description" type="TextEdit" parent="translation"]
+[node name="language" type="OptionButton" parent="translation"]
+layout_mode = 0
+offset_left = 293.00006
+offset_top = 85.99997
+offset_right = 431.00006
+offset_bottom = 173.99997
+scale = Vector2(0.75, 0.75)
+selected = 0
+item_count = 2
+popup/item_0/text = "EN"
+popup/item_0/id = 0
+popup/item_1/text = "ES"
+popup/item_1/id = 1
+
+[node name="en_description" type="TextEdit" parent="translation"]
 layout_mode = 0
 offset_left = 25.333328
-offset_top = 133.11108
+offset_top = 155.11108
 offset_right = 396.0
-offset_bottom = 312.0
+offset_bottom = 334.0
 theme_override_font_sizes/font_size = 30
 placeholder_text = "Here goes an item description."
 wrap_mode = 1
 
+[node name="es_description" type="TextEdit" parent="translation"]
+visible = false
+layout_mode = 0
+offset_left = 25.333328
+offset_top = 155.11108
+offset_right = 396.0
+offset_bottom = 334.0
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Aqui viene una descripción."
+wrap_mode = 1
+
 [node name="typeOptions" type="OptionButton" parent="translation"]
 layout_mode = 0
-offset_left = 171.00002
-offset_top = 322.0
-offset_right = 397.0
-offset_bottom = 410.0
+offset_left = 229.0
+offset_top = 338.0
+offset_right = 455.0
+offset_bottom = 426.0
+scale = Vector2(0.75, 0.75)
 
 [node name="Label" type="Label" parent="translation/typeOptions"]
 layout_mode = 0
@@ -183,9 +224,9 @@ alignment = 2
 
 [node name="Label" type="Label" parent="item_options/cost"]
 layout_mode = 0
-offset_left = -85.333435
+offset_left = -90.66681
 offset_top = 2.666687
-offset_right = -11.333435
+offset_right = -16.66681
 offset_bottom = 50.666687
 text = "Cost:"
 horizontal_alignment = 1
@@ -219,30 +260,12 @@ text = "Tier:"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="category" type="OptionButton" parent="item_options"]
-layout_mode = 0
-offset_left = 227.11115
-offset_top = 208.00009
-offset_right = 505.11115
-offset_bottom = 296.0001
-scale = Vector2(0.75, 0.75)
-
-[node name="Label" type="Label" parent="item_options/category"]
-layout_mode = 0
-offset_left = -158.88892
-offset_top = 16.0
-offset_right = -13.888916
-offset_bottom = 64.0
-text = "Category:"
-horizontal_alignment = 2
-vertical_alignment = 1
-
 [node name="shop" type="OptionButton" parent="item_options"]
 layout_mode = 0
 offset_left = 227.11115
-offset_top = 271.99997
+offset_top = 205.99997
 offset_right = 505.11115
-offset_bottom = 359.99997
+offset_bottom = 293.99997
 scale = Vector2(0.75, 0.75)
 
 [node name="Label" type="Label" parent="item_options/shop"]
@@ -252,6 +275,24 @@ offset_top = 16.0
 offset_right = -13.888916
 offset_bottom = 64.0
 text = "Shop:"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="category" type="OptionButton" parent="item_options"]
+layout_mode = 0
+offset_left = 227.11115
+offset_top = 276.00006
+offset_right = 505.11115
+offset_bottom = 364.00006
+scale = Vector2(0.75, 0.75)
+
+[node name="Label" type="Label" parent="item_options/category"]
+layout_mode = 0
+offset_left = -244.22223
+offset_top = 16.0
+offset_right = -14.222229
+offset_bottom = 64.0
+text = "Shop Category:"
 horizontal_alignment = 2
 vertical_alignment = 1
 
@@ -267,9 +308,9 @@ alignment = 2
 
 [node name="Label" type="Label" parent="item_options/shop_order"]
 layout_mode = 0
-offset_left = -284.44446
+offset_left = -289.7777
 offset_top = 3.555603
-offset_right = -9.444458
+offset_right = -14.77771
 offset_bottom = 51.555603
 text = "Shop Order Index:"
 horizontal_alignment = 2
@@ -459,6 +500,15 @@ scale = Vector2(0.5, 0.5)
 theme = ExtResource("1_hsucj")
 text = "Create"
 
+[node name="Label" type="Label" parent="finishButton"]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 38.0
+offset_right = 947.0
+offset_bottom = 86.0
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="destroyButton" type="Button" parent="."]
 visible = false
 anchors_preset = 7
@@ -476,11 +526,12 @@ scale = Vector2(0.5, 0.5)
 theme = ExtResource("1_hsucj")
 text = "Delete"
 
+[connection signal="item_selected" from="translation/language" to="." method="ON_SELECTED_LOCALE"]
 [connection signal="item_selected" from="translation/typeOptions" to="." method="ON_SELECTED"]
 [connection signal="focus_exited" from="item_options/filename" to="." method="IS_VALID_FILENAME" flags=18]
 [connection signal="text_submitted" from="item_options/filename" to="." method="IS_VALID_FILENAME" flags=18]
-[connection signal="focus_exited" from="item_options/cost" to="." method="IS_VALID_NUMBER" flags=18]
-[connection signal="text_submitted" from="item_options/cost" to="." method="IS_VALID_NUMBER" flags=18]
+[connection signal="focus_exited" from="item_options/cost" to="." method="IS_VALID_NONNEGATIVE_NUMBER" flags=18]
+[connection signal="text_submitted" from="item_options/cost" to="." method="IS_VALID_NONNEGATIVE_NUMBER" flags=18]
 [connection signal="focus_exited" from="item_options/shop_order" to="." method="IS_VALID_NUMBER" flags=18]
 [connection signal="text_submitted" from="item_options/shop_order" to="." method="IS_VALID_NUMBER" flags=18]
 [connection signal="value_changed" from="food_options/hunger_node/hunger_slider" to="food_options/hunger_node/hunger_count" method="set_text"]

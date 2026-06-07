@@ -59,7 +59,7 @@ public partial class NPCBehaviour : AnimatedSprite2D
 	}
 	public virtual async void Interact()
 	{
-		if (isBusy || !isInteractable)
+		if (isBusy || !isInteractable || CanvasManager.Menus.Processing || GlobalManager.IsBusy || DialogManager.IsActive)
 			return;
 		isBusy = true;
 
@@ -87,6 +87,7 @@ public partial class NPCBehaviour : AnimatedSprite2D
 
 		try
 		{
+			CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.TalkToNPC);
 			await Talk(_dialogue_key);
 		}
 		catch (Exception _error)
@@ -100,6 +101,8 @@ public partial class NPCBehaviour : AnimatedSprite2D
 	// TODO; DialogManager should use an actor object to manipulate rather than to do it manually
 	public async Task Talk(string _dialogue_key)
 	{
+		if (CanvasManager.Menus.Processing || GlobalManager.IsBusy || DialogManager.IsActive)
+			return;
 		Play("talk");
 		SetFlipDirection(Player.Instance.GlobalPosition - GlobalPosition);
 		Player.Instance.SetFlipDirection(GlobalPosition - Player.Instance.GlobalPosition);

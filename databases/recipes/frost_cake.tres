@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://bgpol7lagr7ge"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_ffjol"]
+[ext_resource type="Resource" uid="uid://dkw045vnorqkv" path="res://databases/food/cake.tres" id="2_auann"]
+[ext_resource type="Resource" uid="uid://mfvgn8dlbk6t" path="res://databases/food/shaved_ice.tres" id="3_dngb7"]
+[ext_resource type="Resource" uid="uid://b5iduokkrd3b8" path="res://databases/food/icecream.tres" id="4_auann"]
+[ext_resource type="Resource" uid="uid://mmg8ofdhf1ln" path="res://databases/items/frost_cake.tres" id="4_wfgf1"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_a3oxw"]
+
+[resource]
+script = ExtResource("5_a3oxw")
+Owner = ExtResource("4_wfgf1")
+Combinations = Array[Array]([Array[ExtResource("1_ffjol")]([ExtResource("2_auann"), ExtResource("3_dngb7")]), Array[ExtResource("1_ffjol")]([ExtResource("2_auann"), ExtResource("4_auann")])])

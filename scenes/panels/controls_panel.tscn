@@ -108,7 +108,7 @@ _data = {
 [sub_resource type="LabelSettings" id="LabelSettings_be8mp"]
 font_size = 45
 
-[node name="controls_panel" type="Control" node_paths=PackedStringArray("anim_player", "scroll", "reset_bar", "reset_button", "controls")]
+[node name="controls_panel" type="Control" node_paths=PackedStringArray("anim_player", "scroll", "reset_bar", "reset_button", "controls", "animPlayer")]
 visible = false
 modulate = Color(1, 1, 1, 0)
 light_mask = 0
@@ -134,6 +134,7 @@ fail_sound = ExtResource("4_tjoj8")
 reset_sound = ExtResource("5_khu8e")
 interaction_curve = SubResource("Curve_rqcp8")
 controls = [NodePath("ScrollContainer/Container/movement/up"), NodePath("ScrollContainer/Container/movement/down"), NodePath("ScrollContainer/Container/movement/left"), NodePath("ScrollContainer/Container/movement/right"), NodePath("ScrollContainer/Container/movement/run"), NodePath("ScrollContainer/Container/interactions/interact"), NodePath("ScrollContainer/Container/interactions/cancel"), NodePath("ScrollContainer/Container/interactions/pickup"), NodePath("ScrollContainer/Container/interactions/pull"), NodePath("ScrollContainer/Container/interactions/show_info"), NodePath("ScrollContainer/Container/menus/open_inventory"), NodePath("ScrollContainer/Container/menus/open_generations"), NodePath("ScrollContainer/Container/menus/change_camera"), NodePath("ScrollContainer/Container/buildMode/store"), NodePath("ScrollContainer/Container/buildMode/sell"), NodePath("ScrollContainer/Container/buildMode/align_to_grid")]
+animPlayer = NodePath("anim_player")
 
 [node name="anim_player" type="AnimationPlayer" parent="."]
 libraries = {
@@ -147,7 +148,6 @@ offset_top = -345.0
 offset_right = 633.0
 offset_bottom = 375.0
 follow_focus = true
-scroll_vertical = 100
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
@@ -258,9 +258,9 @@ layout_mode = 2
 self_modulate = Color(0.78206795, 0.42075863, 0.21787202, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 762.0
+offset_left = 730.0
 offset_top = 42.0
-offset_right = 1204.0
+offset_right = 1172.0
 offset_bottom = 123.0
 texture = ExtResource("1_tc1an")
 patch_margin_left = 20
@@ -282,9 +282,9 @@ vertical_alignment = 1
 [node name="buildMode" type="VBoxContainer" parent="ScrollContainer/Container"]
 light_mask = 0
 layout_mode = 1
-offset_left = 740.0
+offset_left = 708.0
 offset_top = 140.0
-offset_right = 1110.0
+offset_right = 1078.0
 offset_bottom = 390.0
 theme_override_constants/separation = 20
 metadata/BuildMode = true
@@ -302,9 +302,9 @@ layout_mode = 2
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 762.0
+offset_left = 730.0
 offset_top = 434.0
-offset_right = 1204.0
+offset_right = 1172.0
 offset_bottom = 515.0
 texture = ExtResource("1_tc1an")
 patch_margin_left = 20
@@ -326,9 +326,9 @@ vertical_alignment = 1
 [node name="menus" type="VBoxContainer" parent="ScrollContainer/Container"]
 light_mask = 0
 layout_mode = 1
-offset_left = 740.0
+offset_left = 708.0
 offset_top = 532.0
-offset_right = 1110.0
+offset_right = 1078.0
 offset_bottom = 782.0
 theme_override_constants/separation = 20
 
@@ -344,9 +344,9 @@ layout_mode = 2
 [node name="reset_bg" type="Panel" parent="ScrollContainer/Container"]
 light_mask = 0
 layout_mode = 0
-offset_left = 740.0
+offset_left = 708.0
 offset_top = 957.0
-offset_right = 1218.0
+offset_right = 1186.0
 offset_bottom = 1138.0
 mouse_filter = 1
 theme = ExtResource("1_1a8ee")

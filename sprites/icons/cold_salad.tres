@@ -5,3 +5,4 @@
 [resource]
 atlas = ExtResource("1_bmw0a")
 region = Rect2(180, 0, 18, 18)
+filter_clip = true

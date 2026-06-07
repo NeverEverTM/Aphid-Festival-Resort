@@ -11,4 +11,4 @@ shader_parameter/frequency = 2.0
 material = SubResource("ShaderMaterial_bsjku")
 texture = ExtResource("1_aedr5")
 offset = Vector2(0, -5.1)
-metadata/allow_water = true
+metadata/placeable_area = 1

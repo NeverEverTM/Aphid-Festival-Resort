@@ -5,9 +5,11 @@
 [ext_resource type="Script" uid="uid://clrj1y6xmjq83" path="res://addons/glowbutton/GlowButton.cs" id="3_bd6ij"]
 
 [node name="news_post" type="NinePatchRect"]
-self_modulate = Color(0.968126, 0.534085, 0.715276, 1)
+self_modulate = Color(0.15536955, 0.24369499, 0.58925945, 1)
 light_mask = 0
 custom_minimum_size = Vector2(100, 150)
+offset_right = 991.0
+offset_bottom = 150.0
 texture = ExtResource("1_07qy0")
 patch_margin_left = 20
 patch_margin_top = 20
@@ -27,7 +29,7 @@ autowrap_mode = 2
 text_overrun_behavior = 3
 
 [node name="date" type="Label" parent="."]
-self_modulate = Color(0.92, 0.046, 0.1334, 1)
+self_modulate = Color(0.28311008, 0.63306737, 0.9524068, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = 537.0

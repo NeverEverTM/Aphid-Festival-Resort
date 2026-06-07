@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=28 format=3 uid="uid://c26milatu6udv"]
+[gd_resource type="Theme" load_steps=31 format=3 uid="uid://c26milatu6udv"]
 
 [ext_resource type="StyleBox" uid="uid://cisvgvfobi4xh" path="res://resources/button_focus.tres" id="1_bsk3a"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/backgrounds/menu_bar.png" id="2_1p6bo"]
@@ -69,6 +69,12 @@ expand_margin_left = 2.0
 expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kk425"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0konk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uadh8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wdiyg"]
 content_margin_left = 14.0
@@ -169,9 +175,24 @@ PopupMenu/constants/icon_max_width = 128
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_45dyy")
 PopupPanel/font_sizes/title_font_size = 16
 PopupPanel/styles/panel = ExtResource("4_0fmu8")
-RichTextLabel/colors/font_shadow_color = Color(0, 0, 0, 1)
-RichTextLabel/constants/shadow_offset_x = 4
-RichTextLabel/constants/shadow_offset_y = 3
+RTL_Black/base_type = &"RTL_White"
+RTL_Black/colors/default_color = Color(0, 0, 0, 1)
+RTL_Black/colors/font_shadow_color = Color(0, 0, 0, 0.39215687)
+RTL_Black/constants/shadow_offset_x = 2
+RTL_Black/constants/shadow_offset_y = 2
+RTL_SWhite/base_type = &"RTL_White"
+RTL_SWhite/colors/default_color = Color(1, 1, 1, 1)
+RTL_SWhite/colors/font_shadow_color = Color(0, 0, 0, 1)
+RTL_SWhite/constants/shadow_offset_y = 3
+RTL_SWhite/font_sizes/normal_font_size = 28
+RTL_SWhite/styles/background = SubResource("StyleBoxEmpty_kk425")
+RTL_SWhite/styles/focus = SubResource("StyleBoxEmpty_0konk")
+RTL_SWhite/styles/normal = SubResource("StyleBoxEmpty_uadh8")
+RTL_White/base_type = &"RichTextLabel"
+RTL_White/colors/default_color = Color(1, 1, 1, 1)
+RTL_White/colors/font_shadow_color = Color(0, 0, 0, 0.39215687)
+RTL_White/constants/shadow_offset_x = 2
+RTL_White/constants/shadow_offset_y = 2
 TextEdit/colors/background_color = Color(0.0745098, 0.27451, 0.176471, 0)
 TextEdit/colors/font_placeholder_color = Color(0.688896, 0.621552, 0.728016, 0.6)
 TextEdit/styles/focus = SubResource("StyleBoxFlat_wdiyg")

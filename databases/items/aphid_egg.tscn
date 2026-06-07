@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bqb16fw6k8y7d"]
+[gd_scene load_steps=5 format=3 uid="uid://bqb16fw6k8y7d"]
 
 [ext_resource type="PackedScene" uid="uid://d3miyavfmn4oh" path="res://scenes/prefabs/item.tscn" id="1_dlinr"]
 [ext_resource type="Texture2D" uid="uid://buj5f0umi5cal" path="res://sprites/icons/aphid_egg.tres" id="2_4cs5i"]
 [ext_resource type="Script" uid="uid://c8no56u10k0k7" path="res://scripts/aphid/AphidHatch.cs" id="2_415gn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2kj21"]
+radius = 4.0
 
 [node name="aphid_egg" instance=ExtResource("1_dlinr")]
 script = ExtResource("2_415gn")
@@ -10,3 +13,9 @@ colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 0.584314, 0.74902, 0.282353, 1
 
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("2_4cs5i")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." index="2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" index="0"]
+position = Vector2(0, -3)
+shape = SubResource("CircleShape2D_2kj21")

@@ -8,7 +8,7 @@ public partial class PauseMenu : Control
 	[Export] private TextureButton menu_button;
 	[Export] private AnimationPlayer menu_player, bg_player;
 	[Export] private BaseButton[] buttons;
-	[Export] private Control options_panel, controls_panel, help_panel;
+	[Export] private MenuControl options_panel, controls_panel, help_panel;
 
 	private MenuInstance menu;
 	private const string PAUSE_MENU_NAME = "pause";
@@ -20,9 +20,9 @@ public partial class PauseMenu : Control
 
 		// hardcoded menu values
 		menu_panels = [
-			(options_panel as IMenuInstance).Create(),
-			(controls_panel as IMenuInstance).Create(),
-			(help_panel as IMenuInstance).Create()
+			options_panel.GetMenuInstance(),
+			controls_panel.GetMenuInstance(),
+			help_panel.GetMenuInstance()
 		];
 
 		// hardcoded button values
@@ -88,19 +88,16 @@ public partial class PauseMenu : Control
 	}
 	public override void _Input(InputEvent @event)
 	{
-		if (GlobalManager.IsBusy || SceneManager.IsBusy || FreeCameraManager.Enabled || DialogManager.IsActive || CutsceneManager.IsActive)
+		if (GlobalManager.IsBusy)
 			return;
 
-		if (CanvasManager.Menus.Current == null)
+		if (!CanvasManager.Menus.IsActive)
 		{
 			if (@event.IsActionPressed(InputNames.Escape))
 				_ = CanvasManager.Menus.SetTo(menu);
 		}
-		else if (CanvasManager.Menus.Available[0].Name.Equals(PAUSE_MENU_NAME))
-		{
-			if (@event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.Cancel))
-				_ = CanvasManager.Menus.GoBack();
-		}
+		else if (CanvasManager.Menus.Available.Count > 0 && CanvasManager.Menus.Available[0].Name == PAUSE_MENU_NAME && (@event.IsActionPressed(InputNames.Escape) || @event.IsActionPressed(InputNames.Cancel)))
+			_ = CanvasManager.Menus.GoBack();
 	}
 
 	private void PauseMenuButton()

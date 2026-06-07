@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://ds86pne1co7d2"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_y52kc"]
+[ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="2_vycmp"]
+[ext_resource type="Resource" uid="uid://bxsnv6hiuvxic" path="res://databases/food/plant_sap.tres" id="3_uopyo"]
+[ext_resource type="Resource" uid="uid://cmqdrwdh2qkvx" path="res://databases/items/sweet_pudding.tres" id="4_kurs7"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_l77ae"]
+
+[resource]
+script = ExtResource("5_l77ae")
+Owner = ExtResource("4_kurs7")
+Combinations = Array[Array]([Array[ExtResource("1_y52kc")]([ExtResource("2_vycmp"), ExtResource("3_uopyo")])])

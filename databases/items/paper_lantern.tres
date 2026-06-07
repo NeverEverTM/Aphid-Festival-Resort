@@ -7,7 +7,6 @@ script = ExtResource("1_sxkf1")
 ID = "paper_lantern"
 Type = 1
 Cost = 5
-TierRequirement = 1
 Category = 3
 Shop = 2
 ShopOrderPriority = 46

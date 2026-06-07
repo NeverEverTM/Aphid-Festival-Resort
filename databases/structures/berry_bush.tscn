@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://vu7nfemnhodu" path="res://sprites/props/berry_bush_empty.png" id="1_q1h30"]
 [ext_resource type="Shader" uid="uid://di36wbuic5ap6" path="res://scripts/shaders/grass.gdshader" id="1_utndy"]
-[ext_resource type="Script" uid="uid://j02qpj8iycok" path="res://scripts/entities/BerryBushBehaviour.cs" id="2_ied3s"]
+[ext_resource type="Script" uid="uid://j02qpj8iycok" path="res://scripts/entities/BerryBushStructure.cs" id="2_ied3s"]
 [ext_resource type="Texture2D" uid="uid://44vmfjus0as2" path="res://sprites/props/berry_bush.png" id="3_8l5nk"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="5_6n4iy"]
 

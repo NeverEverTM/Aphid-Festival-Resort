@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3 uid="uid://drsccb2y8mk3w"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_3kod7"]
+[ext_resource type="Resource" uid="uid://bcx4dkb2c24h6" path="res://databases/food/danger_shroom.tres" id="2_54q1n"]
+[ext_resource type="Resource" uid="uid://clq0aunibmorg" path="res://databases/items/cooked_danger.tres" id="3_vb2r7"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="4_tg36j"]
+
+[resource]
+script = ExtResource("4_tg36j")
+Owner = ExtResource("3_vb2r7")
+Combinations = Array[Array]([Array[ExtResource("1_3kod7")]([ExtResource("2_54q1n")])])

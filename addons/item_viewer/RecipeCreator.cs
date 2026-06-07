@@ -35,13 +35,13 @@ public partial class RecipeCreator : Window
             if (_data[i].Type != ItemData.ItemType.Food)
                 continue;
 
-            var _slot = ResourceLoader.Load<PackedScene>(ItemViewer.ITEM_SLOT_PREFAB).Instantiate() as BaseButton;
+            var _slot = ResourceLoader.Load<PackedScene>(ItemMasterDB.ITEM_SLOT_PREFAB).Instantiate() as BaseButton;
             string _id = _data[i].ID;
             _slot.Name = _id;
             _slot.Pressed += () => FILL_SLOTS(_id);
 
             // icon
-            _slot.GetChild<TextureRect>(0).Texture = ItemViewer.GET_ITEM_ICON(_data[i].ID, _data[i].Type);
+            _slot.GetChild<TextureRect>(0).Texture = ItemMasterDB.GET_ITEM_ICON(_data[i].ID, _data[i].Type);
             //name
             _slot.GetChild<Label>(1).Text = _data[i].ID;
 
@@ -59,7 +59,7 @@ public partial class RecipeCreator : Window
     }
     private void SEARCH_ITEM_ID(string _search)
     {
-        List<ItemData> _newData = [.. ItemViewer.Instance.ITEM_DATABASE.Values];
+        List<ItemData> _newData = [.. ItemMasterDB.Instance.ITEM_DATABASE.Values];
 
         for (int i = _newData.Count - 1; i >= 0; i--)
         {
@@ -73,13 +73,13 @@ public partial class RecipeCreator : Window
     private bool SET_SLOT(string _itemID, Slot _slot)
     {
         int _index = (int)_slot;
-        var _data = ItemViewer.GET_ITEM_DATA(_itemID);
+        var _data = ItemMasterDB.GET_ITEM_DATA(_itemID);
 
         if (_slot != Slot.Result && _data.Type == ItemData.ItemType.Item)
             return false;
 
         ingredients[_index] = _data;
-        slots[_index].Texture = ItemViewer.GET_ITEM_ICON(ingredients[_index].ID, ingredients[_index].Type);
+        slots[_index].Texture = ItemMasterDB.GET_ITEM_ICON(ingredients[_index].ID, ingredients[_index].Type);
 
         if (_slot != Slot.Result)
             slots[_index].GetChild<Control>(0).Show();
@@ -114,25 +114,25 @@ public partial class RecipeCreator : Window
         Godot.Collections.Array<FoodData> _recipe = [];
 
         if (ingredients[(int)Slot.FirstIngredient] != null)
-            _recipe.Add(ResourceLoader.Load<FoodData>(ItemViewer.GET_FOOD_FILEPATH(ingredients[(int)Slot.FirstIngredient].ID)));
+            _recipe.Add(ResourceLoader.Load<FoodData>(ItemMasterDB.GET_FOOD_FILEPATH(ingredients[(int)Slot.FirstIngredient].ID)));
 
         if (ingredients[(int)Slot.SecondIngredient] != null)
-            _recipe.Add(ResourceLoader.Load<FoodData>(ItemViewer.GET_FOOD_FILEPATH(ingredients[(int)Slot.SecondIngredient].ID)));
+            _recipe.Add(ResourceLoader.Load<FoodData>(ItemMasterDB.GET_FOOD_FILEPATH(ingredients[(int)Slot.SecondIngredient].ID)));
 
         string _id = ingredients[(int)Slot.Result].ID;
-        if (!ItemViewer.IS_RECIPE_MATCH_VALID(_recipe, out RecipeData _existing))
+        if (!ItemMasterDB.IS_RECIPE_MATCH_VALID(_recipe, out RecipeData _existing))
         {
             THROW_INVALID_WARNING(_existing.Owner.ID);
             return;
         }
 
-        if (!ItemViewer.GET_ITEM_RECIPE(_id, out RecipeData _data))
+        if (!ItemMasterDB.GET_ITEM_RECIPE(_id, out RecipeData _data))
             _data = new() { Combinations = [] };
 
-        _data.Owner = ResourceLoader.Load<ItemData>(ItemViewer.GET_ITEM_FILEPATH(_id));
+        _data.Owner = ResourceLoader.Load<ItemData>(ItemMasterDB.GET_ITEM_FILEPATH(_id));
         _data.Combinations.Add(_recipe);
 
-        ItemViewer.SET_ITEM_RECIPE(_id, _data);
+        ItemMasterDB.SET_ITEM_RECIPE(_id, _data);
         ItemViewer.Instance.SELECT_ITEM(_id);
 
         AcceptDialog _popup = new();
@@ -148,13 +148,13 @@ public partial class RecipeCreator : Window
 
         _popup.DialogText += "!";
 
-        ItemViewer.Instance.AddChild(_popup);
+        ItemMasterDB.Instance.AddChild(_popup);
         _popup.PopupCentered();
         QueueFree();
     }
     internal static void DELETE_RECIPE(string _id, int _index)
     {
-        var _recipes = ItemViewer.GET_ITEM_RECIPE(_id);
+        var _recipes = ItemMasterDB.GET_ITEM_RECIPE(_id);
 
         _recipes.Combinations.RemoveAt(_index);
         if (_recipes.Combinations.Count == 0)
@@ -167,7 +167,7 @@ public partial class RecipeCreator : Window
             }
         }
         else
-            ItemViewer.SET_ITEM_RECIPE(_id, _recipes);
+            ItemMasterDB.SET_ITEM_RECIPE(_id, _recipes);
 
         ItemViewer.Instance.SELECT_ITEM(_id);
     }

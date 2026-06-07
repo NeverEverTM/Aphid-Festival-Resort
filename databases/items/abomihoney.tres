@@ -8,4 +8,4 @@ ID = "abomihoney"
 Type = 2
 Cost = 1
 Category = 1
-ShopOrderPriority = 41
+ShopOrderPriority = -1

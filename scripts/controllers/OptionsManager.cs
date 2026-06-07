@@ -11,7 +11,7 @@ public static class OptionsManager
     internal static Savefile Settings { get; set; }
     internal static OptionsSaveModule SaveModule = new("settings", new OptionsDataModule())
     {
-        RelativePath = SaveSystem.CONFIG_DIR,
+        RootPath = SaveSystem.CONFIG_DIR,
         Extension = SaveSystem.CONFIGFILE_EXTENSION,
         DisposeMode = SaveSystem.SaveMetadata.DisposeMethod.NotApplicable
     };

@@ -150,7 +150,7 @@ region = Rect2(16, 32, 16, 16)
 atlas = ExtResource("7_msete")
 region = Rect2(0, 32, 16, 16)
 
-[node name="options_panel" type="Control" node_paths=PackedStringArray("anim_player", "saveFolderButton", "volumeSliders", "wavinessSlider", "windowMode", "language", "genericCheckButtons")]
+[node name="options_panel" type="Control" node_paths=PackedStringArray("anim_player", "saveFolderButton", "volumeSliders", "wavinessSlider", "windowMode", "language", "genericCheckButtons", "animPlayer")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -168,6 +168,7 @@ wavinessSlider = NodePath("settings/BackgroundWaviness")
 windowMode = NodePath("settings/DisplayMode")
 language = NodePath("settings/Locale")
 genericCheckButtons = [NodePath("settings/AutoRun")]
+animPlayer = NodePath("anim_player")
 
 [node name="anim_player" type="AnimationPlayer" parent="."]
 libraries = {
@@ -244,21 +245,12 @@ popup/item_1/text = "options_fullscreen"
 popup/item_1/icon = SubResource("AtlasTexture_37k2w")
 popup/item_1/id = 1
 
-[node name="AutoRun" type="CheckButton" parent="settings"]
-light_mask = 0
-layout_mode = 0
-offset_left = -384.0
-offset_top = -38.0
-offset_right = -25.0
-offset_bottom = 52.0
-text = "options_autorun"
-
 [node name="BackgroundWaviness" parent="settings" instance=ExtResource("3_37k2w")]
 layout_mode = 0
 offset_left = -395.0
-offset_top = 59.0
+offset_top = -101.0
 offset_right = -25.0
-offset_bottom = 161.0
+offset_bottom = 1.0
 
 [node name="slider" parent="settings/BackgroundWaviness" index="0"]
 max_value = 1.0
@@ -268,13 +260,22 @@ value = 1.0
 offset_left = 23.0
 offset_right = 351.0
 
-[node name="savefolder_button" type="Button" parent="settings"]
+[node name="AutoRun" type="CheckButton" parent="settings"]
 light_mask = 0
 layout_mode = 0
 offset_left = -384.0
-offset_top = 263.0
-offset_right = -14.0
-offset_bottom = 351.0
+offset_top = 18.0
+offset_right = -25.0
+offset_bottom = 108.0
+text = "options_autorun"
+
+[node name="savefolder_button" type="Button" parent="settings"]
+light_mask = 0
+layout_mode = 0
+offset_left = -400.0
+offset_top = 247.0
+offset_right = -30.0
+offset_bottom = 335.0
 text = "options_savefilefolder"
 icon = ExtResource("6_qdykg")
 expand_icon = true

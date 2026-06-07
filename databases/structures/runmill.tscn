@@ -1,31 +1,161 @@
-[gd_scene load_steps=6 format=3 uid="uid://b4bya6a01lx1q"]
+[gd_scene load_steps=13 format=3 uid="uid://b4bya6a01lx1q"]
 
+[ext_resource type="Texture2D" uid="uid://c06ugr4uwqki2" path="res://sprites/props/runmill.png" id="1_itnvo"]
 [ext_resource type="Script" uid="uid://c36pr2aklwfp" path="res://scripts/entities/SkillStructure.cs" id="1_yrewt"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="2_uieop"]
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0dms6"]
-load_path = "res://.godot/imported/hot_bathtub.png-1d02dc58ccafe26e93b4f787713d310d.ctex"
+[sub_resource type="AtlasTexture" id="AtlasTexture_s1m43"]
+atlas = ExtResource("1_itnvo")
+region = Rect2(0, 0, 96, 48)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_5spxb"]
-atlas = SubResource("CompressedTexture2D_0dms6")
-region = Rect2(0, 0, 64, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_itnvo"]
+atlas = ExtResource("1_itnvo")
+region = Rect2(0, 0, 96, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nc56s"]
+atlas = ExtResource("1_itnvo")
+region = Rect2(0, 48, 96, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_s1m43"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_itnvo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nc56s")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="Animation" id="Animation_itnvo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Marker2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 6)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("sprite")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"stop"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_uieop"]
+resource_name = "start"
+length = 8.0
+loop_mode = 1
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Marker2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.01, 1.33, 2.51, 3.32, 5.77, 6.96),
+"transitions": PackedFloat32Array(0.5, -2, 0.5, -2, 0.5, 1),
+"update": 0,
+"values": [Vector2(0, 6), Vector2(8, 6), Vector2(-16, 6), Vector2(-20, 6), Vector2(15, 6), Vector2(16, 6)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"ToggleWalkOn"
+}]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"FlipAphidToTheRight"
+}]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("sprite")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"default", 1.0, false],
+"method": &"play"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_itnvo"]
+_data = {
+&"RESET": SubResource("Animation_itnvo"),
+&"start": SubResource("Animation_uieop")
+}
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yx58p"]
 size = Vector2(94, 29)
 
-[node name="runmill" type="Sprite2D" node_paths=PackedStringArray("restingPosition", "interactArea")]
-texture = SubResource("AtlasTexture_5spxb")
-offset = Vector2(0, -11)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_itnvo"]
+size = Vector2(84, 16)
+
+[node name="runmill" type="Sprite2D" node_paths=PackedStringArray("restingPosition", "animator", "interactArea")]
+texture = SubResource("AtlasTexture_s1m43")
+offset = Vector2(0, -8)
 script = ExtResource("1_yrewt")
+StateToGo = 5
 restingPosition = NodePath("Marker2D")
+animator = NodePath("AnimationPlayer")
 interactArea = NodePath("Area2D")
 
+[node name="sprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_s1m43")
+frame_progress = 0.2520987
+offset = Vector2(0, -8)
+
 [node name="Marker2D" type="Marker2D" parent="."]
-position = Vector2(0, -7)
+position = Vector2(0, 6)
 gizmo_extents = 39.5
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_itnvo")
+}
+
 [node name="Area2D" type="Area2D" parent="."]
-position = Vector2(0, -11)
+position = Vector2(-1, 0)
 collision_layer = 3
 collision_mask = 0
 monitoring = false
@@ -37,4 +167,10 @@ position = Vector2(1, 3.5)
 shape = SubResource("RectangleShape2D_yx58p")
 debug_color = Color(0.740182, 0.394256, 0.653542, 0.42)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_itnvo")

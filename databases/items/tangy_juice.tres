@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://bb6xfx112npej"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_7wp41"]
+
+[resource]
+script = ExtResource("1_7wp41")
+ID = "tangy_juice"
+Type = 2
+Cost = 14
+TierRequirement = 3
+Category = -1
+ShopOrderPriority = -1

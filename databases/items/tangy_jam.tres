@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://bh7lurr2mysup"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_joa7h"]
+
+[resource]
+script = ExtResource("1_joa7h")
+ID = "tangy_jam"
+Type = 2
+Cost = 14
+TierRequirement = 3
+Category = -1
+ShopOrderPriority = -1

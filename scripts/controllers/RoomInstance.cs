@@ -83,9 +83,9 @@ public partial class RoomInstance : Node2D
 	{
 		foreach (var _pair in GameManager.Upgrades)
 		{
-			int _index = GlobalUpgrades.AVAILABLE_UPGRADES.FindIndex((u) => u.ID == _pair.Key);
+			int _index = UpgradeHub.G_UPGRADES.FindIndex((u) => u.ID == _pair.Key);
 			if (_index != -1)
-				GlobalUpgrades.AVAILABLE_UPGRADES[_index].OnReload(_pair.Value.Level);
+				UpgradeHub.G_UPGRADES[_index].OnSceneLoad(_pair.Value.Level);
 		}
 		SetTime(true);
 		StartTimeLoop();

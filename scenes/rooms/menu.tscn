@@ -1957,6 +1957,7 @@ y_sort_enabled = true
 
 [node name="tilemap_resort" parent="." node_paths=PackedStringArray("Doors") instance=ExtResource("3_7aeaj")]
 Doors = [NodePath("../room_trigger")]
+metadata/_edit_lock_ = true
 
 [node name="room_trigger" parent="." instance=ExtResource("3_17y42")]
 position = Vector2(-521, 98)
@@ -2089,7 +2090,7 @@ offset_top = 525.0
 offset_right = 553.0
 offset_bottom = 604.0
 mouse_filter = 1
-theme_override_constants/outline_size = 10
+theme_override_constants/outline_size = 14
 theme_override_fonts/normal_font = ExtResource("2_w3mwt")
 theme_override_font_sizes/normal_font_size = 50
 theme_override_font_sizes/mono_font_size = 100
@@ -2107,9 +2108,11 @@ offset_right = 843.0
 offset_bottom = 586.0
 mouse_filter = 1
 theme = ExtResource("9_76l0k")
-theme_override_constants/outline_size = 10
+theme_override_constants/outline_size = 14
 bbcode_enabled = true
-text = "[center]Press [ERROR] to start[/center]"
+text = "Error!"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="bottom_bar" type="Control" parent="CanvasLayer/start_panel"]
 light_mask = 0

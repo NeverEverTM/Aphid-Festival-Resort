@@ -8,4 +8,4 @@ ID = "roasted_berries"
 Type = 2
 Cost = 4
 Category = 1
-ShopOrderPriority = 40
+ShopOrderPriority = -1

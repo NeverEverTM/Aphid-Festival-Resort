@@ -155,12 +155,12 @@ load_path = "res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cj77s"]
 size = Vector2(103, 74)
 
-[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("skin", "interactArea")]
+[node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("Skin", "interactArea")]
 collision_layer = 7
 collision_mask = 3
 motion_mode = 1
 script = ExtResource("1_acxg7")
-skin = NodePath("anchor")
+Skin = NodePath("anchor")
 interactArea = NodePath("TriggerArea")
 metadata/pickup = true
 
@@ -218,6 +218,6 @@ aphid = NodePath("..")
 Tag = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerArea"]
-position = Vector2(-0.5, 11)
+position = Vector2(-0.5, 0)
 shape = SubResource("RectangleShape2D_cj77s")
 debug_color = Color(0.756863, 0.364706, 0.556863, 0.290196)

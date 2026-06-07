@@ -7,6 +7,5 @@ script = ExtResource("1_d6xnm")
 ID = "baked_yam"
 Type = 2
 Cost = 6
-TierRequirement = 1
 Category = 1
-ShopOrderPriority = 38
+ShopOrderPriority = -1

@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://c1856s6eepmcn" path="res://sprites/props/train_dummy_1.png" id="3_shvgc"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="4_m2wui"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shvgc"]
+size = Vector2(108, 33)
+
 [sub_resource type="Animation" id="Animation_m2wui"]
 length = 0.001
 tracks/0/type = "value"
@@ -94,16 +97,16 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "values": [{
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOn"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOff"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOn"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOff"
 }]
 }
 tracks/4/type = "value"
@@ -128,17 +131,30 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m2wui"]
 size = Vector2(89, 16)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_shvgc"]
-size = Vector2(108, 33)
-
 [node name="train_dummy" type="Sprite2D" node_paths=PackedStringArray("restingPosition", "animator", "interactArea")]
 texture = ExtResource("1_lqv8x")
 offset = Vector2(-2.5, -10)
 script = ExtResource("1_vy0x5")
+trainingSkill = 1
+StateToGo = 5
 restingPosition = NodePath("marker_anchor/Marker2D")
 animator = NodePath("marker_anchor/AnimationPlayer")
-trainingSkill = 1
 interactArea = NodePath("interactArea")
+
+[node name="interactArea" type="Area2D" parent="."]
+light_mask = 0
+z_index = -1
+position = Vector2(0, 5)
+collision_layer = 3
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_m2wui")
+Tag = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="interactArea"]
+position = Vector2(-1, 9.5)
+shape = SubResource("RectangleShape2D_shvgc")
+debug_color = Color(0.740182, 0.394256, 0.653542, 0.42)
 
 [node name="marker_anchor" type="Node2D" parent="."]
 position = Vector2(0, 15)
@@ -168,18 +184,3 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="collision"]
 position = Vector2(-0.5, -8)
 shape = SubResource("RectangleShape2D_m2wui")
-
-[node name="interactArea" type="Area2D" parent="."]
-light_mask = 0
-z_index = -1
-position = Vector2(0, 5)
-collision_layer = 3
-collision_mask = 0
-monitoring = false
-script = ExtResource("4_m2wui")
-Tag = 3
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="interactArea"]
-position = Vector2(-1, 9.5)
-shape = SubResource("RectangleShape2D_shvgc")
-debug_color = Color(0.740182, 0.394256, 0.653542, 0.42)

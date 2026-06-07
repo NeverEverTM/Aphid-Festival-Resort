@@ -40,8 +40,9 @@ public partial class MainMenu : Node2D
 		}
 
 		SpawnBunchaOfAphidsForTheFunnies();
-		DirectionForX = GlobalManager.RNG.Randf() > 0.5f;
-		DirectionForY = GlobalManager.RNG.Randf() > 0.5f;
+		RandomNumberGenerator _rng = new();
+		DirectionForX = _rng.Randf() > 0.5f;
+		DirectionForY = _rng.Randf() > 0.5f;
 		CameraManager.ForceCameraPosition(GlobalManager.Utils.GetRandomVector(-300, 300));
 
 		SoundManager.PlaySong("misc/title");
@@ -88,6 +89,8 @@ public partial class MainMenu : Node2D
 	}
 	public static async void LoadResort(string _room = "")
 	{
+		if (GlobalManager.IsBusy)
+			return;
 		if (string.IsNullOrEmpty(_room))
 			_room = "golden_resort";
 

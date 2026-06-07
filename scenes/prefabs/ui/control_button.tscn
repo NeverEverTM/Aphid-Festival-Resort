@@ -31,9 +31,9 @@ vertical_alignment = 1
 self_modulate = Color(0.690196, 0, 0.541176, 1)
 light_mask = 0
 layout_mode = 0
-offset_left = 343.0
+offset_left = 383.0
 offset_top = -5.0
-offset_right = 478.0
+offset_right = 518.0
 offset_bottom = 74.0
 
 [node name="action" type="RichTextLabel" parent="action_bg"]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 /// <summary>
@@ -28,6 +29,8 @@ public partial class ConfirmationPopup : CanvasLayer
 	[Export] private TextureProgressBar progress;
 	[Export] private Curve progressCurve;
 
+	private Dictionary<Control, Vector2> cached_positions = [];
+
 	public override void _Ready()
 	{
 		switch (confirmationType)
@@ -36,6 +39,7 @@ public partial class ConfirmationPopup : CanvasLayer
 				yes_button.Hide();
 				no_button.Hide();
 				confirmation_edit.PlaceholderText = Tr("confirmation_yes");
+				confirmation_edit.GrabFocus();
 				break;
 			case ConfirmationEnum.Standard:
 				progress.Show();
@@ -52,7 +56,8 @@ public partial class ConfirmationPopup : CanvasLayer
 
 		cancel_button.Pressed += Cancel;
 		confirmation_label.Text = displayText;
-		confirmation_edit.GrabFocus();
+		
+		confirmation_edit.TextChanged += () => TextTween(confirmation_edit);
 		// This is to prevent typing a key bind char if that was used to open the window
 		GetViewport().SetInputAsHandled();
 		player.Play(StringNames.OpenAnim);
@@ -83,7 +88,6 @@ public partial class ConfirmationPopup : CanvasLayer
 			GlobalManager.Instance.GetViewport().SetInputAsHandled();
 		}
 	}
-
 	public override void _Process(double delta)
 	{
 		if (confirmationType == ConfirmationEnum.Standard)
@@ -110,6 +114,17 @@ public partial class ConfirmationPopup : CanvasLayer
 		}
 	}
 
+	private void TextTween(Control _node)
+	{
+		if (!cached_positions.ContainsKey(_node))
+			cached_positions.Add(_node, _node.Position);
+		_node.Position = cached_positions[_node];
+		SoundManager.CreateSound("ui/key_type", false);
+
+		Tween _tween = _node.CreateTween();
+		_tween.TweenProperty(_node, "position", _node.Position + new Vector2(0,5), 0);
+		_tween.TweenProperty(_node, "position", _node.Position, 0.05f);
+	}
 	private void CheckConfirm()
 	{
 		if (confirmation_edit.Text == Tr("confirmation_yes"))

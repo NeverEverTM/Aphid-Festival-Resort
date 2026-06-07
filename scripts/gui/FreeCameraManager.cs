@@ -3,7 +3,6 @@ using Godot;
 /// <summary>
 /// In charge of the Free Camera mode in the resort
 /// </summary>
-/// TODO: Refactor this entire thing to be less of a monster, maybe ill divide it in modules
 public partial class FreeCameraManager : Control
 {
 	[Export] private AnimationPlayer animator;
@@ -104,7 +103,7 @@ public partial class FreeCameraManager : Control
 		}
 
 		if (@event.IsActionPressed(InputNames.ShowInfo) && is_focusing_aphids)
-			AphidInfo.Instance.SetTo(!AphidInfo.Instance.Enabled);
+			AphidInfoPanel.Instance.SetTo(!AphidInfoPanel.Instance.Enabled);
 
 		// changes focus mode
 		if (@event.IsActionPressed(InputNames.OpenInventory))
@@ -128,7 +127,7 @@ public partial class FreeCameraManager : Control
 		if (@event.IsActionPressed(InputNames.QuickAction1))
 			_ = CanvasManager.Menus.SetTo(BuildMenu.Menu);
 		else if (@event.IsActionPressed(InputNames.QuickAction2))
-			_ = CanvasManager.Menus.SetTo(FurnitureShop.Instance.Menu);
+			_ = CanvasManager.Menus.SetTo(FurnitureShop.Instance.GetMenuInstance());
 		else if (@event.IsActionPressed(InputNames.QuickAction3))
 			OnCameraButton();
 	}
@@ -171,15 +170,15 @@ public partial class FreeCameraManager : Control
 
 		CameraManager.Focus(ResortManager.Current.Aphids[focused_aphid_index]);
 		spectatorLabel.Text = $"{Tr("camera_spectating")}\n<| {CameraManager.FocusedAphid.Instance.Genes.Name} |>";
-		AphidInfo.Instance.SelectAphid(ResortManager.Current.Aphids[focused_aphid_index]);
-		AphidInfo.Instance.SetDisplayMode(AphidInfo.DisplayMode.PartiallyShown);
+		AphidInfoPanel.Instance.SelectAphid(ResortManager.Current.Aphids[focused_aphid_index]);
+		AphidInfoPanel.Instance.SetDisplayMode(AphidInfoPanel.DisplayMode.PartiallyShown);
 		SoundManager.CreateSound("ui/button_select");
 	}
 	public static void StopFocus()
 	{
 		Instance.is_focusing_aphids = false;
 		CameraManager.UnFocus();
-		AphidInfo.Instance.SetTo(false, false);
+		AphidInfoPanel.Instance.SetTo(false, false);
 		Instance.spectatorLabel.Hide();
 	}
 	
@@ -251,7 +250,7 @@ public partial class FreeCameraManager : Control
 		{
 			if (CameraManager.FocusedAphid != null)
 			{
-				AphidInfo.Instance.SetTo(false, true);
+				AphidInfoPanel.Instance.SetTo(false, true);
 				CameraManager.UnFocus();
 			}
 			else
@@ -336,7 +335,7 @@ public partial class FreeCameraManager : Control
 		else
 			Instance.animator.Play(_state ? StringNames.OpenAnim : StringNames.CloseAnim);
 
-		AphidInfo.Instance.SetTo(false, true);
+		AphidInfoPanel.Instance.SetTo(false, true);
 		Instance.is_camera_tab_open = false;
 		Instance.is_hud_visible = _state;
 	}

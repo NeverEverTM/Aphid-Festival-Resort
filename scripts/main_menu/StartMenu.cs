@@ -9,7 +9,7 @@ public partial class StartMenu : Control
 
 	[Export] private AnimationPlayer anim_player;
 	[Export] private RichTextLabel wheel_label, start_label;
-	[Export] private Control options_panel, controls_panel;
+	[Export] private MenuControl options_panel, controls_panel;
 	[Export] private AnimationPlayer credits_player;
 	[ExportGroup("Cosmetics")]
 	[Export] private TextureRect titleAphid, titleFestival;
@@ -67,8 +67,10 @@ public partial class StartMenu : Control
 		secretButton.Pressed += () =>
 		{
 			anim_player.Play("boing_festival");
+#if DEBUG
 			if (DebugConsole.IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt)
 				DebugConsole.LikeForRealsiesYouWantThisSinceYourGameMayGetFuckedUpBeyondRepair = true;
+#endif
 			SoundManager.CreateSound("aphid/boing");
 
 			if (isASecreeeeet < 7)
@@ -95,10 +97,15 @@ public partial class StartMenu : Control
 		itchioButton.Pressed += () =>
 			OS.ShellOpen("https://neverevertm.itch.io/aphid-festival-resort");
 	}
+    public override void _ExitTree()
+    {
+        Instance = null;
+    }
+
 	public override void _Ready()
 	{
-		CreateWheelAction(WheelCategories.Options, (options_panel as IMenuInstance).Create());
-		CreateWheelAction(WheelCategories.Controls, (controls_panel as IMenuInstance).Create());
+		CreateWheelAction(WheelCategories.Options, options_panel.GetMenuInstance());
+		CreateWheelAction(WheelCategories.Controls, controls_panel.GetMenuInstance());
 		CreateWheelAction(WheelCategories.Credits, credits_menu);
 		CreateWheelAction(WheelCategories.Exit, MainMenu.Instance.ExitGame);
 	}
@@ -228,7 +235,7 @@ public partial class StartMenu : Control
 		SetWheelText();
 
 		if (_setIndex)
-		wheel_index = wheel_actions.Keys.ToList().IndexOf(current_category);
+			wheel_index = wheel_actions.Keys.ToList().IndexOf(current_category);
 	}
 	public void SetWheelText() =>
 		wheel_label.Text = $"[center]<| [wave]{Tr("start_" + current_category.ToString().ToLower())}[/wave] |>[/center]";

@@ -91,8 +91,8 @@ public static class StringNames
     /// BBCode to display the corresponding icon in a richtextlabel.
     /// </summary>
     public const string BerryIcon = "[img height=50]res://sprites/ui/berries.tres[/img]",
-        StarIcon = "[img height=50]res://sprites/ui/star.tres[/img]",
-        EmptyStarIcon = "[img height=50]res://sprites/ui/empty_star.tres[/img]",
+        StarIcon = "[img height=50]res://sprites/icons/star.tres[/img]",
+        EmptyStarIcon = "[img height=50]res://sprites/icons/empty_star.tres[/img]",
         StrengthIcon = "[img height=50]res://sprites/icons/strength.tres[/img]",
         UnknownIcon = "[img height=50]res://sprites/icons/unknown.tres[/img]";
 }

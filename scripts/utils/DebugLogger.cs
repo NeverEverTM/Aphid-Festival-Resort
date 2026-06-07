@@ -12,7 +12,8 @@ public static class DebugLogger
 	/// <summary>
 	/// Determines how does the game handle a termination of process.
 	/// </summary>
-	public enum GameTermination {
+	public enum GameTermination
+	{
 		/// <summary>
 		/// Execute a custom function to correct yourself (the first argument in the object args)
 		/// </summary>
@@ -29,7 +30,7 @@ public static class DebugLogger
 		/// Inmediately terminates the whole game, losing all unsaved progress and runtime variables.
 		/// </summary>
 		Complete
-		}
+	}
 	public static LogPriorityMode LogMode { get; set; }
 	private static readonly string[] LOG_STARTERS = [
 		"[DEBUG]:",
@@ -54,15 +55,21 @@ public static class DebugLogger
 		switch (priority)
 		{
 			case LogPriority.Warning:
+#if DEBUG
 				DebugConsole.Print("[color=yellow]" + _message + "[/color]");
+#endif
 				GD.PushWarning(_message);
 				break;
 			case LogPriority.Error:
+#if DEBUG
 				DebugConsole.Print("[color=red]" + _message + "[/color]");
+#endif
 				GD.PushError(_message);
 				break;
 			default:
+#if DEBUG
 				DebugConsole.Print(_message);
+#endif
 				GD.Print(_message);
 				break;
 		}

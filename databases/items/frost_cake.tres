@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://mmg8ofdhf1ln"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_dr2uy"]
+
+[resource]
+script = ExtResource("1_dr2uy")
+ID = "frost_cake"
+Type = 2
+Cost = 8
+Category = 1
+ShopOrderPriority = -1

@@ -9,7 +9,7 @@ public static class ControlsManager
 	internal static Godot.Collections.Dictionary<string, InputEvent> Binds = [];
 	internal readonly static SaveSystem.SaveModule<Dictionary<string, string>> SaveModule = new("controls", new ControlsDataModule())
 	{
-		RelativePath = SaveSystem.CONFIG_DIR,
+		RootPath = SaveSystem.CONFIG_DIR,
 		Extension = SaveSystem.CONFIGFILE_EXTENSION,
 		DisposeMode = SaveSystem.SaveMetadata.DisposeMethod.NotApplicable
 	};

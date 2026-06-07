@@ -5,37 +5,36 @@
 
 [node name="camera" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="camera_label" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 63.0
-offset_top = 76.0
-offset_right = 1011.0
-offset_bottom = 165.0
-theme_override_font_sizes/normal_font_size = 35
+offset_left = -461.0
+offset_top = -228.0
+offset_right = 487.0
+offset_bottom = -139.0
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
+text = "help_camera_0"
 scroll_active = false
 metadata/controls = PackedStringArray("change_camera")
 
 [node name="camera_label2" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 63.0
-offset_top = 196.0
-offset_right = 1011.0
-offset_bottom = 416.0
+offset_left = -461.0
+offset_top = -100.0
+offset_right = 487.0
+offset_bottom = 114.0
+theme_type_variation = &"RTL_White"
 theme_override_font_sizes/normal_font_size = 35
 bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
+text = "help_camera_1"
 scroll_active = false
 metadata/controls = PackedStringArray("change_camera")
 
@@ -43,10 +42,10 @@ metadata/controls = PackedStringArray("change_camera")
 light_mask = 0
 material = ExtResource("1_1lcfc")
 layout_mode = 0
-offset_left = 162.0
-offset_top = 416.0
-offset_right = 915.0
-offset_bottom = 551.0
+offset_left = -386.0
+offset_top = 132.0
+offset_right = 367.0
+offset_bottom = 231.0
 texture = ExtResource("3_ylcut")
 expand_mode = 1
 stretch_mode = 5

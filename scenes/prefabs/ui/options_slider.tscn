@@ -32,9 +32,9 @@ scrollable = false
 [node name="label" type="Label" parent="."]
 light_mask = 0
 layout_mode = 0
-offset_left = 75.0
+offset_left = 15.0
 offset_top = 11.0
-offset_right = 287.0
+offset_right = 356.0
 offset_bottom = 59.0
 text = "options_master"
 horizontal_alignment = 1

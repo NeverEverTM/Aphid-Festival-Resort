@@ -8,4 +8,4 @@ ID = "mushroom_gummies"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 32
+ShopOrderPriority = -1

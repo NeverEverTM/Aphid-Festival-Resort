@@ -1,7 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://vrlyu0hgpxx8"]
+[gd_scene load_steps=6 format=3 uid="uid://vrlyu0hgpxx8"]
 
 [ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="1_ysnvk"]
 [ext_resource type="Texture2D" uid="uid://iw4rtrdoh3a6" path="res://sprites/help_examples/job_board.png" id="2_ysnvk"]
+[ext_resource type="Shader" uid="uid://bhxvuy8s0oq6t" path="res://scripts/shaders/pulse.gdshader" id="3_scfkn"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="4_blx6q"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3b26g"]
+shader = ExtResource("3_scfkn")
+shader_parameter/speed = 4.0
+shader_parameter/flashing_color = Color(0.9998917, 0.37046948, 0.34200323, 1)
 
 [node name="jobs" type="Control"]
 layout_mode = 3
@@ -15,39 +22,50 @@ grow_vertical = 2
 
 [node name="job_label_0" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = -458.0
-offset_top = -231.0
-offset_right = 530.0
-offset_bottom = 84.0
-theme_override_font_sizes/normal_font_size = 35
+offset_left = -487.0
+offset_top = -248.0
+offset_right = 501.0
+offset_bottom = 67.0
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
-text = "First, we need an aphid, and if you didn't know, they hatch from eggs!
-Press {open_inventory} to open your inventory, and click on one of the eggs to hold it.
-Now wit it in your hands, press {pickup} to drop it, [wave]and[/wave] to pick it up back again if needed."
+text = "help_jobs_0"
 scroll_active = false
 metadata/controls = PackedStringArray("open_inventory", "pickup")
-
-[node name="job_label_1" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_top = 84.0
-offset_right = 507.0
-offset_bottom = 255.0
-theme_override_font_sizes/normal_font_size = 35
-bbcode_enabled = true
-text = "Tip: You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img]
- symbol and clicking on any item you want to sell."
-scroll_active = false
-horizontal_alignment = 2
-metadata/controls = PackedStringArray("pull")
 
 [node name="job_board_img" type="TextureRect" parent="."]
 light_mask = 0
 material = ExtResource("1_ysnvk")
 layout_mode = 0
-offset_left = -407.0
-offset_top = 29.0
-offset_right = -34.0
-offset_bottom = 234.0
+offset_left = 125.0
+offset_top = 32.0
+offset_right = 474.0
+offset_bottom = 229.0
 texture = ExtResource("2_ysnvk")
 expand_mode = 1
 stretch_mode = 4
+
+[node name="image" type="NinePatchRect" parent="."]
+self_modulate = Color(0.8440609, 0, 0.15336627, 1)
+material = SubResource("ShaderMaterial_3b26g")
+layout_mode = 0
+offset_left = -487.0
+offset_top = 95.0
+offset_right = 75.0
+offset_bottom = 229.0
+texture = ExtResource("4_blx6q")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="job_label_1" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -469.0
+offset_top = 113.0
+offset_right = 61.0
+offset_bottom = 229.0
+theme_type_variation = &"RTL_SWhite"
+bbcode_enabled = true
+text = "help_jobs_1"
+scroll_active = false
+metadata/controls = PackedStringArray("pull")

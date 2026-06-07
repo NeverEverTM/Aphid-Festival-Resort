@@ -9,60 +9,87 @@ public partial class JobMenu : Control
     public static JobMenu Instance { get; private set; }
     private MenuInstance menu;
 
+    [ExportGroup("Essentials")]
     [Export] private InteractableArea2D interactArea;
     [Export] private AnimationPlayer animation_player;
     [Export] private GridContainer slot_container;
     [Export] private PackedScene slot_prefab;
     [Export] private ShaderMaterial job_completion_material, job_current_material;
     [ExportGroup("Information Display")]
-    [Export] private Control aphid_node, skill_bar_bg, request_background_frame;
+    [Export] private Control aphid_node, skill_bar_bg, request_background_frame, information_node;
     [Export] private Label description_label, reward_label, timer_label;
+    [Export] private RichTextLabel information_label;
     [Export] private Button assign_button;
     [Export] private TextureRect request_background;
     [Export] private TextureRect[] job_skills;
-    [ExportGroup("Slot Customization")]
+    [ExportCategory("Customization")]
     [Export] private Color[] difficulty_colors;
-    [Export] private int[] difficulty_rand_ranges;
-    [Export] private int[] difficulty_range_mins;
 
-    public enum JobDifficulty { Easy, Medium, Hard, Expert, Master }
     private JobRequest current_request = new();
     private AphidInstance current_aphid;
     private bool is_displaying_aphids = false;
     private bool is_current_done;
-    private double last_time_tick;
-
-    private const int BASE_SKILL_GAIN = 5;
-    private const int MIN_HUNGER = 20;
-    private const int MIN_THIRST = 20;
-    private const int MAX_TIREDNESS = 80;
+    private double last_unix_time;
 
     // Save Data
-    internal static Savefile Data { get; set; } = new();
+    internal static Savefile Data { get; set; }
     internal SaveSystem.SaveModule<Savefile> SaveModule;
 
     // Inmutables
+    private const int BASE_SKILL_GAIN = 5,
+        LOSS_HUNGER = 20, LOSS_THIRST = 20, LOSS_REST = 20,
+        MIN_HUNGER = 20, MIN_THIRST = 20, MIN_REST = 15;
+    protected record JobDifficultyData
+    {
+        /// <summary>
+        /// The variance of level depending on difficulty, a range going from -LevelRange to LevelRange, capped above MinimumLevel and below MaximumLevel.
+        /// </summary>
+        public int LevelRange;
+        /// <summary>
+        /// The minimum level required for skills, this is used as a base from which then jobs add a relative offset to have a greater and higher range.
+        /// </summary>
+        public int MinimumLevel;
+        /// <summary>
+        /// The maxmium level required for skills, caps skill level along MinimumLevel
+        /// </summary>
+        public int MaximumLevel;
+        /// <summary>
+        /// The currently max amount instances of requests that are allowed to exist for this difficulty. Both Active and Available count towards the quota.
+        /// </summary>
+        public int MaxQuotaAmount;
+    }
+    private readonly Dictionary<JobData.JobDifficulty, JobDifficultyData> JOB_DIFFICULTY_SETTINGS = new()
+    {
+        { JobData.JobDifficulty.Easy, new() { LevelRange = 2, MinimumLevel = 1, MaximumLevel = 6, MaxQuotaAmount = 3 } },
+        { JobData.JobDifficulty.Medium, new() { LevelRange = 3, MinimumLevel = 3, MaximumLevel = 12, MaxQuotaAmount = 2 } },
+        { JobData.JobDifficulty.Hard, new() { LevelRange = 5, MinimumLevel = 10, MaximumLevel = 25, MaxQuotaAmount = 1 } },
+        { JobData.JobDifficulty.Expert, new() { LevelRange = 10, MinimumLevel = 20, MaximumLevel = 50, MaxQuotaAmount = 0 } },
+        { JobData.JobDifficulty.Master, new() { LevelRange = 20, MinimumLevel = 50, MaximumLevel = 100, MaxQuotaAmount = 0 }  },
+    };
+    public void AddRequestAmount(string _source, Dictionary<JobData.JobDifficulty, int> _amounts)
+    {
+        if (request_amount_buffs.Contains(_source))
+            return;
+
+        request_amount_buffs.Add(_source);
+        foreach (var _pair in _amounts)
+            JOB_DIFFICULTY_SETTINGS[_pair.Key].MaxQuotaAmount += _pair.Value;
+    }
+    private readonly List<string> request_amount_buffs = [];
     private TextureRect[] job_skills_icons = new TextureRect[4];
     private Label[] job_skills_labels = new Label[4];
     private Color timer_default_color;
 
     public class Savefile
     {
-        public List<JobRequest> Current { get; set; } = [];
+        /// <summary>
+        /// Requests currently active
+        /// </summary>
+        public List<JobRequest> Active { get; set; } = [];
+        /// <summary>
+        /// Requests available to select from
+        /// </summary>
         public List<JobRequest> Available { get; set; } = [];
-        [JsonIgnore] public Dictionary<JobDifficulty, int> MaxAmounts;
-
-        public Savefile()
-        {
-            MaxAmounts = new()
-            {
-                { JobDifficulty.Easy, 3 },
-                { JobDifficulty.Medium, 2 },
-                { JobDifficulty.Hard, 1 },
-                { JobDifficulty.Expert, 0 },
-                { JobDifficulty.Master, 0 },
-            };
-        }
     }
     public class JobDataModule : SaveSystem.IDataModule<Savefile>
     {
@@ -73,39 +100,32 @@ public partial class JobMenu : Control
             Data = _data;
 
             for (int i = 0; i < Data.Available.Count; i++)
-                Data.Available[i].Data = FetchJob(Data.Available[i].Difficulty, Data.Available[i].Index);
+                Data.Available[i].Data = GlobalManager.GetJob(Data.Available[i].ID);
 
-            for (int i = 0; i < Data.Current.Count; i++)
+            for (int i = 0; i < Data.Active.Count; i++)
             {
-                Data.Current[i].IsCurrent = true;
-                Data.Current[i].Data = FetchJob(Data.Current[i].Difficulty, Data.Current[i].Index);
-                Data.Current[i].AccountForPassedTime();
+                Data.Active[i].IsActive = true;
+                Data.Active[i].Data = GlobalManager.GetJob(Data.Active[i].ID);
+                Data.Active[i].AccountForPassedTime();
             }
 
-            Instance.FillRequestQuota(JobDifficulty.Easy);
-            Instance.FillRequestQuota(JobDifficulty.Medium);
-            Instance.FillRequestQuota(JobDifficulty.Hard);
-            Instance.FillRequestQuota(JobDifficulty.Expert);
-            Instance.FillRequestQuota(JobDifficulty.Master);
+            Instance.FillRequestQuota();
         }
         public Savefile Get()
         {
-            for (int i = 0; i < Data.Current.Count; i++)
-                Data.Current[i].LastTimeLoaded = GameManager.Data.Playtime;
+            for (int i = 0; i < Data.Active.Count; i++)
+                Data.Active[i].LastTimeLoaded = GameManager.Data.Playtime;
 
             return Data;
         }
 
-        public void Dispose()
-        {
-            Data = new();
-        }
+        public void Dispose() => Data = null;
     }
 
     public override void _EnterTree()
     {
         Instance = this;
-        last_time_tick = Time.GetUnixTimeFromSystem();
+        last_unix_time = Time.GetUnixTimeFromSystem();
 
         SaveModule = new("jobs", new JobDataModule(), 500)
         {
@@ -117,7 +137,7 @@ public partial class JobMenu : Control
         Open: (_) =>
         {
             CreateRequestGrid();
-            DisplayRequest(Data.Current.Count > 0 ? Data.Current[0] : Data.Available[0]);
+            DisplayRequest(Data.Active.Count > 0 ? Data.Active[0] : Data.Available[0]);
         },
         TryClose: (_) =>
         {
@@ -126,7 +146,7 @@ public partial class JobMenu : Control
             else
             {
                 CreateRequestGrid();
-                DisplayRequest(Data.Current.Count > 0 ? Data.Current[0] : Data.Available[0]);
+                DisplayRequest(Data.Active.Count > 0 ? Data.Active[0] : Data.Available[0]);
                 SoundManager.CreateSound("ui/button_switch");
                 return false;
             }
@@ -147,20 +167,23 @@ public partial class JobMenu : Control
     {
         Instance = null;
     }
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double delta)
     {
+        if (!SaveModule.Loaded || GlobalManager.IsBusy)
+            return;
         // ticks down time left while active
-        double _tick = Time.GetUnixTimeFromSystem() - last_time_tick;
-        for (int i = 0; i < Data.Current.Count; i++)
+        double _tick = Time.GetUnixTimeFromSystem() - last_unix_time;
+        last_unix_time = Time.GetUnixTimeFromSystem();
+
+        for (int i = 0; i < Data.Active.Count; i++)
         {
-            if (Data.Current[i].IsDone)
+            if (Data.Active[i].IsDone)
                 continue;
 
-            Data.Current[i].TimeLeft -= _tick;
-            if (Data.Current[i].TimeLeft <= 0)
-                Data.Current[i].IsDone = true;
+            Data.Active[i].TimeLeft -= _tick;
+            if (Data.Active[i].TimeLeft <= 0)
+                Data.Active[i].IsDone = true;
         }
-        last_time_tick = _tick;
 
         // show information for the currently selected slot
         if (current_request != null && IsInstanceValid(current_request.Slot))
@@ -168,7 +191,7 @@ public partial class JobMenu : Control
             if (!current_request.IsDone)
                 timer_label.Text = current_request.GetFormattedTimeLeft();
             else if (!is_current_done)
-                ShowAssignAsFinished(current_request);
+                SetCurrentAsFinished();
         }
     }
     public override void _Notification(int what)
@@ -177,7 +200,7 @@ public partial class JobMenu : Control
             return;
 
         // updates job times back to present after resuming from pausing
-        last_time_tick = Time.GetUnixTimeFromSystem();
+        last_unix_time = Time.GetUnixTimeFromSystem();
     }
 
     public void SetMenu() =>
@@ -196,7 +219,7 @@ public partial class JobMenu : Control
 
             // too tired to do
             if (current_aphid.Status.Hunger < MIN_HUNGER || current_aphid.Status.Thirst < MIN_THIRST ||
-                current_aphid.Status.Tiredness > MAX_TIREDNESS)
+                current_aphid.Status.Rest < MIN_REST)
             {
                 SoundManager.CreateSound("aphid/hurt");
                 return;
@@ -208,7 +231,7 @@ public partial class JobMenu : Control
             SoundManager.CreateSound("aphid/skill_gain");
         }
         // begin selecting aphids, unless you clicked on a finished request
-        else if (!current_request.IsCurrent)
+        else if (!current_request.IsActive)
         {
             if (!CreateAphidGrid())  // there were no aphids to render
             {
@@ -224,7 +247,7 @@ public partial class JobMenu : Control
         {
             FulfillRequest(current_request);
             // display next request, preferably, a current one.
-            DisplayRequest(Data.Current.Count > 0 ? Data.Current[0] : Data.Available[0]);
+            DisplayRequest(Data.Active.Count > 0 ? Data.Active[0] : Data.Available[0]);
         }
     }
 
@@ -245,7 +268,7 @@ public partial class JobMenu : Control
 
             // mark as tired
             if (current_aphid.Status.Hunger < MIN_HUNGER || current_aphid.Status.Thirst < MIN_THIRST ||
-                current_aphid.Status.Tiredness > MAX_TIREDNESS)
+                current_aphid.Status.Rest < MIN_REST)
                 _slot.SelfModulate = new Color("darkred");
 
             _wasGenerated = true;
@@ -256,10 +279,10 @@ public partial class JobMenu : Control
     public void CreateRequestGrid(bool _clearCurrentRequest = true)
     {
         ClearInterface(_clearCurrentRequest);
-        for (int i = 0; i < Data.Current.Count; i++)
-            slot_container.AddChild(CreateRequestSlot(Data.Current[i]));
+        for (int i = 0; i < Data.Active.Count; i++)
+            slot_container.AddChild(CreateRequestSlot(Data.Active[i]));
 
-        Data.Available = [.. Data.Available.OrderBy((j) => j.Difficulty)];
+        Data.Available = [.. Data.Available.OrderBy((j) => j.Data.Difficulty)];
         for (int i = 0; i < Data.Available.Count; i++)
             slot_container.AddChild(CreateRequestSlot(Data.Available[i]));
         is_displaying_aphids = false;
@@ -276,14 +299,17 @@ public partial class JobMenu : Control
         if (_clearRequest)
             current_request = null;
     }
-    private void ShowAssignAsFinished(JobRequest _request)
+    private void SetCurrentAsFinished()
     {
         assign_button.Show();
+        assign_button.Text = "lobby_job_finish";
+
+        information_node.Hide();
+
         timer_label.SelfModulate = new Color("gold");
         timer_label.Text = "lobby_job_timerdone";
-        assign_button.Text = "lobby_job_finish";
-        _request.Slot.GetChild<Control>(1).Material = job_completion_material;
-        is_current_done = true;
+
+        current_request.Slot.GetChild<Control>(1).Material = job_completion_material;
     }
     /// <summary>
     /// Display the given aphid on the top of the information board.
@@ -299,24 +325,6 @@ public partial class JobMenu : Control
         aphid_node.AddChild(_node);
     }
 
-    /// <summary>
-    /// Generate a quota of jobs according to the number of current requests available and ongoing.
-    /// </summary>
-    /// <param name="_difficulty"></param>
-    private void FillRequestQuota(JobDifficulty _difficulty)
-    {
-        int _maxAmount = Data.MaxAmounts[_difficulty];
-
-        // we count both available and ongoing requests for the total
-        for (int _count = Data.Available.Count((j) => j.Difficulty == _difficulty)
-                    + Data.Current.Count((j) => j.Difficulty == _difficulty);
-                _count < _maxAmount; _count++)
-        {
-            JobRequest _request = GenerateRandomRequest(_difficulty);
-            Data.Available.Add(_request);
-        }
-        CreateRequestGrid();
-    }
     private GlowButton CreateRequestSlot(JobRequest _request)
     {
         GlowButton _slot = slot_prefab.Instantiate() as GlowButton;
@@ -324,10 +332,10 @@ public partial class JobMenu : Control
         TextureRect _slotBackground = _slot.GetChild<TextureRect>(0);
         _request.Slot = _slot;
         _slotBackground.Texture = _request.Data.Background;
-        _slotFrame.SelfModulate = difficulty_colors[(int)_request.Difficulty];
+        _slotFrame.SelfModulate = difficulty_colors[(int)_request.Data.Difficulty];
 
         // set custom values if is a ongoing request
-        if (_request.IsCurrent)
+        if (_request.IsActive)
         {
             _slotFrame.GetChild(0).QueueFree();
             GlowButton _aphidSlot = CanvasManager.CreateAphidSlot(_request.AssignedAphid, true);
@@ -335,7 +343,6 @@ public partial class JobMenu : Control
             _aphidSlot.SelfModulate = new(0);
             _aphidSlot.Position = new(10, 16);
             _slotFrame.AddChild(_aphidSlot);
-            _slotBackground.SelfModulate = new Color(0.4f, 0.4f, 0.4f);
             if (_request.IsDone)
                 _slotFrame.Material = job_completion_material;
             else
@@ -347,28 +354,56 @@ public partial class JobMenu : Control
         {
             TextureRect _icon = _slot.GetNode("skill_icons").GetChild<TextureRect>((int)_pair.Key);
             _icon.Visible = true;
-            _icon.SelfModulate = difficulty_colors[(int)_request.Difficulty];
+            _icon.SelfModulate = difficulty_colors[(int)_request.Data.Difficulty];
             _icon.GetChild<TextureRect>(0).Texture = GlobalManager.GetIcon(_pair.Key.ToString().ToLower());
         }
 
         _slot.Pressed += () => DisplayRequest(_request);
         return _slot;
     }
-    private JobRequest GenerateRandomRequest(JobDifficulty _difficulty)
-    {
-        JobData _job = FetchRandomJob(_difficulty, out int _id);
 
-        // attempt to fetch a data pack that doesnt exist in the board already
-        while (Data.Available.Exists(r => r.Difficulty == _difficulty && r.Index == _id))
-            _job = FetchRandomJob(_difficulty, out _id);
+    // MARK: Job Generation
+    /// <summary>
+    /// Generates all quotas of jobs according to the number of current active and available requests
+    /// </summary>
+    public void FillRequestQuota()
+    {
+        FillRequestQuota(JobData.JobDifficulty.Easy);
+        FillRequestQuota(JobData.JobDifficulty.Medium);
+        FillRequestQuota(JobData.JobDifficulty.Hard);
+        FillRequestQuota(JobData.JobDifficulty.Expert);
+        FillRequestQuota(JobData.JobDifficulty.Master);
+    }
+    /// <summary>
+    /// Generates a quota of jobs according to the number of current active and available requests
+    /// </summary>
+    /// <param name="_difficulty">The specific difficulty to fill in</param>
+    private void FillRequestQuota(JobData.JobDifficulty _difficulty)
+    {
+        int _maxAmount = JOB_DIFFICULTY_SETTINGS[_difficulty].MaxQuotaAmount;
+        List<string> _excludeList = [];
+        Data.Available.ForEach((r) => _excludeList.Add(r.ID));
+        Data.Active.ForEach((r) => _excludeList.Add(r.ID));
+
+        // we count both available and ongoing requests for the total
+        for (int _count = Data.Available.Count((j) => j.Data.Difficulty == _difficulty) + Data.Active.Count((j) => j.Data.Difficulty == _difficulty);
+                _count < _maxAmount; _count++)
+        {
+            JobRequest _request = GenerateRandomRequest(_difficulty, _excludeList);
+            _excludeList.Add(_request.Data.ID);
+            Data.Available.Add(_request);
+        }
+    }
+    private JobRequest GenerateRandomRequest(JobData.JobDifficulty _difficulty, List<string> _excludeList)
+    {
+        JobData _job = GlobalManager.GetRandomJob(_difficulty, _excludeList);
 
         JobRequest _request = new()
         {
-            Index = _id,
+            ID = _job.ID,
             Skills = new string[_job.Skills.Count],
             MinimumLevels = new int[_job.Skills.Count],
             TimeLeft = _job.BaseTime,
-            Difficulty = _difficulty,
             ChanceToSucceed = 1,
             Data = _job
         };
@@ -378,36 +413,20 @@ public partial class JobMenu : Control
         foreach (var _pair in _job.Skills)
         {
             // use different ranges depdending on difficulty range
-            _request.MinimumLevels[i] = Math.Clamp(
-                GlobalManager.RNG.RandiRange(_pair.Value - difficulty_rand_ranges[(int)_request.Difficulty],
-                    _pair.Value + difficulty_rand_ranges[(int)_request.Difficulty]), difficulty_range_mins[(int)_request.Difficulty], 100);
-            string _value = AphidData.SkillNames[(int)_pair.Key];
-            _request.Skills[i] = _value;
+            int _range = JOB_DIFFICULTY_SETTINGS[_request.Data.Difficulty].LevelRange,
+                _minLevel = JOB_DIFFICULTY_SETTINGS[_request.Data.Difficulty].MinimumLevel,
+                _maxLevel = JOB_DIFFICULTY_SETTINGS[_request.Data.Difficulty].MaximumLevel;
+
+            _request.MinimumLevels[i] = _minLevel + GlobalManager.RNG.RandiRange(-_range, _range);
+            _request.MinimumLevels[i] = Math.Clamp(_request.MinimumLevels[i], _minLevel, _maxLevel);
+            _request.Skills[i] = AphidData.SkillNames[(int)_pair.Key];
             i++;
         }
 
         return _request;
     }
-    private static JobData FetchRandomJob(JobDifficulty _difficulty, out int _id)
-    {
-        // access the difficulty folder
-        string _difficultyName = _difficulty.ToString().ToLower();
-        string _path = GlobalManager.ABSOLUTE_JOBS_DB_PATH + _difficultyName + "/";
-        // get a random file from that folder
-        int _count = DirAccess.GetFilesAt(_path).Length;
-        _id = GlobalManager.RNG.RandiRange(0, _count - 1);
-
-        return ResourceLoader.Load<JobData>(_path + $"job_{_id}.tres");
-    }
-    private static JobData FetchJob(JobDifficulty _difficulty, int _id)
-    {
-        // access the difficulty folder
-        string _difficultyName = _difficulty.ToString().ToLower();
-        string _path = GlobalManager.ABSOLUTE_JOBS_DB_PATH + _difficultyName + "/";
-
-        return ResourceLoader.Load<JobData>(_path + $"job_{_id}.tres");
-    }
-
+    
+    // MARK: Job Fullfilment
     /// <summary>
     /// Automatically creates a tracked job with the current aphid and request given.
     /// </summary>
@@ -418,98 +437,84 @@ public partial class JobMenu : Control
 
         Data.Available.Remove(current_request);
         current_request.AssignedAphid = current_aphid.GUID;
-        current_request.IsCurrent = true;
-        current_aphid.Status.Mode = AphidData.EntityStatusType.Busy;
+        current_request.IsActive = true;
+        current_aphid.EnterMode(AphidData.EntityStatusType.Busy);
 
-        Data.Current.Add(current_request);
+        Data.Active.Add(current_request);
     }
     private void FulfillRequest(JobRequest _request)
     {
-        if (Data.Current.Remove(_request))
+        if (Data.Active.Remove(_request))
         {
             AphidInstance _aphid = GameManager.Aphids[_request.AssignedAphid];
-            _aphid.Status.Mode = AphidData.EntityStatusType.Passive;
-            _aphid.AddHunger(-20);
-            _aphid.AddThirst(-20);
-            _aphid.AddTiredness(-20);
+            _aphid.EnterMode(AphidData.EntityStatusType.Passive);
+            _aphid.AddHunger(-LOSS_HUNGER);
+            _aphid.AddThirst(LOSS_THIRST);
+            _aphid.AddRest(-LOSS_REST);
 
             _request.Fulfill();
             _request.Slot.QueueFree();
-            FillRequestQuota(_request.Difficulty);
+            FillRequestQuota(_request.Data.Difficulty);
+            CreateRequestGrid();
         }
     }
     private void DisplayRequest(JobRequest _request)
     {
-        is_current_done = false;
-        // sets all label texts
-        if (_request.IsCurrent)
+        current_request = _request;
+        is_current_done = current_request.IsDone;
+        SoundManager.CreateSound("ui/button_switch");
+
+        // sets and updates all UI elements
+        if (current_request.IsActive)
         {
-            // alternatively, if this is the current request and its done, then complete it
-            if (current_request != null && _request.AssignedAphid == current_request.AssignedAphid && _request.IsDone)
-            {
-                FulfillRequest(_request);
-                DisplayRequest(Data.Current.Count > 0 ? Data.Current[0] : Data.Available[0]);
-                return;
-            }
+            information_label.Text = $"{string.Format(Tr("lobby_job_active"), GameManager.Aphids[current_request.AssignedAphid].Genes.Name)}\n"
+                    + $"[color=red]{Tr("lobby_job_successchance")}:[/color] {(int)(current_request.ChanceToSucceed * 100)}%";
+            ShowAphidInTop(current_request.AssignedAphid);
 
             // mark it as done if is finised, otherwise, keep default look
-            if (_request.IsDone)
-                ShowAssignAsFinished(_request);
+            if (current_request.IsDone)
+                SetCurrentAsFinished();
             else
             {
+                information_node.Show();
                 assign_button.Hide();
-                timer_label.SelfModulate = new Color("coral");
             }
-
-            string[] _list = [string.Format(Tr("lobby_job_active"), GameManager.Aphids[_request.AssignedAphid].Genes.Name),
-                $"{Tr("lobby_job_successchance")}: {(int)(_request.ChanceToSucceed * 100)}%"];
-            description_label.Text = string.Join("\n", _list);
-            ShowAphidInTop(_request.AssignedAphid);
         }
         else
         {
-            timer_label.SelfModulate = timer_default_color;
-            timer_label.Text = _request.GetFormattedTimeLeft();
-            assign_button.Text = "lobby_job_select";
-            description_label.Text = Tr($"job_{_request.Difficulty.ToString().ToLower()}_{_request.Index}");
-            assign_button.Show();
             if (aphid_node.GetChildCount() > 0)
                 aphid_node.GetChild(0).QueueFree();
+
+            timer_label.SelfModulate = timer_default_color;
+            timer_label.Text = current_request.GetFormattedTimeLeft();
+
+            information_node.Hide();
+
+            assign_button.Text = "lobby_job_select";
+            assign_button.Show();
         }
 
-        skill_bar_bg.SelfModulate = request_background_frame.SelfModulate = difficulty_colors[(int)_request.Difficulty];
-        request_background.Texture = _request.Data.Background;
-        reward_label.Text = _request.Data.BaseReward.ToString("000");
+        description_label.Text = Tr(current_request.ID);
+        skill_bar_bg.SelfModulate = request_background_frame.SelfModulate = difficulty_colors[(int)current_request.Data.Difficulty];
+        request_background.Texture = current_request.Data.Background;
+        reward_label.Text = current_request.Data.BaseReward.ToString("000");
 
         // display skill levels and icons
         for (int i = 0; i < job_skills.Length; i++)
         {
-            if (_request.Skills.Length <= i)
+            if (current_request.Skills.Length <= i)
             {
                 job_skills[i].Visible = false;
                 continue;
             }
-            job_skills_icons[i].Texture = GlobalManager.GetIcon(_request.Skills[i]);
-            job_skills_icons[i].GetParent<Control>().SelfModulate = difficulty_colors[(int)_request.Difficulty];
-            job_skills_labels[i].Text = _request.MinimumLevels[i].ToString();
+            job_skills_icons[i].Texture = GlobalManager.GetIcon(current_request.Skills[i]);
+            job_skills_icons[i].GetParent<Control>().SelfModulate = difficulty_colors[(int)current_request.Data.Difficulty];
+            job_skills_labels[i].Text = current_request.MinimumLevels[i].ToString();
             job_skills_labels[i].SelfModulate = new Color("white");
             job_skills[i].Visible = true;
         }
 
-        // set request
-        current_request = _request;
-        SoundManager.CreateSound("ui/button_switch");
-
-        // tween slot container
-        if (_request.Slot.Rotation != 0)
-            return;
-
-        var _tween = _request.Slot.CreateTween();
-        _tween.SetTrans(Tween.TransitionType.Spring);
-        _tween.TweenProperty(_request.Slot, "rotation", -0.1, 0.2).FromCurrent();
-        _tween.TweenProperty(_request.Slot, "rotation", 0.05, 0.1).FromCurrent();
-        _tween.TweenProperty(_request.Slot, "rotation", 0, 0.1).FromCurrent();
-        _tween.Play();
+        TweenRequestSlot(current_request.Slot);
     }
     private void DisplayAphid(Guid _key)
     {
@@ -555,26 +560,42 @@ public partial class JobMenu : Control
         }
     }
 
+    private void TweenRequestSlot(Control _slot)
+    {
+        if (current_request.Slot.Rotation != 0)
+            return;
+
+        var _tween = _slot.CreateTween();
+        _tween.SetTrans(Tween.TransitionType.Spring);
+        _tween.TweenProperty(_slot, "rotation", -0.1, 0.2).FromCurrent();
+        _tween.TweenProperty(_slot, "rotation", 0.05, 0.1).FromCurrent();
+        _tween.TweenProperty(_slot, "rotation", 0, 0.1).FromCurrent();
+        _tween.Play();
+    }
+
+    /// <summary>
+    /// Data instance that stores jobs for savefile serialization
+    /// </summary>
     public class JobRequest
     {
         // Savefile variables, saved per taken request
-        public int Index { get; set; }
+        public string ID { get; set; }
         public string[] Skills { get; set; }
         public int[] MinimumLevels { get; set; }
-        public JobDifficulty Difficulty { get; set; }
-        public Guid AssignedAphid { get; set; }
-        public float ChanceToSucceed { get; set; }
-        public double TimeLeft { get; set; }
+
         /// <summary>
-        /// Last playtime registered for this request, do not uses real time, instead is based on played time.
+        /// Last playtime registered for this request, do not uses real time, instead is based on playtime
         /// </summary>
         public double LastTimeLoaded { get; set; }
         public bool IsDone { get; set; }
+        public Guid AssignedAphid { get; set; }
+        public float ChanceToSucceed { get; set; }
+        public double TimeLeft { get; set; }
 
         // Runtime variables, these are not serialized on save, and are reassigned on startup
         [JsonIgnore] public JobData Data;
         [JsonIgnore] public Control Slot;
-        [JsonIgnore] public bool IsCurrent;
+        [JsonIgnore] public bool IsActive;
 
         public void AccountForPassedTime()
         {
@@ -596,7 +617,7 @@ public partial class JobMenu : Control
 
             if (_rollForInitiative <= ChanceToSucceed)
             {
-                Player.AddCurrency(Data.BaseReward);
+                Player.AddCurrency(Data.BaseReward, Player.CurrencySource.JobGain);
                 SoundManager.CreateSound("ui/kitchen_success");
             }
             else

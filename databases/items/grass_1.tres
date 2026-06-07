@@ -6,7 +6,7 @@
 script = ExtResource("1_npukm")
 ID = "grass_1"
 Type = 1
-Cost = 2
+Cost = 6
 Category = 3
 Shop = 2
-ShopOrderPriority = 50
+ShopOrderPriority = 6

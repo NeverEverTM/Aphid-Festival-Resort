@@ -92,11 +92,29 @@ public partial class CanvasManager : CanvasLayer
 		// events
 		SceneManager.AddEventListener((_) => UpdateCurrency(), SceneManager.EventEnum.OnPostLoad);
 		RoomInstance.Instance.AddEventListener(StartWeatherPopup, RoomInstance.TimeEvents.OnHourChange);
+		Menus.AddEventListener(OnPreSwitch, MenuHandler.MenuEvents.OnPreSwitch);
+		Menus.AddEventListener(OnPostSwitch, MenuHandler.MenuEvents.OnPostSwitch);
 	}
 	public override void _ExitTree()
 	{
 		Menus = new();
 		Instance = null;
+	}
+	public void OnPreSwitch(MenuHandler.MenuArgs _args)
+	{
+		if (_args.Current?.Name == "pause" || _args.Next?.Name == "pause")
+			return;
+
+		if (_args.IsActive)
+			SetHUDTo(false);
+	}
+	public void OnPostSwitch(MenuHandler.MenuArgs _args)
+	{
+		if (_args.Current?.Name == "pause" || _args.Next?.Name == "pause")
+			return;
+
+		if (!_args.IsActive)
+			SetHUDTo(true);
 	}
 	
 	public static async Task INSTANTIATE_CANVAS()
@@ -129,7 +147,7 @@ public partial class CanvasManager : CanvasLayer
 		if (_is_free_camera)
 		{
 			FreeCameraManager.SetHUDTo(false, true);
-			AphidInfo.Instance.Hide();
+			AphidInfoPanel.Instance.Hide();
 		}
 
 		await Task.Delay(1);
@@ -137,7 +155,7 @@ public partial class CanvasManager : CanvasLayer
 		{
 			Image _capture = Instance.GetViewport().GetTexture().GetImage();
 
-			string _path = SaveSystem.ProfilePath + SaveSystem.PROFILE_ALBUM_DIR;
+			string _path = SaveSystem.ProfilePath + SaveSystem.PROFILE_SCREENSHOTS_DIR;
 			if (_is_free_camera && IsInstanceValid(CameraManager.FocusedAphid))
 			{
 				_path += $"{CameraManager.FocusedAphid.Instance.ID}/";
@@ -175,7 +193,7 @@ public partial class CanvasManager : CanvasLayer
 		if (_is_free_camera)
 		{
 			FreeCameraManager.SetHUDTo(true, true);
-			AphidInfo.Instance.Show();
+			AphidInfoPanel.Instance.Show();
 		}
 		Instance.photo_display.Show();
 		Instance.Show();
@@ -371,15 +389,15 @@ public partial class CanvasManager : CanvasLayer
 			_skin.GetChild(3) as TextureRect,
 			_skin.GetChild(4) as TextureRect
 		];
-		_pieces[0].Texture = AphidSkin.GetSkinPiece(_genes.AntennaType, "antenna", "idle", _isAdult);
+		_pieces[0].Texture = AphidSkin.GetSkinSprite(_genes.AntennaType, "antenna", "idle", _isAdult);
 		_pieces[0].Modulate = _genes.AntennaColor;
-		_pieces[1].Texture = AphidSkin.GetSkinPiece(_genes.LegType, "legs", "idle", _isAdult);
+		_pieces[1].Texture = AphidSkin.GetSkinSprite(_genes.LegType, "legs", "idle", _isAdult);
 		_pieces[1].Modulate = _genes.LegColor;
-		_pieces[2].Texture = AphidSkin.GetSkinPiece(_genes.BodyType, "body", "idle", _isAdult);
+		_pieces[2].Texture = AphidSkin.GetSkinSprite(_genes.BodyType, "body", "idle", _isAdult);
 		_pieces[2].Modulate = _genes.BodyColor;
-		_pieces[3].Texture = AphidSkin.GetSkinPiece(_genes.EyeType, "eyes", "idle", _isAdult);
+		_pieces[3].Texture = AphidSkin.GetSkinSprite(_genes.EyeType, "eyes", "idle", _isAdult);
 		_pieces[3].Modulate = _genes.EyeColor;
-		_pieces[4].Texture = AphidSkin.GetSkinPiece(_genes.LegType, "legs", "idle", _isAdult);
+		_pieces[4].Texture = AphidSkin.GetSkinSprite(_genes.LegType, "legs", "idle", _isAdult);
 		_pieces[4].Modulate = _genes.LegColor;
 
 		return _slot;

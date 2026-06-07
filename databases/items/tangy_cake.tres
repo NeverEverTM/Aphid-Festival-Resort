@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://beb4at0c4iv2i"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_u5ap5"]
+
+[resource]
+script = ExtResource("1_u5ap5")
+ID = "tangy_cake"
+Type = 2
+Cost = 12
+TierRequirement = 3
+Category = -1
+ShopOrderPriority = -1

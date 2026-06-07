@@ -204,9 +204,9 @@ public partial class Player : CharacterBody2D
 	{
 		// either display the held aphid, or choose the closest one to you
 		if (HeldItem != null && HeldItem.IsAphid)
-			AphidInfo.Instance.SetByPickup();
-		else if (AphidInfo.Instance.AreAphidsNearby)
-			AphidInfo.Instance.SetByClosest();
+			AphidInfoPanel.Instance.SetByPickup();
+		else if (AphidInfoPanel.Instance.AreAphidsNearby)
+			AphidInfoPanel.Instance.SetByClosest();
 	}
 	private void HeldInputAction_CallAphids(double _time)
 	{
@@ -360,6 +360,7 @@ public partial class Player : CharacterBody2D
 					Drop();
 			}
 			PlayerInventory.SetTo(false);
+			current_held_action = null;
 		}
 	}
 	/// <summary>
@@ -568,7 +569,7 @@ public partial class Player : CharacterBody2D
 		switch (_tag)
 		{
 			case StringNames.GlobalTags.Aphid:
-				if ((_node as Aphid).IsReadyForHarvest)
+				if ((_node as Aphid).Instance.Status.IsReadyForHarvest)
 				{
 					_prompt = CanvasManager.ControlPrompt.HarvestAphid;
 					_priority++;
@@ -615,7 +616,7 @@ public partial class Player : CharacterBody2D
 				// if sleeping, get annoyed
 				if (_aphid.State.Is(Aphid.StateEnum.Sleep))
 					_aphid.WakeUp(true);
-				_aphid.skin.SetFlipDirection(GlobalPosition - _aphid.GlobalPosition);
+				_aphid.Skin.SetFlipDirection(GlobalPosition - _aphid.GlobalPosition);
 			}
 			else
 				return;
@@ -667,8 +668,8 @@ public partial class Player : CharacterBody2D
 		{
 			HeldItem.IsAphid = true;
 			HeldItem.Entity_Aphid = _heldItem.Entity as Aphid;
-			HeldItem.Entity_Aphid.skin.SetFlipDirection(flip_direction ? Vector2.Right : Vector2.Left, true);
-			HeldItem.InitialOffset = HeldItem.Entity_Aphid.skin.Position;
+			HeldItem.Entity_Aphid.Skin.SetFlipDirection(flip_direction ? Vector2.Right : Vector2.Left, true);
+			HeldItem.InitialOffset = HeldItem.Entity_Aphid.Skin.Position;
 
 			SoundManager.CreateSound2D(HeldItem.Entity_Aphid.AudioDynamic_Idle, HeldItem.Entity_Aphid.GlobalPosition, true);
 		}
@@ -744,7 +745,7 @@ public partial class Player : CharacterBody2D
 	private void DropHeldItem(bool _setAtLastPosition)
 	{
 		if (HeldItem.IsAphid)
-			HeldItem.Entity_Aphid.skin.Position = HeldItem.InitialOffset;
+			HeldItem.Entity_Aphid.Skin.Position = HeldItem.InitialOffset;
 		else if (IsInstanceValid(HeldItem.Sprite))
 			HeldItem.Sprite.Offset = HeldItem.InitialOffset;
 
@@ -780,8 +781,8 @@ public partial class Player : CharacterBody2D
 		}
 		else
 		{
-			HeldItem.Entity_Aphid.skin.SetFlipDirection(MovementDirection, true);
-			HeldItem.Entity_Aphid.skin.Position = new(0, -39 + (_isSat ? 13 : 0));
+			HeldItem.Entity_Aphid.Skin.SetFlipDirection(MovementDirection, true);
+			HeldItem.Entity_Aphid.Skin.Position = new(0, -39 + (_isSat ? 13 : 0));
 		}
 	}
 

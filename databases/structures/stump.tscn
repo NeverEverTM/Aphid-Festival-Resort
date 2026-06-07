@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://mobb6ffpg1lv"]
 
 [ext_resource type="Texture2D" uid="uid://c6sxlnodi7bl3" path="res://sprites/props/stump.png" id="1_1rqe0"]
-[ext_resource type="Script" uid="uid://cw0psgmxj5gxf" path="res://scripts/entities/ChairBehaviour.cs" id="2_rxj05"]
+[ext_resource type="Script" uid="uid://cw0psgmxj5gxf" path="res://scripts/entities/ChairStructure.cs" id="2_rxj05"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_25n0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rxj05"]

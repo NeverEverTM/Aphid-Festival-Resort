@@ -1,18 +1,18 @@
 using System;
 using Godot;
 
-public partial class HelpPanel : Control, IMenuInstance
+public partial class HelpPanel : MenuControl
 {
+    public override string ID => "help";
+    public override bool IsASubMenu => true;
+
 	[Export] private PackedScene[] panels;
 	[Export] private Control container_node;
 	[Export] private Label count_label, title_label;
 	[Export] private BaseButton left_button, right_button;
-	[Export] private AnimationPlayer anim_player;
 
 	private int current;
 	private enum Direction { Left, Right }
-
-	private MenuInstance menu;
 
 	public override void _Ready()
 	{
@@ -45,7 +45,6 @@ public partial class HelpPanel : Control, IMenuInstance
 		}
 		SetPage(current);
 	}
-
 	public void SetPage(int _index)
 	{
 		current = _index;
@@ -57,7 +56,6 @@ public partial class HelpPanel : Control, IMenuInstance
 		count_label.Text = $"{current + 1}/{panels.Length}";
 		SoundManager.CreateSound("ui/button_switch");
 	}
-
 	private void SetAllLabels(Control _page)
 	{
 		var _labels = _page.GetChildren();
@@ -83,22 +81,13 @@ public partial class HelpPanel : Control, IMenuInstance
 		}
 	}
 
-	public MenuInstance Create()
-	{
-		menu = new("help", anim_player, Open, TryClose, Close, null, true);
-		return menu;
-    }
-    public void Open(MenuInstance _last)
+    protected override void Open(MenuInstance _last)
     {
 		SetProcessInput(true);
 		current = 0;
 		SetPage(0);
     }
-    public bool TryClose(MenuInstance _next)
-    {
-		return true;
-    }
-    public void Close(MenuInstance _next)
+    protected override void Close(MenuInstance _next)
     {
         SetProcessInput(false);
     }

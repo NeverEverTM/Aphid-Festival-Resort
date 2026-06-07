@@ -8,4 +8,4 @@ ID = "yam_bread"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 37
+ShopOrderPriority = -1

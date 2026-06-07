@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="JobData" load_steps=3 format=3 uid="uid://bph61egsbtoke"]
+
+[ext_resource type="Texture2D" uid="uid://clx1ig1xwjor6" path="res://sprites/ui/portraits/landscape_grass.png" id="1_x6tpa"]
+[ext_resource type="Script" uid="uid://bh2k0jtgro60" path="res://scripts/resources/JobData.cs" id="2_8haul"]
+
+[resource]
+script = ExtResource("2_8haul")
+Skills = Dictionary[int, int]({
+0: 3
+})
+BaseTime = 180.0
+BaseReward = 10
+Background = ExtResource("1_x6tpa")

@@ -6,11 +6,12 @@ using System.Collections.Generic;
 [Tool]
 public partial class ItemCreator : Window
 {
-    [Export] private LineEdit fileNameEdit, nameEdit, costEdit, shopOrderEdit;
-    [Export] private TextEdit descriptionEdit;
+    [Export] private LineEdit fileNameEdit, enNameEdit, esNameEdit, costEdit, shopOrderEdit;
+    [Export] private TextEdit enDescEdit, esDescEdit;
     [Export] private TextureRect iconTexture;
     [Export] private OptionButton tierOptions, categoryOptions, shopOptions, typeOptions;
     [Export] private Button finishButton, deleteButton;
+    [Export] private Label infoLabel;
     [ExportGroup("Food Options")]
     [Export] private Control foodPanel;
     [Export] private HSlider hungerSlider, thirstSlider;
@@ -52,7 +53,19 @@ public partial class ItemCreator : Window
     }
     private void IS_VALID_FILENAME(LineEdit _source) =>
         IS_VALID_FILENAME(_source.Text, _source);
-    private void IS_VALID_NUMBER(string _text, LineEdit _source)
+    private static void IS_VALID_NUMBER(string _text, LineEdit _source)
+    {
+        if (string.IsNullOrWhiteSpace(_text))
+            return;
+        if (!int.TryParse(_text, out int _))
+        {
+            _source.Text = string.Empty;
+            return;
+        }
+    }
+    private static void IS_VALID_NUMBER(LineEdit _source) =>
+        IS_VALID_NUMBER(_source.Text, _source);
+    private static void IS_VALID_NONNEGATIVE_NUMBER(string _text, LineEdit _source)
     {
         if (string.IsNullOrWhiteSpace(_text))
             return;
@@ -67,8 +80,13 @@ public partial class ItemCreator : Window
             return;
         }
     }
-    private void IS_VALID_NUMBER(LineEdit _source) =>
-        IS_VALID_NUMBER(_source.Text, _source);
+    private static void IS_VALID_NONNEGATIVE_NUMBER(LineEdit _source) =>
+        IS_VALID_NONNEGATIVE_NUMBER(_source.Text, _source);
+    private void ON_SELECTED_LOCALE(int idx)
+    {
+        enNameEdit.Visible = enDescEdit.Visible = idx == 0;
+        esNameEdit.Visible = esDescEdit.Visible = idx == 1;
+    }
 
     private void SET_OPTION_BUTTONS()
     {
@@ -107,14 +125,16 @@ public partial class ItemCreator : Window
 
     private void DISPLAY_ITEM(string _id)
     {
-        ItemData _data = ItemViewer.GET_ITEM_DATA(_id);
+        ItemData _data = ItemMasterDB.GET_ITEM_DATA(_id);
 
         fileNameEdit.Text = _id;
         fileNameEdit.Editable = false;
         fileNameEdit.Flat = true;
 
-        nameEdit.Text = ItemViewer.GET_ITEM_NAME(_id);
-        descriptionEdit.Text = ItemViewer.GET_ITEM_DESC(_id);
+        enNameEdit.Text = ItemMasterDB.GET_ITEM_NAME(_id, ItemMasterDB.LocaleEditor.English);
+        enDescEdit.Text = ItemMasterDB.GET_ITEM_DESC(_id, ItemMasterDB.LocaleEditor.English);
+        esNameEdit.Text = ItemMasterDB.GET_ITEM_NAME(_id, ItemMasterDB.LocaleEditor.Spanish);
+        esDescEdit.Text = ItemMasterDB.GET_ITEM_DESC(_id, ItemMasterDB.LocaleEditor.Spanish);
 
         tierOptions.Select(_data.TierRequirement);
 
@@ -123,9 +143,10 @@ public partial class ItemCreator : Window
         else
             iconTexture.Texture = ResourceLoader.Load<Texture2D>(GlobalManager.ABSOLUTE_ICONS_PATH + "unknown.tres");
 
-        categoryOptions.Select((int)_data.Category);
+        categoryOptions.Select((int)_data.Category + 1);
         shopOptions.Select((int)_data.Shop);
         costEdit.Text = _data.Cost.ToString();
+        shopOrderEdit.Text = _data.ShopOrderPriority.ToString();
         typeOptions.Select((int)_data.Type);
 
         if (_data.Type == ItemData.ItemType.Food)
@@ -155,60 +176,73 @@ public partial class ItemCreator : Window
     }
     private void CREATE_ITEM()
     {
-        if (string.IsNullOrWhiteSpace(fileNameEdit.Text) || !fileNameEdit.Text.IsValidFileName())
-            return;
-        string _id = fileNameEdit.Text;
-
-        if (!string.IsNullOrWhiteSpace(nameEdit.Text))
-            ItemViewer.SET_ITEM_NAME(fileNameEdit.Text, nameEdit.Text);
-
-        if (!string.IsNullOrWhiteSpace(descriptionEdit.Text))
-            ItemViewer.SET_ITEM_DESC(fileNameEdit.Text, descriptionEdit.Text);
-
-        if (!int.TryParse(costEdit.Text, out int _cost))
-            _cost = 1;
-
-        if (!int.TryParse(shopOrderEdit.Text, out int _priority))
-            _priority = 0;
-
-        ItemData _data = new()
+        try
         {
-            ID = fileNameEdit.Text,
-            Type = (ItemData.ItemType)typeOptions.GetSelectedId(),
-            Cost = _cost,
-            TierRequirement = tierOptions.GetSelectedId(),
-            Category = (ItemData.CategoryTags)categoryOptions.GetSelectedId() - 1,
-            Shop = (ItemData.ShopOwner)shopOptions.GetSelectedId(),
-            ShopOrderPriority = _priority,
-        };
+            if (string.IsNullOrWhiteSpace(fileNameEdit.Text) || !fileNameEdit.Text.IsValidFileName())
+            {
+                infoLabel.Text = "Invalid filename!";
+                return;
+            }
 
-        _data.TakeOverPath(ItemViewer.GET_ITEM_FILEPATH(_id));
-        ResourceSaver.Save(_data, ItemViewer.GET_ITEM_FILEPATH(_id));
-        if (_data.Type == ItemData.ItemType.Food)
-            CREATE_FOOD(_id);
+            infoLabel.Text = "Starting...";
+            string _id = fileNameEdit.Text;
 
-        bool _created = fileNameEdit.Editable;
+            if (!string.IsNullOrWhiteSpace(enNameEdit.Text))
+                ItemMasterDB.SET_ITEM_NAME(_id, enNameEdit.Text, ItemMasterDB.LocaleEditor.English);
+            if (!string.IsNullOrWhiteSpace(enDescEdit.Text))
+                ItemMasterDB.SET_ITEM_DESC(_id, enDescEdit.Text, ItemMasterDB.LocaleEditor.English);
 
-        ItemViewer.REFRESH(_id);
-        AcceptDialog _popup = new()
+            if (!string.IsNullOrWhiteSpace(esNameEdit.Text))
+                ItemMasterDB.SET_ITEM_NAME(_id, esNameEdit.Text, ItemMasterDB.LocaleEditor.Spanish);
+            if (!string.IsNullOrWhiteSpace(esDescEdit.Text))
+                ItemMasterDB.SET_ITEM_DESC(_id, esDescEdit.Text, ItemMasterDB.LocaleEditor.Spanish);
+
+            if (!int.TryParse(costEdit.Text, out int _cost))
+                _cost = 1;
+
+            if (!int.TryParse(shopOrderEdit.Text, out int _priority))
+                _priority = -1;
+
+            ItemData _data = new()
+            {
+                ID = _id,
+                Type = (ItemData.ItemType)typeOptions.GetSelectedId(),
+                Cost = _cost,
+                TierRequirement = tierOptions.GetSelectedId(),
+                Category = (ItemData.CategoryTags)categoryOptions.GetSelectedId() - 1,
+                Shop = (ItemData.ShopOwner)shopOptions.GetSelectedId(),
+                ShopOrderPriority = _priority,
+            };
+
+            _data.TakeOverPath(ItemMasterDB.GET_ITEM_FILEPATH(_id));
+            ResourceSaver.Save(_data, ItemMasterDB.GET_ITEM_FILEPATH(_id));
+
+            if (_data.Type == ItemData.ItemType.Food)
+                CREATE_FOOD(_id);
+
+            bool _created = fileNameEdit.Editable;
+            ItemMasterDB.Instance.SAVE_TRANSLATIONS();
+            ItemMasterDB.Instance.ITEM_DATABASE[_id] = _data;
+            ItemViewer.Instance.REFRESH_LIST();
+
+            if (_created)
+                POPUP_END_DIALOG($"{_id} was created!");
+            else
+                infoLabel.Text = $"{_id} was updated!";
+        }
+        catch (Exception _error)
         {
-            DialogText = $"{_id} was {(_created ? "created" : "updated")}!"
-        };
-        _popup.CloseRequested += _popup.QueueFree;
-        _popup.Confirmed += _popup.QueueFree;
-        if (_created)
-            ItemViewer.Instance.AddChild(_popup);
-        else
-            AddChild(_popup);
-        _popup.PopupCentered();
-        if (_created)
+            using FileAccess _errorFile = FileAccess.Open("user://error.txt", FileAccess.ModeFlags.WriteRead);
+            _errorFile.StoreString(_error.Message + " " + _error.StackTrace);
+            GD.PrintErr(_error);
             QueueFree();
+        }
     }
     private void CREATE_FOOD(string _id)
     {
         FoodData _data = new()
         {
-            Item = ResourceLoader.Load<ItemData>(ItemViewer.GET_ITEM_FILEPATH(_id)),
+            Item = ResourceLoader.Load<ItemData>(ItemMasterDB.GET_ITEM_FILEPATH(_id)),
             FoodValue = (int)hungerSlider.Value,
             DrinkValue = (int)thirstSlider.Value,
             Flavor = (AphidData.FoodType)flavorOptions.GetSelectedId()
@@ -227,8 +261,9 @@ public partial class ItemCreator : Window
             if (skillsNode.GetChild<CheckButton>(i).ButtonPressed && int.TryParse(skillsNode.GetChild(i).GetChild<LineEdit>(0).Text, out int _number))
                 _data.Skills.Add(_key[skillsNode.GetChild(i).Name], _number);
         }
-        _data.TakeOverPath(ItemViewer.GET_FOOD_FILEPATH(_id));
-        ResourceSaver.Save(_data, ItemViewer.GET_FOOD_FILEPATH(_id));
+        _data.TakeOverPath(ItemMasterDB.GET_FOOD_FILEPATH(_id));
+        ResourceSaver.Save(_data, ItemMasterDB.GET_FOOD_FILEPATH(_id));
+        ItemMasterDB.Instance.FOOD_DATABASE[_id] = _data;
     }
     private void CONFIRM_DELETION()
     {
@@ -248,11 +283,11 @@ public partial class ItemCreator : Window
             }
             if (_error == Error.Ok)
                 _popup.DialogText = $"{_id} was deleted.";
-            else 
+            else
                 _popup.DialogText = $"Unable to delete {_id}. Error Code: {_error}";
             _popup.CloseRequested += close_all;
             _popup.Confirmed += close_all;
-            ItemViewer.Instance.AddChild(_popup);
+            ItemMasterDB.Instance.AddChild(_popup);
             _popup.PopupCentered();
             _dialog.QueueFree();
         };
@@ -262,7 +297,21 @@ public partial class ItemCreator : Window
     }
     private void UPDATE_ICON(string _text)
     {
-        iconTexture.Texture = ItemViewer.GET_ITEM_ICON(_text, (ItemData.ItemType)typeOptions.GetSelectedId());
+        iconTexture.Texture = ItemMasterDB.GET_ITEM_ICON(_text, (ItemData.ItemType)typeOptions.GetSelectedId());
+    }
+    private void POPUP_END_DIALOG(string _dialog)
+    {
+        AcceptDialog _popup = new()
+        {
+            DialogText = _dialog
+        };
+
+        _popup.CloseRequested += _popup.QueueFree;
+        _popup.Confirmed += _popup.QueueFree;
+    
+        ItemMasterDB.Instance.AddChild(_popup);
+        _popup.PopupCentered();
+        QueueFree();
     }
 }
 #endif

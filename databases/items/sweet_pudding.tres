@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://cmqdrwdh2qkvx"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_gwwrv"]
+
+[resource]
+script = ExtResource("1_gwwrv")
+ID = "sweet_pudding"
+Type = 2
+Cost = 6
+Category = 1
+ShopOrderPriority = -1

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://dja2uejbjs6rv"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_dyaox"]
+[ext_resource type="Resource" uid="uid://bcx4dkb2c24h6" path="res://databases/food/danger_shroom.tres" id="2_wnwgb"]
+[ext_resource type="Resource" uid="uid://1ffbbw024334" path="res://databases/food/danger_spud.tres" id="3_d601t"]
+[ext_resource type="Resource" uid="uid://dymr3bwmua6l8" path="res://databases/items/danger_dish.tres" id="4_4hj47"]
+[ext_resource type="Resource" uid="uid://bvvu4tdnlvj0k" path="res://databases/food/cooked_danger.tres" id="4_wnwgb"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_pa8w1"]
+
+[resource]
+script = ExtResource("5_pa8w1")
+Owner = ExtResource("4_4hj47")
+Combinations = Array[Array]([Array[ExtResource("1_dyaox")]([ExtResource("2_wnwgb"), ExtResource("3_d601t")]), Array[ExtResource("1_dyaox")]([ExtResource("4_wnwgb"), ExtResource("3_d601t")])])

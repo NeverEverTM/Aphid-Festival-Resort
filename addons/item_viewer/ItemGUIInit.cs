@@ -13,15 +13,15 @@ public partial class ItemGUIInit : EditorPlugin
 
 	public override void _ExitTree()
 	{
-		if (IsInstanceValid(ItemViewer.Instance))
-			ItemViewer.Instance.UNLOAD_ALL_DATA();
-		ItemViewer.Instance = null;
+		if (IsInstanceValid(ItemMasterDB.Instance))
+			ItemMasterDB.Instance.UNLOAD_ALL_DATA();
+		ItemMasterDB.Instance = null;
 		RemoveToolMenuItem("View Item Database...");
 	}
 
 	internal void SUMMON_ITEM_VIEWER()
 	{
-		ItemViewer gui = (ResourceLoader.Load("uid://f7gdm4yd2spb") as PackedScene).Instantiate().Duplicate() as ItemViewer;
+		ItemMasterDB gui = (ResourceLoader.Load("uid://f7gdm4yd2spb") as PackedScene).Instantiate().Duplicate() as ItemMasterDB;
 		AddChild(gui);
 		gui.INITIALIZE_INSTANCE();
 	}

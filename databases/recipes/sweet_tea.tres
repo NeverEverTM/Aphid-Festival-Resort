@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://dvcmef57j8nmr"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_jsbgo"]
+[ext_resource type="Resource" uid="uid://b7hm7cgdd4bl" path="res://databases/food/plain_tea.tres" id="2_amyoa"]
+[ext_resource type="Resource" uid="uid://tqr4clao4cij" path="res://databases/food/honey_drop.tres" id="3_huauy"]
+[ext_resource type="Resource" uid="uid://b6xnudllhu78l" path="res://databases/food/glazed_honey.tres" id="4_amyoa"]
+[ext_resource type="Resource" uid="uid://56xrjkder57e" path="res://databases/items/sweet_tea.tres" id="4_eg6ji"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_63gox"]
+
+[resource]
+script = ExtResource("5_63gox")
+Owner = ExtResource("4_eg6ji")
+Combinations = Array[Array]([Array[ExtResource("1_jsbgo")]([ExtResource("2_amyoa"), ExtResource("3_huauy")]), Array[ExtResource("1_jsbgo")]([ExtResource("2_amyoa"), ExtResource("4_amyoa")])])

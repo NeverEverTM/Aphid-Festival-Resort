@@ -8,4 +8,4 @@ ID = "berry_juice"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 19
+ShopOrderPriority = -1

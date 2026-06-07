@@ -1,14 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://c4b2x5elxg4i7"]
+[gd_scene load_steps=8 format=3 uid="uid://c4b2x5elxg4i7"]
 
 [ext_resource type="Texture2D" uid="uid://66bis73g2x7n" path="res://sprites/props/image_sign.png" id="1_h2uk8"]
-[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSign.cs" id="2_3vroc"]
+[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSignStructure.cs" id="2_3vroc"]
+[ext_resource type="Texture2D" uid="uid://deb6wecqh3oxw" path="res://sprites/ui/no_image_small.png" id="3_3vroc"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_h2uk8"]
+[ext_resource type="PackedScene" uid="uid://yb16ky8h5npq" path="res://scenes/panels/custom_sign_menu.tscn" id="4_xgptx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3vroc"]
-size = Vector2(62, 6)
+size = Vector2(62, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h2uk8"]
-size = Vector2(84, 25)
+size = Vector2(53, 4)
 
 [node name="image_sign" type="Sprite2D" node_paths=PackedStringArray("billboard", "interactArea2D")]
 texture = ExtResource("1_h2uk8")
@@ -16,21 +18,31 @@ offset = Vector2(0, -32)
 script = ExtResource("2_3vroc")
 billboard = NodePath("billboard")
 interactArea2D = NodePath("Area2D")
+emptyTexture = ExtResource("3_3vroc")
+customSignMenu = ExtResource("4_xgptx")
 
-[node name="billboard" type="Sprite2D" parent="."]
-position = Vector2(0.499998, -36)
-scale = Vector2(0.128205, 0.127517)
+[node name="billboard" type="TextureRect" parent="."]
+offset_left = -40.0
+offset_top = -60.0
+offset_right = 40.0
+offset_bottom = -15.0
+texture = ExtResource("3_3vroc")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+show_behind_parent = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(0, -3)
+position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_3vroc")
 
 [node name="Area2D" type="Area2D" parent="."]
+show_behind_parent = true
 script = ExtResource("3_h2uk8")
 Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, -2.5)
+position = Vector2(0, -12)
 shape = SubResource("RectangleShape2D_h2uk8")
+debug_color = Color(0.8331277, 0.35258865, 0.4506665, 0.41960785)

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="JobData" load_steps=3 format=3 uid="uid://2xr57u3rhs"]
+
+[ext_resource type="Texture2D" uid="uid://dhoxb1xui3bdt" path="res://sprites/ui/portraits/landscape_forsaken.png" id="1_6kf2i"]
+[ext_resource type="Script" uid="uid://bh2k0jtgro60" path="res://scripts/resources/JobData.cs" id="1_eeyjy"]
+
+[resource]
+script = ExtResource("1_eeyjy")
+Difficulty = 4
+BaseTime = 300.0
+BaseReward = 90
+Skills = Dictionary[int, int]({
+0: 10,
+1: 22,
+3: 14
+})
+Background = ExtResource("1_6kf2i")
+metadata/_custom_type_script = "uid://bh2k0jtgro60"

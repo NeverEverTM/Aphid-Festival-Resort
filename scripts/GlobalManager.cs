@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
@@ -10,7 +12,9 @@ using Godot;
 internal partial class GlobalManager : Node2D
 {
 	public static GlobalManager Instance { get; private set; }
-	public readonly static RandomNumberGenerator RNG = new();
+	/// <summary>
+	/// Global game version, used by savefiles.
+	/// </summary>
 	public const uint GAME_VERSION = 301;
 	public static bool IsBusy { get; internal set; } = true;
 
@@ -37,20 +41,24 @@ internal partial class GlobalManager : Node2D
 		ABSOLUTE_SKINS_PATH = "res://databases/skins/",
 		ABSOLUTE_ITEMS_DB_PATH = "res://databases/items/",
 		ABSOLUTE_STRUCTURES_DB_PATH = "res://databases/structures/",
-		ABSOLUTE_JOBS_DB_PATH = "res://databases/jobs/",
 		ABSOLUTE_RECIPES_DB_PATH = "res://databases/recipes/",
-		ABSOLUTE_FOODS_DB_PATH = "res://databases/food/";
+		ABSOLUTE_FOODS_DB_PATH = "res://databases/food/",
+		ABSOLUTE_JOBS_DB_PATH = "res://databases/jobs/";
 
-	// =========| GLOBALLY LOADED VALUES |===========
+	// TODO: move this into its own Assets Access
+	/// <summary>
+	/// =========| GLOBALLY LOADED VALUE DICTIONARY |===========
+	/// </summary>
 	public static readonly Dictionary<string, ItemData> G_ITEMS = [];
 	public static readonly Dictionary<string, ItemData> G_STRUCTURES = [];
 	public static readonly Dictionary<string, FoodData> G_FOOD = [];
 	public static readonly List<RecipeData> G_RECIPES = [];
 
-	public static readonly Dictionary<string, Texture2D> G_ICONS = [];
+	private static readonly Dictionary<string, Texture2D> G_ICONS = [];
 	public static readonly Dictionary<string, AudioStream> G_AUDIO = [];
-	public static readonly Dictionary<string, Texture2D> G_SKINS = [];
-	public static readonly ResourcePreloader G_PARTICLES = new();
+	private static readonly Dictionary<string, Texture2D> G_SKINS = [];
+	private static readonly ResourcePreloader G_PARTICLES = new();
+	private static readonly Dictionary<string, JobData> G_JOBS = [];
 
 	public static Texture2D GetIcon(string _key)
 	{
@@ -69,9 +77,31 @@ internal partial class GlobalManager : Node2D
 				Size = new(32, 32)
 			};
 	}
+	public static JobData GetJob(string _key)
+	{
+		if (_key != null && G_JOBS.TryGetValue(_key, out JobData value))
+			return value;
+		else
+		{
+			DebugLogger.Print(DebugLogger.LogPriority.Error, $"GlobalManager: No such <{_key}> job exists");
+			return null;
+		}
+	}
+	public static JobData GetRandomJob(JobData.JobDifficulty _difficulty, List<string> _excludeList)
+	{
+		List<JobData> _jobList = [.. G_JOBS.Values.Where((j) => j.Difficulty == _difficulty).Where((j) => !_excludeList.Contains(j.ID))];
+
+        if (_jobList.Count == 0) // if no jobs were left, get a repeat
+        {
+            _jobList = [.. G_JOBS.Values.Where((j) => j.Difficulty == _difficulty)];
+            DebugLogger.Print(DebugLogger.LogPriority.Debug, "JobMenu: Got a repeat in " + _difficulty.ToString());
+        }
+		return _jobList[RNG.RandiRange(0, _jobList.Count - 1)];
+	}
 
 	private PhysicsDirectSpaceState2D spaceState;
 	private readonly static List<GpuParticles2D> ACTIVE_PARTICLES_CACHED = [];
+	public readonly static RandomNumberGenerator RNG = new();
 
 	public override void _EnterTree()
 	{
@@ -107,14 +137,17 @@ internal partial class GlobalManager : Node2D
 	{
 		try
 		{
-			await LOAD_ICONS();
-			await LOAD_SKINS();
-			await LOAD_SFX();
+			await LOAD_DICTIONARY(ABSOLUTE_ICONS_PATH, (_id, _resource) => G_ICONS.Add(_id, _resource as Texture2D), 
+				(_id) => !G_ICONS.ContainsKey(_id));
+			await LOAD_DICTIONARY_RECURSIVE(ABSOLUTE_SKINS_PATH, (_id, _resource) => G_SKINS.Add(_id, _resource as Texture2D), 
+				(_id) => !G_SKINS.ContainsKey(_id));
+			await LOAD_DICTIONARY_RECURSIVE(ABSOLUTE_SFX_PATH, (_id, _resource) => G_AUDIO.Add(_id, _resource as AudioStream), 
+				(_id) => !G_AUDIO.ContainsKey(_id));
 			await LOAD_ITEMS();
-			await LOAD_FOOD();
-			await LOAD_RECIPES();
-			await LOAD_PARTICLES();
-			await LOAD_TRAITS();
+			await LOAD_DICTIONARY(ABSOLUTE_FOODS_DB_PATH, (_id, _resource) => G_FOOD.Add(_id, _resource as FoodData));
+			await LOAD_LIST(ABSOLUTE_RECIPES_DB_PATH, (_resource) => G_RECIPES.Add(_resource as RecipeData));
+			await LOAD_DICTIONARY(ABSOLUTE_JOBS_DB_PATH, (_id, _resource) => { (_resource as JobData).ID = _id; G_JOBS.Add(_id, _resource as JobData); });
+			await CACHE_PARTICLES();
 
 			IsBusy = false;
 		}
@@ -123,67 +156,7 @@ internal partial class GlobalManager : Node2D
 			THROW_CRASH(_err);
 		}
 	}
-	private static async Task LOAD_ICONS()
-	{
-		string[] _icons = DirAccess.GetFilesAt(ABSOLUTE_ICONS_PATH);
 
-		for (int i = 0; i < _icons.Length; i++)
-		{
-			string _fileName = _icons[i].Replace(".import", string.Empty), _id = _fileName.Split('.')[0];
-			if (G_ICONS.ContainsKey(_id))
-				continue;
-
-			// Wait until it yields
-			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_ICONS_PATH + _fileName);
-			G_ICONS.Add(_id, _resource as Texture2D);
-		}
-	}
-	private static async Task LOAD_SKINS()
-	{
-		string[] _directories = DirAccess.GetDirectoriesAt(ABSOLUTE_SKINS_PATH);
-		for (int i = 0; i < _directories.Length; i++)
-			await SEARCH_SKIN_FOLDER(_directories[i]);
-	}
-	private static async Task SEARCH_SKIN_FOLDER(string _directory)
-	{
-		string[] _files = DirAccess.GetFilesAt(ABSOLUTE_SKINS_PATH + _directory);
-		for (int i = 0; i < _files.Length; i++)
-		{
-			// _filename = 0/skin_piece.res
-			// _id = 0/skin_piece
-			string _fileName = _directory + "/" + _files[i].Replace(".import", string.Empty),
-					_id = _fileName.Split('.')[0];
-
-			if (G_SKINS.ContainsKey(_id))
-				continue;
-			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_1")} ({i + 1}/{_files.Length})";
-			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_SKINS_PATH + _fileName);
-			G_SKINS.Add(_id, _resource as Texture2D);
-		}
-	}
-	private static async Task LOAD_SFX()
-	{
-		// Get all SFX paths (only checks folders at SFX root folder)
-		string[] _directories = DirAccess.GetDirectoriesAt(ABSOLUTE_SFX_PATH);
-		for (int i = 0; i < _directories.Length; i++)
-			await SEARCH_SFX_FOLDER(_directories[i]);
-	}
-	private static async Task SEARCH_SFX_FOLDER(string _directory)
-	{
-		string[] _files = DirAccess.GetFilesAt(ABSOLUTE_SFX_PATH + _directory);
-		for (int i = 0; i < _files.Length; i++)
-		{
-			// _filename = ui/audio_example.wav
-			// _id = ui/audio_example
-			string _fileName = _directory + "/" + _files[i].Replace(".import", string.Empty),
-					_id = _fileName.Split('.')[0];
-
-			if (G_AUDIO.ContainsKey(_id))
-				continue;
-
-			G_AUDIO.Add(_id, await PRELOAD_RESOURCE(ABSOLUTE_SFX_PATH + _fileName) as AudioStream);
-		}
-	}
 	private static async Task LOAD_ITEMS()
 	{
 		string[] _items = DirAccess.GetFilesAt(ABSOLUTE_ITEMS_DB_PATH);
@@ -227,6 +200,7 @@ internal partial class GlobalManager : Node2D
 		}
 		return;
 	}
+#if DEBUG
 	private static Task<bool> STRUCTURE_CHECK_FAILED(string _id)
 	{
 		if (G_STRUCTURES.ContainsKey(_id))
@@ -255,197 +229,70 @@ internal partial class GlobalManager : Node2D
 			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"Database: <{_id}> has no description.");
 		return Task.CompletedTask;
 	}
-	private static Task LOAD_FOOD()
-	{
-		string[] _foods = DirAccess.GetFilesAt(ABSOLUTE_FOODS_DB_PATH);
+#endif	
 
-		for (int i = 0; i < _foods.Length; i++)
-		{
-			string _filename = _foods[i].Replace(".import", string.Empty);
-			string _id = _filename.Split('.')[0];
-
-#if DEBUG
-			if (G_FOOD.ContainsKey(_id))
-			{
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"FoodDatabase: <{_id}> is duplicated.");
-				continue;
-			}
-			if (!G_ITEMS.ContainsKey(_id))
-			{
-				DebugLogger.Print(DebugLogger.LogPriority.Warning, $"FoodDatabase: <{_id}> does not exist as an item.");
-				continue;
-			}
-#endif
-
-			G_FOOD.Add(_id, ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _filename));
-		}
-		return Task.CompletedTask;
-	}
-	private static Task LOAD_RECIPES()
-	{
-		string[] _recipes = DirAccess.GetFilesAt(ABSOLUTE_RECIPES_DB_PATH);
-
-		for (int i = 0; i < _recipes.Length; i++)
-		{
-			string _filename = _recipes[i].Replace(".import", string.Empty);
-
-			RecipeData _recipe = ResourceLoader.Load<RecipeData>(ABSOLUTE_RECIPES_DB_PATH + _filename);
-			G_RECIPES.Add(_recipe);
-		}
-		return Task.CompletedTask;
-	}
-	private static async Task LOAD_PARTICLES()
+	private static async Task CACHE_PARTICLES()
 	{
 		var _particleList = DirAccess.GetFilesAt(ABSOLUTE_PARTICLES_PATH);
 
 		for (int i = 0; i < _particleList.Length; i++)
 		{
-			// BOOT_LOADING_LABEL.Text = $"{Instance.Tr("BOOT_3")} ({i}/{_particleList.Length})";
 			var _resource = await PRELOAD_RESOURCE(ABSOLUTE_PARTICLES_PATH + _particleList[i]);
 			var _particle = (_resource as PackedScene).Instantiate() as GpuParticles2D;
 
-			// we instantiate it and then delete it
-			// we do this so Godot properly loads it now, so it doesnt cause a lag spike later
-			// UPDATE: Godot 4 supposedly does this by default now but it stays just in case
+			// cache particle to memory
 			Instance.AddChild(_particle);
+			await Task.Delay(2);
 			_particle.QueueFree();
 
 			G_PARTICLES.AddResource(_particleList[i].Split('.')[0], _resource);
 		}
 	}
-	private static Task LOAD_TRAITS()
+	
+	private static async Task LOAD_DICTIONARY(string _absolutePath, Action<string, Resource> _addAction, Func<string, bool> _validIDCheck = null, string _directory = null)
 	{
-		for (int i = 0; i < AphidTraits.TRAITS.Count; i++)
-			AphidTraits.G_TRAITS.Add(AphidTraits.TRAITS[i].ID, AphidTraits.TRAITS[i].GetType());
-		return Task.CompletedTask;
+		string[] _files = DirAccess.GetFilesAt(_absolutePath);
+
+		for (int i = 0; i < _files.Length; i++)
+		{
+			string _filename = _files[i].Replace(".import", string.Empty),
+				_id = (_directory != null ? _directory + "/" : string.Empty) + _filename.Split('.')[0];
+
+			if (_validIDCheck != null && !_validIDCheck(_id))
+				continue;
+
+			var _resource = await PRELOAD_RESOURCE(_absolutePath + _filename);
+			_addAction.Invoke(_id, _resource);
+			DebugLogger.Print(DebugLogger.LogPriority.Debug, $"ResourceLoad: At <{_absolutePath}> Filename: {_filename} ID: {_id}");
+		}
 	}
+	private static async Task LOAD_LIST(string _absolutePath, Action<Resource> _addAction)
+	{
+		string[] _files = DirAccess.GetFilesAt(_absolutePath);
 
-	// # MARK: Debug
-	// public static string[][] FETCH_CSV_DATABASE(string _path)
-	// {
-	// 	using FileAccess _file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
-	// 	List<string[]> _document = [];
+		for (int i = 0; i < _files.Length; i++)
+		{
+			string _filename = _files[i].Replace(".import", string.Empty);
 
-	// 	while (_file.GetPosition() < _file.GetLength())
-	// 		_document.Add(_file.GetCsvLine());
-
-	// 	return [.. _document];
-	// }
-	// public static Task EXPORT_ITEM_DATABASE(string[][] _document)
-	// {
-	// 	for (int i = 1; i < _document.Length; i++)
-	// 	{
-	// 		string[] _info = _document[i];
-	// 		string _tag = _info[3], _id = _info[0];
-
-	// 		int _cost = int.Parse(_info[1]),
-	// 			_unlockableLevel = int.Parse(_info[2]);
-	// 		StringNames.GlobalTags _itemTag = _tag switch
-	// 		{
-	// 			"item" => StringNames.GlobalTags.Item,
-	// 			"food" => StringNames.GlobalTags.Food,
-	// 			"decoration" => StringNames.GlobalTags.Decoration,
-	// 			"equipment" => StringNames.GlobalTags.Equipment,
-	// 			"playground" => StringNames.GlobalTags.Playground,
-	// 			"interactable" => StringNames.GlobalTags.Interactable,
-	// 			_ => throw new Exception()
-	// 		};
-	// 		ItemData.ShopOwner _shop = _info[4] switch
-	// 		{
-	// 			"item" => ItemData.ShopOwner.Item,
-	// 			"furniture" => ItemData.ShopOwner.Furniture,
-	// 			_ => ItemData.ShopOwner.NoShop
-	// 		};
-	// 		ItemData _data = new()
-	// 		{
-	// 			ID = _id,
-	// 			Cost = _cost,
-	// 			LevelRequirement = _unlockableLevel,
-	// 			Tag = _itemTag,
-	// 			Shop = _shop,
-	// 			ShopOrderPriority = i
-	// 		};
-
-	// 		bool _isItem = _itemTag == StringNames.GlobalTags.Item || _itemTag == StringNames.GlobalTags.Food;
-	// 		string _resourcePath = (_isItem ? ABSOLUTE_ITEMS_DB_PATH : ABSOLUTE_STRUCTURES_DB_PATH) + _id;
-	// 		ResourceSaver.Save(_data, _resourcePath + ".tres");
-	// 	}
-	// 	return Task.CompletedTask;
-	// }
-	// public static Task EXPORT_FOOD_DATABASE(string[][] _document)
-	// {
-	// 	for (int i = 1; i < _document.Length; i++)
-	// 	{
-	// 		string[] _info = _document[i];
-
-	// 		Dictionary<string, int> _converter = new() { { "speed", 0 }, { "strength", 1 }, { "intelligence", 2 }, { "stamina", 3 } };
-	// 		string[] _skills_names = string.IsNullOrWhiteSpace(_info[4]) ? [] : _info[4].Split(','),
-	// 		_skills_values = string.IsNullOrWhiteSpace(_info[5]) ? [] : _info[5].Split(',');
-
-	// 		var _keys = Array.ConvertAll(_skills_names, s => (AphidData.SkillEnum)_converter[s]);
-	// 		var _values = Array.ConvertAll(_skills_values, int.Parse);
-
-	// 		Godot.Collections.Dictionary<AphidData.SkillEnum, int> _dict = [];
-	// 		for (int s = 0; s < _keys.Length; s++)
-	// 			_dict.Add(_keys[s], _values[s]);
-
-	// 		FoodData _data = new()
-	// 		{
-	// 			Item = ResourceLoader.Load<ItemData>(ABSOLUTE_ITEMS_DB_PATH + _info[0] + ".tres"),
-	// 			Type = (AphidData.FoodType)int.Parse(_info[1]),
-	// 			FoodValue = int.Parse(_info[2]),
-	// 			DrinkValue = int.Parse(_info[3]),
-	// 			Skills = _dict
-	// 		};
-
-	// 		ResourceSaver.Save(_data, ABSOLUTE_FOODS_DB_PATH + _info[0] + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
-	// 	}
-
-	// 	return Task.CompletedTask;
-	// }
-	// public static Task EXPORT_RECIPES_DATABASE(string[][] _document)
-	// {
-	// 	Dictionary<string, List<string[]>> _recipes = [];
-	// 	for (int i = 1; i < _document.Length; i++)
-	// 	{
-	// 		string[] _info = _document[i];
-
-	// 		if (!_recipes.ContainsKey(_info[0]))
-	// 			_recipes.Add(_info[0], [[_info[1], _info[2]]]);
-	// 		else
-	// 			_recipes[_info[0]].Add([_info[1], _info[2]]);
-	// 	}
-
-	// 	foreach (var _pair in _recipes)
-	// 	{
-	// 		RecipeData _data = new(Owner: ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Key + ".tres"),
-	// 			Combinations: []);
-
-	// 		for (int i = 0; i < _pair.Value.Count; i++)
-	// 		{
-	// 			GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres");
-	// 			GD.Print(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres");
-	// 			Godot.Collections.Array<FoodData> _combination = [];
-	// 			_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][0] + ".tres"));
-	// 			if (!string.IsNullOrWhiteSpace(_pair.Value[i][1]))
-	// 				_combination.Add(ResourceLoader.Load<FoodData>(ABSOLUTE_FOODS_DB_PATH + _pair.Value[i][1] + ".tres"));
-
-	// 			_data.Combinations.Add(_combination);
-	// 		}
-
-	// 		ResourceSaver.Save(_data, ABSOLUTE_RECIPES_DB_PATH + _pair.Key + ".tres", ResourceSaver.SaverFlags.ReplaceSubresourcePaths);
-	// 	}
-	// 	return Task.CompletedTask;
-	// }
+			var _resource = await PRELOAD_RESOURCE(_absolutePath + _filename);
+			_addAction(_resource);
+		}
+	}
+	private static async Task LOAD_DICTIONARY_RECURSIVE(string _absolutePath, Action<string, Resource> _addAction, Func<string, bool> _validIDCheck = null)
+	{
+		string[] _directories = DirAccess.GetDirectoriesAt(_absolutePath);
+		for (int i = 0; i < _directories.Length; i++)
+			await LOAD_DICTIONARY(_absolutePath + _directories[i] + "/", _addAction, _validIDCheck, _directories[i]);
+	}
 
 	// MARK: Dedicated Util Functions
 	/// <summary>
 	/// Emits a set of particles from the database. Automatically disposes of particles upon finish of a oneshot or when moving scenes.
 	/// </summary>
-	/// <param name="_name">Name of the particles prefab</param>
-	/// <param name="_position">Position to spawn them in</param>
-	/// <param name="_parentless">Automatically adds it as a child outside the current scene</param>
-	/// <param name="_essential">Non-essential particles cannot spawn when above the particle limit</param>
+	/// <param name="_name">Name of the particle scene.</param>
+	/// <param name="_position">Global position for the particle</param>
+	/// <param name="_parentless">Adds it as a child of the root instead of the scene, it will still be disposed off after a scene reload.</param>
+	/// <param name="_essential">Particles marked as "non-essential" will not spawn when the particle limit has been reached.</param>
 	/// <returns></returns>
 	public static GpuParticles2D EmitParticles(string _name, Vector2 _position, bool _essential = true)
 			=> EmitParticles(_name, _position, Instance, _essential);

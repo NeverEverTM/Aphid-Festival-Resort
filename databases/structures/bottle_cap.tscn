@@ -1,25 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://d4dvpjanw12f6"]
 
 [ext_resource type="Texture2D" uid="uid://drk8wpmebk08k" path="res://sprites/props/bottle_cap_0.png" id="1_lfuwu"]
-[ext_resource type="Script" uid="uid://g2000tj46ocw" path="res://scripts/entities/BedBehaviour.cs" id="2_tmysc"]
+[ext_resource type="Script" uid="uid://g2000tj46ocw" path="res://scripts/entities/RestStructure.cs" id="2_tmysc"]
 [ext_resource type="Texture2D" uid="uid://brq8lu86w2f0s" path="res://sprites/props/bottle_cap_1.png" id="3_5dmnv"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_j33mn"]
-
-[sub_resource type="Animation" id="Animation_j33mn"]
-resource_name = "start"
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Marker2D:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, -7)]
-}
 
 [sub_resource type="Animation" id="Animation_e8o6g"]
 length = 0.001
@@ -34,6 +18,47 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(0, -7)]
+}
+
+[sub_resource type="Animation" id="Animation_j33mn"]
+resource_name = "start"
+length = 10.0
+loop_mode = 1
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Marker2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -7)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 4.27, 6, 7.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"values": [{
+"args": [],
+"method": &"FlipAphidToTheLeft"
+}, {
+"args": [],
+"method": &"FlipAphidToTheRight"
+}, {
+"args": [],
+"method": &"SetWalk"
+}, {
+"args": [],
+"method": &"SetWalk"
+}]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_lkq1w"]
@@ -53,6 +78,7 @@ texture = ExtResource("1_lfuwu")
 offset = Vector2(0, -22)
 script = ExtResource("2_tmysc")
 staminaRecoveryCooldown = 10.0
+StateToGo = 8
 restingPosition = NodePath("Marker2D")
 animator = NodePath("AnimationPlayer")
 interactArea = NodePath("Area2D")

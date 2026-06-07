@@ -9,6 +9,4 @@ Item = ExtResource("1_w3gqv")
 Flavor = 4
 FoodValue = 20
 DrinkValue = 5
-Skills = Dictionary[int, int]({
-1: 1
-})
+Skills = Dictionary[int, int]({})

@@ -1,14 +1,14 @@
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
 // Used for the UI interface you interact with
-public partial class ShopInterface : Control
+public partial class ShopInterface : MenuControl
 {
-	public MenuInstance Menu { get; protected set; }
+    public override string ID => GetShopTagName();
 
-	[Export] protected InteractableArea2D interactArea;
+    [Export] protected InteractableArea2D interactArea;
 	[ExportGroup("Inmutables")]
-	[Export] protected AnimationPlayer storePlayer;
 	[Export] protected GridContainer itemGrid;
 	[Export] protected RichTextLabel itemName, itemDescription;
 	[Export] protected RichTextLabel itemCost;
@@ -21,27 +21,28 @@ public partial class ShopInterface : Control
 	[Export] protected Texture2D defaultIcon;
 
 	protected ItemData current_item;
-	protected ItemData[] current_list;
+	protected ItemData[] current_store_list;
 
 	// ===============| Shelf products |=============
 	public override void _EnterTree()
 	{
-		FetchItemList();
 		CleanShelf();
-		Menu = new MenuInstance(GetShopTagName(),
-			storePlayer,
-			Open: _ =>
-			{
-				ResetShop();
-				SoundManager.CreateSound("ui/store_bell");
-			},
-			null,
-			Close: _ => CleanShelf()
-		);
 		itemBuyButton.Pressed += TryPurchase;
 		if (IsInstanceValid(interactArea))
-			interactArea.OnInteractOnly.Add(SetMenu);
+			interactArea.OnInteractOnly.Add(() => _ = CanvasManager.Menus.SetTo(GetMenuInstance()));
 	}
+	protected override void Open(MenuInstance _last)
+    {
+        if (current_store_list == null)
+			SetStoreList();
+		ResetShop();
+		SoundManager.CreateSound("ui/store_bell");
+    }
+    protected override void Close(MenuInstance _next)
+    {
+        CleanShelf();
+    }
+
 	protected virtual void ResetShop()
 	{
 		current_item = ItemData.Empty;
@@ -50,30 +51,44 @@ public partial class ShopInterface : Control
 		itemCost.Text = Tr($"store_{GetShopTagName()}_phrase");
 		itemIcon.Texture = defaultIcon;
 		itemBuyButton.Hide();
-		CreateShelf();
+		CreateShelfFromList();
 	}
-	protected virtual void FetchItemList()
+	/// <summary>
+	/// Generates the list of items based on the item list given by FetchStoreList().
+	/// </summary>
+	protected void SetStoreList()
 	{
+		List<ItemData> _list = FetchStoreList();
+		int _tier = GameManager.GetPlayerUpgradeElseEmpty("membership_tier").Level;
 		// Fetch item datas and order them
-		current_list = [.. GlobalManager.G_ITEMS.Values.Where(i => i.Shop == shopTag)];
-		current_list = [.. current_list.OrderBy(i => i.ShopOrderPriority)];
+		current_store_list = [.. _list
+				.Where(i => i.Shop == shopTag)
+				.Where(i => i.TierRequirement <= _tier)
+				.OrderBy(i => i.ShopOrderPriority)];
 	}
-	protected virtual void CreateShelf()
+	/// <summary>
+	/// Fetches the list of items to sell at this particular storefront.
+	/// </summary>
+	protected virtual List<ItemData> FetchStoreList()
+	{
+		return [.. GlobalManager.G_ITEMS.Values];
+	}
+	protected virtual void CreateShelfFromList()
 	{
 		// Create items slots
-		for (int i = 0; i < current_list.Length; i++)
+		for (int i = 0; i < current_store_list.Length; i++)
 		{
 			// create item slot
 			TextureButton _itemSlot = itemContainer.Instantiate() as TextureButton;
 			itemGrid.AddChild(_itemSlot);
 
 			// set icon
-			(_itemSlot.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(current_list[i].ID);
+			(_itemSlot.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(current_store_list[i].ID);
 			(_itemSlot.GetChild(0) as Control).SelfModulate = bgColorSlot;
 
 			// set behaviour
 			var _index = i;
-			_itemSlot.Pressed += () => SelectItem(current_list[_index]);
+			_itemSlot.Pressed += () => SelectItem(current_store_list[_index]);
 		}
 	}
 	protected virtual void CleanShelf()
@@ -81,14 +96,20 @@ public partial class ShopInterface : Control
 		for (int i = 0; i < itemGrid.GetChildCount(); i++)
 			itemGrid.GetChild(i).QueueFree();
 	}
-
+	/// <summary>
+	/// Sets the currently displayed item, override to affect how selection works.
+	/// </summary>
+	/// <param name="_item"></param>
 	protected virtual void SelectItem(ItemData _item)
 	{
-		// set this as current displayed item
 		if (current_item != _item)
-			SetItem(_item);
+			DisplayItem(_item);
 	}
-	protected virtual void SetItem(ItemData _item)
+	/// <summary>
+	/// Displays the currently set item, override to affect how display works.
+	/// </summary>
+	/// <param name="_item"></param>
+	protected virtual void DisplayItem(ItemData _item)
 	{
 		current_item = _item;
 
@@ -131,12 +152,6 @@ public partial class ShopInterface : Control
 	{
 		Player.RemoveCurrency(current_item.Cost);
 		SoundManager.CreateSound("ui/kaching");
-	}
-
-	public void SetMenu()
-	{
-		if (CanvasManager.Menus.Current != Menu)
-			_ = CanvasManager.Menus.SetTo(Menu);
 	}
 	public string GetShopTagName() => shopTag.ToString().ToLower();
 }

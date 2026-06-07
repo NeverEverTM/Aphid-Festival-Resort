@@ -12,6 +12,7 @@ public partial class SoundManager : Node
 	private static readonly List<AudioStreamPlayer> sound_entities = [];
 	private static readonly List<AudioStreamPlayer2D> sound2d_entities = [];
 	private static Tween transitionTween;
+	private static RandomNumberGenerator RNG = new();
 
 	public override void _Ready()
 	{
@@ -77,9 +78,9 @@ public partial class SoundManager : Node
 	{
 		string _song;
 		if (RoomInstance.TimeOfDay == RoomInstance.DayHourMode.Night)
-			_song = "night_" + GlobalManager.RNG.RandiRange(0, 0);
+			_song = "night_" + RNG.RandiRange(0, 0);
 		else
-			_song = "day_" + GlobalManager.RNG.RandiRange(0, 1);
+			_song = "day_" + RNG.RandiRange(0, 1);
 
 		PlaySong("music/" + _song);
 	}
@@ -148,7 +149,7 @@ public partial class SoundManager : Node
 		AudioStreamPlayer _player = _audioplayer.Duplicate() as AudioStreamPlayer;
 		_player.Stream = _stream;
 		if (_pitchRand)
-			_player.PitchScale += GlobalManager.RNG.RandfRange(-0.15f, 0.15f);
+			_player.PitchScale += RNG.RandfRange(-0.15f, 0.15f);
 
 		GlobalManager.Instance.AddChild(_player);
 		sound_entities.Add(_player);
@@ -182,7 +183,7 @@ public partial class SoundManager : Node
 		_player.Stream = _stream;
 		_player.GlobalPosition = _position;
 		if (_pitchRand)
-			_player.PitchScale += GlobalManager.RNG.RandfRange(-0.15f, 0.15f);
+			_player.PitchScale += RNG.RandfRange(-0.15f, 0.15f);
 
 		GlobalManager.Instance.AddChild(_player);
 		sound2d_entities.Add(_player);

@@ -1,12 +1,13 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://dcdbwyd2mevkk"]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://dcdbwyd2mevkk"]
 
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_28t4u"]
-[ext_resource type="Resource" uid="uid://cb61o2g1tda5f" path="res://databases/food/applesauce.tres" id="2_onct2"]
+[ext_resource type="Resource" uid="uid://dsjarno5sgp7j" path="res://databases/food/cake_mix.tres" id="2_28t4u"]
 [ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="3_rlg3j"]
+[ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="4_onct2"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_goe3v"]
 [ext_resource type="Resource" uid="uid://bkeegccdnd03o" path="res://databases/items/pretzel.tres" id="5_onct2"]
 
 [resource]
 script = ExtResource("5_goe3v")
 Owner = ExtResource("5_onct2")
-Combinations = Array[Array]([Array[ExtResource("1_28t4u")]([ExtResource("2_onct2"), ExtResource("3_rlg3j")])])
+Combinations = Array[Array]([Array[ExtResource("1_28t4u")]([ExtResource("2_28t4u"), ExtResource("3_rlg3j")]), Array[ExtResource("1_28t4u")]([ExtResource("2_28t4u"), ExtResource("4_onct2")])])

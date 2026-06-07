@@ -8,4 +8,4 @@ ID = "dry_bread"
 Type = 2
 Cost = 5
 Category = 1
-ShopOrderPriority = 24
+ShopOrderPriority = -1

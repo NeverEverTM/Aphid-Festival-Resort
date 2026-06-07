@@ -21,7 +21,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_uy04q"]
 resource_name = "start"
-length = 5.0
+length = 8.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -30,10 +30,10 @@ tracks/0/path = NodePath("Marker2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1.03333, 2.56667, 3.63333, 5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1.03333, 2.56667, 3.6666667, 4.7666664, 5.3333335),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 4), Vector2(20, 4), Vector2(20, 4), Vector2(0, 4), Vector2(0, 4)]
+"values": [Vector2(0, 4), Vector2(20, 4), Vector2(20, 4), Vector2(-10, 4), Vector2(-10, 4), Vector2(0, 4)]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -42,14 +42,17 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 2.56667, 4.4),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 2.56667, 6.1, 7.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "values": [{
 "args": [],
 "method": &"FlipAphidToTheRight"
 }, {
 "args": [],
 "method": &"FlipAphidToTheLeft"
+}, {
+"args": [],
+"method": &"HopAphid"
 }, {
 "args": [],
 "method": &"HopAphid"
@@ -62,20 +65,26 @@ tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 1, 2.56667, 3.63333),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1, 2.56667, 3.63333, 4.766667, 5.3333335),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "values": [{
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOn"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOff"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOn"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOff"
+}, {
+"args": [],
+"method": &"ToggleWalkOn"
+}, {
+"args": [],
+"method": &"ToggleWalkOff"
 }]
 }
 
@@ -89,12 +98,14 @@ _data = {
 size = Vector2(123, 42)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mvlf1"]
-size = Vector2(90, 9)
+size = Vector2(90, 18)
 
 [node name="kindergarten" type="Sprite2D" node_paths=PackedStringArray("restingPosition", "animator", "interactArea")]
 texture = ExtResource("1_mvlf1")
 offset = Vector2(0, -12)
 script = ExtResource("1_v0sp4")
+trainingSkill = 2
+StateToGo = 5
 restingPosition = NodePath("Marker2D")
 animator = NodePath("AnimationPlayer")
 interactArea = NodePath("Area2D")
@@ -128,5 +139,5 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(0, -3.5)
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_mvlf1")

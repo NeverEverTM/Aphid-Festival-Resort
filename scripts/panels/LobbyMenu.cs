@@ -10,10 +10,10 @@ public partial class LobbyMenu : Control
     [Export] private Button[] categoryButtons;
     [Export] private Control[] categoryNodes;
     [ExportGroup("Aphid")]
-    [Export] private TextureButton moveAphidButton, sellAphidButton;
-    [Export] private Label aphidCost, aphidName;
+    [Export] private BaseButton sellAphidButton;
+    [Export] private RichTextLabel aphidCostLabel, aphidNameLabel, noAphidLabel;
     [Export] private GridContainer aphidContainer;
-    [Export] private Control aphidNode;
+    [Export] private Control aphidNode, displayContents;
     [ExportGroup("Upgrades")]
     [Export] private Container upgradeSlotsGrid;
     [Export] private RichTextLabel upgradeNameLabel, upgradeDescLabel;
@@ -28,7 +28,7 @@ public partial class LobbyMenu : Control
     private Guid current_key;
     private Control current_slot;
     private MenuInstance menu;
-    private GlobalUpgrades.IUpgradeModuleCore current_upgrade;
+    private UpgradeHub.IUpgradeModuleCore current_upgrade;
 
     public override void _EnterTree()
     {
@@ -59,24 +59,7 @@ public partial class LobbyMenu : Control
         sellAphidButton.Pressed += () => ConfirmationPopup.Create(SellAphid, null,
             ConfirmationPopup.ConfirmationEnum.Fast);
         upgradeBuyButton.Pressed += PurchaseUpgrade;
-
         interactArea.OnInteractOnly.Add(SetMenu);
-
-# if DEBUG
-        for (int i = 0; i < GlobalUpgrades.AVAILABLE_UPGRADES.Count; i++)
-        {
-            string _id = GlobalUpgrades.AVAILABLE_UPGRADES[i].ID;
-            int _count = 0;
-
-            for (int a = 0; a < GlobalUpgrades.AVAILABLE_UPGRADES.Count; a++)
-            {
-                if (GlobalUpgrades.AVAILABLE_UPGRADES[a].ID == _id)
-                    _count++;
-                if (_count > 1)
-                    DebugLogger.Print(DebugLogger.LogPriority.Error, $"LobbyMenu: {_id} upgrade already exists");
-            }
-        }
-# endif
     }
 
     public void SetMenu() =>
@@ -106,9 +89,10 @@ public partial class LobbyMenu : Control
         }
 
         if (GameManager.Aphids.Count == 0)
-            aphidName.Text = Tr("lobby_aphid_noaphids");
+            noAphidLabel.Show();
         else
         {
+            noAphidLabel.Hide();
             aphidContainer.GetChild<Control>(0).GrabFocus();
             SetAphidIcon(GameManager.Aphids.First().Value.GUID);
         }
@@ -121,12 +105,8 @@ public partial class LobbyMenu : Control
         for (int i = 0; i < aphidContainer.GetChildCount(); i++)
             aphidContainer.GetChild(i).QueueFree();
 
+        displayContents.Hide();
         current_key = Guid.Empty;
-
-        aphidName.Text = string.Empty;
-        aphidCost.Hide();
-        moveAphidButton.Hide();
-        sellAphidButton.Hide();
     }
     private void SetAphidIcon(Guid _key)
     {
@@ -138,13 +118,10 @@ public partial class LobbyMenu : Control
         current_key = _key;
 
         // set interface
-        aphidCost.Text = GetAphidValue(_aphid).ToString();
-        aphidName.Text = _aphid.Genes.Name;
+        aphidCostLabel.Text = StringNames.BerryIcon + " " + GetAphidValue(_aphid).ToString();
+        aphidNameLabel.Text = _aphid.Genes.Name;
         aphidNode.AddChild(CanvasManager.CreateAphidSlot(_key, true));
-
-        aphidCost.Show();
-        moveAphidButton.Show();
-        sellAphidButton.Show();
+        displayContents.Show();
     }
     private void SellAphid()
     {
@@ -197,10 +174,17 @@ public partial class LobbyMenu : Control
     // MARK: Upgrades Category
     private void UpdateUpgradesPanel()
     {
+        var _currentUpgrade = current_upgrade;
         ClearUpdatePanel();
 
-        for (int i = 0; i < GlobalUpgrades.AVAILABLE_UPGRADES.Count; i++)
-            CreateUpgradeSlot(GlobalUpgrades.AVAILABLE_UPGRADES[i]);
+        for (int i = 0; i < UpgradeHub.G_UPGRADES.Count; i++)
+            CreateUpgradeSlot(UpgradeHub.G_UPGRADES[i]);
+
+        if (_currentUpgrade != null)
+        {
+            current_upgrade = _currentUpgrade;
+            ShowUpgrade(current_upgrade);
+        }
     }
     private void ClearUpdatePanel()
     {
@@ -212,10 +196,10 @@ public partial class LobbyMenu : Control
         for (int i = 0; i < upgradeSlotsGrid.GetChildCount(); i++)
             upgradeSlotsGrid.GetChild(i).QueueFree();
     }
-    private void CreateUpgradeSlot(GlobalUpgrades.IUpgradeModuleCore _upgrade)
+    private void CreateUpgradeSlot(UpgradeHub.IUpgradeModuleCore _upgrade)
     {
         Button _slot = upgradeSlot.Instantiate<Button>();
-        GlobalUpgrades.UpgradeModule _playerUpgrade = GameManager.GetUpgrade(_upgrade.ID);
+        UpgradeHub.UpgradeModule _playerUpgrade = GameManager.GetPlayerUpgradeElseEmpty(_upgrade.ID);
 
         _slot.GetChild<RichTextLabel>(1).Text = $"lobby_upgrade_{_upgrade.ID}_name";
 
@@ -225,6 +209,8 @@ public partial class LobbyMenu : Control
             int _cost = _upgrade.Costs[_playerUpgrade.Level];
             _slot.GetChild<RichTextLabel>(2).Text = $"{StringNames.BerryIcon} {_cost}";
         }
+        else
+            _slot.GetChild<RichTextLabel>(2).QueueFree();
 
         // level
         RichTextLabel _levelLabel = _slot.GetChild<RichTextLabel>(3);
@@ -255,12 +241,12 @@ public partial class LobbyMenu : Control
 
         upgradeSlotsGrid.AddChild(_slot);
     }
-    private void ShowUpgrade(GlobalUpgrades.IUpgradeModuleCore _upgrade, bool _force = false)
+    private void ShowUpgrade(UpgradeHub.IUpgradeModuleCore _upgrade, bool _force = false)
     {
         if (_upgrade == null || _upgrade == current_upgrade && !_force)
             return;
 
-        GlobalUpgrades.UpgradeModule _playerUpgrade = GameManager.GetUpgrade(_upgrade.ID);
+        UpgradeHub.UpgradeModule _playerUpgrade = GameManager.GetPlayerUpgradeElseEmpty(_upgrade.ID);
         upgradeNameLabel.Text = Tr($"lobby_upgrade_{_upgrade.ID}_name");
 
         // check that we dont have already max level, if we do, dont show information about next level
@@ -272,7 +258,7 @@ public partial class LobbyMenu : Control
             upgradeNameLabel.AppendText($"{Tr("lobby_upgrade_cost")}: {StringNames.BerryIcon} {_cost}");
 
             // tier for next level
-            if (GameManager.GetUpgrade("membership_tier").Level < _upgrade.MinimumTiersRequired[_playerUpgrade.Level])
+            if (GameManager.GetPlayerUpgradeElseEmpty("membership_tier").Level < _upgrade.MinimumTiersRequired[_playerUpgrade.Level])
             {
                 upgradeNameLabel.AppendText($" [color=coral][shake]{Tr("lobby_upgrade_requires_tier")} {_upgrade.MinimumTiersRequired[_playerUpgrade.Level]}[/shake][/color]");
                 upgradeBuyButton.Hide();
@@ -295,18 +281,18 @@ public partial class LobbyMenu : Control
     }
     private void PurchaseUpgrade()
     {
-        GlobalUpgrades.UpgradeModule _playerUpgrade = GameManager.GetUpgrade(current_upgrade.ID);
+        UpgradeHub.UpgradeModule _playerUpgrade = GameManager.GetPlayerUpgradeElseEmpty(current_upgrade.ID);
         // we check if we have the money, and the tier needed
         if ((Player.Data.Currency - current_upgrade.Costs[_playerUpgrade.Level]) >= 0
-            && GameManager.GetUpgrade("membership_tier").Level >= current_upgrade.MinimumTiersRequired[_playerUpgrade.Level])
+            && GameManager.GetPlayerUpgradeElseEmpty("membership_tier").Level >= current_upgrade.MinimumTiersRequired[_playerUpgrade.Level])
         {
             Player.RemoveCurrency(current_upgrade.Costs[_playerUpgrade.Level]);
 
-            if (GameManager.HasUpgrade(current_upgrade.ID))
+            if (GameManager.HasPlayerUpgrade(current_upgrade.ID))
                 GameManager.Upgrades[current_upgrade.ID].Level++;
             else
                 GameManager.Upgrades.Add(current_upgrade.ID, new(1));
-            current_upgrade.OnPurchase(GameManager.Upgrades[current_upgrade.ID].Level);
+            current_upgrade.OnGameLoad(GameManager.Upgrades[current_upgrade.ID].Level);
             UpdateUpgradesPanel();
             ShowUpgrade(current_upgrade, true);
 		    SoundManager.CreateSound("ui/kaching");

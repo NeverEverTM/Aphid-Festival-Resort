@@ -10,4 +10,4 @@ Cost = 25
 TierRequirement = 1
 Category = 3
 Shop = 2
-ShopOrderPriority = 64
+ShopOrderPriority = 80

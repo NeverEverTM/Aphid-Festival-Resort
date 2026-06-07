@@ -1,4 +1,4 @@
-[gd_scene load_steps=118 format=4 uid="uid://bylkngpvchsr5"]
+[gd_scene load_steps=117 format=4 uid="uid://bylkngpvchsr5"]
 
 [ext_resource type="PackedScene" uid="uid://c6hlqyvj3a8n0" path="res://scenes/prefabs/base_room.tscn" id="1_muv3f"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="2_8r5qb"]
@@ -20,7 +20,6 @@
 [ext_resource type="Texture2D" uid="uid://bls6pxtlle4pf" path="res://sprites/ui/backgrounds/pause_menu_bg.png" id="10_vbue8"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/backgrounds/menu_clipboard.png" id="11_dh02v"]
 [ext_resource type="PackedScene" uid="uid://ttn1ivy2gfhv" path="res://scenes/prefabs/ui/animated_ui_display.tscn" id="12_qx61t"]
-[ext_resource type="LabelSettings" uid="uid://6u24mowlhh7j" path="res://resources/note_label.tres" id="12_thxrm"]
 [ext_resource type="Texture2D" uid="uid://b0whlhmjldgy8" path="res://sprites/props/wide_rug.png" id="13_0l57m"]
 [ext_resource type="PackedScene" uid="uid://dihhh1nui58uq" path="res://scenes/prefabs/ui/upgrade_slot.tscn" id="13_70sut"]
 [ext_resource type="Texture2D" uid="uid://04ej67djpwaa" path="res://sprites/ui/gui_icons/icon_ping.png" id="13_g10ix"]
@@ -43,7 +42,6 @@
 [ext_resource type="Texture2D" uid="uid://bsuc55oa64ybe" path="res://sprites/props/poster_misc.png" id="30_y7m8y"]
 [ext_resource type="Texture2D" uid="uid://bovn773irmul6" path="res://sprites/props/poster_mothiva.png" id="31_gxegt"]
 [ext_resource type="Texture2D" uid="uid://clx1ig1xwjor6" path="res://sprites/ui/portraits/landscape_grass.png" id="31_j2uo7"]
-[ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="32_7o284"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="32_bxqmb"]
 [ext_resource type="Texture2D" uid="uid://b5k6vxh4pmau5" path="res://sprites/ui/progress.png" id="32_kqy6y"]
 [ext_resource type="FontFile" uid="uid://44wnex0jkv1f" path="res://sprites/fonts/CabinCondensed-Regular.ttf" id="33_70sut"]
@@ -288,6 +286,8 @@ shader_parameter/useModulateAlpha = false
 line_spacing = 0.0
 font_size = 30
 font_color = Color(0, 0, 0, 1)
+shadow_color = Color(0, 0, 0, 0.39215687)
+shadow_offset = Vector2(2, 2)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_oo7cq"]
 atlas = ExtResource("15_scn4g")
@@ -395,6 +395,58 @@ tracks/7/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 0)]
 }
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath(".:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("panel/go_back:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_kqy6y"]
+resource_name = "SHADER_LOAD"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(0, 1),
+"update": 0,
+"values": [Vector2(0, -2000), Vector2(0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_kg0yq"]
 resource_name = "close"
@@ -499,6 +551,18 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("panel/go_back:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.24),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
 }
 
 [sub_resource type="Animation" id="Animation_hoq87"]
@@ -617,10 +681,23 @@ tracks/4/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("panel/go_back:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yw4sv"]
 _data = {
 &"RESET": SubResource("Animation_jkjy4"),
+&"SHADER_LOAD": SubResource("Animation_kqy6y"),
 &"close": SubResource("Animation_kg0yq"),
 &"close_blog": SubResource("Animation_70sut"),
 &"open": SubResource("Animation_hoq87"),
@@ -632,7 +709,7 @@ shader = ExtResource("2_8r5qb")
 shader_parameter/speed = 0.1
 shader_parameter/direction = Vector2(-1, 1)
 shader_parameter/node_size = Vector2(4, 4)
-shader_parameter/color = Color(0.344386, 0.199163, 0.958913, 0)
+shader_parameter/color = Color(0.6047364, 0.6242273, 0.996283, 0)
 shader_parameter/useModulateAlpha = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jkjy4"]
@@ -855,10 +932,10 @@ shader_parameter/color = Color(0.509804, 0.0901961, 0.133333, 0)
 shader_parameter/useModulateAlpha = true
 
 [sub_resource type="LabelSettings" id="LabelSettings_jyi3d"]
-font = ExtResource("32_7o284")
 font_size = 25
 font_color = Color(0, 0, 0, 1)
 shadow_size = 0
+shadow_color = Color(0, 0, 0, 0.39215687)
 
 [sub_resource type="LabelSettings" id="LabelSettings_slrut"]
 font_size = 50
@@ -1054,7 +1131,7 @@ position = Vector2(726, 292)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." index="3"]
 
-[node name="lobby_menu" type="Control" parent="CanvasLayer" index="0" node_paths=PackedStringArray("interactArea", "animator", "categoryButtons", "categoryNodes", "moveAphidButton", "sellAphidButton", "aphidCost", "aphidName", "aphidContainer", "aphidNode", "upgradeSlotsGrid", "upgradeNameLabel", "upgradeDescLabel", "upgradeBuyButton", "statsDisplay", "pronounsLabel", "nameLabel", "pronounsDisplay", "nameDisplay")]
+[node name="lobby_menu" type="Control" parent="CanvasLayer" index="0" node_paths=PackedStringArray("interactArea", "animator", "categoryButtons", "categoryNodes", "sellAphidButton", "aphidCostLabel", "aphidNameLabel", "noAphidLabel", "aphidContainer", "aphidNode", "displayContents", "upgradeSlotsGrid", "upgradeNameLabel", "upgradeDescLabel", "upgradeBuyButton", "statsDisplay", "pronounsLabel", "nameLabel", "pronounsDisplay", "nameDisplay")]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -1067,12 +1144,13 @@ interactArea = NodePath("../../lobby_table/lobby_trigger")
 animator = NodePath("lobby_player")
 categoryButtons = [NodePath("window_bg/categories/aphids_button"), NodePath("window_bg/categories/resort_button"), NodePath("window_bg/categories/stats_button")]
 categoryNodes = [NodePath("window_bg/aphid"), NodePath("window_bg/upgrades"), NodePath("window_bg/stats")]
-moveAphidButton = NodePath("window_bg/aphid/aphid_display/move_button")
-sellAphidButton = NodePath("window_bg/aphid/aphid_display/sell_button")
-aphidCost = NodePath("window_bg/aphid/aphid_display/aphid_cost")
-aphidName = NodePath("window_bg/aphid/aphid_display/aphid_name")
+sellAphidButton = NodePath("window_bg/aphid/aphid_display/display_contents/sell_button")
+aphidCostLabel = NodePath("window_bg/aphid/aphid_display/display_contents/aphid_cost")
+aphidNameLabel = NodePath("window_bg/aphid/aphid_display/display_contents/aphid_name")
+noAphidLabel = NodePath("window_bg/aphid/aphid_display/no_aphids")
 aphidContainer = NodePath("window_bg/aphid/aphidContainer_scroll/aphid_container")
-aphidNode = NodePath("window_bg/aphid/aphid_display/aphid_node")
+aphidNode = NodePath("window_bg/aphid/aphid_display/display_contents/aphid_node")
+displayContents = NodePath("window_bg/aphid/aphid_display/display_contents")
 upgradeSlotsGrid = NodePath("window_bg/upgrades/upgrades_grid/upgrades_vbox")
 upgradeNameLabel = NodePath("window_bg/upgrades/desc_bg/name_label")
 upgradeDescLabel = NodePath("window_bg/upgrades/desc_bg/desc_label")
@@ -1264,129 +1342,69 @@ patch_margin_bottom = 30
 axis_stretch_horizontal = 2
 axis_stretch_vertical = 2
 
-[node name="aphid_node" type="Control" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display" index="0"]
+[node name="display_contents" type="Control" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display" index="0"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="sell_button" type="Button" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/display_contents" index="0"]
+light_mask = 0
+layout_mode = 0
+offset_left = 28.0
+offset_top = 374.0
+offset_right = 312.0
+offset_bottom = 462.0
+text = "sell_button"
+
+[node name="aphid_cost" type="RichTextLabel" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/display_contents" index="1"]
+layout_mode = 0
+offset_left = 87.0
+offset_top = 315.0
+offset_right = 247.0
+offset_bottom = 363.0
+theme_type_variation = &"RTL_Black"
+text = "9999"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="aphid_node" type="Control" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/display_contents" index="2"]
 anchors_preset = 0
 offset_left = 70.0
-offset_top = 91.0
+offset_top = 107.0
 offset_right = 197.0
-offset_bottom = 219.0
+offset_bottom = 235.0
 scale = Vector2(1.5, 1.5)
 
-[node name="aphid_slot" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/aphid_node" index="0" instance=ExtResource("8_k0hcu")]
+[node name="aphid_slot" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/display_contents/aphid_node" index="0" instance=ExtResource("8_k0hcu")]
 layout_mode = 0
 
-[node name="move_button" type="TextureButton" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display" index="1"]
-modulate = Color(0.473976, 0.473976, 0.473976, 1)
-self_modulate = Color(0.745098, 0.317647, 0.403922, 0)
-light_mask = 0
-layout_mode = 0
-offset_left = -11.0
-offset_top = 289.0
-offset_right = 346.0
-offset_bottom = 357.0
-focus_mode = 0
-mouse_default_cursor_shape = 8
-disabled = true
-texture_normal = ExtResource("8_ifagq")
-stretch_mode = 5
-script = ExtResource("5_mq0ss")
-PressedColor = Color(0.601223, 0.601223, 0.601223, 1)
-FocusColor = Color(0.730156, 0.86866, 0.85301, 1)
-HoverColor = Color(0.868985, 0.868985, 0.868985, 1)
-metadata/_custom_type_script = "uid://clrj1y6xmjq83"
-
-[node name="move_label" type="Label" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/move_button" index="0"]
-layout_mode = 0
-offset_left = 19.0
-offset_top = 7.0
-offset_right = 334.0
-offset_bottom = 58.0
-mouse_filter = 1
-text = "prompt_move"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="move_bg" type="NinePatchRect" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/move_button" index="1"]
-self_modulate = Color(0.745098, 0.317647, 0.403922, 1)
-show_behind_parent = true
-layout_mode = 0
-offset_left = 25.0
-offset_right = 331.0
-offset_bottom = 66.0
-texture = ExtResource("8_ifagq")
-patch_margin_left = 30
-patch_margin_top = 30
-patch_margin_right = 30
-patch_margin_bottom = 30
-
-[node name="aphid_cost" type="Label" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display" index="2"]
-layout_mode = 0
-offset_left = 105.0
-offset_top = 352.0
-offset_right = 258.0
-offset_bottom = 403.0
-text = "9999"
-label_settings = ExtResource("12_thxrm")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="aphid_cost_icon" type="TextureRect" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/aphid_cost" index="0"]
-layout_mode = 0
-offset_left = -19.0
-offset_top = -2.0
-offset_right = 32.0
-offset_bottom = 52.0
-texture = ExtResource("9_kdre1")
-
-[node name="sell_button" type="TextureButton" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display" index="3"]
-self_modulate = Color(0.745098, 0.317647, 0.403922, 0)
-light_mask = 0
-layout_mode = 0
-offset_left = -11.0
-offset_top = 396.0
-offset_right = 346.0
-offset_bottom = 464.0
-texture_normal = ExtResource("8_ifagq")
-stretch_mode = 5
-script = ExtResource("5_mq0ss")
-PressedColor = Color(0.601223, 0.601223, 0.601223, 1)
-FocusColor = Color(0.730156, 0.86866, 0.85301, 1)
-HoverColor = Color(0.868985, 0.868985, 0.868985, 1)
-metadata/_custom_type_script = "uid://clrj1y6xmjq83"
-
-[node name="sell_label" type="Label" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/sell_button" index="0"]
-layout_mode = 0
-offset_left = 23.0
-offset_top = 9.0
-offset_right = 333.0
-offset_bottom = 62.0
-mouse_filter = 1
-text = "prompt_sell"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="sell_bg" type="NinePatchRect" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/sell_button" index="1"]
-self_modulate = Color(0.745098, 0.317647, 0.403922, 1)
-show_behind_parent = true
-layout_mode = 0
-offset_left = 25.0
-offset_top = 2.0
-offset_right = 331.0
-offset_bottom = 68.0
-texture = ExtResource("8_ifagq")
-patch_margin_left = 30
-patch_margin_top = 30
-patch_margin_right = 30
-patch_margin_bottom = 30
-
-[node name="aphid_name" type="Label" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display" index="4"]
+[node name="aphid_name" type="RichTextLabel" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/display_contents" index="3"]
 layout_mode = 0
 offset_left = 20.0
-offset_top = 44.0
-offset_right = 315.0
-offset_bottom = 92.0
+offset_top = 52.0
+offset_right = 316.0
+offset_bottom = 100.0
+theme_type_variation = &"RTL_Black"
 text = "Apartment Complex"
-label_settings = ExtResource("12_thxrm")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="no_aphids" type="RichTextLabel" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display" index="1"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -95.0
+offset_top = -49.5
+offset_right = 95.0
+offset_bottom = 49.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"RTL_Black"
+text = "lobby_aphid_noaphids"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -1439,25 +1457,25 @@ offset_left = 18.0
 offset_top = 21.0
 offset_right = 498.0
 offset_bottom = 125.0
-theme_override_constants/outline_size = 6
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
 text = "rather long name for an upgrade
 Cost: 500 [img height=50]res://sprites/ui/berries.tres[/img] [color=coral][shake]Requires Tier 1[/shake][/color]"
 
 [node name="desc_label" type="RichTextLabel" parent="CanvasLayer/lobby_menu/window_bg/upgrades/desc_bg" index="1"]
 layout_mode = 0
-offset_left = 18.0
+offset_left = 28.0
 offset_top = 151.0
-offset_right = 497.0
+offset_right = 485.0
 offset_bottom = 410.0
 bbcode_enabled = true
 text = "Grants you access to the Hat Shop."
 
 [node name="buy_button" type="Button" parent="CanvasLayer/lobby_menu/window_bg/upgrades/desc_bg" index="2"]
 layout_mode = 0
-offset_left = 90.0
+offset_left = 98.0
 offset_top = 423.0
-offset_right = 515.0
+offset_right = 523.0
 offset_bottom = 511.0
 scale = Vector2(0.75, 0.75)
 text = "story_buy"
@@ -1491,6 +1509,7 @@ offset_left = 18.0
 offset_top = 20.0
 offset_right = 647.0
 offset_bottom = 428.0
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
 text = "Total Overall Aphid Count: 100
 Items Sold: 5
@@ -1578,6 +1597,7 @@ label_settings = SubResource("LabelSettings_y7m8y")
 autowrap_mode = 3
 
 [node name="membership_badge" type="TextureRect" parent="CanvasLayer/lobby_menu/window_bg/stats/customization" index="5"]
+visible = false
 layout_mode = 0
 offset_left = 26.0
 offset_top = 33.0
@@ -1688,7 +1708,7 @@ layout_mode = 0
 offset_left = 52.0
 offset_top = 22.0
 offset_right = 1228.0
-offset_bottom = 693.99976
+offset_bottom = 693.9999
 mouse_filter = 1
 texture = ExtResource("2_nneko")
 patch_margin_left = 20
@@ -1722,7 +1742,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -16.0
 offset_top = 148.0
-offset_right = -654.0
+offset_right = -654.00024
 offset_bottom = 13.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -1732,7 +1752,7 @@ texture = ExtResource("19_hoq87")
 layout_mode = 0
 offset_left = 18.0
 offset_top = 16.0
-offset_right = 1083.0
+offset_right = 1083.0007
 offset_bottom = 571.0
 
 [node name="blog_container" type="VBoxContainer" parent="CanvasLayer/news_menu/panel/text_bg/blog_scroller" index="0"]
@@ -1752,7 +1772,7 @@ offset_top = 18.0
 offset_right = 1081.0
 offset_bottom = 581.0
 focus_mode = 2
-theme_override_constants/outline_size = 8
+theme_type_variation = &"RTL_Black"
 theme_override_fonts/normal_font = ExtResource("33_70sut")
 bbcode_enabled = true
 text = " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lacinia orci lectus, vel tincidunt justo condimentum sed. Nunc sit amet pellentesque neque, nec tincidunt lorem. Vestibulum eros mi, vestibulum quis lacinia et, aliquam a velit. Praesent sed accumsan tellus. Morbi aliquet eleifend dolor at elementum. Ut augue neque, sagittis ac laoreet ac, porta at est. Ut non est ipsum. Quisque placerat, felis quis varius sagittis, lorem ligula gravida justo, eget gravida nunc erat et purus. Sed eu sodales nisl. Quisque sed venenatis mauris, ut sodales enim. Sed vehicula metus et mauris feugiat facilisis. Aenean et nisl mattis, tincidunt neque vel, aliquam ex. Donec nec magna at arcu dignissim egestas sed et ex.
@@ -1761,7 +1781,7 @@ Etiam egestas leo nec risus varius, fermentum consectetur libero vestibulum. Pha
 selection_enabled = true
 
 [node name="go_back" type="TextureButton" parent="CanvasLayer/news_menu/panel" index="1"]
-self_modulate = Color(1, 1, 1, 0)
+visible = false
 light_mask = 0
 layout_mode = 0
 offset_left = -21.0
@@ -1777,7 +1797,7 @@ FocusColor = Color(0.789173, 0.789172, 0.789172, 1)
 HoverColor = Color(0.800491, 0.800491, 0.800491, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
-[node name="job_menu" type="Control" parent="CanvasLayer" index="2" node_paths=PackedStringArray("interactArea", "animation_player", "slot_container", "aphid_node", "skill_bar_bg", "request_background_frame", "description_label", "reward_label", "timer_label", "assign_button", "request_background", "job_skills")]
+[node name="job_menu" type="Control" parent="CanvasLayer" index="2" node_paths=PackedStringArray("interactArea", "animation_player", "slot_container", "aphid_node", "skill_bar_bg", "request_background_frame", "information_node", "description_label", "reward_label", "timer_label", "information_label", "assign_button", "request_background", "job_skills")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -1796,15 +1816,15 @@ job_current_material = ExtResource("28_m11w5")
 aphid_node = NodePath("job_display/background/aphid_node")
 skill_bar_bg = NodePath("job_display/skills_bar")
 request_background_frame = NodePath("job_display/background/background_frame")
+information_node = NodePath("job_display/information_bg")
 description_label = NodePath("job_display/description")
 reward_label = NodePath("job_display/reward")
 timer_label = NodePath("job_display/timer")
+information_label = NodePath("job_display/information_bg/information")
 assign_button = NodePath("job_display/assign_button")
 request_background = NodePath("job_display/background")
 job_skills = [NodePath("job_display/skills_bar/skill_slot_0"), NodePath("job_display/skills_bar/skill_slot_1"), NodePath("job_display/skills_bar/skill_slot_2"), NodePath("job_display/skills_bar/skill_slot_3")]
 difficulty_colors = PackedColorArray(0.364927, 0.627521, 0.914871, 1, 0.4514, 0.744603, 0.335005, 1, 0.944878, 0.541226, 3.85046e-07, 1, 0.755841, 0, 0.279716, 1, 0.501823, 0.00759763, 0.465822, 1)
-difficulty_rand_ranges = PackedInt32Array(2, 3, 5, 10, 20)
-difficulty_range_mins = PackedInt32Array(1, 2, 5, 20, 50)
 
 [node name="job_player" type="AnimationPlayer" parent="CanvasLayer/job_menu" index="0"]
 libraries = {
@@ -1841,10 +1861,10 @@ axis_stretch_vertical = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/job_menu/slot_container" index="0"]
 layout_mode = 0
-offset_left = 27.0
-offset_top = 21.0
-offset_right = 781.0
-offset_bottom = 628.0
+offset_left = 26.0
+offset_top = 28.0
+offset_right = 772.0
+offset_bottom = 626.0
 
 [node name="GridContainer" type="GridContainer" parent="CanvasLayer/job_menu/slot_container/ScrollContainer" index="0"]
 layout_mode = 2
@@ -1906,7 +1926,7 @@ light_mask = 0
 layout_mode = 0
 offset_left = 850.0
 offset_top = 36.0
-offset_right = 1262.999
+offset_right = 1262.9989
 offset_bottom = 681.0
 rotation = 0.0872665
 texture = ExtResource("11_dh02v")
@@ -2029,7 +2049,39 @@ texture = SubResource("AtlasTexture_83rcj")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="skills_bar" type="NinePatchRect" parent="CanvasLayer/job_menu/job_display" index="5"]
+[node name="information_bg" type="NinePatchRect" parent="CanvasLayer/job_menu/job_display" index="5"]
+self_modulate = Color(1, 0.83137256, 0.62352943, 1)
+light_mask = 0
+layout_mode = 0
+offset_left = 32.0
+offset_top = 581.0
+offset_right = 380.0
+offset_bottom = 666.0
+texture = ExtResource("8_ifagq")
+patch_margin_left = 20
+patch_margin_top = 20
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="information" type="RichTextLabel" parent="CanvasLayer/job_menu/job_display/information_bg" index="0"]
+light_mask = 0
+layout_mode = 0
+offset_left = 4.0
+offset_top = 5.0
+offset_right = 345.0
+offset_bottom = 82.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.1764706)
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "Really large aphid name is on it!
+Success Chance: 50%
+"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="skills_bar" type="NinePatchRect" parent="CanvasLayer/job_menu/job_display" index="6"]
 self_modulate = Color(0.654902, 0.321569, 0.513726, 1)
 light_mask = 0
 layout_mode = 0
@@ -2175,7 +2227,8 @@ label_settings = ExtResource("34_rnwkl")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="assign_button" type="Button" parent="CanvasLayer/job_menu/job_display" index="6"]
+[node name="assign_button" type="Button" parent="CanvasLayer/job_menu/job_display" index="7"]
+visible = false
 light_mask = 0
 layout_mode = 0
 offset_left = 51.0

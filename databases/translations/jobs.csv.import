@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://pv2wdrabs6p"
+
+[deps]
+
+files=["res://databases/translations/jobs.en.translation", "res://databases/translations/jobs.es.translation"]
+
+source_file="res://databases/translations/jobs.csv"
+dest_files=["res://databases/translations/jobs.en.translation", "res://databases/translations/jobs.es.translation"]
+
+[params]
+
+compress=true
+delimiter=0

@@ -1,13 +1,14 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://cnbxymll0xur5"]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://cnbxymll0xur5"]
 
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_4dx7j"]
 [ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="2_u44c7"]
 [ext_resource type="Resource" uid="uid://dn3ddy733owwl" path="res://databases/food/dry_bread.tres" id="3_ofj5f"]
 [ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="4_f3ul4"]
+[ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="5_u44c7"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="6_0pmm0"]
 [ext_resource type="Resource" uid="uid://bx5xv2cat0kf7" path="res://databases/items/leaf_croissant.tres" id="6_u44c7"]
 
 [resource]
 script = ExtResource("6_0pmm0")
 Owner = ExtResource("6_u44c7")
-Combinations = Array[Array]([Array[ExtResource("1_4dx7j")]([ExtResource("2_u44c7"), ExtResource("3_ofj5f")]), Array[ExtResource("1_4dx7j")]([ExtResource("2_u44c7"), ExtResource("4_f3ul4")])])
+Combinations = Array[Array]([Array[ExtResource("1_4dx7j")]([ExtResource("2_u44c7"), ExtResource("3_ofj5f")]), Array[ExtResource("1_4dx7j")]([ExtResource("2_u44c7"), ExtResource("4_f3ul4")]), Array[ExtResource("1_4dx7j")]([ExtResource("4_f3ul4"), ExtResource("5_u44c7")])])

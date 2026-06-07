@@ -6,8 +6,8 @@
 script = ExtResource("1_akgjg")
 ID = "plant_sap"
 Type = 2
-Cost = 5
+Cost = 4
 TierRequirement = 1
 Category = 1
 Shop = 1
-ShopOrderPriority = 8
+ShopOrderPriority = 10

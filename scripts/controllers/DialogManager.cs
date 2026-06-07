@@ -79,8 +79,9 @@ public partial class DialogManager : Control
 	/// <returns></returns>
 	public async Task OpenDialogBox(string _dialog_key, string _id = null, AudioStream _voice = null)
 	{
-		if (IsActive)
+		if (CanvasManager.Menus.Processing || GlobalManager.IsBusy || IsActive)
 			return;
+		GlobalManager.IsBusy = true;
 
 		// Set dialog state
 		IsActive = just_pressed = true;
@@ -93,7 +94,9 @@ public partial class DialogManager : Control
 		else
 			dialogName.GetParent<Control>().Hide();
 		Player.Instance.SetDisabled(true, true);
-		CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.TalkToNPC);
+		
+		CanvasManager.SetHUDTo(false);
+		AphidInfoPanel.Instance.SetDisplayMode(AphidInfoPanel.DisplayMode.Hidden);
 		if (!Instance.Visible)
 			Instance.Show();
 
@@ -106,7 +109,7 @@ public partial class DialogManager : Control
 				// reset dialog state
 				Instance.dialogDoneSign.Hide();
 				move_to_next = IsDialogFinished = false;
-				Instance.dialogText.Text = "";
+				Instance.dialogText.Text = string.Empty;
 				PaddingDelay = 0;
 
 				// get current dialog box by finding current splits
@@ -205,10 +208,12 @@ public partial class DialogManager : Control
 	}
 	public void CloseDialog()
 	{
-		Dialog = "";
 		IsActive = false;
-		Player.Instance.SetDisabled(false);
+		Dialog = string.Empty;
 		Instance.Hide();
+		CanvasManager.SetHUDTo(true);
+		Player.Instance.SetDisabled(false);
+		GlobalManager.IsBusy = false;
 	}
 	private void RegisterDialogCommand(int _startIndex)
 	{

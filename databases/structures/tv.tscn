@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://cwhom1s0n5b5c"]
 
 [ext_resource type="Texture2D" uid="uid://gujv3efg8i8e" path="res://sprites/props/tv_frame.png" id="1_dcqxn"]
-[ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/entities/TVScreenBehaviour.cs" id="2_3qsjy"]
+[ext_resource type="Script" uid="uid://b3wmd851s8kog" path="res://scripts/entities/TVScreenStructure.cs" id="2_3qsjy"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="3_buikv"]
 [ext_resource type="PackedScene" uid="uid://dka1ip2cyn76r" path="res://scenes/prefabs/tv_channels/channel_off.tscn" id="5_sxrii"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="8_uml7d"]
@@ -14,7 +14,7 @@ size = Vector2(7.18176, 7.89994)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_opwmt"]
 cull_mode = 1
-polygon = PackedVector2Array(-47.8521, -5.81926, 53.9165, -5.62422, 55.1646, -8.67532, 51.2505, -66.769, -47.525, -68.7967, -48.8082, -7.62907)
+polygon = PackedVector2Array(-47.8521, -5.81926, 53.9165, -5.62422, 55.1646, -8.67532, 49.7921, -69.3455, -46.91328, -69.24052, -48.8082, -7.62907)
 
 [node name="tv" type="Sprite2D" node_paths=PackedStringArray("changeChannelButton", "powerButton", "light", "contentAnchor")]
 texture = ExtResource("1_dcqxn")
@@ -34,7 +34,7 @@ position = Vector2(-2.85355, -4.21052)
 shape = SubResource("RectangleShape2D_1namf")
 
 [node name="switchChannel" type="Area2D" parent="."]
-position = Vector2(-58.4907, -2.66216)
+position = Vector2(53.5093, -2.66216)
 monitoring = false
 script = ExtResource("3_buikv")
 Tag = 3
@@ -46,7 +46,7 @@ debug_color = Color(0.78378, 0.378687, 0.561617, 0.42)
 metadata/tag = "interactable"
 
 [node name="powerButton" type="Area2D" parent="."]
-position = Vector2(54.291, -2.56063)
+position = Vector2(-57.709, -2.5606298)
 monitoring = false
 script = ExtResource("3_buikv")
 Tag = 3

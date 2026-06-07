@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://c071gwjyly1gw"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_r3w7f"]
+[ext_resource type="Resource" uid="uid://dwpfnxogs2lw6" path="res://databases/food/tangy_berry.tres" id="2_u0o3n"]
+[ext_resource type="Resource" uid="uid://tqr4clao4cij" path="res://databases/food/honey_drop.tres" id="3_lfttq"]
+[ext_resource type="Resource" uid="uid://b6xnudllhu78l" path="res://databases/food/glazed_honey.tres" id="4_u0o3n"]
+[ext_resource type="Resource" uid="uid://bh7lurr2mysup" path="res://databases/items/tangy_jam.tres" id="4_xq8i4"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_elqjo"]
+
+[resource]
+script = ExtResource("5_elqjo")
+Owner = ExtResource("4_xq8i4")
+Combinations = Array[Array]([Array[ExtResource("1_r3w7f")]([ExtResource("2_u0o3n"), ExtResource("3_lfttq")]), Array[ExtResource("1_r3w7f")]([ExtResource("2_u0o3n"), ExtResource("4_u0o3n")])])

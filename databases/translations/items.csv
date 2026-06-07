@@ -59,14 +59,14 @@ berry_icecream_name,Berry Ice Cream,Helado de Baya
 berry_icecream_desc,"For a hot summer day! Or any other season really, can't go wrong with it.","Para un caluroso día de verano! U cualquier otra estación, no puedes fallar con esto."
 honey_pancakes_name,Honey Pancakes,Panqueques de Miel
 honey_pancakes_desc,Heaven turned breakfast. A plate of delicious pancakes covered in honey.,Cielo hecho desayuno. Un plato de deliciosos panqueques cubiertos en miel.
-nutty_cake_name,Nutty Cake,Pastelito de Nuez
+nutty_cake_name,Nutty Muffin,Pastelillo de Nuez
 nutty_cake_desc,"A rather bitter but enjoyable pastry. Your aphid is not nut-allergic, right?","Un pastelillo amargo, pero incredible. No eres alergico a la nuez, verdad?"
 cake_name,Baked Cake,Pastel Horneado
 cake_desc,"As basic as a cake gets, to complain of no one.","Lo más basico que un pastel puede ser, pero a queja de quien."
-danger_spud_name,Danger Spud,Batata Toxica
-danger_spud_desc,"A toxin filled yam, seen by some as an exotic delicacy.","Una batata llena de toxinas, visto por muchos como un manjar curioso."
+danger_spud_name,Danger Spud,Batata Peligro
+danger_spud_desc,"A toxin filled yam, seen by some as an exotic delicacy.","Una batata llena de toxinas, visto por muchos como un manjar exotico."
 plain_tea_name,Plain Tea,Té Simple
-plain_tea_desc,Nothing beats a simple tea to accompany the noon.,Nada supera un simple té para acompañar la tarde.
+plain_tea_desc,Nothing beats a simple bitter tea to accompany the noon.,Nada supera un simple té amargo para acompañar la tarde.
 tangy_berry_name,Tangy Berry,Baya Acida
 tangy_berry_desc,"A strange berry, non-native of these lands. It's rarity makes it a luxurious ingredient.","Una baya extraña, no nativa de estos lares. Su rareza la hace un manjar lujurioso."
 leaf_croissant_name,Leaf Croissant,Croissant en Hoja
@@ -134,7 +134,7 @@ hot_bathtub_name,Jacuzzi,Jacuzzi
 hot_bathtub_desc,A fancy bath of warm water that will refresh back up any aphid that you put in.,Un baño de agua caliente de primera que refrescara a cualquier áfido al que pongas.
 trampoline_name,Trampoline,Trampolín
 trampoline_desc,"Fun for all ages, now with extra spring on your step.","Diversion para todas las edades, ahora con más salto por cada paso que des."
-train_dummy_name,Train Dummy,Muñeco de Entrenamiento
+train_dummy_name,Train Dummy,Muñeco de Entrenamie
 train_dummy_desc,Let it all against this outrageous looking fella that feels weirdly good to punch. Trains [img width=40]res://sprites/icons/strength.tres[/img].,"Dalo tu todo contra este muñeco de entrenamiento, golpearlo se siente extrañamente relajante. Entrena [img width=40]res://sprites/icons/strength.tres[/img]."
 runmill_name,Runmill,Cinta de Correr
 runmill_desc,"Give it your all and run a marathon, all while in the comfort of your own home. Trains [img width=40]res://sprites/icons/speed.tres[/img].",Corre un maratón en el comfort de tu propio hogar. Entrena [img width=40]res://sprites/icons/speed.tres[/img].
@@ -154,3 +154,31 @@ test_item_name,Mystery Item,Mystery Item
 test_item_desc,"This is an item for testing purposes, if you are seeing this, whoops!","This is an item for testing purposes, if you are seeing this, whoops!"
 aphid_name,Aphid,Aphid
 aphid_desc,"You wouldn't, right?","You wouldn't, right?"
+danger_shroom_name,Danger Shroom,Seta Peligro
+danger_shroom_desc,"It may bite back, but no one will say that the flavor isn't quite unique","Puede que muerda, pero nadie le quita que el sabor sea tan unico"
+poison_cake_name,Poison Cake,Pastel Toxico
+poison_cake_desc,The lethal dose of poison makes it the all more appetizing.,La dosis mortal de toxicidad lo hace aun más apetecible.
+frost_cake_name,Frost Cake,Pastel Helado
+frost_cake_desc,Nothing can quite break the ice as much as this frozen piece of sweet dough.,"Contrario a lo que dice el nombre, este dulce pastel contiene 0% helado."
+cake_mix_name,Cake Mix,Mezcla de Pastel
+cake_mix_desc,Used in the preparation of various pastries and baked goods.,Usada en la preparacion de postres y otros platillos dulces.
+cooked_danger_name,Cooked Danger,Peligro Cocido
+cooked_danger_desc,"Cooking it did not help, but atleast the texture improved.","Cocinarlo no ha ayudado, pero la textura ha mejorado."
+sweet_pudding_name,Sweet Pudding,Pudin de Dulce
+sweet_pudding_desc,"A delicious, simple pudding.",Un delicioso pudin simple.
+sweet_tea_name,Sweet Tea,Té Dulce
+sweet_tea_desc,"A warm, welcoming, sweet tea to accompany in a fresh morning.","Un té dulce, caliente y acogedor para una mañana fresca."
+danger_dish_name,Danger Dish,Platillo Peligro
+danger_dish_desc,A dish only the most brave can taste and live to tell the tale.,Un platillo que solo los más valientes pueden saborear y vivir para contarlo.
+sweet_shroom_name,Sweet Shroom,Hongo Dulce
+sweet_shroom_desc,A slightly more filling and pleasant snack.,Un snack ligeramente más delicioso y nutritivo.
+tangy_jam_name,Tangy Jam,Jalea Agria
+tangy_jam_desc,"A jam made of tangy berries and various sweetners, despite this, the flavor persists.","Una jalea hecha con bayas agrias y varios azucares, aun así, el sabor persiste."
+tangy_cake_name,Tangy Cake,Pastel Agrio
+tangy_cake_desc,"A five star dish in the Eastern Lands due to its unique tangy flavor, and smooth berry frosting.",Un platillo de cinco estrellas en las Tierras del Este debido a su unico sabor agrio e irresistible nata.
+berry_cake_name,Berry Cake,Pastel de Baya
+berry_cake_desc,"A berry nice, berry bitter, piece of berry cake.","Baya, baya, pero que tenemos aqui. Baya pedazo de pastel, y fresco tambien!"
+mushroom_skewer_name,Mushroom Skewer,Brocheta de Hongos
+mushroom_skewer_desc,"A shroom on a stick, not to be confused with a shroomstick.","Hongos cocidos puestos en brocheta, un clasico en expediciones."
+tangy_juice_name,Tangy Juice,Jugo Agrio
+tangy_juice_desc,A tropical beverage with a spicy aftertaste and a strong presence.,"Una bebida tropical, con un sabor picante y una presencia poderosa."

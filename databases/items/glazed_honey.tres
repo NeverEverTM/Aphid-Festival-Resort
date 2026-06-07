@@ -10,4 +10,4 @@ Cost = 4
 TierRequirement = 2
 Category = 1
 Shop = 1
-ShopOrderPriority = 10
+ShopOrderPriority = 8

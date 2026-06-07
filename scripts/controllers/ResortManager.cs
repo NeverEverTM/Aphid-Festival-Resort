@@ -110,15 +110,21 @@ public partial class ResortManager : Node2D
 		SaveModule.AddEventListener(OnLoadFinish, SaveSystem.SaveEventsEnum.OnLoadFinish);
 		SaveSystem.AddSaveModule(SaveModule);
 	}
-
+    public override void _ExitTree()
+    {
+		// set all existing aphids into passive mode
+        for (int i = 0; i < Aphids.Count; i++)
+			Aphids[i].Instance.EnterMode(AphidData.EntityStatusType.Passive);
+    }
 	private void OnLoadFinish(SaveSystem.SaveEventArgs _)
 	{
 		// spawn aphids
 		foreach (KeyValuePair<Guid, AphidInstance> _pair in GameManager.Aphids)
 		{
 			string _resort = _pair.Value.Status.HomeResort;
-			if (!string.IsNullOrEmpty(_resort) && _resort == Current.Resort
-					&& _pair.Value.Status.Mode != AphidData.EntityStatusType.Busy)
+			if (string.IsNullOrWhiteSpace(_resort))
+				continue;
+			if (_resort == Current.Resort && _pair.Value.Status.Mode != AphidData.EntityStatusType.Busy)
 				SpawnAphid(_pair.Value);
 		}
 
@@ -138,7 +144,7 @@ public partial class ResortManager : Node2D
 	// =========| Object Creation |===============
 	public static Aphid SpawnAphid(AphidInstance _instance)
 	{
-		_instance.Status.Mode = AphidData.EntityStatusType.Active;
+		_instance.EnterMode(AphidData.EntityStatusType.Active);
 		Aphid _aphid = Current.aphidEntity.Instantiate() as Aphid;
 
 		_aphid.Instance = _instance;

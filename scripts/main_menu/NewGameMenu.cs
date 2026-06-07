@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public partial class NewGameMenu : Control
@@ -13,6 +14,7 @@ public partial class NewGameMenu : Control
 	private static partial Regex strip_bbcode();
 	private const int resort_char_limit = 40, name_char_limit = 15, pronouns_char_limit = 25;
 	private MenuInstance menu;
+	private Dictionary<Control, Vector2> cached_positions = [];
 
 	/// <summary>
 	/// Last valid new name set during game creation. All Player instances inherit this by default.
@@ -34,11 +36,21 @@ public partial class NewGameMenu : Control
 	{
 		SetProcessInput(false);
 		new_game_button.Pressed += CreateResort;
-		player_name_input.TextChanged += () => SoundManager.CreateSound("ui/key_type", false);
-		pronouns_input.TextChanged += () => SoundManager.CreateSound("ui/key_type", false);
-		resort_name_input.TextChanged += () => SoundManager.CreateSound("ui/key_type", false);
-		new_game_button.Pressed += () => SoundManager.CreateSound("ui/lock");
-    }
+		player_name_input.TextChanged += () => TextTween(player_name_input);
+		pronouns_input.TextChanged += () => TextTween(pronouns_input);
+		resort_name_input.TextChanged += () => TextTween(resort_name_input);
+	}
+	private void TextTween(Control _node)
+	{
+		if (!cached_positions.ContainsKey(_node))
+			cached_positions.Add(_node, _node.Position);
+		_node.Position = cached_positions[_node];
+		SoundManager.CreateSound("ui/key_type", false);
+
+		Tween _tween = _node.CreateTween();
+		_tween.TweenProperty(_node, "position", _node.Position + new Vector2(0,5), 0);
+		_tween.TweenProperty(_node, "position", _node.Position, 0.05f);
+	}
 
 	public void Open(MenuInstance _next)
 	{
@@ -93,10 +105,16 @@ public partial class NewGameMenu : Control
 	private async void CreateResort()
 	{
 		if (GlobalManager.IsBusy)
+		{
+			SoundManager.CreateSound("ui/button_fail");
 			return;
+		}
 
 		if (!SanitizeResortName(out string _resortName))
+		{
+			SoundManager.CreateSound("ui/button_fail");
 			return;
+		}
 
 		// Start the game
 		GameManager.IsANewSavefile = true;
@@ -105,6 +123,7 @@ public partial class NewGameMenu : Control
 		NewPronouns = SanitizePronouns();
 
 		await SaveSystem.CreateProfile();
+		SoundManager.CreateSound("ui/lock");
 		MainMenu.LoadResort();
 	}
 	private bool SanitizeResortName(out string _resortName)
@@ -113,11 +132,13 @@ public partial class NewGameMenu : Control
 
 		switch (_resortName)
 		{
+#if DEBUG
 			// Its a secreeeeeet
 			case "iblamemar":
 				DebugConsole.IsOnDebugModeAndThereforeExemptFromAnyRightOfComplainForFaultyProductAndPossibilityOfACaseOfCourt = true;
 				SoundManager.CreateSound("aphid/hurt");
 				return false;
+#endif
 			case "MEDIC!":
 			case "medic!":
 				SoundManager.CreateSound("misc/medic_prognosis", false);
@@ -134,7 +155,7 @@ public partial class NewGameMenu : Control
 		}
 
 		// Already Exists
-		if (DirAccess.DirExistsAbsolute(SaveSystem.GetProfilePath(_resortName)))
+		if (DirAccess.DirExistsAbsolute(SaveSystem.CreatePathFromProfile(_resortName)))
 		{
 			GlobalManager.CREATE_POPUP("warning_already_exists", popup_anchor);
 			return false;

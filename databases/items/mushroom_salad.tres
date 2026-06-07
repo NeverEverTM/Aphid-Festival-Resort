@@ -8,4 +8,4 @@ ID = "mushroom_salad"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 33
+ShopOrderPriority = -1

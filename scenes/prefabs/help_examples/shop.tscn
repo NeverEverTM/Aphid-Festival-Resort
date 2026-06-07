@@ -7,43 +7,44 @@
 self_modulate = Color(0.627451, 0.054902, 0.239216, 1)
 light_mask = 0
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="shop" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 604.0
-offset_top = 73.0
-offset_right = 1030.0
-offset_bottom = 579.0
-theme_override_font_sizes/normal_font_size = 35
+offset_left = -22.8526
+offset_top = -238.15909
+offset_right = 507.1048
+offset_bottom = 267.8409
+rotation = 0.0023106437
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
-text = "You can purchase various items at the shop, such as food, toys, or eggs to hatch.
-To buy them, you will need berries, which you get from aphids!
-Aphids will genereate berries every few minutes, you just need to manually harvest it by interacting with the aphid."
+text = "help_shop_0"
 scroll_active = false
 
 [node name="shop2" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 70.0
-offset_top = 352.0
-offset_right = 549.0
-offset_bottom = 535.0
-theme_override_font_sizes/normal_font_size = 35
+offset_left = -487.0
+offset_top = 65.0
+offset_right = -59.0
+offset_bottom = 248.0
+theme_type_variation = &"RTL_SWhite"
 bbcode_enabled = true
-text = "Tip: You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img] symbol and clicking on any item you want to sell."
+text = "help_shop_1"
 scroll_active = false
 
 [node name="shop_img" type="TextureRect" parent="."]
 light_mask = 0
 material = ExtResource("1_5xukx")
 layout_mode = 0
-offset_left = 79.0
-offset_top = 73.0
-offset_right = 498.0
-offset_bottom = 328.0
+offset_left = -487.0
+offset_top = -222.0
+offset_right = -68.0
+offset_bottom = 33.0
 texture = ExtResource("2_1s40j")
 stretch_mode = 4

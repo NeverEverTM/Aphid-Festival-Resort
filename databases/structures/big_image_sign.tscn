@@ -1,48 +1,68 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmo505ujibtbs"]
+[gd_scene load_steps=9 format=3 uid="uid://dmo505ujibtbs"]
 
 [ext_resource type="Texture2D" uid="uid://c76wsibtbi12" path="res://sprites/props/big_image_sign.png" id="1_ylhd2"]
-[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSign.cs" id="2_6hw3u"]
+[ext_resource type="Script" uid="uid://dtqh6wtfm5q10" path="res://scripts/entities/ImageSignStructure.cs" id="2_6hw3u"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="3_ylhd2"]
+[ext_resource type="PackedScene" uid="uid://yb16ky8h5npq" path="res://scenes/panels/custom_sign_menu.tscn" id="4_2cfom"]
 [ext_resource type="Script" uid="uid://c1q1y3shq3c7j" path="res://scripts/entities/InteractableArea2D.cs" id="4_6hw3u"]
+[ext_resource type="Texture2D" uid="uid://2i8t1to8p3d0" path="res://sprites/ui/no_image_big.png" id="4_7cdgw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6hw3u"]
-size = Vector2(188.916, 11.1807)
+size = Vector2(159.84204, 16.052673)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c74d2"]
-size = Vector2(207.422, 26.988)
+size = Vector2(161.2588, 14.991375)
 
-[node name="big_image_sign" type="Sprite2D" node_paths=PackedStringArray("billboard")]
+[node name="big_image_sign" type="Sprite2D" node_paths=PackedStringArray("billboard", "interactArea2D")]
 texture = ExtResource("1_ylhd2")
-offset = Vector2(0, -80)
+offset = Vector2(0, -64)
 script = ExtResource("2_6hw3u")
 billboard = NodePath("billboard")
+interactArea2D = NodePath("Area2D")
+emptyTexture = ExtResource("4_7cdgw")
+customSignMenu = ExtResource("4_2cfom")
 
-[node name="billboard" type="Sprite2D" parent="."]
-light_mask = 2
-position = Vector2(2.38419e-07, -82)
-scale = Vector2(0.43, 0.43)
-
-[node name="PointLight2D" type="PointLight2D" parent="billboard"]
-position = Vector2(-150.973, -32.0963)
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(-43.26967, -69.54231)
+rotation = 1.5637331
+scale = Vector2(0.5247032, 0.55962515)
+skew = 0.0042893887
+blend_mode = 2
 range_item_cull_mask = 2
 texture = ExtResource("3_ylhd2")
+texture_scale = 2.79
 
-[node name="PointLight2D2" type="PointLight2D" parent="billboard"]
-position = Vector2(152.982, -9.12143)
+[node name="PointLight2D2" type="PointLight2D" parent="."]
+position = Vector2(45.26779, -68.13918)
+scale = Vector2(0.345654, 0.9379078)
+blend_mode = 2
 range_item_cull_mask = 2
 texture = ExtResource("3_ylhd2")
+texture_scale = 2.79
+
+[node name="billboard" type="TextureRect" parent="."]
+offset_left = -80.0
+offset_top = -109.0
+offset_right = 80.0
+offset_bottom = -19.0
+texture = ExtResource("4_7cdgw")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+show_behind_parent = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-0.369045, -4.4394)
+position = Vector2(0.029407501, -8.054039)
 shape = SubResource("RectangleShape2D_6hw3u")
 
 [node name="Area2D" type="Area2D" parent="."]
+show_behind_parent = true
+position = Vector2(0, 5)
 script = ExtResource("4_6hw3u")
 Tag = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(-0.369053, -5.40326)
+position = Vector2(-0.3143711, -22.414812)
 shape = SubResource("RectangleShape2D_c74d2")
 debug_color = Color(0.79115, 0.351221, 0.635911, 0.42)

@@ -6,7 +6,7 @@ using Godot;
 /// </summary>
 public interface IAphidAccess
 {
-    public Node2D AphidAccess_Owner { get; }
+    public Node2D Owner { get; }
     public bool IsAphidAvailable { get; set; }
     public Aphid MyAphid { get; set; }
     public Guid MyAphidID { get; set; }
@@ -18,7 +18,7 @@ public interface IAphidAccess
             if (Player.Instance.HeldItem == null || !Player.Instance.HeldItem.IsAphid
                 || !Player.Instance.HeldItem.Entity_Aphid.State.Is(Aphid.StateEnum.Idle))
             {
-                GlobalManager.EmitParticles("need_aphid", AphidAccess_Owner.GlobalPosition);
+                GlobalManager.EmitParticles("need_aphid", Owner.GlobalPosition);
                 SoundManager.CreateSound("ui/button_fail");
             }
             else

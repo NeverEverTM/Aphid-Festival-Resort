@@ -24,8 +24,7 @@ public partial class BuildMenu : Control
 	// last properties of current structure
 	private int previous_light_mask;
 	private Material previous_material;
-	private uint previous_collision_layer; // TODO: Check if this doesnt cause any issues (shouldnt it be just deacct phyiscs?)
-
+	
 	public override void _EnterTree()
 	{
 		Instance = this;

@@ -29,8 +29,10 @@ public partial class AphidFake : CharacterBody2D
     {
         skin.SetInstance(Instance);
         IsAdult = Instance.Status.IsAdult;
-        skin.SetSkin("idle");
+        skin.SetTo("idle");
         SetTimers();
+        target_position = new Vector2(Aphid.MISC_RNG.RandfRange(-idle_rand_range, idle_rand_range),
+                Aphid.MISC_RNG.RandfRange(-idle_rand_range, idle_rand_range)) + GlobalPosition;
     }
 
     public override void _PhysicsProcess(double delta)

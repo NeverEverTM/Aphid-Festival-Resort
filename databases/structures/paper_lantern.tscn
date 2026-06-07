@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dsckpwj6xere7" path="res://sprites/props/paper_lantern.png" id="1_f6bcg"]
 [ext_resource type="Shader" uid="uid://cxlqld44bp5i1" path="res://scripts/shaders/water_placeable.gdshader" id="1_nh4io"]
-[ext_resource type="Script" uid="uid://bi55nujvsnu46" path="res://scripts/entities/LanternBehaviour.cs" id="3_cw6h8"]
+[ext_resource type="Script" uid="uid://bi55nujvsnu46" path="res://scripts/entities/LanternStructure.cs" id="3_cw6h8"]
 [ext_resource type="Texture2D" uid="uid://b7528xex67ab2" path="res://sprites/light_map.png" id="4_22s0n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cw6h8"]

@@ -15,10 +15,10 @@ grow_vertical = 2
 light_mask = 0
 material = ExtResource("1_dkypd")
 layout_mode = 0
-offset_left = 95.0
-offset_top = 255.0
-offset_right = 564.0
-offset_bottom = 534.0
+offset_left = 70.0
+offset_top = 291.0
+offset_right = 458.0
+offset_bottom = 515.0
 texture = ExtResource("2_olyd2")
 expand_mode = 1
 stretch_mode = 4
@@ -26,26 +26,22 @@ stretch_mode = 4
 [node name="album" type="RichTextLabel" parent="."]
 layout_mode = 0
 offset_left = 59.0
-offset_top = 59.0
+offset_top = 67.0
 offset_right = 1054.0
-offset_bottom = 243.0
-theme_override_font_sizes/normal_font_size = 35
+offset_bottom = 251.0
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
+text = "help_generations_0"
 scroll_active = false
 metadata/controls = PackedStringArray("open_generations")
 
 [node name="album2" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 617.0
-offset_top = 245.0
-offset_right = 1014.0
-offset_bottom = 570.0
-theme_override_font_sizes/normal_font_size = 35
+offset_left = 504.0
+offset_top = 286.0
+offset_right = 1053.0
+offset_bottom = 541.0
+theme_type_variation = &"RTL_White"
 bbcode_enabled = true
-text = "¡Bienvenido al Complejo! Empieza criando a tu primer Áfido.
-Presiona {0} para abrir el inventario, clickea en un item para sacarlo, y presiona {1} para dejarlo en el suelo.
-¡Tambien puedes usar el mismo boton para recoger!"
+text = "help_generations_1"
 scroll_active = false

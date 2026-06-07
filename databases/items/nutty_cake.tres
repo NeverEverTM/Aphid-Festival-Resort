@@ -8,4 +8,4 @@ ID = "nutty_cake"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 35
+ShopOrderPriority = -1

@@ -7,6 +7,6 @@
 script = ExtResource("2_43861")
 Item = ExtResource("1_w06uc")
 Flavor = 1
-FoodValue = 5
-DrinkValue = 5
+FoodValue = 4
+DrinkValue = 6
 Skills = Dictionary[int, int]({})

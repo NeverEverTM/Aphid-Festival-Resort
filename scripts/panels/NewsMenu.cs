@@ -13,6 +13,9 @@ public partial class NewsMenu : Control
     [Export] private Sprite2D glow;
 
     private const string PC_WEB_BLOGS = "https://neverevertm.github.io/ProjectColor/blogs/"; // Redirects to the github-hosted page for project color
+    private const string H2_COLOR = "coral", DATE_COLOR = "darkblue", TITLE_COLOR = "orange";
+    private const string NO_IMAGE_TEXTURE = "uid://2i8t1to8p3d0";
+    
     [GeneratedRegex(@"<[^>]*>")]
     private static partial Regex HTML_REMOVE();
 
@@ -76,6 +79,7 @@ public partial class NewsMenu : Control
             if (_animation == "close_blog")
                 newsBody.Text = string.Empty;
         };
+        animator.Play("SHADER_LOAD");
     }
     public void SetMenu() =>
         _ = CanvasManager.Menus.SetTo(menu);
@@ -126,7 +130,7 @@ public partial class NewsMenu : Control
 
             _data = CONVERTER_LEFT().Replace(_data, "[");
             _data = CONVERTER_RIGHT().Replace(_data, "]");
-            _data = CONVERTER_H2_LEFT().Replace(_data, "[font_size=50][color=pink]");
+            _data = CONVERTER_H2_LEFT().Replace(_data, $"[font_size=50][color={H2_COLOR}]");
             _data = CONVERTER_H2_RIGHT().Replace(_data, "[/color][/font_size]");
             _data = CONVERTER_IMG().Replace(_data, "[center][img=800]IMG_PLACEHOLDER[/img][/center]");
 
@@ -143,15 +147,15 @@ public partial class NewsMenu : Control
                     RequestGetImage(_url, _filename);
                 }
                 else
-                    _data = _data.Insert(index, "uid://pgscnb8dl5jr");
+                    _data = _data.Insert(index, NO_IMAGE_TEXTURE); // no image texture
             }
 
             _data = HTML_REMOVE().Replace(_data, string.Empty);
             _data = FORMATTER().Replace(_data, "\n");
 
             newsBody.Text = string.Empty;
-            newsBody.AppendText($"[color=coral][font_size=60]{_blog["title"].AsString()}[/font_size][/color]");
-            newsBody.AppendText($"\n[color=cyan]{DateTime.Parse(_blog["date"].AsString()):dd/MM/yy}[/color]");
+            newsBody.AppendText($"[color={TITLE_COLOR}][font_size=60]{_blog["title"].AsString()}[/font_size][/color]");
+            newsBody.AppendText($"\n[color={DATE_COLOR}]{DateTime.Parse(_blog["date"].AsString()):dd/MM/yy}[/color]");
             if (OptionsManager.Settings.IntFlags["Locale"].Value != 0)
                 newsBody.AppendText($"\n[bgcolor=red]{Tr("warning_news_locale")}[/bgcolor]\n");
             newsBody.AppendText(_data);

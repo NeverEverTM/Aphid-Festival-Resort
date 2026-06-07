@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public abstract class CustomBaseTimer<T>
+public abstract class CustomBaseTimer<E>
 {
     public float TimeLeft { get; set; } = 1;
     /// <summary>
@@ -14,48 +14,61 @@ public abstract class CustomBaseTimer<T>
     /// <summary>
     /// If the timer is still running but is currently paused.
     /// </summary>
-    public bool IsPaused { get; private set; } = false;
+    public bool IsPaused { get; protected set; } = false;
     /// <summary>
     /// If the timer was cut short.
     /// </summary>
-    public bool IsStopped { get; private set; } = false;
+    public bool IsStopped { get; protected set; } = false;
     /// <summary>
     /// If the timer has succesfully finished. Only set if the timer was a one shot.
     /// </summary>
-    public bool IsFinished { get; private set; } = false;
+    public bool IsFinished { get; protected set; } = false;
 
-    public abstract void Finish(T entity);
+    protected readonly E TInstance;
+
+    public abstract void Finish();
     
     // ===============| Base Methods |==================
-    public CustomBaseTimer(float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true)
+    /// <summary>
+    /// Creates a timer instance, you must make sure to assign both BaseTime and TimeLeft manually, the latter can be set using GetTimerLeft()
+    /// </summary>
+    /// <param name="TInstance">The object instance to which the timer has access to locally.</param>
+    public CustomBaseTimer(E TInstance)
+    {
+        this.TInstance = TInstance;
+    }
+    public CustomBaseTimer(E Instance, float BaseTime, float TimeLeft = -1, bool OneShot = false, bool autostart = true)
     {
         this.BaseTime = BaseTime;
         this.TimeLeft = TimeLeft < 0 ? GetTimerTime() : TimeLeft;
         this.OneShot = OneShot;
         IsStopped = !autostart;
+        TInstance = Instance;
     }
-    public CustomBaseTimer(float BaseTime, bool OneShot = false, bool autostart = true)
+    public CustomBaseTimer(E Entity, float BaseTime, bool OneShot = false, bool autostart = true)
     {
         this.BaseTime = BaseTime;
+        TimeLeft = BaseTime;
         this.OneShot = OneShot;
         IsStopped = !autostart;
+        TInstance = Entity;
     }
 
     /// <summary>
     /// Process method, must be called in order to advance a timer.
     /// </summary>
     /// <param name="entity"></param>
-    /// <param name="_delta"></param>
-    public virtual void Process(T entity, float _delta)
+    /// <param name="_timePassed"></param>
+    public virtual void Update(float _timePassed)
     {
-        if (IsStopped || IsPaused || IsFinished)
+        if (!CanUpdate())
             return;
 
         if (TimeLeft > 0)
-            TimeLeft -= _delta;
+            TimeLeft -= _timePassed;
         else
         {
-            if (!CanFinish(entity))
+            if (!CanFinish())
                 return;
 
             if (OneShot)
@@ -65,8 +78,15 @@ public abstract class CustomBaseTimer<T>
             }
             else
                 TimeLeft = GetTimerTime();
-            Finish(entity);
+            Finish();
         }
+    }
+    public virtual bool CanUpdate()
+    {
+        if (IsStopped || IsPaused || IsFinished)
+            return false;
+        else
+            return true;
     }
     /// <summary>
     /// Resets a timer and resumes it if stopped or finished. Paused timers will only have their values reset, and they will not unpause.
@@ -111,26 +131,26 @@ public abstract class CustomBaseTimer<T>
         return BaseTime;
     }
     /// <summary>
-    /// Checks if the finish action can be executed now. Override this method to add custom requirements, ex. timer should not finish if the result cannot be applied now.
+    /// Checks if the finish action can be executed now. Override this method to add custom requirements, ex. to avoid execution until it is in a valid state to do the finish action.
     /// </summary>
     /// <returns></returns>
-    public virtual bool CanFinish(T entity)
+    public virtual bool CanFinish()
     {
         return true;
     }
 }
 
-public class CustomTimer<T>(float BaseTime, bool OneShot = false, bool autostart = true) : CustomBaseTimer<T>(BaseTime, OneShot, autostart)
+public class CustomTimer<E>(E Entity, float BaseTime, bool OneShot = false, bool autostart = true) : CustomBaseTimer<E>(Entity, BaseTime, OneShot, autostart)
 {
-    public readonly List<Action<T>> OnFinish = [];
+    public readonly List<Action<E>> OnFinish = [];
 
-    public override void Finish(T entity)
+    public override void Finish()
     {
         for (int i = 0; i < OnFinish.Count; i++)
         {
             try
             {
-                OnFinish[i](entity);
+                OnFinish[i](TInstance);
             }
             catch(Exception _error)
             {

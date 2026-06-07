@@ -6,7 +6,6 @@
 script = ExtResource("1_s4sk5")
 ID = "aphid_egg_red"
 Cost = 100
-LevelRequirement = 1
 TierRequirement = 1
 Shop = 1
-ShopOrderPriority = 14
+ShopOrderPriority = 21

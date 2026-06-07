@@ -1,38 +1,30 @@
-[gd_scene load_steps=12 format=3 uid="uid://f7gdm4yd2spb"]
+[gd_scene load_steps=16 format=3 uid="uid://f7gdm4yd2spb"]
 
-[ext_resource type="Script" uid="uid://be21ohdif0nq1" path="res://addons/item_viewer/ItemViewer.cs" id="1_gwe7d"]
+[ext_resource type="Script" uid="uid://be21ohdif0nq1" path="res://addons/item_viewer/ItemMasterDB.cs" id="1_gwe7d"]
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="2_nxrx2"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="3_xwjhu"]
 [ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="4_e8edq"]
+[ext_resource type="Script" uid="uid://cdnevp1u7n25n" path="res://addons/item_viewer/ItemViewer.cs" id="4_wdjpt"]
 [ext_resource type="PackedScene" uid="uid://c140r8dv4t86f" path="res://addons/item_viewer/prefabs/item_slot.tscn" id="4_xwjhu"]
 [ext_resource type="Texture2D" uid="uid://04ej67djpwaa" path="res://sprites/ui/gui_icons/icon_ping.png" id="5_k4kl4"]
 [ext_resource type="PackedScene" uid="uid://2k0vsdw6oh8t" path="res://addons/item_viewer/prefabs/recipe_slot.tscn" id="5_nxrx2"]
 [ext_resource type="Texture2D" uid="uid://chas44iqghwy2" path="res://sprites/ui/gui_icons/icon_rest.png" id="6_v6jcs"]
 [ext_resource type="Texture2D" uid="uid://3wk8a5raqbq4" path="res://sprites/ui/gui_icons/icon_menu.png" id="9_gn2tu"]
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="10_a3on2"]
+[ext_resource type="Script" uid="uid://bf5a0imgadytw" path="res://addons/item_viewer/RecipeList.cs" id="11_a3on2"]
+[ext_resource type="Script" uid="uid://wugrk6jo1jmg" path="res://addons/item_viewer/BalanceGraph.cs" id="11_gn2tu"]
 [ext_resource type="PackedScene" uid="uid://xisl5sxxrauc" path="res://addons/item_viewer/prefabs/food_slot.tscn" id="11_v6jcs"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="15_j1pg1"]
 
-[node name="ItemDBGUI" type="Window" node_paths=PackedStringArray("search_bar", "sorting_options", "item_grid", "panelsNode", "icon", "name", "recipeLabel", "item_stats", "food_stats", "recipe_grid", "updateButton", "deleteButton", "addRecipeButton")]
+[node name="ItemDBGUI" type="Window" node_paths=PackedStringArray("panelsNode")]
 oversampling_override = 1.0
-title = "Item Database"
+title = "Master Database"
 initial_position = 1
 size = Vector2i(1000, 660)
 unresizable = true
 maximize_disabled = true
 script = ExtResource("1_gwe7d")
-search_bar = NodePath("panels/item_viewer/search_bar")
-sorting_options = NodePath("panels/item_viewer/sorting")
-item_grid = NodePath("panels/item_viewer/item_grid/ScrollContainer/VBoxContainer")
 panelsNode = NodePath("panels")
-icon = NodePath("panels/item_viewer/info_bg/icon_bg/icon")
-name = NodePath("panels/item_viewer/info_bg/name")
-recipeLabel = NodePath("panels/item_viewer/info_bg/recipes/recipe_label")
-item_stats = NodePath("panels/item_viewer/info_bg/item_stats")
-food_stats = NodePath("panels/item_viewer/info_bg/food_stats")
-recipe_grid = NodePath("panels/item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer")
-updateButton = NodePath("panels/item_viewer/info_bg/update_item")
-deleteButton = NodePath("panels/item_viewer/info_bg/delete_item")
-addRecipeButton = NodePath("panels/item_viewer/info_bg/recipes/add_recipe")
 
 [node name="bg" type="NinePatchRect" parent="."]
 self_modulate = Color(0.55, 0, 0.26583347, 1)
@@ -92,8 +84,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 theme = ExtResource("3_xwjhu")
 
-[node name="item_viewer" type="Control" parent="panels"]
-visible = false
+[node name="item_viewer" type="Control" parent="panels" node_paths=PackedStringArray("search_bar", "sorting_options", "type_sorting_options", "item_grid", "icon", "name", "recipeLabel", "item_stats", "food_stats", "recipe_grid", "updateButton", "deleteButton", "addRecipeButton")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -108,11 +99,24 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.75, 0.75)
 mouse_filter = 1
-theme = ExtResource("3_xwjhu")
+script = ExtResource("4_wdjpt")
+search_bar = NodePath("search_bar")
+sorting_options = NodePath("sorting")
+type_sorting_options = NodePath("type_sorting")
+item_grid = NodePath("item_grid/ScrollContainer/item_slot_grid")
+icon = NodePath("info_bg/icon_bg/icon")
+name = NodePath("info_bg/name")
+recipeLabel = NodePath("info_bg/recipes/recipe_label")
+item_stats = NodePath("info_bg/item_stats")
+food_stats = NodePath("info_bg/food_stats")
+recipe_grid = NodePath("info_bg/recipes/ScrollContainer/recipe_grid")
+updateButton = NodePath("info_bg/update_item")
+deleteButton = NodePath("info_bg/delete_item")
+addRecipeButton = NodePath("info_bg/recipes/add_recipe")
 
 [node name="search_bar" type="LineEdit" parent="panels/item_viewer"]
 layout_mode = 0
-offset_left = 166.6667
+offset_left = 372.0
 offset_top = 49.666718
 offset_right = 1190.6666
 offset_bottom = 105.66672
@@ -120,17 +124,31 @@ placeholder_text = "Search Recipes By Name, Cost, Tier"
 
 [node name="sorting" type="OptionButton" parent="panels/item_viewer"]
 layout_mode = 0
-offset_left = -76.00006
+offset_left = -76.00003
 offset_top = 44.66665
-offset_right = 233.99994
+offset_right = 208.44449
 offset_bottom = 132.66666
 scale = Vector2(0.75, 0.75)
+fit_to_longest_item = false
+
+[node name="type_sorting" type="OptionButton" parent="panels/item_viewer"]
+layout_mode = 0
+offset_left = 154.66666
+offset_top = 44.66665
+offset_right = 413.11096
+offset_bottom = 132.66666
+scale = Vector2(0.75, 0.75)
+selected = 0
+fit_to_longest_item = false
+item_count = 1
+popup/item_0/text = "All"
+popup/item_0/id = 0
 
 [node name="item_grid" type="Panel" parent="panels/item_viewer"]
 layout_mode = 0
 offset_left = -86.66667
 offset_top = 126.33332
-offset_right = 617.3333
+offset_right = 621.3333
 offset_bottom = 740.00006
 
 [node name="ScrollContainer" type="ScrollContainer" parent="panels/item_viewer/item_grid"]
@@ -139,54 +157,54 @@ offset_right = 728.0
 offset_bottom = 613.6667
 horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="GridContainer" parent="panels/item_viewer/item_grid/ScrollContainer"]
+[node name="item_slot_grid" type="GridContainer" parent="panels/item_viewer/item_grid/ScrollContainer"]
 layout_mode = 2
 columns = 2
 
-[node name="food_slot" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot2" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot2" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot3" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot3" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot4" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot4" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot5" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot5" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 self_modulate = Color(8.6635355e-06, 0.91626906, 0.7803159, 1)
 layout_mode = 2
 
-[node name="food_slot6" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot6" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot7" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot7" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot8" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot8" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot9" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot9" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot10" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot10" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot11" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot11" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot12" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot12" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot13" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot13" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot14" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot14" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
-[node name="food_slot15" parent="panels/item_viewer/item_grid/ScrollContainer/VBoxContainer" instance=ExtResource("4_xwjhu")]
+[node name="food_slot15" parent="panels/item_viewer/item_grid/ScrollContainer/item_slot_grid" instance=ExtResource("4_xwjhu")]
 layout_mode = 2
 
 [node name="create_item" type="Button" parent="panels/item_viewer/item_grid"]
@@ -279,9 +297,9 @@ vertical_alignment = 1
 [node name="recipes" type="NinePatchRect" parent="panels/item_viewer/info_bg"]
 self_modulate = Color(0.33601663, 0.07577477, 0.21054527, 1)
 layout_mode = 0
-offset_left = 58.666687
-offset_top = 339.33316
-offset_right = 469.3333
+offset_left = 88.00006
+offset_top = 339.33313
+offset_right = 474.6667
 offset_bottom = 603.0
 texture = ExtResource("2_nxrx2")
 patch_margin_left = 10
@@ -296,27 +314,27 @@ offset_top = 9.333313
 offset_right = 394.6667
 offset_bottom = 253.00018
 
-[node name="VBoxContainer" type="VBoxContainer" parent="panels/item_viewer/info_bg/recipes/ScrollContainer"]
+[node name="recipe_grid" type="VBoxContainer" parent="panels/item_viewer/info_bg/recipes/ScrollContainer"]
 layout_mode = 2
 
-[node name="recipe_slot" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+[node name="recipe_slot" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/recipe_grid" instance=ExtResource("5_nxrx2")]
 layout_mode = 2
 
-[node name="recipe_slot2" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+[node name="recipe_slot2" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/recipe_grid" instance=ExtResource("5_nxrx2")]
 layout_mode = 2
 
-[node name="recipe_slot3" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+[node name="recipe_slot3" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/recipe_grid" instance=ExtResource("5_nxrx2")]
 layout_mode = 2
 
-[node name="recipe_slot4" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/VBoxContainer" instance=ExtResource("5_nxrx2")]
+[node name="recipe_slot4" parent="panels/item_viewer/info_bg/recipes/ScrollContainer/recipe_grid" instance=ExtResource("5_nxrx2")]
 layout_mode = 2
 
 [node name="add_recipe" type="Button" parent="panels/item_viewer/info_bg/recipes"]
 layout_mode = 0
-offset_left = -32.0
-offset_top = 179.00018
-offset_right = 30.0
-offset_bottom = 267.00018
+offset_left = -74.66669
+offset_top = 168.3335
+offset_right = -12.666687
+offset_bottom = 256.3335
 text = "+"
 
 [node name="recipe_label" type="Label" parent="panels/item_viewer/info_bg/recipes"]
@@ -368,7 +386,7 @@ offset_right = 500.0
 offset_bottom = 330.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("3_xwjhu")
+script = ExtResource("11_a3on2")
 
 [node name="Panel" type="Panel" parent="panels/recipe_list"]
 layout_mode = 0
@@ -404,21 +422,97 @@ layout_mode = 2
 [node name="recipe_slot7" parent="panels/recipe_list/Panel/GridContainer" instance=ExtResource("5_nxrx2")]
 layout_mode = 2
 
-[node name="balance_graph" type="Control" parent="panels"]
+[node name="balance_graph" type="Control" parent="panels" node_paths=PackedStringArray("slotContainer", "search_bar", "sorting_options", "graph_node")]
+visible = false
 anchors_preset = 0
 offset_left = 480.0
 offset_top = 310.0
 offset_right = 520.0
 offset_bottom = 350.0
-theme = ExtResource("3_xwjhu")
+script = ExtResource("11_gn2tu")
+slot = ExtResource("11_v6jcs")
+slotContainer = NodePath("ScrollContainer/slot_container")
+search_bar = NodePath("search")
+sorting_options = NodePath("sorting_graph")
+graph_node = NodePath("Panel")
 
-[node name="Panel" type="Panel" parent="panels/balance_graph"]
+[node name="bg" type="Panel" parent="panels/balance_graph"]
 clip_children = 2
 layout_mode = 0
 offset_left = -448.0
 offset_top = -216.0
 offset_right = 488.0
 offset_bottom = 328.0
+
+[node name="search" type="LineEdit" parent="panels/balance_graph"]
+layout_mode = 0
+offset_left = -422.0
+offset_top = -195.0
+offset_right = -38.0
+offset_bottom = -139.0
+placeholder_text = "Search..."
+
+[node name="sorting_graph" type="OptionButton" parent="panels/balance_graph"]
+layout_mode = 0
+offset_left = -424.0
+offset_top = -125.0
+offset_right = -65.33331
+offset_bottom = -37.0
+scale = Vector2(0.75, 0.75)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="panels/balance_graph"]
+layout_mode = 0
+offset_left = -424.0
+offset_top = 42.0
+offset_right = 387.0
+offset_bottom = 328.0
+
+[node name="slot_container" type="VBoxContainer" parent="panels/balance_graph/ScrollContainer"]
+texture_filter = 1
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="RecipeListSlot" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot2" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot3" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot10" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot11" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot12" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot13" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot14" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot4" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot5" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot6" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot7" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot8" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
+
+[node name="RecipeListSlot9" parent="panels/balance_graph/ScrollContainer/slot_container" instance=ExtResource("11_v6jcs")]
+layout_mode = 2
 
 [node name="Label" type="Label" parent="panels/balance_graph"]
 visible = false
@@ -434,84 +528,48 @@ text = "Balance Graph needs:
 - Tell how is all the previous conditions distributed based on
 cost and tier"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="panels/balance_graph"]
+[node name="TextureRect2" type="TextureRect" parent="panels/balance_graph"]
+self_modulate = Color(0.8430568, 0.38037857, 0.13590908, 1)
 layout_mode = 0
-offset_left = -448.0
-offset_top = -216.0
-offset_right = 76.0
-offset_bottom = 328.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="panels/balance_graph/ScrollContainer"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="RecipeListSlot" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot2" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot3" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot10" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot11" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot12" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot13" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot14" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot4" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot5" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot6" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot7" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot8" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="RecipeListSlot9" parent="panels/balance_graph/ScrollContainer/VBoxContainer" instance=ExtResource("11_v6jcs")]
-layout_mode = 2
-
-[node name="LineEdit" type="LineEdit" parent="panels/balance_graph"]
-layout_mode = 0
-offset_left = 90.0
+offset_left = 30.0
 offset_top = -203.0
-offset_right = 474.0
-offset_bottom = -147.0
-placeholder_text = "Search..."
+offset_right = 430.0
+offset_bottom = -188.0
+texture = ExtResource("15_j1pg1")
 
-[node name="OptionButton" type="OptionButton" parent="panels/balance_graph"]
+[node name="TextureRect3" type="TextureRect" parent="panels/balance_graph"]
+self_modulate = Color(0.21271491, 0.5355014, 0.9315322, 1)
 layout_mode = 0
-offset_left = 90.0
-offset_top = -122.0
-offset_right = 474.0
-offset_bottom = -34.0
-selected = 0
-item_count = 1
-popup/item_0/text = "Flavor"
-popup/item_0/id = 0
+offset_left = 20.0
+offset_top = -190.0
+offset_right = 36.0
+offset_bottom = 10.0
+texture = ExtResource("15_j1pg1")
+
+[node name="Panel" type="NinePatchRect" parent="panels/balance_graph"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = -190.0
+offset_right = 430.0
+offset_bottom = 10.0
+pivot_offset = Vector2(200, 100)
+texture = ExtResource("15_j1pg1")
+
+[node name="TextureRect" type="TextureRect" parent="panels/balance_graph/Panel"]
+layout_mode = 0
+offset_right = 18.0
+offset_bottom = 18.0
+texture = ExtResource("4_e8edq")
+stretch_mode = 3
 
 [connection signal="pressed" from="tabs/show_item_db" to="." method="SHOW_TAB" binds= [0]]
 [connection signal="pressed" from="tabs/show_recipe_db" to="." method="SHOW_TAB" binds= [1]]
 [connection signal="pressed" from="tabs/show_balance_list" to="." method="SHOW_TAB" flags=3 binds= [2]]
-[connection signal="text_changed" from="panels/item_viewer/search_bar" to="." method="SEARCH_ITEM_ID"]
+[connection signal="text_changed" from="panels/item_viewer/search_bar" to="panels/item_viewer" method="SEARCH_ITEM_ID"]
 [connection signal="pressed" from="panels/item_viewer/item_grid/create_item" to="." method="SUMMON_ITEM_CREATOR" binds= [false]]
 [connection signal="pressed" from="panels/item_viewer/item_grid/refresh_list" to="." method="REFRESH"]
 [connection signal="pressed" from="panels/item_viewer/info_bg/recipes/add_recipe" to="." method="SUMMON_RECIPE_CREATOR"]
 [connection signal="pressed" from="panels/item_viewer/info_bg/update_item" to="." method="SUMMON_ITEM_CREATOR" binds= [true]]
-[connection signal="pressed" from="panels/item_viewer/info_bg/delete_item" to="." method="CONFIRM_ITEM_DELETION"]
+[connection signal="pressed" from="panels/item_viewer/info_bg/delete_item" to="panels/item_viewer" method="CONFIRM_ITEM_DELETION"]
+[connection signal="text_changed" from="panels/balance_graph/search" to="panels/balance_graph" method="SEARCH_ITEM_ID"]
+[connection signal="text_submitted" from="panels/balance_graph/search" to="panels/balance_graph" method="SEARCH_ITEM_ID"]

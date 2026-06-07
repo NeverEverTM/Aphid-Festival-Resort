@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://56xrjkder57e"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_26mni"]
+
+[resource]
+script = ExtResource("1_26mni")
+ID = "sweet_tea"
+Type = 2
+Cost = 4
+Category = 1
+ShopOrderPriority = -1

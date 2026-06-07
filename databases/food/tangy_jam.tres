@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FoodData" load_steps=3 format=3 uid="uid://pgmnim0cy3a3"]
+
+[ext_resource type="Resource" uid="uid://bh7lurr2mysup" path="res://databases/items/tangy_jam.tres" id="1_olwdd"]
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="2_7ed5p"]
+
+[resource]
+script = ExtResource("2_7ed5p")
+Item = ExtResource("1_olwdd")
+Flavor = 1
+FoodValue = 25
+DrinkValue = 35
+Skills = Dictionary[int, int]({
+1: 2,
+3: 1
+})

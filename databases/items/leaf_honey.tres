@@ -8,4 +8,4 @@ ID = "leaf_honey"
 Type = 2
 Cost = 6
 Category = 1
-ShopOrderPriority = 29
+ShopOrderPriority = -1

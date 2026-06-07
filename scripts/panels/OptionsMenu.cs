@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 
-public partial class OptionsMenu : Control, IMenuInstance
+public partial class OptionsMenu : MenuControl
 {
-	private MenuInstance menu;
+	public override string ID => "options";
+    public override bool IsASubMenu => true;
 
-	[Export] private AnimationPlayer anim_player;
 	[Export] private BaseButton saveFolderButton;
 	[ExportGroup("Sliders")]
 	[Export] private Control[] volumeSliders;
@@ -159,20 +157,11 @@ public partial class OptionsMenu : Control, IMenuInstance
 	}
 
 	// ===| Menu Interface |===
-	public MenuInstance Create()
-	{
-		menu ??= new("options", anim_player, Open, TryClose, Close, null, true);
-		return menu;
-	}
-	public void Open(MenuInstance _last)
+	protected override void Open(MenuInstance _last)
 	{
 		genericCheckButtons[0].GrabFocus();
 	}
-	public bool TryClose(MenuInstance _next)
-	{
-		return true;
-	}
-	public void Close(MenuInstance _next)
+	protected override void Close(MenuInstance _next)
 	{
 		OptionsManager.SaveModule.Save();
 	}

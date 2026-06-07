@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Collections.Generic;
 using Godot;
 
 public partial class FurnitureShop : ShopInterface
@@ -6,35 +6,36 @@ public partial class FurnitureShop : ShopInterface
 	internal static FurnitureShop Instance { get; private set; }
 	[Export] private TextureButton open_button;
 
+	public override void _Ready()
+	{
+		Instance = this;
+		open_button.Pressed += () => _ = CanvasManager.Menus.SetTo(GetMenuInstance());
+	}
+    public override void _ExitTree()
+    {
+        Instance = null;
+    }
+    protected override void Open(MenuInstance _last)
+    {
+		CameraManager.EnableFreeRoam = false;
+			FreeCameraManager.SetHUDTo(false);
+        base.Open(_last);
+    }
+    protected override void Close(MenuInstance _next)
+    {
+		CameraManager.EnableFreeRoam = true;
+		if (_next == null)
+			FreeCameraManager.SetHUDTo(true);
+        base.Close(_next);
+    }
+
 	protected override void Purchase()
 	{
 		base.Purchase();
 		Player.Data.Storage.Add(current_item.ID);
 	}
-	protected override void FetchItemList()
+	protected override List<ItemData> FetchStoreList()
 	{
-		// Fetch item datas and order them
-		current_list = [.. GlobalManager.G_STRUCTURES.Values.Where(i => i.Shop == shopTag)];
-		current_list = [.. current_list.OrderBy(i => i.ShopOrderPriority)];
-	}
-
-	public override void _Ready()
-	{
-		Instance = this;
-		Menu.Open = _ =>
-		{
-			CameraManager.EnableFreeRoam = false;
-			FreeCameraManager.SetHUDTo(false);
-			ResetShop();
-			SoundManager.CreateSound("ui/store_bell");
-		};
-		Menu.Close = _next =>
-		{
-			CameraManager.EnableFreeRoam = true;
-			if (_next == null)
-				FreeCameraManager.SetHUDTo(true);
-			CleanShelf();
-		};
-		open_button.Pressed += SetMenu;
-	}
+		return [.. GlobalManager.G_STRUCTURES.Values];
+	}	
 }

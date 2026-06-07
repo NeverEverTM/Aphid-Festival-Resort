@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://bld0yv35rld6o"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_oa728"]
+[ext_resource type="Resource" uid="uid://dsjarno5sgp7j" path="res://databases/food/cake_mix.tres" id="2_uqx37"]
+[ext_resource type="Resource" uid="uid://dwpfnxogs2lw6" path="res://databases/food/tangy_berry.tres" id="3_5hgkp"]
+[ext_resource type="Resource" uid="uid://beb4at0c4iv2i" path="res://databases/items/tangy_cake.tres" id="4_irgh3"]
+[ext_resource type="Resource" uid="uid://cliquj2b6guua" path="res://databases/food/tangy_carpaccio.tres" id="4_uqx37"]
+[ext_resource type="Resource" uid="uid://dkw045vnorqkv" path="res://databases/food/cake.tres" id="5_5hgkp"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_bvu7j"]
+
+[resource]
+script = ExtResource("5_bvu7j")
+Owner = ExtResource("4_irgh3")
+Combinations = Array[Array]([Array[ExtResource("1_oa728")]([ExtResource("2_uqx37"), ExtResource("3_5hgkp")]), Array[ExtResource("1_oa728")]([ExtResource("2_uqx37"), ExtResource("4_uqx37")]), Array[ExtResource("1_oa728")]([ExtResource("5_5hgkp"), ExtResource("3_5hgkp")]), Array[ExtResource("1_oa728")]([ExtResource("5_5hgkp"), ExtResource("4_uqx37")])])
