@@ -97,6 +97,12 @@ public partial class Player : CharacterBody2D
 					SoundManager.CreateSound(audio_step).Bus = "Sounds";
 			}
 		}
+		void _sitIdle()
+		{
+			if (animatorNode.Animation == StringNames.SitAnim)
+				SetPlayerAnim(StringNames.SitIdleAnim);
+		}
+		animatorNode.AnimationFinished += _sitIdle;
 		animatorNode.FrameChanged += _walkSound;
 
 		SceneManager.AddEventListener(OnPreLoad, SceneManager.EventEnum.OnPreLoad);
@@ -234,7 +240,7 @@ public partial class Player : CharacterBody2D
 		// apply movement phyiscs and animations
 		TickFlip((float)delta);
 		MoveAndSlide();
-		PlayMovementAnim((float)delta);
+		DoMovementAnim((float)delta);
 		if (HeldItem != null && !GlobalManager.IsBusy)
 			ProcessHeldItemBehaviour();
 
@@ -423,13 +429,16 @@ public partial class Player : CharacterBody2D
 		SetDisabled(true, true);
 		SetPlayerAnim(StringNames.WhistleAnim);
 		await Task.Delay(500);
-
 		SoundManager.CreateSound2D("player/whistle", Instance.GlobalPosition, true);
-		for (int i = 0; i < ResortManager.Current.Aphids.Count; i++)
+
+		if (IsInstanceValid(ResortManager.Current))
 		{
-			Aphid _aphid = ResortManager.Current.Aphids[i];
-			if (_aphid.GlobalPosition.DistanceTo(GlobalPosition) < 400)
-				_aphid.CallTowards(GlobalPosition);
+			for (int i = 0; i < ResortManager.Current.Aphids.Count; i++)
+			{
+				Aphid _aphid = ResortManager.Current.Aphids[i];
+				if (_aphid.GlobalPosition.DistanceTo(GlobalPosition) < 400)
+					_aphid.CallTowards(GlobalPosition);
+			}			
 		}
 
 		RunDisabledTimer(0.6f);
@@ -797,9 +806,9 @@ public partial class Player : CharacterBody2D
 
 		is_moving = !MovementDirection.IsEqualApprox(Vector2.Zero);
 		if (!LockMovement)
-			PlayMovementAnim(0, true);
+			DoMovementAnim(0, true);
 	}
-	private void PlayMovementAnim(float _delta, bool _ignoreDisabled = false)
+	private void DoMovementAnim(float _delta, bool _ignoreDisabled = false)
 	{
 		if (LockMovement)
 			return;
@@ -812,6 +821,7 @@ public partial class Player : CharacterBody2D
 				SetPlayerAnim(StringNames.WalkAnim);
 			idle_timer = LONG_IDLE_BASE;
 		}
+	// cosmetic idle sitting
 		else if (!IsDisabled || _ignoreDisabled)
 		{
 			if (idle_timer > 0)
@@ -819,7 +829,7 @@ public partial class Player : CharacterBody2D
 				idle_timer -= _delta;
 				SetPlayerAnim(StringNames.IdleAnim);
 			}
-			else
+			else if (animatorNode.Animation == StringNames.IdleAnim) 
 				SetPlayerAnim(StringNames.SitAnim);
 		}
 	}

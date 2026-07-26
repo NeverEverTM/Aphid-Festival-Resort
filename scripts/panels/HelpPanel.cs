@@ -16,6 +16,7 @@ public partial class HelpPanel : MenuControl
 
 	public override void _Ready()
 	{
+		left_button.ProcessMode = right_button.ProcessMode = ProcessModeEnum.Disabled;
 		SetProcessInput(false);
 		left_button.Pressed += () => AdvancePage(Direction.Left);
 		right_button.Pressed += () => AdvancePage(Direction.Right);
@@ -48,7 +49,8 @@ public partial class HelpPanel : MenuControl
 	public void SetPage(int _index)
 	{
 		current = _index;
-		container_node.GetChildOrNull<Control>(0)?.QueueFree();
+		for(int i = 0; i < container_node.GetChildCount(); i++)
+			container_node.GetChildOrNull<Control>(i)?.QueueFree();
 		Control _node = panels[current].Instantiate<Control>();
 		SetAllLabels(_node);
 		container_node.AddChild(_node);
@@ -83,12 +85,14 @@ public partial class HelpPanel : MenuControl
 
     protected override void Open(MenuInstance _last)
     {
+		left_button.ProcessMode = right_button.ProcessMode = ProcessModeEnum.Inherit;
 		SetProcessInput(true);
 		current = 0;
 		SetPage(0);
     }
     protected override void Close(MenuInstance _next)
     {
+		left_button.ProcessMode = right_button.ProcessMode = ProcessModeEnum.Disabled;
         SetProcessInput(false);
     }
 }

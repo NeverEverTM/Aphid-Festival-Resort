@@ -94,7 +94,6 @@ public partial class NPCBehaviour : AnimatedSprite2D
 		{
 			DebugLogger.Print(DebugLogger.LogPriority.Error, "NPCBehaviour: Unable to talk.", _error);
 		}
-		CameraManager.TweenCamera(_duration: 0.3);
 		isBusy = false;
 	}
 
@@ -106,7 +105,7 @@ public partial class NPCBehaviour : AnimatedSprite2D
 		Play("talk");
 		SetFlipDirection(Player.Instance.GlobalPosition - GlobalPosition);
 		Player.Instance.SetFlipDirection(GlobalPosition - Player.Instance.GlobalPosition);
-		CameraManager.TweenCamera(_duration: 0.5, 4);
+		var _cameraTween = CameraManager.TweenCamera(_duration: 0.5, 4);
 
 		_ = DialogManager.Instance.OpenDialogBox(_dialogue_key, ID, SoundManager.GetAudioStream("dialog/" + $"{ID}_idle"));
 		bool _check = true;
@@ -123,6 +122,8 @@ public partial class NPCBehaviour : AnimatedSprite2D
 			}
 		}
 		Play("default");
+		_cameraTween.Kill();
+		CameraManager.TweenCamera(_duration: 0.3);
 	}
 	public void TickFlip(float delta) =>
 		Scale = new(Mathf.Lerp(Scale.X, flipDirection ? 1 : -1, (float)delta * (6 * tickSpeed)), Scale.Y);

@@ -77,6 +77,7 @@ public static class StringNames
     // Player Anims
     public readonly static StringName IdleAnim = new("idle");
     public readonly static StringName SitAnim = new("sit");
+    public readonly static StringName SitIdleAnim = new("sit_idle");
     public readonly static StringName WalkAnim = new("walk");
     public readonly static StringName RunAnim = new("run");
     public readonly static StringName WhistleAnim = new("whistle");

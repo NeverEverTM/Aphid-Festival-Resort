@@ -293,7 +293,7 @@ public partial class AphidTraits : Aphid
                 Energy = 0.5f,
                 Color = _aphid.Instance.Genes.BodyColor
             };
-            _aphid.AddChild(_light);
+            _aphid.GetNode("anchor").AddChild(_light);
         }
     }
     public class Shy : ITrait

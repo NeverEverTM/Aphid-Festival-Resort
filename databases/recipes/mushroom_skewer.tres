@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=9 format=3 uid="uid://dmvb5h0vyu4mt"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_66f8p"]
+[ext_resource type="Resource" uid="uid://dhikw41b4qvsa" path="res://databases/food/shroom.tres" id="2_5ww5u"]
+[ext_resource type="Resource" uid="uid://bcx4dkb2c24h6" path="res://databases/food/danger_shroom.tres" id="3_x8ltj"]
+[ext_resource type="Resource" uid="uid://cia25xos2vmlo" path="res://databases/items/mushroom_skewer.tres" id="4_wvq0t"]
+[ext_resource type="Resource" uid="uid://bvvu4tdnlvj0k" path="res://databases/food/cooked_danger.tres" id="4_x8ltj"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_jlaj2"]
+[ext_resource type="Resource" uid="uid://c0fnhlqttwbim" path="res://databases/food/cooked_shroom.tres" id="5_wvq0t"]
+[ext_resource type="Resource" uid="uid://ygummlxmxleu" path="res://databases/food/sweet_shroom.tres" id="6_wvq0t"]
+
+[resource]
+script = ExtResource("5_jlaj2")
+Owner = ExtResource("4_wvq0t")
+Combinations = Array[Array]([Array[ExtResource("1_66f8p")]([ExtResource("2_5ww5u"), ExtResource("3_x8ltj")]), Array[ExtResource("1_66f8p")]([ExtResource("4_x8ltj"), ExtResource("5_wvq0t")]), Array[ExtResource("1_66f8p")]([ExtResource("4_x8ltj"), ExtResource("2_5ww5u")]), Array[ExtResource("1_66f8p")]([ExtResource("5_wvq0t"), ExtResource("3_x8ltj")]), Array[ExtResource("1_66f8p")]([ExtResource("6_wvq0t"), ExtResource("4_x8ltj")]), Array[ExtResource("1_66f8p")]([ExtResource("6_wvq0t"), ExtResource("3_x8ltj")])])

@@ -384,13 +384,7 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		float _multiplier = 0.5f + (Instance.Status.Hunger + Instance.Status.Thirst) / 200;
 		int _base = Instance.Status.IsAdult ? HARVEST_VALUE_ADULT : HARVEST_VALUE_BABY;
 		float _harvestMulti = Instance.FloatFlags[AphidInstance.FlagsEnum.HarvestMultiplier].Value;
-		GD.Print("|Total Harvest Value|");
-		GD.Print("|Base|: ", _base, "|Care Multiplier|: ", _multiplier, "|Total|: ", _base * _multiplier);
-		GD.Print("|Harvest Multiplier|: ", _harvestMulti, "|Total|: ", Mathf.CeilToInt(_base * _multiplier * _harvestMulti));
-		GD.Print("|Results(Tier 1)|: ", Mathf.FloorToInt(Mathf.RoundToInt(_base * _multiplier * _harvestMulti) * 1.25f),"|Results(Tier 2)|:", Mathf.FloorToInt(Mathf.CeilToInt(_base * _multiplier * _harvestMulti) * 1.5f));
-		Player.AddCurrency(
-			Mathf.RoundToInt(_base * _multiplier * _harvestMulti), 
-			Player.CurrencySource.AphidGain);
+		Player.AddCurrency(Mathf.RoundToInt(_base * _multiplier * _harvestMulti), Player.CurrencySource.AphidGain);
 
 		// visuals
 		CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.HarvestAphid);

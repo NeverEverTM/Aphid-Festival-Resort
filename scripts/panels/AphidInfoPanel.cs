@@ -128,7 +128,7 @@ public partial class AphidInfoPanel : Control
 		// if there is aphids nearby now, and there weren't before, update interface
 		bool _wereAphidsNearby = AreAphidsNearby;
 		AreAphidsNearby = nearby_aphids.Count > 0;
-		if (AreAphidsNearby && _wereAphidsNearby != AreAphidsNearby)
+		if (AreAphidsNearby && _wereAphidsNearby != AreAphidsNearby )
 		{
 			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.ShowInfo);
 			SetDisplayMode(DisplayMode.PartiallyShown);
@@ -156,7 +156,7 @@ public partial class AphidInfoPanel : Control
 		if (_args.Current?.Name == "pause" || _args.Next?.Name == "pause")
 			return;
 
-		SetDisplayMode(DisplayMode.Hidden);
+		SetTo(false, true);
 	}
 
 	// MARK: User Interface
@@ -206,31 +206,39 @@ public partial class AphidInfoPanel : Control
 
 	// MARK: General
 	/// <summary>
-	/// Sets the state of the information tab.
+	/// Enables/Disables the information panel. This function should always be used when interfacing with this subpanel.
 	/// </summary>
-	/// <param name="_force">Force a change of state, this will also force it to fully hide if set to false</param>
-	public void SetTo(bool _state, bool _force = false)
+	/// <param name="_force">Force a change of state, this will also force it to fully hide when state is set to false</param>
+	public static void SetTo(bool _state, bool _force = false)
 	{
-		if (Enabled == _state && !_force)
+		if (!IsInstanceValid(Instance))
 			return;
 
-		if (_state && current_aphid == null)
+		if (Instance.Enabled == _state && !_force)
+			return;
+
+		if (_state && Instance.current_aphid == null)
 		{
 			DebugLogger.Print(DebugLogger.LogPriority.Error, "AphidInfo: Attempted to show aphid when none is selected.");
 			return;
 		}
 
-		Enabled = _state;
-		SetDisplayMode(_state ? DisplayMode.Shown : (_force ? DisplayMode.Hidden : DisplayMode.PartiallyShown));
+		Instance.Enabled = _state;
+		Instance.SetDisplayMode(_state ? DisplayMode.Shown : (_force ? DisplayMode.Hidden : DisplayMode.PartiallyShown));
 		CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.ShowInfo);
 
-		if (Enabled)
+		if (Instance.Enabled)
 		{
 			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.CloseInfo, 1);
-			UpdateGUI(true);
+			Instance.UpdateGUI(true);
 		}
-		else if (AreAphidsNearby || IsAphidPickedUp)
-			CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.ShowInfo, 1);
+		else
+		{
+			if (CanvasManager.Menus.Processing || CanvasManager.Menus.IsActive)
+				return;
+			if (Instance.AreAphidsNearby || Instance.IsAphidPickedUp)
+				CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.ShowInfo, 1);	
+		}
 	}
 	public void SetByButton()
 	{
@@ -265,9 +273,9 @@ public partial class AphidInfoPanel : Control
 	}
 
 	/// <summary>
-	/// Sets the current animation for the information tab, DOES NOT set it as enabled.
+	/// Sets the current display animation for the panel. DO NOT USE THIS outside very niche applications, use SetTo() instead for more consistent behaviour.
 	/// </summary>
-	/// <param name="_mode"></param>
+	/// <param name="_mode">The animation mode to select</param>
 	public void SetDisplayMode(DisplayMode _mode)
 	{
 		if (_mode == CurrentDisplay)

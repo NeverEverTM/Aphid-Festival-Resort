@@ -1,8 +1,8 @@
 [gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://c1fsm4qv1klt4"]
 
-[ext_resource type="Texture2D" uid="uid://dngh0ck5owmpa" path="res://sprites/atlases/characters/player_0/atlas.res" id="1_p7mgx"]
+[ext_resource type="Texture2D" uid="uid://dngh0ck5owmpa" path="res://sprites/atlases/characters/player_0/atlas.res" id="1_sfsab"]
 
 [resource]
-atlas = ExtResource("1_p7mgx")
-region = Rect2(0, 128, 32, 64)
+atlas = ExtResource("1_sfsab")
+region = Rect2(0, 64, 32, 64)
 filter_clip = true

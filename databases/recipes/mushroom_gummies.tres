@@ -1,12 +1,13 @@
-[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://difllv1dxjvlx"]
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3 uid="uid://difllv1dxjvlx"]
 
 [ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_th34w"]
 [ext_resource type="Resource" uid="uid://dgxwdiqsc252l" path="res://databases/food/flour_bag.tres" id="2_28ru8"]
 [ext_resource type="Resource" uid="uid://dhikw41b4qvsa" path="res://databases/food/shroom.tres" id="3_q8s57"]
+[ext_resource type="Resource" uid="uid://bgwohfbd4oscp" path="res://databases/food/mushroom_skewer.tres" id="4_28ru8"]
 [ext_resource type="Resource" uid="uid://dvkgauinwhs04" path="res://databases/items/mushroom_gummies.tres" id="5_28ru8"]
 [ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_orw4d"]
 
 [resource]
 script = ExtResource("5_orw4d")
 Owner = ExtResource("5_28ru8")
-Combinations = Array[Array]([Array[ExtResource("1_th34w")]([ExtResource("2_28ru8"), ExtResource("3_q8s57")])])
+Combinations = Array[Array]([Array[ExtResource("1_th34w")]([ExtResource("2_28ru8"), ExtResource("3_q8s57")]), Array[ExtResource("1_th34w")]([ExtResource("2_28ru8"), ExtResource("4_28ru8")])])

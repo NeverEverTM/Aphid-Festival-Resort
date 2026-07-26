@@ -106,7 +106,7 @@ public partial class CanvasManager : CanvasLayer
 			return;
 
 		if (_args.IsActive)
-			SetHUDTo(false);
+			ShowHUD(false);
 	}
 	public void OnPostSwitch(MenuHandler.MenuArgs _args)
 	{
@@ -114,7 +114,7 @@ public partial class CanvasManager : CanvasLayer
 			return;
 
 		if (!_args.IsActive)
-			SetHUDTo(true);
+			ShowHUD(true);
 	}
 	
 	public static async Task INSTANTIATE_CANVAS()
@@ -198,7 +198,7 @@ public partial class CanvasManager : CanvasLayer
 		Instance.photo_display.Show();
 		Instance.Show();
 	}
-	public static void SetHUDTo(bool _state)
+	public static void ShowHUD(bool _state)
 	{
 		if (_state == Instance.hud_element.Visible)
 			return;

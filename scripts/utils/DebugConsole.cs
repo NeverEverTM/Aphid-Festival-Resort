@@ -84,7 +84,13 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (@event.IsActionPressed(InputNames.Debug1))
 			{
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Hello Dolly!");
+				//DebugLogger.Print(DebugLogger.LogPriority.Debug, "Hello Dolly!");
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "//Menu//");
+
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Menu List:");
+				CanvasManager.Menus.Available.ForEach((m) => DebugLogger.Print(DebugLogger.LogPriority.Debug, m.Name));
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "IsActive/Processing:", CanvasManager.Menus.IsActive, "/", CanvasManager.Menus.Processing);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Current/Pending:", CanvasManager.Menus.Current?.Name, "/", CanvasManager.Menus.Pending?.Name);
 				return;
 			}
 

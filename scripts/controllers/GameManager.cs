@@ -263,7 +263,7 @@ public partial class GameManager : Node
 		Player.Instance.GlobalPosition = ResortManager.Current.SpawnPoint.GlobalPosition;
 		CameraManager.ForceCameraPosition(Player.Instance.GlobalPosition + new Vector2(1000, 0));
 		CameraManager.Instance.PositionSmoothingSpeed = 0;
-		CanvasManager.SetHUDTo(false);
+		CanvasManager.ShowHUD(false);
 
 		// we set new game data
 		await SaveSystem.SetProfileData();
@@ -284,7 +284,7 @@ public partial class GameManager : Node
 		CameraManager.Instance.PositionSmoothingSpeed = _last;
 		await DialogManager.Instance.OpenDialogBox("intro_welcome");
 		Player.Instance.SetDisabled(false);
-		CanvasManager.SetHUDTo(true);
+		CanvasManager.ShowHUD(true);
 		IsANewSavefile = false;
 		CutsceneManager.IsActive = false;
 		//Instance.GameSavefile.ForceLoaded();

@@ -69,6 +69,8 @@ public partial class DialogManager : Control
 		}
 	}
 
+	// TODO: for next update, dialog manager needs a cleanup, it should probably count as a menu so it interfaces with everything else more neatly
+
 	// ======| Dialog Functions |=======
 	/// <summary>
 	/// Opens the dialog box and formats, writes and displays the result.
@@ -93,10 +95,12 @@ public partial class DialogManager : Control
 		}
 		else
 			dialogName.GetParent<Control>().Hide();
+
+		CanvasManager.ClearControlPrompts();
+		AphidInfoPanel.SetTo(false, true);
 		Player.Instance.SetDisabled(true, true);
+		CanvasManager.ShowHUD(false);
 		
-		CanvasManager.SetHUDTo(false);
-		AphidInfoPanel.Instance.SetDisplayMode(AphidInfoPanel.DisplayMode.Hidden);
 		if (!Instance.Visible)
 			Instance.Show();
 
@@ -211,7 +215,7 @@ public partial class DialogManager : Control
 		IsActive = false;
 		Dialog = string.Empty;
 		Instance.Hide();
-		CanvasManager.SetHUDTo(true);
+		CanvasManager.ShowHUD(true);
 		Player.Instance.SetDisabled(false);
 		GlobalManager.IsBusy = false;
 	}

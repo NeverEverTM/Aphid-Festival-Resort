@@ -43,9 +43,14 @@ public partial class PauseMenu : Control
 			int _index = i;
 			buttons[i].Pressed += () =>
 			{
-				if (!CanvasManager.Menus.Processing)
+				if (!CanvasManager.Menus.Processing && CanvasManager.Menus.Current?.Name == "pause")
+				{
 					_actions[_index]();
-				SoundManager.CreateSound("ui/button_select");
+					SoundManager.CreateSound("ui/button_select");
+				}
+				else
+					SoundManager.CreateSound("ui/button_fail");
+				buttons[_index].ReleaseFocus();
 			};
 			buttons[i].GetChild<Label>(0).Text = $"{PAUSE_MENU_NAME}_{buttons[i].Name}";
 		}
@@ -57,7 +62,7 @@ public partial class PauseMenu : Control
 			{
 				Show();
 				GetTree().Paused = true;
-				bg_player.Play(StringNames.OpenAnim); // sets the permanent pause bg
+				bg_player.Play(StringNames.OpenAnim); // sets the pause bg
 				SoundManager.PauseSong();
 				SoundManager.CreateSound("ui/button_switch");
 			}
@@ -69,7 +74,7 @@ public partial class PauseMenu : Control
 			if (_nextMenu == null)
 			{
 				GetTree().Paused = false;
-				bg_player.Play(StringNames.CloseAnim); // sets the permanent pause bg
+				bg_player.Play(StringNames.CloseAnim); // sets the pause bg
 				SoundManager.ResumeSong();
 				Player.Instance.SetMovementDirection(Vector2.Zero);
 			}

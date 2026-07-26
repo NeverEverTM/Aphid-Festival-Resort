@@ -103,7 +103,7 @@ public partial class FreeCameraManager : Control
 		}
 
 		if (@event.IsActionPressed(InputNames.ShowInfo) && is_focusing_aphids)
-			AphidInfoPanel.Instance.SetTo(!AphidInfoPanel.Instance.Enabled);
+			AphidInfoPanel.SetTo(!AphidInfoPanel.Instance.Enabled);
 
 		// changes focus mode
 		if (@event.IsActionPressed(InputNames.OpenInventory))
@@ -178,7 +178,7 @@ public partial class FreeCameraManager : Control
 	{
 		Instance.is_focusing_aphids = false;
 		CameraManager.UnFocus();
-		AphidInfoPanel.Instance.SetTo(false, false);
+		AphidInfoPanel.SetTo(false, false);
 		Instance.spectatorLabel.Hide();
 	}
 	
@@ -250,7 +250,7 @@ public partial class FreeCameraManager : Control
 		{
 			if (CameraManager.FocusedAphid != null)
 			{
-				AphidInfoPanel.Instance.SetTo(false, true);
+				AphidInfoPanel.SetTo(false, true);
 				CameraManager.UnFocus();
 			}
 			else
@@ -335,7 +335,7 @@ public partial class FreeCameraManager : Control
 		else
 			Instance.animator.Play(_state ? StringNames.OpenAnim : StringNames.CloseAnim);
 
-		AphidInfoPanel.Instance.SetTo(false, true);
+		AphidInfoPanel.SetTo(false, true);
 		Instance.is_camera_tab_open = false;
 		Instance.is_hud_visible = _state;
 	}
@@ -353,7 +353,7 @@ public partial class FreeCameraManager : Control
 		// Show free camera hud and hide other elements
 		SetHUDTo(true);
 		CanvasManager.ClearControlPrompts();
-		CanvasManager.SetHUDTo(false);
+		CanvasManager.ShowHUD(false);
 
 		// activate hud buttons
 		for (int i = 0; i < buttonGrid.GetChildCount(); i++)
@@ -373,7 +373,7 @@ public partial class FreeCameraManager : Control
 		// set the canvas back to visible
 		CanvasManager.ClearControlPrompts();
 		SetHUDTo(false);
-		CanvasManager.SetHUDTo(true);
+		CanvasManager.ShowHUD(true);
 
 		is_focusing_aphids = is_camera_tab_open = just_loaded = false;
 		spectatorLabel.Hide();

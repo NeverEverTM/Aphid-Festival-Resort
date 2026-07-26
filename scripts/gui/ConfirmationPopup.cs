@@ -150,9 +150,9 @@ public partial class ConfirmationPopup : CanvasLayer
 	/// <returns></returns>
 	public static ConfirmationPopup Create(Action _onConfirm, Action _onCancel = null, ConfirmationEnum _type = ConfirmationEnum.Standard, string _custom_tr_key = null)
 	{
-		IsConfirming = true;
 		if (IsInstanceValid(currentPopup))
-			currentPopup.QueueFree();
+			return currentPopup;
+		IsConfirming = true;
 		currentPopup = ResourceLoader.Load<PackedScene>(GlobalManager.CONFIRM_WINDOW_SCENE).Instantiate() as ConfirmationPopup;
 
 		currentPopup.confirmationType = _type;

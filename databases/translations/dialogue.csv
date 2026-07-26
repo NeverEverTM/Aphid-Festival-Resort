@@ -22,19 +22,19 @@ Agradable, ¿no?
 >No es mucho... ¡pero puedes arreglar cosas a tu gusto!"
 welcome_2,">Here in the kitchen you can turn ingredients into full course meals if you want
 your aphids to grow even stronger!
-",
+",UNUSUED
 welcome_3,">To the side we have the lobby! 
 Here you can check on the latest changes we do, exchange aphids with other guests
 and even send them to needed jobs and get a cut out of it.
 >The owner is not around for the moment but be sure to say hello if
-you see him! Otherwise, we have plenty of guests you can interact with.",
+you see him! Otherwise, we have plenty of guests you can interact with.",UNUSUED
 welcome_4,">That over there is the resort's shop, you can use your berries to buy supplies and toys
 for the little ones!
 >We would also offer hats but... those have not reached us yet(...)
 Sorry for the incoveniences.
 >Well! If you need me, I'll be just here on watch duty!(...)
 Don't be afraid to talk to any of us if you need help with something(...)
-They may even know a few things about aphids!",
+They may even know a few things about aphids!",UNUSUED
 joy_flavor_0,">Quite a cozy place, isn’t it (name)?(...)
 It’s such a joy to work as a keeper for the lil buddies. (...)
 [wave amp=50.0 freq=5.0 connected=1]They even let me have my own one![/wave]
@@ -50,13 +50,15 @@ Me encanta trabajar de cuidadora para los pequeñines.(...)
 Aparte de en tiempos de festival, este lugar es bastante silencioso.
 >Hablando de aquello, creo que esta por llegar!(...[0.5])
 espero..."
-joy_flavor_1,">They are still filling the resort with all sorts of wonders(...)
-So sorry for all the mess of boxes! They won't let me touch them.
->I don't know why either, that moth at the gate told me not to.
->When I got nearby one, they just gave me a death stare(...)
-So I stay away from them ever since...",">Todavia estan llenando el complejo con todo tipo de artilugios(...)
-Asi que lo siento por el monton de cajas! No me dejan tocarlas.
->Yo tampoco lo se, aquella polilla en la entrada me dijo que no podia.
+joy_flavor_1,">They are still filling the resort with all sorts of wonders.
+So sorry for all the mess of boxes!
+> They won't let me touch them...(...)
+I don't know why either, the guard told me not to.
+>When I approached one, they gave me a death stare(...)
+So I stay away from them ever since...",">Todavia estan llenando el complejo con todo tipo de artilugios.
+Asi que lo siento por el monton de cajas!(...)
+>No me dejan tocarlas...(...)
+Yo tampoco lo se, el guarda en la entrada me dijo que no podia.
 >Cuando me acerque a una, me devolvio una mirada asesina(...)
 Desde entonces no me acerco..."
 joy_flavor_2,">Aphid breeding has been on the rise lately.(...)
@@ -90,7 +92,7 @@ I really like to take in the air...",">Mmh...(...)
 Oh perdona, no te vi llegar!
 >A veces se me va mucho el pensamiento.(...)
 Realmente me gusta disfrutar el tiempo..."
-,">Did you know you can call your aphids to you by whistling?(...)
+joy_flavor_6,">Did you know you can call your aphids to you by whistling?(...)
 Try it out!
 >You just have to...(...) [color=red]“hold the interaction button”[/color](...)
 Atleast, that's how Azzy explained it...",">¿Sabias que puedes llamar a tus áfidos solo silbando?(...)
@@ -142,14 +144,17 @@ azzy_flavor_4,">I got a lil' bird to tell me about how life in the Capitol are.(
 Let me tell you, that place is bonkers!
 >It's such a walk there but I do have another friend that lives there(...)
 And she is considering joining us over here!
-",>WIP
+",">Me 'a contado un pajarillo del como es la vida en la Ciudad...(...)
+Y suena de locos!
+>Es un estrecho largo para llegar pero si que tengo un amiguete que vive ahí(...)
+Y esta considerando unirse aqui!"
 kut_flavor_0,">No one in this town has proved more expert taste than the aphids.
 They are the best customers I ever had.
 >They even gather around to see my craft.(...)
-[wave amp=25.0 freq=5.0 connected=1]Truly an inspiring environment.[/wave]",">Nadie en este pueblo ha provado tener un sentido del gusto tan exquisito como los áfidos.
+[wave]Truly an inspiring environment.[/wave]",">Nadie en este pueblo ha provado tener un sentido del gusto tan exquisito como los áfidos.
 Los mejores clientes que uno puede pedir.
 >Incluso se reunen para verme crear arte.(...)
-[wave amp=25.0 freq=5.0 connected=1]Un ambiente asi me inspira.[/wave]"
+[wave]Un ambiente asi me inspira.[/wave]"
 kut_flavor_1,">Mmpfh...(...)
 Should I try spice it up(...) or(...) should I make it sickly sweet.
 >...(...)Oh, you're...(...[0.7]) (name)?(...)
@@ -206,14 +211,12 @@ Vuelta era la parte dificíl."
 echo_flavor_4,">Don't cause trouble. I am watching you.(...)
 All four of my eyes are.",">No causes problemas, te estoy vigilando.(...)
 Mis cuatro ojos lo hacen."
-echo_flavor_5,">They hired me to guard the resort 
-but all I do is watch for these [shake rate=20.0 level=6 connected=0]dumb[/shake] boxes.
+echo_flavor_5,">They hired me to guard the resort but all I do is watch for these [shake rate=20.0 level=6 connected=0]dumb[/shake] boxes.
 >There is no way anything bigger than a seedling is gonna come knocking the door.(...)
-But I sure wished...",">Me contrataron para hacer de guardia en el complejo,
-pero todo lo que hago es solo mirar estas [shake rate=20.0 level=6 connected=0]estupidas[/shake] cajas.
+But I sure wished...",">Me contrataron para hacer de guardia en el complejo, pero todo lo que hago es solo mirar estas [shake rate=20.0 level=6 connected=0]estupidas[/shake] cajas.
 >No hay manera que cualquier cosa más grande que un áfido sea capaz
 de venir a tocar la puerta.(...)
-Solo puedo rezar..."
+Pero uno puede desear..."
 tanjy_flavor_0,">Whatcha looking at?(...)
 Does my horn have something on it?
 >[shake][font_size=80]Ough![/font_size][/shake]
@@ -230,10 +233,10 @@ tanjy_flavor_2,">They told me my stand is NOT ready yet!
 My dissapoinment is inmesurable, and my day is ruined
 >Until then, your aphids will be hatless(...)
 Sad!",">Me han dicho que mi puesto NO esta listo!
-Me lleva!
+Me lleva un demonio!
 >Hasta entonces, tus áfidos quedaran calvos.(...)
 ¡Que pena!"
-tanjy_flavor_3,">I would be outside but  the guard at the entrance won't let me.
+tanjy_flavor_3,">I would be outside but the guard at the entrance won't let me.
 They told me that I am “trouble” and “not enough pay”
 >I could beat them in a fight!(...)
 But I am TOO kind and benelovent to do that(...)
@@ -245,11 +248,17 @@ Por supuesto!"
 theresa_flavor_0,">...(...)Mmh?
 >You are talking to me?
 >Do you not have [wave]anything[/wave] better to do?(...)
-They do not pay the chit chat.",">...(...)Mmh?
+They do not pay me to chit chat during work hours.
+>But I sure wished.",">...(...)Mmh?
 >¿Me hablas a mi?
 >Es que no tienes [wave]nada[/wave] mejor que estar haciendo?(...)
-No me pagan por la charla."
-theresa_flavor_1,">Day in, day out(...), I could do with a hot drink right now.",">Mismo chismo, limpio piso, podria hacerme con una bebida ahora mismo."
+No me pagan por la charla duranta horas de trabajo.
+>Pero seguro que lo desaria."
+theresa_flavor_1,">Day in, day out(...), I could do with a hot drink right now.
+>”Sorry Theresa but the barista is not coming yet”(...)
+Anything but work morale.",">Mismo chismo, limpio piso, podria hacerme con una bebida ahora mismo.
+>”Pero Theresa, la barista no podra venir de momento”(...)
+Mucho hablar, poco soporte moral laboral."
 theresa_flavor_2,">You do know that you can talk to me from across the desk, right?
 >That or you lost something(...)
 Sorry, I-(...) [shake]we[/shake] do not do refunds.",">Sabes que me puedes hablar desde el otro lado del escritorio, ¿Verdad?
@@ -260,4 +269,5 @@ theresa_flavor_3,">Let me see...(...) you are (name)(...), right?
 >...Just a joke, ha ha ha...(...[0.8])
 Don't look me like that and tell me what do you need instead.",">Dejame ver...(...), eres (name)(...), verdad?
 >Ahora se que poner en el reporte.
->...Solo una broma, je je je(...[0.3]).(...[0.3]).(...[0.3])."
+>...Solo una broma, je je je(...[0.8])
+No me mires así y dime que necesitas."

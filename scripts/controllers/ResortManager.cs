@@ -18,7 +18,7 @@ public partial class ResortManager : Node2D
 	public readonly List<Aphid> Aphids = [];
 	public SaveSystem.SaveModule<Savefile> SaveModule;
 	/// <summary>
-	/// Currently running instance/singleton of a resort. This instance will reference the last resort it had to load.
+	/// Currently running instance/singleton of a resort. If no resort is present, this variable will be null.
 	/// </summary>
 	public static ResortManager Current { get; private set; }
 	public static Savefile Data { get; set; }
@@ -112,6 +112,7 @@ public partial class ResortManager : Node2D
 	}
     public override void _ExitTree()
     {
+		Current = null;
 		// set all existing aphids into passive mode
         for (int i = 0; i < Aphids.Count; i++)
 			Aphids[i].Instance.EnterMode(AphidData.EntityStatusType.Passive);
