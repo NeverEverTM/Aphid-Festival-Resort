@@ -6,3 +6,4 @@ icon.svg.import
 *.lnk
 *.png~
 BenchmarkDotNet.Artifacts/
+export_presets.cfg

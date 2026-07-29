@@ -81,7 +81,7 @@ public partial class CameraManager : Camera2D
         Instance.ForceUpdateScroll();
         Instance.ResetSmoothing();
 
-        if (!RoomInstance.Instance.IsInside)
+        if (!RoomInstance.Instance.NoColorCube)
         {
             Instance.cameraParticles.Visible = true;
             // force particle spawn at new location

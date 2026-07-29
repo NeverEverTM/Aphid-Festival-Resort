@@ -36,6 +36,7 @@ size = Vector2(96, 16)
 y_sort_enabled = true
 script = ExtResource("1_a4k14")
 ColorCube = NodePath("globalFilter")
+AffectedByColorCube = true
 TopLeft = NodePath("tilemap_layers/topleft")
 BottomRight = NodePath("tilemap_layers/bottomright")
 

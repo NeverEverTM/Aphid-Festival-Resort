@@ -6,6 +6,7 @@
 y_sort_enabled = true
 script = ExtResource("1_43ixu")
 ColorCube = NodePath("colorcube")
+AffectedByColorCube = true
 TopLeft = NodePath("top_left")
 BottomRight = NodePath("bottom_right")
 

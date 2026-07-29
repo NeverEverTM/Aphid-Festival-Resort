@@ -10,28 +10,37 @@ public partial class RoomInstance : Node2D
 	public static RoomInstance Instance { get; set; }
 	private bool initialized = false;
 
+	/// <summary>
+	/// The room colorcube, modified by daytime to change ambience color.
+	/// </summary>
 	[Export] private CanvasModulate ColorCube;
 	/// <summary>
-	/// If this field is "inside", then it is not affected by hourly colorcubes
+	/// Colorcube colors for the current field depending on the hour. Can be unique per room unless it uses the generic list.
 	/// </summary>
-	[Export] public bool IsInside = false;
-	[Export] public Node2D TopLeft, BottomRight;
-	[Export] public RoomDoor[] Doors = [];
-
-	public static Rect2 RoomBounds;
-	public enum DayHourMode { Morning, Noon, Afternoon, Sunset, Night }
-	public static DayHourMode TimeOfDay { get; set; }
-	/// <summary>
-	/// Colorcube colors for the current field depending on the hour.
-	/// </summary>
-	public static readonly Color[] DayFilters =
+	[Export] public Color[] DayFilters =
 	[
-		new(0x418980FF), // Morning
+		new(0x5f9eddFF), // Morning
 		new(0xFFFFFFFF), // Noon
 		new(0xfc8d83FF), // Afternoon
 		new(0x9b4daaFF), // Sunset
 		new(0x1d2b87FF)  // Night
 	];
+	/// <summary>
+	/// Wheter this room should be affected by the daytime change of color. Set by the room
+	/// </summary>
+	[Export] public bool NoColorCube = false;
+	/// <summary>
+	/// Boundary points for the room, manually placed via markers.
+	/// </summary>
+	[Export] public Node2D TopLeft, BottomRight;
+	/// <summary>
+	/// Available room transitions in this room.
+	/// </summary>
+	[Export] public RoomDoor[] Doors = [];
+
+	public static Rect2 RoomBounds;
+	public enum DayHourMode { Morning, Noon, Afternoon, Sunset, Night }
+	public static DayHourMode TimeOfDay { get; set; }
 	private readonly Dictionary<TimeEvents, List<Action<TimeArgs>>> Events = new()
 	{
 		{ TimeEvents.OnTimeChange, new() },
@@ -136,10 +145,10 @@ public partial class RoomInstance : Node2D
 		{
 			TimeOfDay = currentTime;
 
-			if (!Instance.IsInside) // do not apply colorcube transition to enclosed spaces like buildings
+			if (!Instance.NoColorCube) // do not apply colorcube transition to enclosed spaces like buildings
 			{
 				if (_forceTransition)
-					Instance.ColorCube.Color = DayFilters[(int)currentTime];
+					Instance.ColorCube.Color = Instance.DayFilters[(int)currentTime];
 				else
 					Instance.InterpolateColorCube(currentTime);
 			}
@@ -154,6 +163,6 @@ public partial class RoomInstance : Node2D
 	{
 		Tween _tween = ColorCube.CreateTween();
 		_tween.SetTrans(Tween.TransitionType.Cubic);
-		_tween.TweenProperty(ColorCube, "color", DayFilters[(int)timeDay], 3);
+		_tween.TweenProperty(ColorCube, "color", Instance.DayFilters[(int)timeDay], 3);
 	}
 }

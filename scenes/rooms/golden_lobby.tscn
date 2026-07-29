@@ -1119,7 +1119,7 @@ size = Vector2(96, 23)
 size = Vector2(96, 16)
 
 [node name="golden_lobby" node_paths=PackedStringArray("Doors") instance=ExtResource("1_muv3f")]
-IsInside = true
+NoColorCube = true
 Doors = [NodePath("room_trigger")]
 
 [node name="top_left" parent="." index="1"]
@@ -1354,15 +1354,16 @@ offset_left = 28.0
 offset_top = 374.0
 offset_right = 312.0
 offset_bottom = 462.0
-text = "sell_button"
+text = "prompt_sell"
 
 [node name="aphid_cost" type="RichTextLabel" parent="CanvasLayer/lobby_menu/window_bg/aphid/aphid_display/display_contents" index="1"]
 layout_mode = 0
-offset_left = 87.0
+offset_left = 74.0
 offset_top = 315.0
-offset_right = 247.0
-offset_bottom = 363.0
+offset_right = 257.0
+offset_bottom = 368.0
 theme_type_variation = &"RTL_Black"
+bbcode_enabled = true
 text = "9999"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -2422,103 +2423,100 @@ position = Vector2(17, 174)
 [node name="pot_grass3" parent="scene_props" index="16" instance=ExtResource("26_qx61t")]
 position = Vector2(466, 266)
 
-[node name="pot_grass4" parent="scene_props" index="17" instance=ExtResource("26_qx61t")]
-position = Vector2(194, 265)
-
-[node name="pot_grass5" parent="scene_props" index="18" instance=ExtResource("26_qx61t")]
+[node name="pot_grass5" parent="scene_props" index="17" instance=ExtResource("26_qx61t")]
 position = Vector2(463, 55)
 
-[node name="pot_grass8" parent="scene_props" index="19" instance=ExtResource("26_qx61t")]
+[node name="pot_grass8" parent="scene_props" index="18" instance=ExtResource("26_qx61t")]
 position = Vector2(465, 175)
 
-[node name="pot_grass7" parent="scene_props" index="20" instance=ExtResource("26_qx61t")]
+[node name="pot_grass7" parent="scene_props" index="19" instance=ExtResource("26_qx61t")]
 position = Vector2(706, 138)
 
-[node name="aphid_rug" parent="scene_props" index="21" instance=ExtResource("7_hft6x")]
+[node name="aphid_rug" parent="scene_props" index="20" instance=ExtResource("7_hft6x")]
 position = Vector2(109, 175)
 texture = ExtResource("13_0l57m")
 
-[node name="aphid_rug2" parent="scene_props" index="22" instance=ExtResource("7_hft6x")]
+[node name="aphid_rug2" parent="scene_props" index="21" instance=ExtResource("7_hft6x")]
 position = Vector2(374, 176)
 texture = ExtResource("13_0l57m")
 
-[node name="CardTrophy" type="Sprite2D" parent="scene_props" index="23"]
+[node name="CardTrophy" type="Sprite2D" parent="scene_props" index="22"]
 position = Vector2(248, 26.145)
 texture = ExtResource("15_1th7w")
 offset = Vector2(0, -42.145)
 
-[node name="misc_poster" type="Sprite2D" parent="scene_props" index="24"]
+[node name="misc_poster" type="Sprite2D" parent="scene_props" index="23"]
 self_modulate = Color(0.82891, 0.82891, 0.82891, 1)
 position = Vector2(222, 23.145)
 texture = ExtResource("30_y7m8y")
 offset = Vector2(0, -45.11)
 
-[node name="misc_poster4" type="Sprite2D" parent="scene_props" index="25"]
+[node name="misc_poster4" type="Sprite2D" parent="scene_props" index="24"]
 position = Vector2(208, 30.145)
 texture = ExtResource("30_y7m8y")
 offset = Vector2(0, -32.58)
 
-[node name="poster_mothiva" type="Sprite2D" parent="scene_props" index="26"]
+[node name="poster_mothiva" type="Sprite2D" parent="scene_props" index="25"]
 self_modulate = Color(0.672064, 0.672064, 0.672064, 1)
 position = Vector2(379.22775, 23.224442)
 rotation = -0.0872665
 texture = ExtResource("31_gxegt")
 offset = Vector2(0, -55.8)
 
-[node name="poster_mothiva2" type="Sprite2D" parent="scene_props" index="27"]
+[node name="poster_mothiva2" type="Sprite2D" parent="scene_props" index="26"]
 position = Vector2(392.22775, 32.22444)
 rotation = 0.0244346
 texture = ExtResource("31_gxegt")
 offset = Vector2(0, -55.8)
 
-[node name="poster_mothiva3" type="Sprite2D" parent="scene_props" index="28"]
+[node name="poster_mothiva3" type="Sprite2D" parent="scene_props" index="27"]
 position = Vector2(65, 27.000002)
 rotation = 0.118677974
 texture = ExtResource("31_gxegt")
 offset = Vector2(0, -55.8)
 
-[node name="misc_poster2" type="Sprite2D" parent="scene_props" index="29"]
+[node name="misc_poster2" type="Sprite2D" parent="scene_props" index="28"]
 position = Vector2(271, 20.145)
 texture = ExtResource("30_y7m8y")
 offset = Vector2(0, -24.655)
 
-[node name="misc_poster3" type="Sprite2D" parent="scene_props" index="30"]
+[node name="misc_poster3" type="Sprite2D" parent="scene_props" index="29"]
 self_modulate = Color(0.846044, 0.846044, 0.846044, 1)
 position = Vector2(281, 12.145)
 texture = ExtResource("30_y7m8y")
 offset = Vector2(0, -42.145)
 flip_h = true
 
-[node name="box_0" parent="scene_props" index="31" instance=ExtResource("18_6lp28")]
+[node name="box_0" parent="scene_props" index="30" instance=ExtResource("18_6lp28")]
 position = Vector2(651, 59)
 
-[node name="box_2" parent="scene_props" index="32" instance=ExtResource("18_6lp28")]
+[node name="box_2" parent="scene_props" index="31" instance=ExtResource("18_6lp28")]
 position = Vector2(680, 117)
 
-[node name="box_3" parent="scene_props" index="33" instance=ExtResource("18_6lp28")]
+[node name="box_3" parent="scene_props" index="32" instance=ExtResource("18_6lp28")]
 position = Vector2(599, 65)
 
-[node name="box_4" parent="scene_props" index="34" instance=ExtResource("18_6lp28")]
+[node name="box_4" parent="scene_props" index="33" instance=ExtResource("18_6lp28")]
 position = Vector2(520, 72)
 
-[node name="box_1" parent="scene_props" index="35" instance=ExtResource("18_6lp28")]
+[node name="box_1" parent="scene_props" index="34" instance=ExtResource("18_6lp28")]
 position = Vector2(695, 58)
 
-[node name="largebox_1" parent="scene_props" index="36" instance=ExtResource("17_nneko")]
+[node name="largebox_1" parent="scene_props" index="35" instance=ExtResource("17_nneko")]
 position = Vector2(682, 48)
 
-[node name="largebox_2" parent="scene_props" index="37" instance=ExtResource("17_nneko")]
+[node name="largebox_2" parent="scene_props" index="36" instance=ExtResource("17_nneko")]
 position = Vector2(679, 101)
 flip_h = true
 
-[node name="largebox_3" parent="scene_props" index="38" instance=ExtResource("17_nneko")]
+[node name="largebox_3" parent="scene_props" index="37" instance=ExtResource("17_nneko")]
 position = Vector2(532, 54)
 flip_h = true
 
-[node name="largebox_4" parent="scene_props" index="39" instance=ExtResource("17_nneko")]
+[node name="largebox_4" parent="scene_props" index="38" instance=ExtResource("17_nneko")]
 position = Vector2(564, 86)
 
-[node name="shelf" type="Sprite2D" parent="scene_props" index="40"]
+[node name="shelf" type="Sprite2D" parent="scene_props" index="39"]
 visible = false
 y_sort_enabled = true
 position = Vector2(549, 53)
@@ -2531,21 +2529,21 @@ offset = Vector2(0, -30)
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_xio35")
 
-[node name="shadow_fence" type="Sprite2D" parent="scene_props" index="41"]
+[node name="shadow_fence" type="Sprite2D" parent="scene_props" index="40"]
 self_modulate = Color(0, 0, 0, 0.266667)
 position = Vector2(89.50001, 156.24998)
 scale = Vector2(11.312501, 0.277778)
 texture = ExtResource("2_nneko")
 offset = Vector2(0, 10)
 
-[node name="shadow_fence2" type="Sprite2D" parent="scene_props" index="42"]
+[node name="shadow_fence2" type="Sprite2D" parent="scene_props" index="41"]
 self_modulate = Color(0, 0, 0, 0.266667)
 position = Vector2(389.49997, 156.24998)
 scale = Vector2(11.312495, 0.277778)
 texture = ExtResource("2_nneko")
 offset = Vector2(0, 10)
 
-[node name="shadow_fence3" type="Sprite2D" parent="scene_props" index="43"]
+[node name="shadow_fence3" type="Sprite2D" parent="scene_props" index="42"]
 self_modulate = Color(0, 0, 0, 0.266667)
 y_sort_enabled = true
 position = Vector2(606, 113)
