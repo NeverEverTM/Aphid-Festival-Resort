@@ -73,18 +73,13 @@ public partial class Player : CharacterBody2D
         VAR_AMOUNT_CURRENCY = _amount;
         CurrencyArgs _args = new()
         {
-            Current = Data.Currency,
+            Currency = Data.Currency,
             Source = _source
         };
+        GlobalManager.Utils.InvokeEventListeners(Instance.CurrencyEventsList[CurrencyEvents.OnPreCalculation], _args);
 
-        if (VAR_AMOUNT_CURRENCY < 0)
-            GlobalManager.Utils.InvokeEventListeners(Instance.CurrencyEventsList[CurrencyEvents.OnCurrencyLose], _args);
-        else if (VAR_AMOUNT_CURRENCY > 0)
-            GlobalManager.Utils.InvokeEventListeners(Instance.CurrencyEventsList[CurrencyEvents.OnCurrencyGain], _args);
-
-        GlobalManager.Utils.InvokeEventListeners(Instance.CurrencyEventsList[CurrencyEvents.OnCurrencyChange], _args);
-        Data.Currency = Mathf.Max(Data.Currency + VAR_AMOUNT_CURRENCY, 0);
-        CanvasManager.UpdateCurrency();
+        _args.Currency = Data.Currency = Mathf.Max(Data.Currency + VAR_AMOUNT_CURRENCY, 0);
+        GlobalManager.Utils.InvokeEventListeners(Instance.CurrencyEventsList[CurrencyEvents.OnPostCalculation], _args);
     }
     /// <summary>
     /// Syntax sugar for AddCurrency(-cost).

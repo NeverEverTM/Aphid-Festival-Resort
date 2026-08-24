@@ -32,7 +32,8 @@ public partial class AphidData : Aphid
     }
 
     public readonly static string[] SkillNames = ["speed", "strength", "intelligence", "stamina"];
-    private readonly static float[] flavor_weights = [22, 22, 22, 22, 12];
+    private readonly static float[] flavor_weights = [22, 22, 22, 22, 12],
+        preference_options = [0.25f, 0.5f, 0.75f, 1.0f];
     public readonly static string[] NameArchive =
     [
         "Apuff", "Amok", "Amor",
@@ -289,7 +290,7 @@ public partial class AphidData : Aphid
                 bool _incompatible = false;
                 for (int i = 0; i < Traits.Count; i++)
                 {
-                    AphidTraits.ITrait _trait = AphidTraits.CreateTraitByID(Traits[i]);
+                    ITrait _trait = AphidTraits.CreateTraitByID(Traits[i]);
                     if (_trait.IsIncompatibleWith(_traitName))
                     {
                         _incompatible = true;
@@ -308,28 +309,45 @@ public partial class AphidData : Aphid
 
             DebugLogger.Print(DebugLogger.LogPriority.Error, "AphidGenes: Failed to inherit skill!");
         }
-        public virtual void GenerateFoodPreferences()
+        protected virtual void GenerateFoodPreferences()
         {
-            List<float> _preference_options = [0.25f, 0.5f, 0.75f, 1.0f];
+            List<float> _preference_options = ShuffleList([.. preference_options]);
             FoodPreference = (FoodType)GlobalManager.Utils.GetRandomByWeight(flavor_weights);
             FoodMultipliers = [
-                GetFoodMultiplier(FoodType.Sweet, ref _preference_options),
-                GetFoodMultiplier(FoodType.Sour, ref _preference_options),
-                GetFoodMultiplier(FoodType.Salty, ref _preference_options),
-                GetFoodMultiplier(FoodType.Bitter, ref _preference_options),
+                GetFoodMultiplier(FoodType.Sweet, _preference_options[0]),
+                GetFoodMultiplier(FoodType.Sour, _preference_options[1]),
+                GetFoodMultiplier(FoodType.Salty, _preference_options[2]),
+                GetFoodMultiplier(FoodType.Bitter, _preference_options[3]),
                 GetFoodMultiplier(FoodType.Vile), // the rare Vile preference
 				0.5f, // Bland
 				1 // Neutral
 			];
         }
-        public virtual float GetFoodMultiplier(FoodType _type, ref List<float> _options)
+        public static List<T> ShuffleList<T>(List<T> list)
+		{
+			int n = list.Count;
+			while (n > 1)
+			{
+				n--;
+				int k = GlobalManager.RNG.RandiRange(0,n);
+                (list[n], list[k]) = (list[k], list[n]);
+            }
+            return list;
+		}
+        public static Color GetRandomColor(bool _randomizeAlpha = false)
+		{
+			byte[] _rgba = [ (byte)GlobalManager.RNG.RandiRange(0,255), (byte)GlobalManager.RNG.RandiRange(0,255),
+				(byte)GlobalManager.RNG.RandiRange(0,255), _randomizeAlpha ? (byte)(GlobalManager.RNG.RandiRange(0,205) + 50) : (byte)255 ];
+
+			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
+		}
+        protected virtual float GetFoodMultiplier(FoodType _type, float _extra)
         {
-            float _option = GlobalManager.RNG.RandiRange(0, _options.Count - 1);
-            _options.Remove(_option);
-            return 0.5f + (_type == FoodPreference ? 0.5f : 0) + _option;
+            return 0.5f + (_type == FoodPreference ? 0.5f : 0) + _extra;
         }
-        public virtual float GetFoodMultiplier(FoodType _type) =>
+        protected virtual float GetFoodMultiplier(FoodType _type) =>
             0.5f + (_type == FoodPreference ? 0.5f : 0);
+
         public static Color MixAphidColor(Color _color1, Color _color2)
         {
             // we combine all colors to find the strongest value and order by such
@@ -362,10 +380,12 @@ public partial class AphidData : Aphid
                     GenerateTraits();
 
                 while (Traits.Count >= 5)
-                    Traits.RemoveAt(Traits.Count - 1);
+                {
+                    for (int i = 0; i < 4; i++)
+                        Traits.RemoveAt(Traits.Count - 1);
+                }
 
-                if (FoodMultipliers[4] <= 0)
-                    FoodMultipliers[4] = GetFoodMultiplier(FoodType.Vile);
+                GenerateFoodPreferences();
             }
         }
 
@@ -377,10 +397,10 @@ public partial class AphidData : Aphid
             RandomNumberGenerator _gen = new();
             if (_generateColors)
             {
-                AntennaColor = GlobalManager.Utils.GetRandomColor();
-                BodyColor = GlobalManager.Utils.GetRandomColor();
-                LegColor = GlobalManager.Utils.GetRandomColor();
-                EyeColor = GlobalManager.Utils.GetRandomColor();
+                AntennaColor = GetRandomColor();
+                BodyColor = GetRandomColor();
+                LegColor = GetRandomColor();
+                EyeColor = GetRandomColor();
             }
             else
             {

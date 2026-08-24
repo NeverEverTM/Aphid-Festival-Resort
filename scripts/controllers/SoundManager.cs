@@ -11,8 +11,8 @@ public partial class SoundManager : Node
 
 	private static readonly List<AudioStreamPlayer> sound_entities = [];
 	private static readonly List<AudioStreamPlayer2D> sound2d_entities = [];
+	private static readonly RandomNumberGenerator RNG = new();
 	private static Tween transitionTween;
-	private static RandomNumberGenerator RNG = new();
 
 	public override void _Ready()
 	{
@@ -111,8 +111,18 @@ public partial class SoundManager : Node
 	/// <param name="_file">Must be a relative file name path (ex. "misc/title.wav")</param>
 	public static void PlaySong(string _file)
 	{
-		MusicPlayer.Stream = GetAudioStream(_file);
-		MusicPlayer.Play();
+		void _playsong()
+		{
+			MusicPlayer.Stream = GetAudioStream(_file);
+			MusicPlayer.VolumeDb = 0;
+			MusicPlayer.Play();
+			if (IsInstanceValid(transitionTween))
+				transitionTween.Finished -= _playsong;
+		}
+		if (IsInstanceValid(transitionTween))
+			transitionTween.Finished += _playsong;
+		else
+			_playsong();
 	}
 	public static void PauseSong()
 	{
@@ -212,5 +222,4 @@ public partial class SoundManager : Node
 	/// <returns>The duplicated player acting as the current sound source for this audio.</returns>
 	public static AudioStreamPlayer2D CreateSound2D(string _name, Vector2 _position, bool _pitchRand = true, string _bus = "Sounds") =>
 		CreateSound2D(GetAudioStream(_name), SFXPlayer2D, _position, _pitchRand);
-
 }

@@ -170,7 +170,6 @@ public partial class Player : CharacterBody2D
 		{
 			{ InputNames.Interact, Instance.TryInteract },
 			{ InputNames.Pickup, InputAction_Pickup },
-			{ InputNames.ShowInfo, InputAction_ShowInfo },
 			{ InputNames.OpenGenerations, GenerationsPanel.InputAction_OpenGenerations },
 		};
 
@@ -183,6 +182,9 @@ public partial class Player : CharacterBody2D
 
 		if (IsInstanceValid(FreeCameraManager.Instance))
 			InputActions.Add(InputNames.ChangeCamera, FreeCameraManager.Set);
+
+		if (IsInstanceValid(AphidInfoPanel.Instance))
+			InputActions.Add(InputNames.ShowInfo, InputAction_ShowInfo);
 
 		HeldInputActions = new()
 		{
@@ -608,10 +610,9 @@ public partial class Player : CharacterBody2D
 	{
 		if (IsDisabled || IsInstanceValid(DisabledTimer) || pickups_nearby.Count == 0)
 			return;
-
+		// disabled/object does not exist/object is invalid
 		var _node = pickups_nearby[0];
-
-		if (_node.IsQueuedForDeletion())
+		if (!IsInstanceValid(_node) || _node.IsQueuedForDeletion())
 			return;
 
 		StringNames.GlobalTags _tag = _node.HasMeta(StringNames.TagMeta) ?

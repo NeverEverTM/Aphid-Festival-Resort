@@ -83,10 +83,10 @@ public class AphidInstance
         {
             case StateEnum.Sleep:
                 Timers.Find(t => t is RestGain).Start();
-            break;
+                break;
             case StateEnum.Train:
                 Timers.Add(new TrainState.TrainTimer(this));
-            break;
+                break;
         }
     }
 
@@ -136,6 +136,30 @@ public class AphidInstance
         else
             return Status.LastActiveState == _state;
     }
+
+    /// <summary>
+    /// Get the real value gained from a piece of food, based on aphid preference.
+    /// </summary>
+    /// <returns>The base value of the food multiplied by preference</returns>
+    public virtual float GetRealFoodGain(FoodData _food) =>
+        _food.FoodValue * Genes.FoodMultipliers[(int)_food.Flavor];
+    /// <summary>
+    /// Does this food go over the full threshold? (Unless there is no added food value)
+    /// </summary>
+    public virtual bool IsOverfeeding(FoodData _food) =>
+        _food.FoodValue > 0 && Status.Hunger + _food.FoodValue > 100;
+    /// <summary>
+    /// Get the real value gained from a piece of food, based on aphid preference.
+    /// </summary>
+    /// <returns>The base value of the drink multiplied by preference</returns>
+    public virtual float GetRealDrinkGain(FoodData _food) =>
+        _food.DrinkValue * Genes.FoodMultipliers[(int)_food.Flavor];
+    /// <summary>
+    /// Does this drink go over the full threshold? (Unless there is no added drink value)
+    /// </summary>
+    public virtual bool IsOverdrinking(FoodData _food) =>
+        _food.DrinkValue > 0 && Status.Thirst + _food.DrinkValue > 100;
+
     public void AddRelationship(Aphid _aphid, Relationship _relationship = null)
     {
         if (_aphid.Instance.GUID.Equals(GUID))

@@ -29,15 +29,15 @@
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/backgrounds/menu_bar.png" id="20_qrmy7"]
 [ext_resource type="PackedScene" uid="uid://fvilqaco8u8x" path="res://scenes/panels/controls_panel.tscn" id="23_au4eg"]
 [ext_resource type="Script" uid="uid://c56otv2uv2d50" path="res://scripts/panels/HelpPanel.cs" id="24_xmavb"]
-[ext_resource type="PackedScene" uid="uid://yqk8ofxlcjuq" path="res://scenes/prefabs/help_examples/shop.tscn" id="32_ignfg"]
-[ext_resource type="PackedScene" uid="uid://cdndyepkxq1g" path="res://scenes/prefabs/help_examples/kitchen.tscn" id="33_s3hmc"]
-[ext_resource type="PackedScene" uid="uid://vrlyu0hgpxx8" path="res://scenes/prefabs/help_examples/jobs.tscn" id="34_w2syd"]
-[ext_resource type="PackedScene" uid="uid://byd0gpwlwrcg2" path="res://scenes/prefabs/help_examples/generations.tscn" id="34_x2yum"]
-[ext_resource type="PackedScene" uid="uid://d3x44vhenjq3p" path="res://scenes/prefabs/help_examples/camera.tscn" id="35_50hc1"]
-[ext_resource type="PackedScene" uid="uid://c2bs6ryhkw4yf" path="res://scenes/prefabs/help_examples/skills.tscn" id="35_ignfg"]
-[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="36_n1534"]
-[ext_resource type="PackedScene" uid="uid://cp3jfbnd6s48l" path="res://scenes/prefabs/help_examples/caretake.tscn" id="37_s3hmc"]
-[ext_resource type="PackedScene" uid="uid://bwlju5rebi5do" path="res://scenes/prefabs/help_examples/intro.tscn" id="38_x2yum"]
+[ext_resource type="PackedScene" uid="uid://yqk8ofxlcjuq" path="res://scenes/prefabs/tutorial/shop.tscn" id="32_ignfg"]
+[ext_resource type="PackedScene" uid="uid://cdndyepkxq1g" path="res://scenes/prefabs/tutorial/kitchen.tscn" id="33_s3hmc"]
+[ext_resource type="PackedScene" uid="uid://vrlyu0hgpxx8" path="res://scenes/prefabs/tutorial/jobs.tscn" id="34_w2syd"]
+[ext_resource type="PackedScene" uid="uid://byd0gpwlwrcg2" path="res://scenes/prefabs/tutorial/generations.tscn" id="34_x2yum"]
+[ext_resource type="PackedScene" uid="uid://d3x44vhenjq3p" path="res://scenes/prefabs/tutorial/camera.tscn" id="35_50hc1"]
+[ext_resource type="PackedScene" uid="uid://c2bs6ryhkw4yf" path="res://scenes/prefabs/tutorial/skills.tscn" id="35_ignfg"]
+[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/tutorial/tutorial_kitchen.PNG" id="36_n1534"]
+[ext_resource type="PackedScene" uid="uid://cp3jfbnd6s48l" path="res://scenes/prefabs/tutorial/caretake.tscn" id="37_s3hmc"]
+[ext_resource type="PackedScene" uid="uid://bwlju5rebi5do" path="res://scenes/prefabs/tutorial/intro.tscn" id="38_x2yum"]
 [ext_resource type="Texture2D" uid="uid://bdb1xqpet04hq" path="res://sprites/ui/backgrounds/menu_clipboard.png" id="39_j2rvs"]
 [ext_resource type="PackedScene" uid="uid://co34071w6qov6" path="res://scenes/prefabs/ui/pause_menu_button.tscn" id="40_8siup"]
 [ext_resource type="Script" uid="uid://4hi7mig7sbn1" path="res://scripts/panels/GameOver.cs" id="42_n1534"]
@@ -50,15 +50,12 @@
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="50_tqug1"]
 [ext_resource type="Texture2D" uid="uid://bu0m4pg4pi2xi" path="res://sprites/ui/backgrounds/menu_book_inverted.png" id="51_bkjff"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_8junb"]
-font_size = 40
-shadow_color = Color(0.550133, 0, 0.0841187, 1)
-shadow_offset = Vector2(3.095, 3.18)
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8lprv"]
 shader = ExtResource("13_8siup")
 shader_parameter/color = Color(1, 1, 1, 1)
 shader_parameter/ignore_modulate = true
+shader_parameter/has_pulse = false
+shader_parameter/pulse_speed = 1.0
 shader_parameter/width = 10.0
 shader_parameter/pattern = 2
 shader_parameter/inside = false
@@ -400,6 +397,11 @@ _data = {
 &"close": SubResource("Animation_f24s7"),
 &"open": SubResource("Animation_vdyy6")
 }
+
+[sub_resource type="LabelSettings" id="LabelSettings_8junb"]
+font_size = 40
+shadow_color = Color(0.550133, 0, 0.0841187, 1)
+shadow_offset = Vector2(3.095, 3.18)
 
 [sub_resource type="Animation" id="Animation_5upln"]
 length = 0.001
@@ -2126,9 +2128,9 @@ _data = {
 process_mode = 1
 script = ExtResource("1_vek4n")
 hud_element = NodePath("hud")
-photo_display = NodePath("hud/photo")
-photo_anim_player = NodePath("hud/photo/AnimationPlayer")
-currency_text = NodePath("berries_bar/amount")
+photo_display = NodePath("hud/photo_display")
+photo_anim_player = NodePath("hud/photo_display/AnimationPlayer")
+currency_text = NodePath("hud/berries_bar/amount")
 screenshot_button = NodePath("hud/screenshotButton")
 prompt_grid = NodePath("control_prompt_anchor/control_prompt_grid")
 prompt_element = ExtResource("6_2mjwi")
@@ -2137,43 +2139,6 @@ weather_player = NodePath("hud/datetime/AnimationPlayer")
 weather_text = NodePath("hud/datetime/CanvasGroup/weater_bg/weather_text")
 weather_sprites = Array[Texture2D]([ExtResource("2_gvumt"), ExtResource("3_7sasc")])
 weather_bg = NodePath("hud/datetime/CanvasGroup/weater_bg")
-
-[node name="berries_bar" type="NinePatchRect" parent="."]
-self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
-light_mask = 0
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -139.0
-offset_bottom = 60.0
-grow_horizontal = 0
-texture = ExtResource("4_bri73")
-region_rect = Rect2(0, 0, 128, 128)
-patch_margin_left = 5
-patch_margin_top = 5
-patch_margin_right = 5
-patch_margin_bottom = 5
-
-[node name="icon" type="TextureRect" parent="berries_bar"]
-light_mask = 0
-layout_mode = 0
-offset_left = -15.0
-offset_top = -1.0
-offset_right = 40.0
-offset_bottom = 60.0
-texture = ExtResource("5_ea4nc")
-stretch_mode = 5
-
-[node name="amount" type="Label" parent="berries_bar"]
-layout_mode = 0
-offset_left = 37.0
-offset_top = 7.0
-offset_right = 125.0
-offset_bottom = 55.0
-theme = ExtResource("6_pcakw")
-text = "ERR!"
-label_settings = SubResource("LabelSettings_8junb")
-horizontal_alignment = 1
 
 [node name="control_prompt_anchor" type="Control" parent="."]
 editor_description = "This control is so the grid doesnt reposition itself back into the top left, it doesnt show in the editor but in-game it will be broken otherwise"
@@ -2208,7 +2173,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="photo" type="TextureRect" parent="hud"]
+[node name="photo_display" type="TextureRect" parent="hud"]
 visible = false
 light_mask = 0
 material = SubResource("ShaderMaterial_8lprv")
@@ -2223,7 +2188,7 @@ stretch_mode = 5
 flip_h = true
 flip_v = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="hud/photo"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="hud/photo_display"]
 libraries = {
 &"": SubResource("AnimationLibrary_n1534")
 }
@@ -2352,6 +2317,45 @@ label_settings = SubResource("LabelSettings_kugfj")
 libraries = {
 &"": SubResource("AnimationLibrary_4mtcm")
 }
+
+[node name="berries_bar" type="NinePatchRect" parent="hud"]
+self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 1101.0
+offset_right = 1240.0
+offset_bottom = 60.0
+grow_horizontal = 0
+texture = ExtResource("4_bri73")
+region_rect = Rect2(0, 0, 128, 128)
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="icon" type="TextureRect" parent="hud/berries_bar"]
+light_mask = 0
+layout_mode = 0
+offset_left = -15.0
+offset_top = -1.0
+offset_right = 40.0
+offset_bottom = 60.0
+texture = ExtResource("5_ea4nc")
+stretch_mode = 5
+
+[node name="amount" type="Label" parent="hud/berries_bar"]
+light_mask = 0
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 125.0
+offset_bottom = 55.0
+text = "ERR!"
+label_settings = SubResource("LabelSettings_8junb")
+horizontal_alignment = 1
 
 [node name="inventory" type="Control" parent="." node_paths=PackedStringArray("animator", "grid", "modeButton", "inventoryButton", "inventoryCountLabel", "modeControlLabel", "inventoryControlLabel")]
 visible = false

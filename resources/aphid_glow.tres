@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cd5e8xtdkxr5k"]
+
+[ext_resource type="Shader" uid="uid://fhuy6jytnnor" path="res://scripts/shaders/aphid_glow.gdshader" id="1_83bo6"]
+
+[resource]
+shader = ExtResource("1_83bo6")

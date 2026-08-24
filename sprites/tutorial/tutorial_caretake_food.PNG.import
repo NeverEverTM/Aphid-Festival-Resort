@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drtx08aejoe38"
-path="res://.godot/imported/album.PNG-22e28135b619d956e8438344f6ac3d1c.ctex"
+uid="uid://b8fsibtdj5m8p"
+path="res://.godot/imported/tutorial_caretake_food.PNG-e3949413489351e44d6e2464adda888d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/help_examples/album.PNG"
-dest_files=["res://.godot/imported/album.PNG-22e28135b619d956e8438344f6ac3d1c.ctex"]
+source_file="res://sprites/tutorial/tutorial_caretake_food.PNG"
+dest_files=["res://.godot/imported/tutorial_caretake_food.PNG-e3949413489351e44d6e2464adda888d.ctex"]
 
 [params]
 

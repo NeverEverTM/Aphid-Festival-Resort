@@ -1,0 +1,66 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3x44vhenjq3p"]
+
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="2_1lcfc"]
+[ext_resource type="Texture2D" uid="uid://cufn20y8grbrn" path="res://sprites/tutorial/tutorial_camera_hud.PNG" id="3_ylcut"]
+
+[node name="camera" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="camera_label" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -493.0
+offset_top = -243.0
+offset_right = 455.0
+offset_bottom = -85.0
+theme_type_variation = &"RTL_White"
+bbcode_enabled = true
+text = "help_camera_0"
+scroll_active = false
+metadata/controls = PackedStringArray("change_camera")
+
+[node name="camera_label2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -493.0
+offset_top = -106.0
+offset_right = 455.0
+offset_bottom = 195.0
+theme_type_variation = &"RTL_White"
+bbcode_enabled = true
+text = "help_camera_1"
+scroll_active = false
+vertical_alignment = 1
+metadata/controls = PackedStringArray("change_camera")
+
+[node name="build_img2" type="TextureRect" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = 10.0
+offset_top = 159.0
+offset_right = 462.0
+offset_bottom = 233.0
+texture = ExtResource("3_ylcut")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="frame" type="NinePatchRect" parent="build_img2"]
+self_modulate = Color(0.4745098, 0.023529412, 0.18431373, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_1lcfc")
+draw_center = false
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5

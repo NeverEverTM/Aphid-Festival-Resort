@@ -283,15 +283,9 @@ public partial class BuildMenu : Control
 		// Set highlights for selected item
 		previous_light_mask = selected_building.Self.LightMask;
 		selected_building.Self.LightMask = 0;
+		
 		previous_material = selected_building.Self.Material;
-		ShaderMaterial _outline = new()
-		{
-			Shader = ResourceLoader.Load<Shader>(GlobalManager.OUTLINE_SHADER)
-		};
-		_outline.SetShaderParameter("color", new Color(0.15f, 0, 0.8f));
-		_outline.SetShaderParameter("pattern", 1);
-		_outline.SetShaderParameter("add_margins", true);
-		_structure.Self.Material = _outline;
+		_structure.Self.Material = ResourceLoader.Load<ShaderMaterial>("uid://bchkdm40gms6q");
 	}
 	private void UnassignBuilding()
 	{

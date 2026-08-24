@@ -18,7 +18,7 @@ public partial class FurnitureShop : ShopInterface
     protected override void Open(MenuInstance _last)
     {
 		CameraManager.EnableFreeRoam = false;
-			FreeCameraManager.SetHUDTo(false);
+		FreeCameraManager.SetHUDTo(false);
         base.Open(_last);
     }
     protected override void Close(MenuInstance _next)

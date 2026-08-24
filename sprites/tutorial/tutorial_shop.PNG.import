@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dknqeho1jsf5o"
-path="res://.godot/imported/aphid_egg.PNG-0163a4fdb177c78c73ed0e438a66a896.ctex"
+uid="uid://bjqhamn66qnsn"
+path="res://.godot/imported/tutorial_shop.PNG-675b2c4bd41c845655d0827f3a4ed2d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/help_examples/aphid_egg.PNG"
-dest_files=["res://.godot/imported/aphid_egg.PNG-0163a4fdb177c78c73ed0e438a66a896.ctex"]
+source_file="res://sprites/tutorial/tutorial_shop.PNG"
+dest_files=["res://.godot/imported/tutorial_shop.PNG-675b2c4bd41c845655d0827f3a4ed2d9.ctex"]
 
 [params]
 

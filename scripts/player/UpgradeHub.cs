@@ -135,8 +135,8 @@ public static class UpgradeHub
                 if (_args.Source == Player.CurrencySource.AphidGain)
                     _args.Amount = Mathf.FloorToInt(_args.Amount * Buffs[_currentLevel]);
             }
-            Player.Instance.RemoveEventListener(ProfitBuff, Player.CurrencyEvents.OnCurrencyGain);
-            Player.Instance.AddEventListener(ProfitBuff, Player.CurrencyEvents.OnCurrencyGain);
+            Player.Instance.RemoveEventListener(ProfitBuff, Player.CurrencyEvents.OnPreCalculation);
+            Player.Instance.AddEventListener(ProfitBuff, Player.CurrencyEvents.OnPreCalculation);
         }
     }
     public class JobLevelUpgrade : IUpgradeModuleCore

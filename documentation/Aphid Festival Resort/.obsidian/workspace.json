@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Item and Structure Implementations.md",
+                "file": "4 - Development Log.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Item and Structure Implementations"
+              "title": "4 - Development Log"
             }
           },
           {
@@ -27,16 +27,15 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "4 - Development Log.md",
+                "file": "5 - Current Changelog.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "4 - Development Log"
+              "title": "5 - Current Changelog"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -56,7 +55,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -179,14 +180,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "67e599d23a87fdb7",
+  "active": "41d76bde929f431c",
   "lastOpenFiles": [
     "5 - Current Changelog.md",
-    "3 - Roadmap.md",
-    "2 - Version History.md",
-    "1 - Welcome.md",
     "4 - Development Log.md",
     "Item and Structure Implementations.md",
+    "1 - Welcome.md",
+    "2 - Version History.md",
+    "3 - Roadmap.md",
     "Structure Specifications.md",
     "Job Requests Implementation.md",
     "Aphid Info Logic Graph.canvas",

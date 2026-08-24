@@ -1,0 +1,68 @@
+[gd_scene load_steps=3 format=3 uid="uid://bwlju5rebi5do"]
+
+[ext_resource type="Texture2D" uid="uid://dknqeho1jsf5o" path="res://sprites/tutorial/tutorial_intro_inventory.PNG" id="1_r33lg"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="2_r33lg"]
+
+[node name="intro" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="welcome" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -481.0
+offset_top = -240.0
+offset_right = 482.0
+offset_bottom = 71.0
+theme_type_variation = &"RTL_White"
+bbcode_enabled = true
+text = "help_intro_0"
+scroll_active = false
+metadata/controls = PackedStringArray("open_inventory", "pickup")
+
+[node name="welcome2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = -506.0
+offset_top = 91.0
+offset_right = 140.0
+offset_bottom = 235.0
+theme_type_variation = &"RTL_SWhite"
+bbcode_enabled = true
+text = "help_intro_1"
+scroll_active = false
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/controls = PackedStringArray("pull")
+
+[node name="open_inv_image" type="TextureRect" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = 177.0
+offset_top = 39.0
+offset_right = 482.0
+offset_bottom = 256.0
+texture = ExtResource("1_r33lg")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="frame" type="NinePatchRect" parent="open_inv_image"]
+self_modulate = Color(0.4745098, 0.023529412, 0.18431373, 1)
+light_mask = 0
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_r33lg")
+draw_center = false
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5

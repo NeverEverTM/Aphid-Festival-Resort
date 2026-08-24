@@ -53,6 +53,8 @@ public partial class GameManager : Node
 		public void Set(GameData _data)
 		{
 			Data = _data;
+			if (Data.LastTimeSession == 0)
+				Data.LastTimeSession = Data.LastTimeLoaded;
 			Data.LastTimeLoaded = Time.GetUnixTimeFromSystem();
 		}
 		public GameData Get()
@@ -174,7 +176,14 @@ public partial class GameManager : Node
 	public record GameData
 	{
 		public string LastRoom { get; set; } = "golden_resort";
+		/// <summary>
+		/// Used in-game to offset slight desyncs between rooms
+		/// </summary>
 		public double LastTimeLoaded { get; set; }
+		/// <summary>
+		/// Last time this savefile was played
+		/// </summary>
+		public double LastTimeSession { get; set; }
 		public double Playtime { get; set; } = 0;
 
 		//Stats
@@ -245,6 +254,7 @@ public partial class GameManager : Node
 	}
 	private void OnScenePostLoad(SceneManager.SceneArgs _args)
 	{
+		Data.LastTimeSession = Time.GetUnixTimeFromSystem();
 		Data.SavefileBoots++;
 		foreach (var _pair in Upgrades)
 		{

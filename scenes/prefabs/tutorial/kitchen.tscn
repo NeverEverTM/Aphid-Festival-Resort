@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdndyepkxq1g"]
 
-[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/help_examples/kitchen.PNG" id="1_c58h0"]
-[ext_resource type="Material" uid="uid://441fqj7tngs5" path="res://scripts/shaders/ui_outline_material.tres" id="1_jvllw"]
+[ext_resource type="Texture2D" uid="uid://b461hge4ybhye" path="res://sprites/tutorial/tutorial_kitchen.PNG" id="1_c58h0"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="2_c58h0"]
 
 [node name="kitchen" type="Control"]
 light_mask = 0
@@ -17,15 +17,30 @@ grow_vertical = 2
 [node name="kitchen_npc_img2" type="TextureRect" parent="."]
 light_mask = 0
 texture_filter = 2
-material = ExtResource("1_jvllw")
 layout_mode = 0
-offset_left = 172.0
-offset_top = 84.0
-offset_right = 460.0
-offset_bottom = 253.0
+offset_left = 161.0
+offset_top = 80.0
+offset_right = 499.0
+offset_bottom = 274.0
 texture = ExtResource("1_c58h0")
 expand_mode = 1
 stretch_mode = 4
+
+[node name="frame" type="NinePatchRect" parent="kitchen_npc_img2"]
+self_modulate = Color(0.4745098, 0.023529412, 0.18431373, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_c58h0")
+draw_center = false
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
 
 [node name="kitchen" type="RichTextLabel" parent="."]
 layout_mode = 0

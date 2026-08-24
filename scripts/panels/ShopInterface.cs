@@ -12,6 +12,7 @@ public partial class ShopInterface : MenuControl
 	[Export] protected GridContainer itemGrid;
 	[Export] protected RichTextLabel itemName, itemDescription;
 	[Export] protected RichTextLabel itemCost;
+	[Export] protected Label currencyLabel;
 	[Export] protected TextureRect itemIcon;
 	[Export] protected PackedScene itemContainer;
 	[Export] protected BaseButton itemBuyButton;
@@ -49,6 +50,7 @@ public partial class ShopInterface : MenuControl
 		itemName.Text = Tr($"store_{GetShopTagName()}_name");
 		itemDescription.Text = Tr($"store_{GetShopTagName()}_desc");
 		itemCost.Text = Tr($"store_{GetShopTagName()}_phrase");
+		currencyLabel.Text = Player.Data.Currency.ToString();
 		itemIcon.Texture = defaultIcon;
 		itemBuyButton.Hide();
 		CreateShelfFromList();
@@ -142,7 +144,12 @@ public partial class ShopInterface : MenuControl
 		if (CanPurchase())
 			Purchase();
 		else
+		{
+			currencyLabel.Modulate = new Color("red");
+			Tween _flashRed = CreateTween();
+			_flashRed.TweenProperty(currencyLabel, "modulate", new Color("white"), 0.2);
 			SoundManager.CreateSound("ui/button_fail");
+		}
 	}
 	/// <summary>
 	/// Override for what it should give/set for buying this shop's items.
@@ -151,6 +158,7 @@ public partial class ShopInterface : MenuControl
 	protected virtual void Purchase()
 	{
 		Player.RemoveCurrency(current_item.Cost);
+		currencyLabel.Text = Player.Data.Currency.ToString();
 		SoundManager.CreateSound("ui/kaching");
 	}
 	public string GetShopTagName() => shopTag.ToString().ToLower();

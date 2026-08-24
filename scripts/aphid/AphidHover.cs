@@ -19,7 +19,7 @@ public partial class AphidHover : InteractableArea2D
     }
     public override void _Draw()
     {
-        if (FreeCameraManager.Enabled && !CanvasManager.Menus.IsActive)
+        if (FreeCameraManager.Enabled && !CanvasManager.IsTakingScreenshot && !CanvasManager.Menus.IsActive)
         {
             if (aphid.Equals(CameraManager.FocusedAphid))
                 DrawCircle(aphid.Skin.Position, 40, new Color("green"), false, 2);

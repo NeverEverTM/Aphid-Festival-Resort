@@ -1,0 +1,59 @@
+,en,es
+help_intro_title,Tutorial: Introduction,Tutorial: Introducción
+help_intro_0,"Welcome to the Aphid Resort! First, let's hatch your first aphid.
+Press {0} to open your inventory, and click on one of the eggs to take it out.
+Then, press {1} to drop it on the ground, use the same key to grab it back aswell.","¡Bienvenido al Complejo de Áfidos! Empezamos eclosionando tu primer Áfido.
+Presiona {0} para abrir el inventario, y haz click en uno de los huevos para sacarlo.
+Luego, presiona {1} para dejarlo en el suelo. Puedes usar la misma tecla para recogerlo de nuevo."
+help_intro_1,"[color=coral]Tip:[/color] Press {0} to store an item in your hands back to the inventory.
+If empty handed, it will instead pull the first thing in the backpack!","[color=coral]Tip:[/color] Presiona {0} para guardar cosas en la mano de vuelta al inventario.
+En el caso de no tener nada en la mano, sacaras el primer objeto disponible en la mochila."
+help_caretake_title,Tutorial: Basic Caretaking,Tutorial: Cuidados Basicos
+help_caretake_0,"Aphids have needs to take care of, such as [color=coral]hunger[/color], [color=cyan]thirst[/color] and [color=mediumpurple]affection[/color].
+You can see how well they are doing by pressing {0} while near them.
+This will show you their current status, alongside their skills progress.
+You can start by petting them with {1}, [wave]they love it![/wave]","Los áfidos tienen ciertas necesidades, tales como el [color=coral]hambre[/color], la [color=cyan]sed[/color] y el [color=mediumpurple]cariño[/color].
+Puedes ver su estado actual, así como el progreso de sus habilidades, presionando {0} cerca de ellos.
+Puedes empezar acariciandoles con {1} [wave]¡Les gusta mucho eso![/wave]"
+help_caretake_1,[color=coral]Tip:[/color] You can also use the same bind to interact with other things in the world.,[color=coral]Tip:[/color] Tambien puedes usar la misma tecla para interactuar con otros interactuables.
+help_shop_title,Tutorial: Item Shop,Tutorial: Tienda de Objetos
+help_shop_0,"You can purchase various items at the shop, such as food, or eggs to hatch.
+To buy them, you will need berries, which you can get from aphids!
+Harvest berries from aphids every few minutes, by interacting with them when outlined.
+You get more berries the better taken care of they are!","Puedes comprar varios objetos en la tienda, ya sea comida, o huevos para eclosionar.
+Para eso, necesitaras bayas, las cuales se consiguen de los áfidos!
+Recolecta bayas de los áfidos cada cierto tiempo, interactuando con ellos cuando esten delineados.
+Cuanto mejor esten de estado, ¡más bayas daran!"
+help_shop_1,[color=coral]Tip:[/color] You can sell items in your inventory by pressing the [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img] symbol and clicking on any item you want to sell.,[color=coral]Tip:[/color] Puedes vender objetos en tu inventario presionando el simbolo [img width=50]res://sprites/ui/gui_icons/icon_sell.png[/img] y seleccionando el objeto que quieras vender.
+help_kitchen_title,Tutorial: Kitchen Recipes,Tutorial: Recetas de Cocina
+help_kitchen_0,"Near the shop you can access the kitchen, where you can mix and match ingredients to create all sorts of different recipes.","Cerca de la tienda, la cocina te permitira combinar y crear todo tipo de recetas."
+help_kitchen_1,"All dishes have different nutritional values and some even grant a skill bonus!
+Keep in mind that your aphids will have a unique preference for certain types of food, which affects satiety and/or grants them a larger skill bonus.","Todos los platos tienen diferentes valores nutricionales, ¡algunos inclusive dan un bono de habilidad!
+Ten en cuenta que cada áfido tiene una prefencia por ciertos tipos de comida, los cuales afectan la saciedad y/o pueden dar un mayor bono de habilidad."
+help_kitchen_2,"[color=coral]Tip:[/color] If you need to experiment, there's some berry bushes around that should help you do it for free...","[color=coral]Tip:[/color] Si necesitas experimentar, hay un par de arbustos de bayas cerca que puedes usar..."
+help_generations_title,Tutorial: Generations Album,Tutorial: Album Generacional
+help_generations_0,"You can watch all aphids that are, and, were under your care in the generations album.
+Press {0} to open it, here you can see your aphids origins, and, if you have a deep bond with them, you can even see their current personality!","Puedes ver a todos los áfidos que estan, y han estado, bajo tu cuidado en el album.
+Presiona {0} para abrirlo, puedes ver más detalles del áfido, ¡inclusive saber su personalidad si tienes una conexion profunda con ellos!"
+help_generations_1,"This is also the place where photos are displayed, click on either the [img]res://sprites/ui/gui_icons/icon_camera.png[/img] icon on the top right to see an aphid's album, or the one at the bottom left to see the general album.","Aquí tambien puedes ver las fotos que has tomado, haz click en el icono [img]res://sprites/ui/gui_icons/icon_camera.png[/img] que esta cerca del retrato para ver el album del áfido, o el que esta en la esquina, para ver el album general."
+help_camera_title,Tutorial: Free Camera,Tutorial: Camara Libre
+help_camera_0,"By pressing {0}, you will enter free camera mode, where you can move freely through the resort. It also has the following features:
+","Presionando {0}, entraras en modo Camara Libre, donde puedes moverte libremente. Este tambien tiene las siguientes funciones:"
+help_camera_1,"[color=coral]First[/color] is the build menu, where you can place and move the furniture in the resort.
+[color=coral]Second[/color] is the furniture shop, where you can purchase said furniture.
+[color=coral]Third[/color] features the camera functions, such as spectating mode and tracking.","[color=coral]Primero[/color] es el menu de construccion, con el que puedes colocar muebles en el complejo.
+[color=coral]Segundo[/color] es la tienda de muebles, donde compras dichos muebles.
+[color=coral]Tercero[/color] tiene las funciones de camara, tales como modo espectador y seguimiento."
+help_jobs_title,Tutorial: Request Board,Tutorial: Tabla de Solicitudes
+help_jobs_0,"You can send aphids to help in requests all over Bugaria! Simply head to the lobby to see available requests.
+Requests scale with difficulty, requiring more and better trained skills to complete succesfully.
+After it is finished, you will be rewarded with berries and a small boost in skills!","¡Puedes enviar áfidos para ayudar en solicitudes en toda Bugaria! Simplemente dirigete al lobby para ver las solicitudes abiertas.
+Las solicitudes escalan con la dificultad, requiriendo más y mejor entrenadas habilidades para completarlas.
+Una vez finalizado, se te recompensara con bayas, ¡e incluso un pequeño boost en habilidades!"
+help_jobs_1,"Beware! Underleveled aphids have the chance to fail the request, gaining nothing! (except skill points)",Ten en cuenta que áfidos debajo del nivel requerido pueden fallar y obtener nada! (a excepción de un bono de habilidad)
+help_skills_title,Tutorial: Skill Training,Tutorial: Entrenamiento de Habilidades
+help_skills_0,"Meals aren't the only way to gain skill, you can train your aphid for them!","Las comidas no son la unica forma de ganar habilidad, ¡puedes entrenar a tus áfidos para ello!"
+help_skills_1,"Certain structures allow you to train skills, at a consistent rate, so long as the aphid is on shape.
+Simply interact with the machine while holding an aphid.","Ciertos muebles permiten entrenar sus habilidades, de forma consistente, mientras el áfido este de buena salud.
+Tan solo interactua con la maquina mientras tengas a un áfido en las manos."
+help_skills_2,[color=coral]Tip:[/color] Child aphids gain double the points!,[color=coral]Tip:[/color] ¡Áfidos bebe ganan el doble de puntos!

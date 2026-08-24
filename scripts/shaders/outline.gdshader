@@ -5,6 +5,8 @@ render_mode unshaded;
 
 uniform vec4 color : source_color = vec4(1.0);
 uniform bool ignore_modulate = true;
+uniform bool has_pulse = false;
+uniform float pulse_speed = 1.0;
 uniform float width : hint_range(0, 10) = 1.0;
 uniform int pattern : hint_range(0, 2) = 0; // diamond, circle, square
 uniform bool inside = false;
@@ -12,6 +14,7 @@ uniform bool add_margins = true; // only useful when inside is false
 uniform vec2 number_of_images = vec2(1.0); // number of horizontal and vertical images in the sprite sheet
 
 varying flat vec4 modulate;
+varying float pulse;
 
 void vertex() {
 	modulate = COLOR;
@@ -55,6 +58,8 @@ void fragment() {
 	vec2 uv = UV;
 	vec2 image_top_left = floor(uv * number_of_images) / number_of_images;
 	vec2 image_bottom_right = image_top_left + vec2(1.0) / number_of_images;
+	if (has_pulse)
+		pulse = abs(sin(TIME * pulse_speed));
 
 	if (add_margins) {
 		vec2 texture_pixel_size = vec2(1.0) / (vec2(1.0) / TEXTURE_PIXEL_SIZE + vec2(width * 2.0) * number_of_images);
@@ -79,6 +84,9 @@ void fragment() {
 		else {
 			COLOR.rgb = inside ? mix(COLOR.rgb, color.rgb * modulate.rgb, color.a * modulate.a) : color.rgb * modulate.rgb;
 		}
+
 		COLOR.a += (1.0 - COLOR.a) * color.a * modulate.a;
+		if (has_pulse)
+			COLOR.a *= pulse;
 	}
 }

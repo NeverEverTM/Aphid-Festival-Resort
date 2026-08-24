@@ -23,8 +23,6 @@ internal partial class GlobalManager : Node2D
 		FADE_LOADING_SCENE = "uid://cxt1r6y5y6260",
 		CONFIRM_WINDOW_SCENE = "uid://blrpv4ys07erj",
 		POPUP_WINDOW_SCENE = "uid://dwp7dadam0k12",
-		CG_OUTLINE_SHADER = "uid://dc60jiy0ptbuc",
-		OUTLINE_SHADER = "uid://dw8sws2xkkyr6",
 		ITEM_ENTITY = "uid://d3miyavfmn4oh",
 		APHID_ENTITY = "uid://7oo48cet73pb",
 		PLAYER_PREFAB = "uid://b2tg0d8sg4vd0",
@@ -91,11 +89,11 @@ internal partial class GlobalManager : Node2D
 	{
 		List<JobData> _jobList = [.. G_JOBS.Values.Where((j) => j.Difficulty == _difficulty).Where((j) => !_excludeList.Contains(j.ID))];
 
-        if (_jobList.Count == 0) // if no jobs were left, get a repeat
-        {
-            _jobList = [.. G_JOBS.Values.Where((j) => j.Difficulty == _difficulty)];
-            DebugLogger.Print(DebugLogger.LogPriority.Debug, "JobMenu: Got a repeat in " + _difficulty.ToString());
-        }
+		if (_jobList.Count == 0) // if no jobs were left, get a repeat
+		{
+			_jobList = [.. G_JOBS.Values.Where((j) => j.Difficulty == _difficulty)];
+			DebugLogger.Print(DebugLogger.LogPriority.Debug, "JobMenu: Got a repeat in " + _difficulty.ToString());
+		}
 		return _jobList[RNG.RandiRange(0, _jobList.Count - 1)];
 	}
 
@@ -137,11 +135,11 @@ internal partial class GlobalManager : Node2D
 	{
 		try
 		{
-			await LOAD_DICTIONARY(ABSOLUTE_ICONS_PATH, (_id, _resource) => G_ICONS.Add(_id, _resource as Texture2D), 
+			await LOAD_DICTIONARY(ABSOLUTE_ICONS_PATH, (_id, _resource) => G_ICONS.Add(_id, _resource as Texture2D),
 				(_id) => !G_ICONS.ContainsKey(_id));
-			await LOAD_DICTIONARY_RECURSIVE(ABSOLUTE_SKINS_PATH, (_id, _resource) => G_SKINS.Add(_id, _resource as Texture2D), 
+			await LOAD_DICTIONARY_RECURSIVE(ABSOLUTE_SKINS_PATH, (_id, _resource) => G_SKINS.Add(_id, _resource as Texture2D),
 				(_id) => !G_SKINS.ContainsKey(_id));
-			await LOAD_DICTIONARY_RECURSIVE(ABSOLUTE_SFX_PATH, (_id, _resource) => G_AUDIO.Add(_id, _resource as AudioStream), 
+			await LOAD_DICTIONARY_RECURSIVE(ABSOLUTE_SFX_PATH, (_id, _resource) => G_AUDIO.Add(_id, _resource as AudioStream),
 				(_id) => !G_AUDIO.ContainsKey(_id));
 			await LOAD_ITEMS();
 			await LOAD_DICTIONARY(ABSOLUTE_FOODS_DB_PATH, (_id, _resource) => G_FOOD.Add(_id, _resource as FoodData));
@@ -229,7 +227,7 @@ internal partial class GlobalManager : Node2D
 			DebugLogger.Print(DebugLogger.LogPriority.Warning, $"Database: <{_id}> has no description.");
 		return Task.CompletedTask;
 	}
-#endif	
+#endif
 
 	private static async Task CACHE_PARTICLES()
 	{
@@ -248,7 +246,7 @@ internal partial class GlobalManager : Node2D
 			G_PARTICLES.AddResource(_particleList[i].Split('.')[0], _resource);
 		}
 	}
-	
+
 	private static async Task LOAD_DICTIONARY(string _absolutePath, Action<string, Resource> _addAction, Func<string, bool> _validIDCheck = null, string _directory = null)
 	{
 		string[] _files = DirAccess.GetFilesAt(_absolutePath);
@@ -445,7 +443,7 @@ internal partial class GlobalManager : Node2D
 				else
 					_intersectedColliders.Add(null);
 			}
-	
+
 			return _intersectedColliders;
 		}
 
@@ -474,15 +472,7 @@ internal partial class GlobalManager : Node2D
 			DebugLogger.Print(DebugLogger.LogPriority.Error, "GlobalManager: Weighted RNG. It did happen :pensive:");
 			return 0; // Should in theory, never happen
 		}
-
-		public static Color GetRandomColor(bool _randomizeAlpha = false)
-		{
-			byte[] _rgba = [ (byte)RNG.RandiRange(0,255), (byte)RNG.RandiRange(0,255),
-				(byte)RNG.RandiRange(0,255), _randomizeAlpha ? (byte)(RNG.RandiRange(0,205) + 50) : (byte)255 ];
-
-			return Color.Color8(_rgba[0], _rgba[1], _rgba[2], _rgba[3]);
-		}
-
+		
 		public static Vector2 GetRandomVector(float _rangeMin, float _rangeMax) => new(RNG.RandfRange(_rangeMin, _rangeMax), RNG.RandfRange(_rangeMin, _rangeMax));
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
 		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));

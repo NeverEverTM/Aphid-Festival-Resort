@@ -7,7 +7,9 @@ public partial class CanvasManager : CanvasLayer
 {
 	public static CanvasManager Instance { get; private set; }
 	public static MenuHandler Menus { get; private set; } = new();
+
 	public const string APHID_SLOT_PREFAB = "uid://d7m5e6tlxyve";
+	public static bool IsTakingScreenshot { private set; get; }
 	
 	[Export] private Control hud_element;
 	[Export] private TextureRect photo_display;
@@ -90,7 +92,7 @@ public partial class CanvasManager : CanvasLayer
 		screenshot_button.Pressed += TakeScreenshot;
 
 		// events
-		SceneManager.AddEventListener((_) => UpdateCurrency(), SceneManager.EventEnum.OnPostLoad);
+		SceneManager.AddEventListener(OnPostLoad, SceneManager.EventEnum.OnPostLoad);
 		RoomInstance.Instance.AddEventListener(StartWeatherPopup, RoomInstance.TimeEvents.OnHourChange);
 		Menus.AddEventListener(OnPreSwitch, MenuHandler.MenuEvents.OnPreSwitch);
 		Menus.AddEventListener(OnPostSwitch, MenuHandler.MenuEvents.OnPostSwitch);
@@ -99,6 +101,12 @@ public partial class CanvasManager : CanvasLayer
 	{
 		Menus = new();
 		Instance = null;
+		IsTakingScreenshot = false;
+	}
+	public void OnPostLoad(SceneManager.SceneArgs _)
+	{
+		UpdateCurrency();
+		Player.Instance.AddEventListener((_) => UpdateCurrency(), Player.CurrencyEvents.OnPostCalculation);
 	}
 	public void OnPreSwitch(MenuHandler.MenuArgs _args)
 	{
@@ -113,7 +121,7 @@ public partial class CanvasManager : CanvasLayer
 		if (_args.Current?.Name == "pause" || _args.Next?.Name == "pause")
 			return;
 
-		if (!_args.IsActive)
+		if (!_args.IsActive && !FreeCameraManager.Enabled)
 			ShowHUD(true);
 	}
 	
@@ -140,15 +148,10 @@ public partial class CanvasManager : CanvasLayer
 
 	public static async void TakeScreenshot()
 	{
-		bool _is_free_camera = IsInstanceValid(FreeCameraManager.Instance) && FreeCameraManager.Enabled;
-
-		Instance.Hide();
-		Instance.photo_display.Hide();
-		if (_is_free_camera)
-		{
+		if (FreeCameraManager.Enabled)
 			FreeCameraManager.SetHUDTo(false, true);
-			AphidInfoPanel.Instance.Hide();
-		}
+		ShowHUD(false);
+		IsTakingScreenshot = true;
 
 		await Task.Delay(1);
 		try
@@ -156,7 +159,7 @@ public partial class CanvasManager : CanvasLayer
 			Image _capture = Instance.GetViewport().GetTexture().GetImage();
 
 			string _path = SaveSystem.ProfilePath + SaveSystem.PROFILE_SCREENSHOTS_DIR;
-			if (_is_free_camera && IsInstanceValid(CameraManager.FocusedAphid))
+			if (FreeCameraManager.Enabled && IsInstanceValid(CameraManager.FocusedAphid))
 			{
 				_path += $"{CameraManager.FocusedAphid.Instance.ID}/";
 				if (!DirAccess.DirExistsAbsolute(_path))
@@ -190,13 +193,10 @@ public partial class CanvasManager : CanvasLayer
 			SoundManager.CreateSound("ui/button-fail");
 		}
 
-		if (_is_free_camera)
-		{
+		IsTakingScreenshot = false;
+		if (FreeCameraManager.Enabled)
 			FreeCameraManager.SetHUDTo(true, true);
-			AphidInfoPanel.Instance.Show();
-		}
-		Instance.photo_display.Show();
-		Instance.Show();
+		ShowHUD(true);
 	}
 	public static void ShowHUD(bool _state)
 	{
@@ -204,15 +204,11 @@ public partial class CanvasManager : CanvasLayer
 			return;
 
 		Instance.hud_element.Visible = _state;
+		if (IsInstanceValid(AphidInfoPanel.Instance))
+			AphidInfoPanel.Instance.Visible = _state;
 	}
 	public static void UpdateCurrency()
 	{
-		if (Instance == null)
-		{
-			GD.PrintErr("CanvasManager is null");
-			return;
-		}
-
 		if (Player.Data.Currency >= 10000)
 			Instance.currency_text.Text = (Player.Data.Currency / 1000).ToString("00K");
 		else

@@ -1,4 +1,4 @@
-[gd_scene load_steps=87 format=3 uid="uid://dd1kgkvs8hkc6"]
+[gd_scene load_steps=89 format=3 uid="uid://dd1kgkvs8hkc6"]
 
 [ext_resource type="Script" uid="uid://5lbbq4ta7i38" path="res://scripts/gui/FreeCameraManager.cs" id="1_i0o2h"]
 [ext_resource type="Texture2D" uid="uid://bda8yonlw8knv" path="res://sprites/ui/gui_icons/icon_spectator.png" id="3_5cibe"]
@@ -35,6 +35,7 @@
 [ext_resource type="Script" uid="uid://b50sg56hey2o4" path="res://scripts/panels/BuildMenu.cs" id="38_k0d1x"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="39_ysf7p"]
 [ext_resource type="Texture2D" uid="uid://d0mn4yli60w2k" path="res://sprites/ui/gui_icons/icon_furniture.png" id="40_iuxyn"]
+[ext_resource type="Texture2D" uid="uid://bkvtiga8d8g35" path="res://sprites/ui/berries.tres" id="40_m7mif"]
 [ext_resource type="Shader" uid="uid://bhxvuy8s0oq6t" path="res://scripts/shaders/pulse.gdshader" id="41_74vi1"]
 [ext_resource type="Script" uid="uid://mn34i1ogcv2v" path="res://scripts/panels/FurnitureShop.cs" id="41_t8bbk"]
 [ext_resource type="Texture2D" uid="uid://ddbwv457v6nxq" path="res://sprites/icons/mushroom_gummies.tres" id="43_7kk4s"]
@@ -813,6 +814,11 @@ shader_parameter/direction = Vector2(1, -1)
 shader_parameter/node_size = Vector2(4, 4)
 shader_parameter/color = Color(0.4047076, 0.006678599, 0.36281937, 1)
 shader_parameter/useModulateAlpha = true
+
+[sub_resource type="LabelSettings" id="LabelSettings_iln6p"]
+font_size = 40
+shadow_color = Color(0.550133, 0, 0.0841187, 1)
+shadow_offset = Vector2(3.095, 3.18)
 
 [sub_resource type="Animation" id="Animation_qi47v"]
 length = 0.001
@@ -2278,7 +2284,7 @@ FocusColor = Color(0.311343, 0.535406, 0.77568, 1)
 HoverColor = Color(0.772247, 0.772247, 0.772247, 1)
 metadata/_custom_type_script = "uid://clrj1y6xmjq83"
 
-[node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton", "animPlayer")]
+[node name="item_shop_panel" type="Control" parent="." node_paths=PackedStringArray("itemGrid", "itemName", "itemDescription", "itemCost", "currencyLabel", "itemIcon", "itemBuyButton", "animPlayer")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -2299,6 +2305,7 @@ itemGrid = NodePath("item_box/item_box_scroll/item_container")
 itemName = NodePath("item_info/name/name_text")
 itemDescription = NodePath("item_info/desc/desc_text")
 itemCost = NodePath("item_info/cost/cost_text")
+currencyLabel = NodePath("item_info/currency/currency_amount")
 itemIcon = NodePath("item_info/icon/icon_image")
 itemContainer = ExtResource("29_mvok5")
 itemBuyButton = NodePath("item_box/itemBuyButton")
@@ -2550,6 +2557,47 @@ scroll_active = false
 autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="currency" type="NinePatchRect" parent="item_shop_panel/item_info"]
+self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 435.0
+offset_top = -328.0
+offset_right = 574.0
+offset_bottom = -268.0
+grow_horizontal = 0
+texture = ExtResource("15_ghqbq")
+region_rect = Rect2(0, 0, 128, 128)
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="icon" type="TextureRect" parent="item_shop_panel/item_info/currency"]
+light_mask = 0
+layout_mode = 0
+offset_left = -15.0
+offset_top = -1.0
+offset_right = 40.0
+offset_bottom = 60.0
+texture = ExtResource("40_m7mif")
+stretch_mode = 5
+
+[node name="currency_amount" type="Label" parent="item_shop_panel/item_info/currency"]
+light_mask = 0
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 125.0
+offset_bottom = 55.0
+theme = ExtResource("7_uocqb")
+text = "ERR!"
+label_settings = SubResource("LabelSettings_iln6p")
+horizontal_alignment = 1
 
 [node name="kitchen_menu" type="Control" parent="." node_paths=PackedStringArray("animPlayer", "ingredient1Button", "ingredient2Button", "resultButton", "redoRecipe", "ingredient1Icon", "ingredient2Icon", "resultIcon", "portrait", "resultName", "dialogBox", "inventoryGrid")]
 visible = false
@@ -3077,7 +3125,7 @@ columns = 3
 [node name="item" parent="build_menu/sliding_panel/build_panel/ScrollContainer/storage_container" instance=ExtResource("29_mvok5")]
 layout_mode = 2
 
-[node name="furniture_menu" type="Control" parent="." node_paths=PackedStringArray("open_button", "itemGrid", "itemName", "itemDescription", "itemCost", "itemIcon", "itemBuyButton", "animPlayer")]
+[node name="furniture_menu" type="Control" parent="." node_paths=PackedStringArray("open_button", "itemGrid", "itemName", "itemDescription", "itemCost", "currencyLabel", "itemIcon", "itemBuyButton", "animPlayer")]
 visible = false
 light_mask = 0
 layout_mode = 3
@@ -3094,6 +3142,7 @@ itemGrid = NodePath("window/ScrollContainer/GridContainer")
 itemName = NodePath("anchor_right/name/name_label")
 itemDescription = NodePath("anchor_right/description/desc_label")
 itemCost = NodePath("anchor_right/cost/cost_text")
+currencyLabel = NodePath("anchor_right/currency/currency_amount")
 itemIcon = NodePath("anchor_right/icon/image")
 itemContainer = ExtResource("29_mvok5")
 itemBuyButton = NodePath("window/furnitureBuyButton")
@@ -3280,3 +3329,43 @@ bbcode_enabled = true
 text = "999"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="currency" type="NinePatchRect" parent="furniture_menu/anchor_right"]
+self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 435.0
+offset_top = -328.0
+offset_right = 574.0
+offset_bottom = -268.0
+grow_horizontal = 0
+texture = ExtResource("15_ghqbq")
+region_rect = Rect2(0, 0, 128, 128)
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="icon" type="TextureRect" parent="furniture_menu/anchor_right/currency"]
+light_mask = 0
+layout_mode = 0
+offset_left = -15.0
+offset_top = -1.0
+offset_right = 40.0
+offset_bottom = 60.0
+texture = ExtResource("40_m7mif")
+stretch_mode = 5
+
+[node name="currency_amount" type="Label" parent="furniture_menu/anchor_right/currency"]
+light_mask = 0
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 125.0
+offset_bottom = 55.0
+text = "ERR!"
+label_settings = SubResource("LabelSettings_iln6p")
+horizontal_alignment = 1

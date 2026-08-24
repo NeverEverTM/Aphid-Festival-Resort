@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b461hge4ybhye"
-path="res://.godot/imported/kitchen.PNG-3360704359d1e011a44ea14c995cc9ab.ctex"
+uid="uid://iw4rtrdoh3a6"
+path="res://.godot/imported/tutorial_job_board.png-f65dc13927a2a4531288148966a738e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/help_examples/kitchen.PNG"
-dest_files=["res://.godot/imported/kitchen.PNG-3360704359d1e011a44ea14c995cc9ab.ctex"]
+source_file="res://sprites/tutorial/tutorial_job_board.png"
+dest_files=["res://.godot/imported/tutorial_job_board.png-f65dc13927a2a4531288148966a738e3.ctex"]
 
 [params]
 

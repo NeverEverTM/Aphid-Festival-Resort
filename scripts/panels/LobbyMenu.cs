@@ -9,6 +9,7 @@ public partial class LobbyMenu : Control
     [Export] private AnimationPlayer animator;
     [Export] private Button[] categoryButtons;
     [Export] private Control[] categoryNodes;
+    [Export] private Label currencyLabel;
     [ExportGroup("Aphid")]
     [Export] private BaseButton sellAphidButton;
     [Export] private RichTextLabel aphidCostLabel, aphidNameLabel, noAphidLabel;
@@ -60,6 +61,11 @@ public partial class LobbyMenu : Control
             ConfirmationPopup.ConfirmationEnum.Fast);
         upgradeBuyButton.Pressed += PurchaseUpgrade;
         interactArea.OnInteractOnly.Add(SetMenu);
+        
+        SceneManager.AddEventListener((_) => {
+            UpdateCurrencyLabel(new() { Currency = Player.Data.Currency });
+            Player.Instance.AddEventListener(UpdateCurrencyLabel, Player.CurrencyEvents.OnPostCalculation);
+        }, SceneManager.EventEnum.OnPostLoad);
     }
 
     public void SetMenu() =>
@@ -75,6 +81,10 @@ public partial class LobbyMenu : Control
         categoryNodes[_new].Show();
         if (!_force)
             SoundManager.CreateSound("ui/button_switch");
+    }
+    private void UpdateCurrencyLabel(Player.CurrencyArgs _args)
+    {
+        currencyLabel.Text = _args.Currency.ToString();
     }
 
     // MARK: Aphid Category

@@ -5,7 +5,7 @@ using Godot;
 public partial class Player : CharacterBody2D
 {
     // MARK: Currency Events
-    public enum CurrencyEvents { OnCurrencyGain, OnCurrencyLose, OnCurrencyChange }
+    public enum CurrencyEvents { OnPreCalculation, OnPostCalculation }
     public class CurrencyArgs : EventArgs
     {
         /// <summary>
@@ -17,15 +17,14 @@ public partial class Player : CharacterBody2D
         /// </summary>
         public int Amount { get => VAR_AMOUNT_CURRENCY; set => VAR_AMOUNT_CURRENCY = value; }
         /// <summary>
-        /// Current amount of money as of before charging the amount.
+        /// Current amount of money.
         /// </summary>
-        public int Current;
+        public int Currency;
     }
     protected Dictionary<CurrencyEvents, List<Action<CurrencyArgs>>> CurrencyEventsList = new()
     {
-        { CurrencyEvents.OnCurrencyGain, new() },
-        { CurrencyEvents.OnCurrencyLose, new() },
-        { CurrencyEvents.OnCurrencyChange, new() },
+        { CurrencyEvents.OnPreCalculation, new() },
+        { CurrencyEvents.OnPostCalculation, new() },
     };
 
     public void AddEventListener(Action<CurrencyArgs> _action, CurrencyEvents _event) =>

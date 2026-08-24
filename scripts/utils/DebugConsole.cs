@@ -18,7 +18,31 @@ public partial class DebugConsole : CanvasLayer
 	private static bool IsEnabled;
 	private static string[] lastCommand;
 	private static string lastRawCommand;
-	private static AphidInstance validAphid;
+	private static Guid selected_aphid_guid;
+	private static bool GetSelectedAphid(out AphidInstance _aphid)
+	{
+		if (selected_aphid_guid == Guid.Empty)
+		{
+			_aphid = null;
+			return false;
+		}
+		_aphid = GameManager.Aphids.TryGetValue(selected_aphid_guid, out AphidInstance value) ? value : null;
+		return _aphid != null;
+	}
+	private static bool IsSelectedAphidValid()
+	{
+		if (selected_aphid_guid == Guid.Empty)
+			return false;
+
+		return GameManager.Aphids.ContainsKey(selected_aphid_guid);
+	}
+	private static AphidInstance GetSelectedAphid()
+	{
+		if (selected_aphid_guid == Guid.Empty)
+			return null;
+		else
+			return GameManager.Aphids.TryGetValue(selected_aphid_guid, out AphidInstance value) ? value : null;
+	}
 
 	[Export] public LineEdit command_line_input;
 	[Export] public RichTextLabel log_print_text;
@@ -42,41 +66,39 @@ public partial class DebugConsole : CanvasLayer
 			}
 			GetViewport().SetInputAsHandled();
 		};
-
-		//await GodotBenchmarkRunner.RunWithBBCodeAsync<TestForClassMatch>(onFinish: (s) => GD.PrintRich(s));
 	}
 	public override void _Process(double delta)
 	{
-		if (validAphid != null)
+		if (GetSelectedAphid(out AphidInstance _aphid))
 		{
 			string[] _list =
 			[
-			 	"Name: " + validAphid.Genes.Name,
-				"State: " + (validAphid.Entity != null ? validAphid.Entity.State.Type.ToString() : validAphid.Status.LastActiveState),
-				"Hunger: " + validAphid.Status.Hunger,
-				"Thirst: " + validAphid.Status.Thirst,
-				"Rest: " + validAphid.Status.Rest,
-				"Affection: " + validAphid.Status.Affection,
-				"Bondship: " + validAphid.Status.Bondship,
-				"EntityMode: " + validAphid.Status.Mode.ToString(),
-				"Age: " + (int)validAphid.Status.Age + "/" + AphidData.Age_Lifetime,
-				$"BreedBuildup: {(int)validAphid.Status.BreedBuildup}/{AphidData.Breed_Cooldown}",
-				"BreedMode: " + validAphid.Status.BreedMode.ToString(),
-				$"HarvestBuildup: {(int)validAphid.Status.HarvestBuildup}/{AphidData.Harvest_Cooldown}",
-				"FoodPreference: " + validAphid.Genes.FoodPreference.ToString(),
-				"CurrentTrainData: " + (validAphid.Status.LastTraining != null ? $"{validAphid.Status.LastTraining.Skill}, {validAphid.Status.LastTraining.GetPointGain()} every {validAphid.Status.LastTraining.RawBaseTime}s" : "No Data"),
+			 	"Name: " + _aphid.Genes.Name,
+				"State: " + (_aphid.Entity != null ? _aphid.Entity.State.Type.ToString() : _aphid.Status.LastActiveState),
+				"Hunger: " + _aphid.Status.Hunger,
+				"Thirst: " + _aphid.Status.Thirst,
+				"Rest: " + _aphid.Status.Rest,
+				"Affection: " + _aphid.Status.Affection,
+				"Bondship: " + _aphid.Status.Bondship,
+				"EntityMode: " + _aphid.Status.Mode.ToString(),
+				"Age: " + (int)_aphid.Status.Age + "/" + AphidData.Age_Lifetime,
+				$"BreedBuildup: {(int)_aphid.Status.BreedBuildup}/{AphidData.Breed_Cooldown}",
+				"BreedMode: " + _aphid.Status.BreedMode.ToString(),
+				$"HarvestBuildup: {(int)_aphid.Status.HarvestBuildup}/{AphidData.Harvest_Cooldown}",
+				"FoodPreference: " + 
+					_aphid.Genes.FoodPreference.ToString() + 
+					$"[ {_aphid.Genes.FoodMultipliers[0]}x, {_aphid.Genes.FoodMultipliers[1]}x, {_aphid.Genes.FoodMultipliers[2]}x, {_aphid.Genes.FoodMultipliers[3]}x, {_aphid.Genes.FoodMultipliers[4]}x ]" ,
+				"CurrentTrainData: " + (_aphid.Status.LastTraining != null ? $"{_aphid.Status.LastTraining.Skill}, {_aphid.Status.LastTraining.GetPointGain()} every {_aphid.Status.LastTraining.RawBaseTime}s" : "No Data"),
 				"Traits:",
-				validAphid.Genes.Traits[0],
-				validAphid.Genes.Traits[1],
-				validAphid.Genes.Traits[2],
-				validAphid.Genes.Traits.Count > 3 ? validAphid.Genes.Traits[3] : string.Empty
+					_aphid.Genes.Traits[0],
+					_aphid.Genes.Traits[1],
+					_aphid.Genes.Traits[2],
+					_aphid.Genes.Traits.Count > 3 ? _aphid.Genes.Traits[3] : string.Empty
 			];
 			debug_status.Text = string.Join("\n", _list);
 		}
 		else
-		{
 			debug_status.Text = string.Empty;
-		}
 	}
 	public override void _Input(InputEvent @event)
 	{
@@ -84,13 +106,7 @@ public partial class DebugConsole : CanvasLayer
 		{
 			if (@event.IsActionPressed(InputNames.Debug1))
 			{
-				//DebugLogger.Print(DebugLogger.LogPriority.Debug, "Hello Dolly!");
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "//Menu//");
-
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Menu List:");
-				CanvasManager.Menus.Available.ForEach((m) => DebugLogger.Print(DebugLogger.LogPriority.Debug, m.Name));
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "IsActive/Processing:", CanvasManager.Menus.IsActive, "/", CanvasManager.Menus.Processing);
-				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Current/Pending:", CanvasManager.Menus.Current?.Name, "/", CanvasManager.Menus.Pending?.Name);
+				DebugLogger.Print(DebugLogger.LogPriority.Debug, "Hello Dolly!");
 				return;
 			}
 
@@ -389,7 +405,7 @@ public partial class DebugConsole : CanvasLayer
 		+ "<aphid [kill]> - Triggers the Kill command on the selected aphid\n"
 		+ "<aphid [remove/destroy]> - Removes selected aphid from the savefile permanently, Kill command is NOT triggered\n"
 		+ "<aphid [grant] [skill] (points)> - Grants skill points\n"
-		+ "<aphid [hunger/thirst/rest/bondship] (amount)> - Add amount to a basic need"
+		+ "<aphid [hunger/thirst/rest/bondship] (amount)> - Adds a specified amount to a basic need"
 		+ "<aphid [forceactive]> - Forces an aphid to be active, use if aphid is stuck on limbo";
 
 		public void Execute(string[] args)
@@ -405,7 +421,7 @@ public partial class DebugConsole : CanvasLayer
 					_genes.DEBUG_Randomize(GetBool(1, args, true), GetBool(2, args, true), GetBool(3, args, true));
 					_genes.Name += ResortManager.Current.Aphids.Count;
 
-					validAphid = ResortManager.CreateAphid(CameraManager.GetMouseToWorldPosition(), _genes).Instance;
+					selected_aphid_guid = ResortManager.CreateAphid(CameraManager.GetMouseToWorldPosition(), _genes).Instance.GUID;
 					return;
 				case "get":
 				case "select":
@@ -413,7 +429,7 @@ public partial class DebugConsole : CanvasLayer
 					{
 						Vector2 _mouseposition = CameraManager.GetMouseToWorldPosition();
 						float _shortestDistance = float.PositiveInfinity;
-						validAphid = null;
+						AphidInstance _closestAphid = null;
 
 						if (IsInstanceValid(ResortManager.Current))
 						{
@@ -422,26 +438,29 @@ public partial class DebugConsole : CanvasLayer
 								float _distance = _mouseposition.DistanceSquaredTo(_aphid.GlobalPosition);
 								if (_distance < _shortestDistance)
 								{
-									validAphid = _aphid.Instance;
+									_closestAphid = _aphid.Instance;
 									_shortestDistance = _distance;
 								}
 							}
 						}
-						if (validAphid == null)
+						if (_closestAphid == null)
 							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: No aphid was found.");
 						else
-							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: Your current aphid is: <{validAphid?.Genes.Name ?? "UNKNOWN"}>.");
+						{
+							selected_aphid_guid = _closestAphid.GUID;
+							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: Your current aphid is: <{_closestAphid?.Genes.Name ?? "UNKNOWN"}>.");
+						}
 					}
 					else
 					{
-						validAphid = GameManager.Aphids.First((a) => a.Value.Genes.Name == _name).Value;
-						if (validAphid == null)
+						selected_aphid_guid = GameManager.Aphids.First((a) => a.Value.Genes.Name == _name).Value?.GUID ?? Guid.Empty;
+						if (!IsSelectedAphidValid())
 							DebugLogger.Print(DebugLogger.LogPriority.Info, $"AphidDebug: No aphid was found with the name <{_name}>.");
 					}
 					return;
 			}
 
-			if (validAphid != null)
+			if (IsSelectedAphidValid())
 				ExecuteAphidCommand(_command, args);
 			else
 				Print("Aphid Prognosis: No valid aphid available to modify!");
@@ -452,56 +471,65 @@ public partial class DebugConsole : CanvasLayer
 			switch (_command)
 			{
 				case "deselect":
-					Print($"AphidPrognosis: Aphid {validAphid.Genes.Name} deselected");
-					validAphid = null;
+					Print($"AphidPrognosis: Aphid {GetSelectedAphid().Genes.Name} deselected");
+					selected_aphid_guid = Guid.Empty;
 					return;
 				case "unload":
 				case "despawn":
-					validAphid.Entity?.QueueFree();
+					Print($"AphidPrognosis: Aphid {GetSelectedAphid().Genes.Name} despawned");
+					GetSelectedAphid().Entity?.QueueFree();
 					return;
 				case "kill":
-					validAphid.Entity?.PrepareToDie();
+					Print($"AphidPrognosis: Aphid {GetSelectedAphid().Genes.Name} killed");
+					GetSelectedAphid().Entity?.PrepareToDie();
 					SoundManager.CreateSound("misc/medic_prognosis", false).VolumeDb = -10;
-					break;
+					return;
 				case "remove":
 				case "destroy":
-					GameManager.RemoveAphid(new Guid(validAphid.ID));
-					validAphid.Entity?.QueueFree();
-					break;
+					Print($"AphidPrognosis: Aphid {GetSelectedAphid().Genes.Name} permanently removed");
+					GetSelectedAphid().Entity?.QueueFree();
+					GameManager.RemoveAphid(selected_aphid_guid);
+					selected_aphid_guid = Guid.Empty;
+					return;
 				case "grant":
 					var _skill = GetArg(1, args);
-					if (validAphid.Genes.Skills.ContainsKey(_skill))
+					if (GetSelectedAphid().Genes.Skills.ContainsKey(_skill))
 					{
 						Print("AphidPrognosis: No such skill exists!");
 						return;
 					}
-					validAphid.Genes.Skills[_skill].GivePoints(Mathf.Clamp(GetInt(2, args, 1), 0, 10));
+					int _points = Mathf.Clamp(GetInt(2, args, 1), 0, 10);
+					GetSelectedAphid().Genes.Skills[_skill].GivePoints(_points);
+					Print($"AphidPrognosis: Granted {_points} point{(_points == 1 || _points == -1 ? string.Empty : "s")} to {_skill} for {GetSelectedAphid().Genes.Name}");
 					return;
 				case "hunger":
 				case "h":
 					var _hunger = GetInt(1, args, 1);
-					validAphid.AddHunger(_hunger);
+					GetSelectedAphid().AddHunger(_hunger);
 					return;
 				case "thirst":
 				case "t":
 					var _thirst = GetInt(1, args, 1);
-					validAphid.AddThirst(_thirst);
+					GetSelectedAphid().AddThirst(_thirst);
 					return;
 				case "rest":
 				case "r":
 					var _sleep = GetInt(1, args, 1);
-					validAphid.AddRest(_sleep);
+					GetSelectedAphid().AddRest(_sleep);
 					return;
 				case "bondship":
 				case "b":
 					var _bondship = GetInt(1, args, 1);
-					validAphid.AddBondship(_bondship);
+					GetSelectedAphid().AddBondship(_bondship);
 					return;
 				case "forceactive":
-					validAphid.Status.Mode = AphidData.EntityStatusType.Active;
+					GetSelectedAphid().Status.Mode = AphidData.EntityStatusType.Active;
+					Print($"AphidPrognosis: Aphid {GetSelectedAphid().Genes.Name} was forced to be active");
 					return;
+				default:
+					Print("AphidPrgonosis: This command doesn't exist!");
+				return;
 			}
-			Print("AphidPrgonosis: This command doesn't exist!");
 		}
 	}
 	private class GrabBag : IConsoleCommand

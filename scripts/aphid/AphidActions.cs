@@ -267,13 +267,21 @@ public partial class Aphid : CharacterBody2D
                         nearby_food.Remove(_pair.Key);
                 }
 
-                AnalyzeItem(_myAphid, _incomingNode);
+                if (!nearby_food.ContainsKey(_incomingNode.GetInstanceId()))
+                    AnalyzeItem(_myAphid, _incomingNode);
+                else
+                {
+                    // if there is valid food nearby to pick, and we are not in trying to eat, then attempt to
+                    // (valid food also means we are not full)
+                    if (nearby_food.Count > 0 && !(_myAphid.State.Is(StateEnum.Hungry) || _myAphid.State.Is(StateEnum.Eat)))
+                        _myAphid.SetState(StateEnum.Hungry);
+                }
             }
             public void AnalyzeItem(Aphid aphid, Node2D _node)
             {
                 ulong _instanceID = _node.GetInstanceId();
-                if (ignored.Contains(_instanceID) || nearby_food.ContainsKey(_instanceID)
-                    || aphid.State.Is(StateEnum.Eat) || aphid.State.Is(StateEnum.Train)
+                if (ignored.Contains(_instanceID)
+                    || !(aphid.State.Is(StateEnum.Idle) || aphid.State.Is(StateEnum.Hungry))
                     || !(bool)_node.GetMeta(StringNames.PickupMeta))
                     return;
 
@@ -299,20 +307,10 @@ public partial class Aphid : CharacterBody2D
                 // Do not overeat/drink unless is your favorite or you are a glutton, picky eaters check regardless
                 if (_isPickyEater || !_isfavorite && !aphid.Instance.BoolFlags[AphidInstance.FlagsEnum.CanOvereat].Value)
                 {
-                    bool _givesFood = _current_food.FoodValue > 0,
-                        _givesDrink = _current_food.DrinkValue > 0;
-
-                    // the threshold differs depending on if it gives both stats or just a single one
-                    if (_givesDrink)
-                    {
-                        if (aphid.Instance.Status.Thirst >= (_givesFood ? 80 : 100))
-                            return;
-                    }
-                    if (_givesFood)
-                    {
-                        if (aphid.Instance.Status.Hunger >= (_givesDrink ? 80 : 100))
-                            return;
-                    }
+                    // check that we do not go over the overfeed threshold, otherwise ignore it
+                    // while Gluttons ignore this, they still cannot get skill benefits when overfed
+                    if (aphid.Instance.IsOverfeeding(_current_food) || aphid.Instance.IsOverdrinking(_current_food))
+                        return;
                 }
 
                 nearby_food.Add(_instanceID, new()
@@ -392,21 +390,21 @@ public partial class Aphid : CharacterBody2D
         {
             FoodData _food = GlobalManager.G_FOOD[current_target.node.GetMeta(StringNames.IdMeta).ToString()];
 
-            // set food values
-            float _multi = aphid.Instance.Genes.FoodMultipliers[(int)_food.Flavor];
-            if (_food.FoodValue > 0)
-                aphid.Instance.AddHunger(_food.FoodValue * _multi);
-
-            if (_food.DrinkValue > 0)
-                aphid.Instance.AddThirst(_food.DrinkValue * _multi);
-
-            // set skill values, cannot gain skill if we are full
-            if (_food.Skills.Count > 0 && (aphid.Instance.Status.Hunger <= 90 || aphid.Instance.Status.Thirst <= 90))
+            // grant skill bonus, if there is no skills or if we go above the threshold, dont grant the bonus
+            if (_food.Skills.Count > 0 
+                && !aphid.Instance.IsOverfeeding(_food)
+                && !aphid.Instance.IsOverdrinking(_food))
             {
                 foreach (var _pair in _food.Skills)
                     aphid.Instance.Genes.Skills[SkillNames[(int)_pair.Key]].GivePoints(
-                        _pair.Value * (current_target.is_favorite ? 2 : 1));
+                        _pair.Value * (current_target.is_favorite ? 2 : 1)); // favorite foods give double the points
             }
+
+            if (_food.FoodValue != 0)
+                aphid.Instance.AddHunger(aphid.Instance.GetRealFoodGain(_food));
+
+            if (_food.DrinkValue != 0)
+                aphid.Instance.AddThirst(aphid.Instance.GetRealDrinkGain(_food));
 
             // Dispose of the food item now
             current_target.node.QueueFree();
@@ -512,11 +510,18 @@ public partial class Aphid : CharacterBody2D
 
         private BreedTrigger breed_lookout = new();
         private GpuParticles2D breed_effect;
-        private BreedArgs args;
+        /// <summary>
+        /// used by aphids acting AsPartner
+        /// </summary>
+        private Vector2 position_to_partner;
         private bool is_in_final_stage;
+        private CustomTimer<Aphid> breed_timeout;
 
         public class BreedArgs : EventArgs
         {
+            /// <summary>
+            /// used by aphids acting AsPartner
+            /// </summary>
             public Vector2 position;
         }
 
@@ -524,14 +529,20 @@ public partial class Aphid : CharacterBody2D
         {
             if (aphid.Instance.Status.BreedMode == BreedMode.AsPartner)
                 aphid.Instance.Status.BreedMode = BreedMode.Inactive;
+
+            breed_timeout = new(aphid, 60 * 15, true, false);
+            breed_timeout.OnFinish.Add((a) => a.SetState(StateEnum.Idle));
         }
         public void Enter(Aphid aphid, StateEnum _previous, EventArgs _specialArgs)
         {
             if (_specialArgs != null)
-                args = _specialArgs as BreedArgs;
+                position_to_partner = (_specialArgs as BreedArgs).position;
 
             if (aphid.Instance.Status.BreedMode == BreedMode.Inactive)
                 GetRandBreedMode(aphid);
+            else if (aphid.Instance.Status.BreedMode != BreedMode.AsPartner)
+                breed_timeout.Start();
+
             StartBreedingBehaviour(aphid);
 
             breed_lookout = new();
@@ -549,10 +560,10 @@ public partial class Aphid : CharacterBody2D
             if (breed_effect != null)
                 breed_effect.OneShot = true;
 
+            breed_timeout.Stop();
             breed_effect = null;
             breed_lookout.breed_partner = null;
             is_in_final_stage = false;
-            args = null;
         }
         public void Process(Aphid aphid, float delta)
         {
@@ -571,7 +582,7 @@ public partial class Aphid : CharacterBody2D
             {
                 case BreedMode.AsPartner:
                     // walk towards it and stop once you are close
-                    if (aphid.GlobalPosition.DistanceSquaredTo(args.position) <= MIN_PARTNER_DISTANCE)
+                    if (aphid.GlobalPosition.DistanceSquaredTo(position_to_partner) <= MIN_PARTNER_DISTANCE)
                     {
                         aphid.SetMovementDirection(Vector2.Zero);
                         is_in_final_stage = true;
@@ -588,7 +599,7 @@ public partial class Aphid : CharacterBody2D
                     }
 
                     // wait for partner to arrive
-                    if (breed_lookout.breed_partner.GlobalPosition.DistanceSquaredTo(args.position) <= MIN_PARTNER_DISTANCE)
+                    if (breed_lookout.breed_partner.GlobalPosition.DistanceSquaredTo(position_to_partner) <= MIN_PARTNER_DISTANCE)
                         StartBreedingWithPartner(aphid);
                     else
                         aphid.Skin.DoWalkAnim(); // waiting animation
@@ -601,7 +612,7 @@ public partial class Aphid : CharacterBody2D
             switch (aphid.Instance.Status.BreedMode)
             {
                 case BreedMode.AsPartner:
-                    aphid.SetMovementDirection(args.position - aphid.GlobalPosition);
+                    aphid.SetMovementDirection(position_to_partner - aphid.GlobalPosition);
                     break;
                 case BreedMode.WithItself:
                     is_in_final_stage = true;
@@ -673,7 +684,7 @@ public partial class Aphid : CharacterBody2D
                 }
 
                 // partner is too badly taken care of to mate
-                if (_partner.Instance.Status.Hunger < 25 || _partner.Instance.Status.Thirst < 25)
+                if (_partner.Instance.Status.Hunger < 20 || _partner.Instance.Status.Thirst < 20)
                 {
                     alreadyChecked.Add(_incomingNode);
                     if (!alreadyChecked.Contains(_incomingNode))

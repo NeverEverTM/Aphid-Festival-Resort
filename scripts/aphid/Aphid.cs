@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using static AphidTraits;
 using static AphidData;
 
 public partial class Aphid : CharacterBody2D, IInteractableArea
@@ -61,6 +60,7 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 			return SoundManager.GetAudioStream("aphid/baby_idle");
 	}
 	private GpuParticles2D harvest_effect;
+	private Material last_material;
 
 	public override void _EnterTree()
 	{
@@ -117,7 +117,7 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		Instance.Status.LastTimeLoaded = GameManager.Data.Playtime;
 
 		if (Instance.Status.IsReadyForHarvest)
-			AllowHarvest();
+			HighlightHarvest();
 	}
 	private void StartDecorativeTimers()
 	{
@@ -350,7 +350,6 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 	{
 		GameManager.AddToArchive(Instance);
 		GameManager.RemoveAphid(Guid.Parse(Instance.ID));
-		Instance = null;
 		QueueFree();
 		GameManager.CheckForGameOver();
 	}
@@ -358,17 +357,11 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 	/// <summary>
 	/// Highlights the aphid for harvest
 	/// </summary>
-	public virtual void AllowHarvest()
+	public virtual void HighlightHarvest()
 	{
-		ShaderMaterial _outline = new()
-		{
-			Shader = ResourceLoader.Load<Shader>(GlobalManager.OUTLINE_SHADER)
-		};
-		_outline.SetShaderParameter("color", new Color(0.7f, 0, 0.7f));
-		_outline.SetShaderParameter("pattern", 1);
-		Skin.Material = _outline;
+		last_material = Skin.Material;
+		Skin.Material = ResourceLoader.Load<ShaderMaterial>("uid://b5q5fbeq3dilm");
 		harvest_effect = GlobalManager.EmitParticles("harvest", new(), this, false);
-		Skin.LightMask = 0;
 	}
 	/// <summary>
 	/// Harvests an aphid for its reward, removes the hightlight, and restarts the harvest timer
@@ -389,11 +382,11 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		// visuals
 		CanvasManager.RemoveControlPrompt(CanvasManager.ControlPrompt.HarvestAphid);
 		CanvasManager.AddControlPrompt(CanvasManager.ControlPrompt.PetAphid);
-		Skin.Material = null;
+		Skin.Material = last_material;
 		if (harvest_effect != null)
 			harvest_effect.OneShot = true;
 		harvest_effect = null;
-		Skin.LightMask = 1;
+		last_material = null;
 		Skin.DoSquish();
 	}
 	

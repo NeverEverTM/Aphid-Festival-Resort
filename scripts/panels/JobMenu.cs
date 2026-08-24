@@ -17,7 +17,8 @@ public partial class JobMenu : Control
     [Export] private ShaderMaterial job_completion_material, job_current_material;
     [ExportGroup("Information Display")]
     [Export] private Control aphid_node, skill_bar_bg, request_background_frame, information_node;
-    [Export] private Label description_label, reward_label, timer_label;
+    [Export] private RichTextLabel description_label;
+    [Export] private Label reward_label, timer_label;
     [Export] private RichTextLabel information_label;
     [Export] private Button assign_button;
     [Export] private TextureRect request_background;
@@ -37,8 +38,7 @@ public partial class JobMenu : Control
 
     // Inmutables
     private const int BASE_SKILL_GAIN = 5,
-        LOSS_HUNGER = 20, LOSS_THIRST = 20, LOSS_REST = 20,
-        MIN_HUNGER = 20, MIN_THIRST = 20, MIN_REST = 15;
+        HUNGER_LOSS = 20, THIRST_LOSS = 20, REST_LOSS = 15;
     protected record JobDifficultyData
     {
         /// <summary>
@@ -218,8 +218,8 @@ public partial class JobMenu : Control
             }
 
             // too tired to do
-            if (current_aphid.Status.Hunger < MIN_HUNGER || current_aphid.Status.Thirst < MIN_THIRST ||
-                current_aphid.Status.Rest < MIN_REST)
+            if (current_aphid.Status.Hunger < HUNGER_LOSS || current_aphid.Status.Thirst < THIRST_LOSS ||
+                current_aphid.Status.Rest < REST_LOSS)
             {
                 SoundManager.CreateSound("aphid/hurt");
                 return;
@@ -265,10 +265,11 @@ public partial class JobMenu : Control
             current_aphid ??= _pair_clone.Value;
             var _slot = CanvasManager.CreateAphidSlot(_pair_clone.Key, false, DisplayAphid);
             slot_container.AddChild(_slot);
+            _slot.SetMeta(StringNames.IdMeta, current_aphid.ID);
 
             // mark as tired
-            if (current_aphid.Status.Hunger < MIN_HUNGER || current_aphid.Status.Thirst < MIN_THIRST ||
-                current_aphid.Status.Rest < MIN_REST)
+            if (current_aphid.Status.Hunger < HUNGER_LOSS || current_aphid.Status.Thirst < THIRST_LOSS ||
+                current_aphid.Status.Rest < REST_LOSS)
                 _slot.SelfModulate = new Color("darkred");
 
             _wasGenerated = true;
@@ -448,9 +449,9 @@ public partial class JobMenu : Control
         {
             AphidInstance _aphid = GameManager.Aphids[_request.AssignedAphid];
             _aphid.EnterMode(AphidData.EntityStatusType.Passive);
-            _aphid.AddHunger(-LOSS_HUNGER);
-            _aphid.AddThirst(LOSS_THIRST);
-            _aphid.AddRest(-LOSS_REST);
+            _aphid.AddHunger(-HUNGER_LOSS);
+            _aphid.AddThirst(-THIRST_LOSS);
+            _aphid.AddRest(-REST_LOSS);
 
             _request.Fulfill();
             _request.Slot.QueueFree();
@@ -535,8 +536,13 @@ public partial class JobMenu : Control
 
         // set all labels
         assign_button.Text = "lobby_job_assign";
-        string[] _list = [$"{Tr("lobby_job_aphidname")}: {GameManager.Aphids[_key].Genes.Name}",
-                $"{Tr("lobby_job_successchance")}: {(int)(current_request.ChanceToSucceed * 100)}%"];
+        string[] _list = [
+                $"{Tr("lobby_job_aphidname")}: {GameManager.Aphids[_key].Genes.Name}",
+                $"{Tr("lobby_job_successchance")}: {(int)(current_request.ChanceToSucceed * 100)}%",
+                (current_aphid.Status.Hunger < HUNGER_LOSS ? $"[color=red]{Tr("lobby_job_toohungry")}[/color]" : string.Empty),
+                (current_aphid.Status.Thirst < THIRST_LOSS ? $"[color=red]{Tr("lobby_job_toothirsty")}[/color]" : string.Empty),
+                (current_aphid.Status.Rest < REST_LOSS ? $"[color=red]{Tr("lobby_job_toosleepy")}[/color]" : string.Empty)
+                ];
         description_label.Text = string.Join("\n", _list);
 
         // display level values and wheter they are meet/unmeet/non-required
@@ -550,7 +556,7 @@ public partial class JobMenu : Control
 
             int _index = Array.IndexOf(current_request.Skills, _keys[i]);
             if (_index == -1)
-                job_skills_labels[i].SelfModulate = new Color("gray");
+                job_skills_labels[i].SelfModulate = new Color(0.75f, 0.75f, 0.75f, 0.75f);
             else if (_values[i].Level < current_request.MinimumLevels[_index])
                 job_skills_labels[i].SelfModulate = new Color("red");
             else

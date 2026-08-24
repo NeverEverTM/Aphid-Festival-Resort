@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cufn20y8grbrn"
-path="res://.godot/imported/bar.PNG-f65923a5b4017f891664f1c207da7205.ctex"
+uid="uid://drtx08aejoe38"
+path="res://.godot/imported/tutorial_generations_album.PNG-6eaba9fe9d13dc19f603aad236b05d3a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/help_examples/bar.PNG"
-dest_files=["res://.godot/imported/bar.PNG-f65923a5b4017f891664f1c207da7205.ctex"]
+source_file="res://sprites/tutorial/tutorial_generations_album.PNG"
+dest_files=["res://.godot/imported/tutorial_generations_album.PNG-6eaba9fe9d13dc19f603aad236b05d3a.ctex"]
 
 [params]
 

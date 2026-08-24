@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjqhamn66qnsn"
-path="res://.godot/imported/shop.PNG-4beeb375ec1baf23adf89cdca0eea478.ctex"
+uid="uid://cufn20y8grbrn"
+path="res://.godot/imported/tutorial_camera_hud.PNG-38b92e481ffbaef471ffba7c683e7820.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/help_examples/shop.PNG"
-dest_files=["res://.godot/imported/shop.PNG-4beeb375ec1baf23adf89cdca0eea478.ctex"]
+source_file="res://sprites/tutorial/tutorial_camera_hud.PNG"
+dest_files=["res://.godot/imported/tutorial_camera_hud.PNG-38b92e481ffbaef471ffba7c683e7820.ctex"]
 
 [params]
 

@@ -91,7 +91,11 @@ public partial class FreeCameraManager : Control
 			return;
 		}
 
-		OnEscapePressed(@event);
+		if (OnEscapePressed(@event))
+		{
+			AcceptEvent();
+			return;
+		}
 
 		// pings aphids location
 		if (@event.IsActionPressed(InputNames.Pull))
@@ -150,7 +154,7 @@ public partial class FreeCameraManager : Control
 		else if (@event.IsActionPressed(InputNames.Right))
 			FocusAphid(focused_aphid_index + 1);
 	}
-	
+
 	public void FocusAphid(Aphid _aphid)
 	{
 		int _index = ResortManager.Current.Aphids.FindIndex(0, (a) => a.Equals(_aphid));
@@ -181,7 +185,7 @@ public partial class FreeCameraManager : Control
 		AphidInfoPanel.SetTo(false, false);
 		Instance.spectatorLabel.Hide();
 	}
-	
+
 	public void TrackAphid(Aphid _aphid)
 	{
 		if (_aphid == null)
@@ -235,27 +239,34 @@ public partial class FreeCameraManager : Control
 	/// When escaping, exit the interface, unless we are in a focus, then only exit the focus
 	/// </summary>
 	/// <param name="event"></param>
-	private void OnEscapePressed(InputEvent @event)
+	private bool OnEscapePressed(InputEvent @event)
 	{
 		if (just_loaded)
 		{
 			just_loaded = false;
-			return;
+			return true;
 		}
 
 		if (@event.IsActionPressed(InputNames.ChangeCamera))
+		{
 			SetTo(false);
-
+			return true;
+		}
 		if (@event.IsActionPressed(InputNames.Cancel) || @event.IsActionPressed(InputNames.Escape))
 		{
 			if (CameraManager.FocusedAphid != null)
 			{
 				AphidInfoPanel.SetTo(false, true);
 				CameraManager.UnFocus();
+				return false;
 			}
 			else
+			{
 				SetTo(false);
+				return true;
+			}
 		}
+		return false;
 	}
 
 	// MARK: Button Functions
@@ -331,11 +342,16 @@ public partial class FreeCameraManager : Control
 			return;
 
 		if (_noTransition)
+		{
 			Instance.Visible = _state;
+			AphidInfoPanel.Instance.Visible = _state;
+		}
 		else
+		{
 			Instance.animator.Play(_state ? StringNames.OpenAnim : StringNames.CloseAnim);
+			AphidInfoPanel.SetTo(false, true);
+		}
 
-		AphidInfoPanel.SetTo(false, true);
 		Instance.is_camera_tab_open = false;
 		Instance.is_hud_visible = _state;
 	}

@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3 uid="uid://c2bs6ryhkw4yf"]
+
+[ext_resource type="Texture2D" uid="uid://c5t28g5kiorp8" path="res://sprites/tutorial/tutorial_skill_train.PNG" id="2_pvb3h"]
+[ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="2_vhu6a"]
+
+[node name="skills" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="skill_label_0" type="RichTextLabel" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = -468.0
+offset_top = -243.0
+offset_right = 442.0
+offset_bottom = -142.0
+theme_type_variation = &"RTL_White"
+bbcode_enabled = true
+text = "help_skills_0"
+scroll_active = false
+metadata/controls = PackedStringArray("open_inventory", "pickup")
+
+[node name="skill_label_1" type="RichTextLabel" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = -468.0
+offset_top = -125.0
+offset_right = 442.0
+offset_bottom = 93.0
+theme_type_variation = &"RTL_White"
+bbcode_enabled = true
+text = "help_skills_1"
+scroll_active = false
+metadata/controls = PackedStringArray("pull")
+
+[node name="skill_label_2" type="RichTextLabel" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = -460.0
+offset_top = 179.0
+offset_right = 22.0
+offset_bottom = 228.0
+theme_type_variation = &"RTL_SWhite"
+bbcode_enabled = true
+text = "help_skills_2"
+scroll_active = false
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/controls = PackedStringArray("pull")
+
+[node name="shop_img" type="TextureRect" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = 74.0
+offset_top = 48.0
+offset_right = 465.0
+offset_bottom = 228.0
+texture = ExtResource("2_pvb3h")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="frame" type="NinePatchRect" parent="shop_img"]
+self_modulate = Color(0.4745098, 0.023529412, 0.18431373, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_vhu6a")
+draw_center = false
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5

@@ -92,7 +92,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uh6ig"]
-size = Vector2(92, 37)
+size = Vector2(92, 43.5)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_djjg3"]
 atlas = ExtResource("12_uplil")
@@ -546,7 +546,7 @@ position = Vector2(-785, 85)
 y_sort_enabled = true
 
 [node name="kut" parent="." instance=ExtResource("7_vbg0e")]
-position = Vector2(503, -225)
+position = Vector2(501, -227)
 sprite_frames = SubResource("SpriteFrames_ckexh")
 ID = "kut"
 DialogueMode = 2
@@ -559,7 +559,7 @@ Tag = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="kitchen_trigger"]
 z_index = 4096
-position = Vector2(16, 17.5)
+position = Vector2(16, 14.25)
 shape = SubResource("RectangleShape2D_uh6ig")
 debug_color = Color(0.887741, 0.273012, 0.475381, 0.42)
 

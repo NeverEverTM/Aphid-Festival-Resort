@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=4 uid="uid://bylkngpvchsr5"]
+[gd_scene load_steps=118 format=4 uid="uid://bylkngpvchsr5"]
 
 [ext_resource type="PackedScene" uid="uid://c6hlqyvj3a8n0" path="res://scenes/prefabs/base_room.tscn" id="1_muv3f"]
 [ext_resource type="Shader" uid="uid://dde33wyobum80" path="res://scripts/shaders/scroll_bg.gdshader" id="2_8r5qb"]
@@ -25,6 +25,7 @@
 [ext_resource type="Texture2D" uid="uid://04ej67djpwaa" path="res://sprites/ui/gui_icons/icon_ping.png" id="13_g10ix"]
 [ext_resource type="Texture2D" uid="uid://dn6embywraddf" path="res://sprites/props/card_trophy.png" id="15_1th7w"]
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="15_scn4g"]
+[ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="16_7burb"]
 [ext_resource type="Texture2D" uid="uid://dlv2ygyogunnv" path="res://sprites/icons/aphid_adult.tres" id="16_70sut"]
 [ext_resource type="Script" uid="uid://b7qufdyxupw7t" path="res://scripts/panels/NewsMenu.cs" id="17_52171"]
 [ext_resource type="PackedScene" uid="uid://b33rqi32ejkov" path="res://databases/structures/largebox_0.tscn" id="17_nneko"]
@@ -296,6 +297,11 @@ region = Rect2(16, 64, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_22sds"]
 atlas = ExtResource("15_scn4g")
 region = Rect2(32, 64, 16, 16)
+
+[sub_resource type="LabelSettings" id="LabelSettings_kqy6y"]
+font_size = 40
+shadow_color = Color(0.550133, 0, 0.0841187, 1)
+shadow_offset = Vector2(3.095, 3.18)
 
 [sub_resource type="Animation" id="Animation_jkjy4"]
 length = 0.001
@@ -772,7 +778,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [0.0872665]
+"values": [0.0]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -930,12 +936,6 @@ shader_parameter/direction = Vector2(1, 0)
 shader_parameter/node_size = Vector2(4, 4)
 shader_parameter/color = Color(0.509804, 0.0901961, 0.133333, 0)
 shader_parameter/useModulateAlpha = true
-
-[sub_resource type="LabelSettings" id="LabelSettings_jyi3d"]
-font_size = 25
-font_color = Color(0, 0, 0, 1)
-shadow_size = 0
-shadow_color = Color(0, 0, 0, 0.39215687)
 
 [sub_resource type="LabelSettings" id="LabelSettings_slrut"]
 font_size = 50
@@ -1131,7 +1131,7 @@ position = Vector2(726, 292)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." index="3"]
 
-[node name="lobby_menu" type="Control" parent="CanvasLayer" index="0" node_paths=PackedStringArray("interactArea", "animator", "categoryButtons", "categoryNodes", "sellAphidButton", "aphidCostLabel", "aphidNameLabel", "noAphidLabel", "aphidContainer", "aphidNode", "displayContents", "upgradeSlotsGrid", "upgradeNameLabel", "upgradeDescLabel", "upgradeBuyButton", "statsDisplay", "pronounsLabel", "nameLabel", "pronounsDisplay", "nameDisplay")]
+[node name="lobby_menu" type="Control" parent="CanvasLayer" index="0" node_paths=PackedStringArray("interactArea", "animator", "categoryButtons", "categoryNodes", "currencyLabel", "sellAphidButton", "aphidCostLabel", "aphidNameLabel", "noAphidLabel", "aphidContainer", "aphidNode", "displayContents", "upgradeSlotsGrid", "upgradeNameLabel", "upgradeDescLabel", "upgradeBuyButton", "statsDisplay", "pronounsLabel", "nameLabel", "pronounsDisplay", "nameDisplay")]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -1144,6 +1144,7 @@ interactArea = NodePath("../../lobby_table/lobby_trigger")
 animator = NodePath("lobby_player")
 categoryButtons = [NodePath("window_bg/categories/aphids_button"), NodePath("window_bg/categories/resort_button"), NodePath("window_bg/categories/stats_button")]
 categoryNodes = [NodePath("window_bg/aphid"), NodePath("window_bg/upgrades"), NodePath("window_bg/stats")]
+currencyLabel = NodePath("window_bg/currency/currency_amount")
 sellAphidButton = NodePath("window_bg/aphid/aphid_display/display_contents/sell_button")
 aphidCostLabel = NodePath("window_bg/aphid/aphid_display/display_contents/aphid_cost")
 aphidNameLabel = NodePath("window_bg/aphid/aphid_display/display_contents/aphid_name")
@@ -1667,6 +1668,46 @@ text = "News"
 icon = SubResource("AtlasTexture_22sds")
 expand_icon = true
 
+[node name="currency" type="NinePatchRect" parent="CanvasLayer/lobby_menu/window_bg" index="4"]
+self_modulate = Color(0.814776, 0.102485, 0.323564, 1)
+light_mask = 0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -78.0
+offset_top = 498.0
+offset_right = 61.0
+offset_bottom = 558.0
+grow_horizontal = 0
+texture = ExtResource("4_io1qn")
+region_rect = Rect2(0, 0, 128, 128)
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="icon" type="TextureRect" parent="CanvasLayer/lobby_menu/window_bg/currency" index="0"]
+light_mask = 0
+layout_mode = 0
+offset_left = -15.0
+offset_top = -1.0
+offset_right = 40.0
+offset_bottom = 60.0
+texture = ExtResource("9_kdre1")
+stretch_mode = 5
+
+[node name="currency_amount" type="Label" parent="CanvasLayer/lobby_menu/window_bg/currency" index="1"]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 7.0
+offset_right = 125.0
+offset_bottom = 55.0
+theme = ExtResource("16_7burb")
+text = "ERR!"
+label_settings = SubResource("LabelSettings_kqy6y")
+horizontal_alignment = 1
+
 [node name="news_menu" type="Control" parent="CanvasLayer" index="1" node_paths=PackedStringArray("interactArea", "animator", "newsBody", "blogContainer", "glow")]
 visible = false
 light_mask = 0
@@ -1814,7 +1855,7 @@ slot_container = NodePath("slot_container/ScrollContainer/GridContainer")
 slot_prefab = ExtResource("26_kqy6y")
 job_completion_material = ExtResource("27_dc3ka")
 job_current_material = ExtResource("28_m11w5")
-aphid_node = NodePath("job_display/background/aphid_node")
+aphid_node = NodePath("job_display/background/background_frame/aphid_node")
 skill_bar_bg = NodePath("job_display/skills_bar")
 request_background_frame = NodePath("job_display/background/background_frame")
 information_node = NodePath("job_display/information_bg")
@@ -1929,7 +1970,6 @@ offset_left = 850.0
 offset_top = 36.0
 offset_right = 1262.9989
 offset_bottom = 681.0
-rotation = 0.0872665
 texture = ExtResource("11_dh02v")
 patch_margin_left = 30
 patch_margin_top = 30
@@ -1950,6 +1990,7 @@ stretch_mode = 5
 [node name="background_frame" type="NinePatchRect" parent="CanvasLayer/job_menu/job_display/background" index="0"]
 self_modulate = Color(0.252367, 0.278866, 0.60275, 1)
 light_mask = 0
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1962,20 +2003,22 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_io1qn")
 draw_center = false
+region_rect = Rect2(2, 2, 124, 124)
 patch_margin_left = 10
 patch_margin_top = 10
 patch_margin_right = 10
 patch_margin_bottom = 10
 
-[node name="aphid_node" type="Control" parent="CanvasLayer/job_menu/job_display/background" index="1"]
+[node name="aphid_node" type="Control" parent="CanvasLayer/job_menu/job_display/background/background_frame" index="0"]
+show_behind_parent = true
 anchors_preset = 0
-offset_left = 71.0
-offset_top = -2.0
-offset_right = 203.0
-offset_bottom = 129.0
+offset_left = 80.99994
+offset_top = 3.0
+offset_right = 212.99994
+offset_bottom = 134.0
 scale = Vector2(1.5, 1.5)
 
-[node name="aphid_slot" parent="CanvasLayer/job_menu/job_display/background/aphid_node" index="0" instance=ExtResource("8_k0hcu")]
+[node name="aphid_slot" parent="CanvasLayer/job_menu/job_display/background/background_frame/aphid_node" index="0" instance=ExtResource("8_k0hcu")]
 self_modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 
@@ -1992,17 +2035,17 @@ patch_margin_top = 10
 patch_margin_right = 10
 patch_margin_bottom = 10
 
-[node name="description" type="Label" parent="CanvasLayer/job_menu/job_display" index="2"]
+[node name="description" type="RichTextLabel" parent="CanvasLayer/job_menu/job_display" index="2"]
 light_mask = 0
 layout_mode = 0
 offset_left = 35.0
 offset_top = 226.0
 offset_right = 380.0
 offset_bottom = 394.0
+theme_type_variation = &"RTL_Black"
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
 text = "job_easy_0"
-label_settings = SubResource("LabelSettings_jyi3d")
-autowrap_mode = 3
-text_overrun_behavior = 3
 
 [node name="reward" type="Label" parent="CanvasLayer/job_menu/job_display" index="3"]
 light_mask = 0

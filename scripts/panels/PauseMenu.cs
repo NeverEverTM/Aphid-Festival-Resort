@@ -93,7 +93,7 @@ public partial class PauseMenu : Control
 	}
 	public override void _Input(InputEvent @event)
 	{
-		if (GlobalManager.IsBusy)
+		if (GlobalManager.IsBusy || FreeCameraManager.Enabled)
 			return;
 
 		if (!CanvasManager.Menus.IsActive)

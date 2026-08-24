@@ -97,10 +97,10 @@ public partial class LoadGameMenu : Control
 				_exists ? _data.AphidCount.ToString("000") : "???";
 
 		string _lastPlayedText = "???";
-		TimeSpan _lastPlayedTime = new((long)(Time.GetUnixTimeFromSystem() - _data.LastTimeLoaded));
+		TimeSpan _lastPlayedTime = new((long)(Time.GetUnixTimeFromSystem() - _data.LastTimeSession));
 
 		// sets the proper string for when the game was last played
-		if (_exists && _data.LastTimeLoaded != 0)
+		if (_exists && _data.LastTimeSession != 0)
 		{
 			if (_lastPlayedTime.TotalDays <= 1)
 				_lastPlayedText = Tr("date_today");

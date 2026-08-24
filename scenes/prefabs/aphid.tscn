@@ -153,7 +153,7 @@ load_path = "res://.godot/imported/eyes_idle.png-0a2df93b13bd78a8b78ac77a5908e76
 load_path = "res://.godot/imported/antenna_idle.png-bcdd480b684be58360c7c8f3dac9f87e.ctex"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cj77s"]
-size = Vector2(103, 74)
+size = Vector2(103, 80)
 
 [node name="aphid" type="CharacterBody2D" node_paths=PackedStringArray("Skin", "interactArea")]
 collision_layer = 7
@@ -218,6 +218,6 @@ aphid = NodePath("..")
 Tag = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerArea"]
-position = Vector2(-0.5, 0)
+position = Vector2(-0.5, 3)
 shape = SubResource("RectangleShape2D_cj77s")
 debug_color = Color(0.756863, 0.364706, 0.556863, 0.290196)

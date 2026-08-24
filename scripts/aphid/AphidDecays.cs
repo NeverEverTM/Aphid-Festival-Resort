@@ -15,6 +15,11 @@ public partial class Aphid : CharacterBody2D
         {
             TInstance.AddHunger(-1);
         }
+        public override float GetTimerTime()
+        {
+            // lower loss when asleep
+            return base.GetTimerTime() * (TInstance.StateIs(StateEnum.Sleep) ? 2 : 1);
+        }
     }
     public class ThirstDecay : CustomBaseTimer<AphidInstance>
     {
@@ -26,6 +31,11 @@ public partial class Aphid : CharacterBody2D
         public override void Finish()
         {
             TInstance.AddThirst(-1);
+        }
+        public override float GetTimerTime()
+        {
+            // lower loss when asleep
+            return base.GetTimerTime() * (TInstance.StateIs(StateEnum.Sleep) ? 2 : 1);
         }
     }
     public class RestDecay : CustomBaseTimer<AphidInstance>
@@ -127,6 +137,12 @@ public partial class Aphid : CharacterBody2D
         {
             TInstance.AddAffection(-1);
         }
+
+        public override float GetTimerTime()
+        {
+            // lower loss when asleep
+            return base.GetTimerTime() * (TInstance.StateIs(StateEnum.Sleep) ? 3 : 1);
+        }
     }
     public class BondshipDecay : CustomBaseTimer<AphidInstance>
     {
@@ -218,8 +234,19 @@ public partial class Aphid : CharacterBody2D
         }
         public override bool CanFinish()
         {
-            // dont breed if you arent idle or too badly taken care of
-            return TInstance.StateIs(StateEnum.Idle) && TInstance.Status.Hunger > 20 && TInstance.Status.Thirst > 20;
+            return IsInstanceValid(TInstance.Entity) 
+            // this makes sure the aphid doesnt enter breeding mode if everyone else is
+            // normally a problem that happens is both aphids entering breeding at the same time and being unable to mate with each other
+            && !ResortManager.Current.Aphids.TrueForAll((aphid) => 
+            {
+                if (aphid.Equals(TInstance.Entity))
+                    return true;
+                else
+                    return aphid.State.Is(StateEnum.Breed);
+            })
+            && TInstance.StateIs(StateEnum.Idle) 
+            && TInstance.Status.Hunger > 20 
+            && TInstance.Status.Thirst > 20;
         }
 
         public override bool CanUpdate()
@@ -260,7 +287,7 @@ public partial class Aphid : CharacterBody2D
         {
             TInstance.Status.IsReadyForHarvest = true;
             if (IsInstanceValid(TInstance.Entity))
-                TInstance.Entity.AllowHarvest();
+                TInstance.Entity.HighlightHarvest();
         }
     }
 }

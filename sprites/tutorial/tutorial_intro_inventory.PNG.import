@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5t28g5kiorp8"
-path="res://.godot/imported/train_chamber.PNG-9a91611928c74ed0765ec76d2563d00c.ctex"
+uid="uid://dknqeho1jsf5o"
+path="res://.godot/imported/tutorial_intro_inventory.PNG-b0ee58de4191e3e637ae3441ce46783a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/help_examples/train_chamber.PNG"
-dest_files=["res://.godot/imported/train_chamber.PNG-9a91611928c74ed0765ec76d2563d00c.ctex"]
+source_file="res://sprites/tutorial/tutorial_intro_inventory.PNG"
+dest_files=["res://.godot/imported/tutorial_intro_inventory.PNG-b0ee58de4191e3e637ae3441ce46783a.ctex"]
 
 [params]
 
