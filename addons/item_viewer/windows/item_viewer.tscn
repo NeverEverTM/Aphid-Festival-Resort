@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="3_xwjhu"]
 [ext_resource type="Texture2D" uid="uid://b1pc4mwmvsldw" path="res://sprites/icons/honey_drop.tres" id="4_e8edq"]
 [ext_resource type="Script" uid="uid://cdnevp1u7n25n" path="res://addons/item_viewer/ItemViewer.cs" id="4_wdjpt"]
-[ext_resource type="PackedScene" uid="uid://c140r8dv4t86f" path="res://addons/item_viewer/prefabs/item_slot.tscn" id="4_xwjhu"]
+[ext_resource type="PackedScene" uid="uid://c140r8dv4t86f" path="res://addons/item_viewer/prefabs/dev_item_slot.tscn" id="4_xwjhu"]
 [ext_resource type="Texture2D" uid="uid://04ej67djpwaa" path="res://sprites/ui/gui_icons/icon_ping.png" id="5_k4kl4"]
 [ext_resource type="PackedScene" uid="uid://2k0vsdw6oh8t" path="res://addons/item_viewer/prefabs/recipe_slot.tscn" id="5_nxrx2"]
 [ext_resource type="Texture2D" uid="uid://chas44iqghwy2" path="res://sprites/ui/gui_icons/icon_rest.png" id="6_v6jcs"]
@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://chfy3t3p5lcl5" path="res://sprites/ui/gui_icons/icon_x.png" id="10_a3on2"]
 [ext_resource type="Script" uid="uid://bf5a0imgadytw" path="res://addons/item_viewer/RecipeList.cs" id="11_a3on2"]
 [ext_resource type="Script" uid="uid://wugrk6jo1jmg" path="res://addons/item_viewer/BalanceGraph.cs" id="11_gn2tu"]
-[ext_resource type="PackedScene" uid="uid://xisl5sxxrauc" path="res://addons/item_viewer/prefabs/food_slot.tscn" id="11_v6jcs"]
+[ext_resource type="PackedScene" uid="uid://xisl5sxxrauc" path="res://addons/item_viewer/prefabs/dev_food_slot.tscn" id="11_v6jcs"]
 [ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="15_j1pg1"]
 
 [node name="ItemDBGUI" type="Window" node_paths=PackedStringArray("panelsNode")]
@@ -462,10 +462,10 @@ scale = Vector2(0.75, 0.75)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="panels/balance_graph"]
 layout_mode = 0
-offset_left = -424.0
-offset_top = 42.0
-offset_right = 387.0
-offset_bottom = 328.0
+offset_left = -417.0
+offset_top = 24.0
+offset_right = 447.0
+offset_bottom = 310.0
 
 [node name="slot_container" type="VBoxContainer" parent="panels/balance_graph/ScrollContainer"]
 texture_filter = 1

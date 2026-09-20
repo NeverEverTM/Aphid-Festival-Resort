@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3 uid="uid://0vd4s8hpe6j3"]
+
+[ext_resource type="Script" uid="uid://cgxyhemff6s1m" path="res://scripts/resources/ItemData.cs" id="1_oicrf"]
+
+[resource]
+script = ExtResource("1_oicrf")
+ID = "berry_salad"
+Type = 2
+Cost = 4
+Category = -1
+ShopOrderPriority = -1

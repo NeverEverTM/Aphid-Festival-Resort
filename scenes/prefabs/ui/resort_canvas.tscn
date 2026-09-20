@@ -22,7 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://13jj4fecox6g" path="res://sprites/atlases/icons_ui.png" id="20_tekx7"]
 [ext_resource type="Texture2D" uid="uid://dq3iktfagv32k" path="res://sprites/ui/bar_under.png" id="23_0ppya"]
 [ext_resource type="Script" uid="uid://yysr1t6oifa0" path="res://scripts/panels/ItemShop.cs" id="28_xm5ie"]
-[ext_resource type="PackedScene" uid="uid://cn7d8wjyx78a3" path="res://scenes/prefabs/ui/item_container.tscn" id="29_mvok5"]
+[ext_resource type="PackedScene" uid="uid://cn7d8wjyx78a3" path="res://scenes/prefabs/ui/item_slot.tscn" id="29_mvok5"]
 [ext_resource type="Texture2D" uid="uid://c1fmd5yqanbuy" path="res://sprites/ui/portraits/kut_dissapointed_portrait.png" id="31_gxjv5"]
 [ext_resource type="Texture2D" uid="uid://c272xi11ewypl" path="res://sprites/ui/portraits/kut_proud_portrait.png" id="32_l72np"]
 [ext_resource type="Texture2D" uid="uid://dvogijqb7j12i" path="res://sprites/ui/backgrounds/menu_book.png" id="33_iln6p"]

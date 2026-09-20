@@ -1,8 +1,7 @@
-# WORK IN PROGRESS (v0.2.2)
+# WORK IN PROGRESS (v0.3)
 Things that are currently being worked on
-- Add a text sign
 - Check if:
-	- Breed works (currently aphids get stuck in heat)
+	- Breed works [DONE]
 	- Eating works [DONE]
 	- Social works [DONE]
 	- Train works [DONE]
@@ -12,9 +11,16 @@ Things that are currently being worked on
 - ACTUALLY PLAYTEST THE GAME (not soon, NOW*) [*After the fixes are up]
 # IDEAS
 Things that are on my mind but aren't currently being developed
+### QoL
+- Repeat recipe button greyed out when making a recipe for the first time (since you cannot repeat it until you have learned it)
+- Visual highlight over job board when a job is done
+- Mention breeding requirements in tutorial (optionally, Joy could talk about them)
+- Disallow selling aphids if you would have none left.
 ### Technical
 - refactor aphid animations and sprites to include individual legs + hat
 - expand player and aphid animations to be more flexible
+- atlas packager needs better interfacing + grid atlasing for textures of different sizes
+- include visibility toggle for shop related data in item creator
 ### Gameplay
 - minigames as a proof of concept, may require rethinking some frameworks because i am very smart and implemented them wrong
 - freaking aphid throwing, make em spin and bounce like a rubber ball for the funnies
@@ -28,20 +34,16 @@ Things that are on my mind but aren't currently being developed
 + Trade Functionality
 	- Players would be able to generate a QR code with the genes (and status if it fits) of an aphid, which they can share with others. 
 	-  aphid trading will be either daily procedurally generated aphids by the game or with other players via qr codes (or both)
+- Joy as a proper in-game guide, with dialogue options to talk about specific mechanics
 ### Furniture and Food
 - Bench
+- Text Sign
 - Ball Pit
 - Water Slide
 - Trampoline
 - Small Push Car
 - Hot Air Balloon
 - Jukebox
-Food Combinations missing:
-- Honey + Water
-- Glazed Honey + Flour
-- Berry + Leaf = Fruit Salad
-- Berry + Shroom
-- Berry + Honey
 ### Music
 - Project Color jingle
 - Aphid Death jingle

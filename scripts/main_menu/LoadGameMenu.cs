@@ -96,18 +96,18 @@ public partial class LoadGameMenu : Control
 		(_slot.FindChild("aphid_label") as Label).Text =
 				_exists ? _data.AphidCount.ToString("000") : "???";
 
-		string _lastPlayedText = "???";
-		TimeSpan _lastPlayedTime = new((long)(Time.GetUnixTimeFromSystem() - _data.LastTimeSession));
-
 		// sets the proper string for when the game was last played
+		string _lastPlayedText = "???";
+		var _lastPlayedSpan = TimeSpan.FromSeconds(Time.GetUnixTimeFromSystem() - _data.LastTimeSession);
+
 		if (_exists && _data.LastTimeSession != 0)
 		{
-			if (_lastPlayedTime.TotalDays <= 1)
+			if (_lastPlayedSpan.TotalDays <= 1)
 				_lastPlayedText = Tr("date_today");
-			else if (_lastPlayedTime.TotalDays <= 2)
+			else if (_lastPlayedSpan.TotalDays <= 2)
 				_lastPlayedText = Tr("date_yesterday");
 			else
-				_lastPlayedText = string.Format(Tr("date_daysago"), (int)_lastPlayedTime.TotalDays);
+				_lastPlayedText = string.Format(Tr("date_daysago"), (int)_lastPlayedSpan.TotalDays);
 		}
 
 		(_slot.FindChild("last_played_label") as Label).Text = $"{Tr("load_game_last_played")} {_lastPlayedText}";
@@ -126,7 +126,7 @@ public partial class LoadGameMenu : Control
 		(_slot.FindChild("delete_button") as BaseButton).Pressed += () => DeleteFile(_profile, _slot);
 
 		container.AddChild(_slot);
-		return new(_profile, _lastPlayedTime, _slot);
+		return new(_profile, _lastPlayedSpan, _slot);
 	}
 
 	private static void PlayFile(string _profile, string _room = "")

@@ -3,12 +3,16 @@
 [ext_resource type="Script" uid="uid://ci8tiejleua3f" path="res://scripts/entities/RoomDoor.cs" id="1_qtqe8"]
 
 [node name="room_trigger" type="Area2D" node_paths=PackedStringArray("collider")]
+editor_description = "The room trigger acts as a door that can be given to a RoomInstance to enter/exit it.
+It requires the given room name, the index of the door from the given room, and the direction at which the player will walk while transitioning."
 script = ExtResource("1_qtqe8")
 collider = NodePath("collider/CollisionShape2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+editor_description = "Collision shape of the trigger, where the player steps in."
 
 [node name="collider" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="collider"]
+editor_description = "Collision shape of the blocking collider, it activates during transitions to prevent player from leaving level bounds."
 debug_color = Color(0.571482, 0.208344, 0.0751392, 0.42)

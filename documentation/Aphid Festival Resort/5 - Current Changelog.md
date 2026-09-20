@@ -7,8 +7,9 @@ I cannot keep track of all changes I have done, and certainly I could not keep t
 	- Added a news board that delivers the latest development updates. Here is where these changelogs should be seen from now on! 
 - **The upgrade system is full** on board! Each upgrade offers you a service that unlocks certain activities or increase your catalogue of items. For now, four services are included, most can be "level-up" a few times too.
 - Added the **Job Board!**,  you can now send aphids on requests and gain money on succesful completion. All of them require skills of different levels in order to be completed, aphids will also need to be well rested in order to embark on requests.
-- Added a few new NPC's for the lobby, including Tanjy as a future hat seller, Theresa at the front desk.
-- On top of being used for requests, Skills can now be trained and raised through certain equipment structures too! Food items still grant skill points, and have been tweaked and rebalanced.
+- On top of being used for requests, Skills can now be trained and raised through certain equipment structures too!
+- A large amount of new food items have been added (both basic ingredients AND proper meals like cakes), aswell as rebalanced and tweaked several dozen values for all of them.
+- A few new aphid traits have been added, such as Quality Producer, Bioluminiscent, Shy, etc.
 - In terms of structures:
 	- ADDED Paper Lantern for water lighting
 	- ADDED Combat Dummy for strength training
@@ -41,6 +42,7 @@ I cannot keep track of all changes I have done, and certainly I could not keep t
 - Enhanced and added various particle effects. Lil nom bite particles for when aphids eat something now actually show the actual food sprite.
 - Updated the tutorial with a full swipe of new information.
 - The graphic shaders for the backgrounds have been upgraded, allowing them to be more varied all through the game.
+- Updated Tooltip UI plus information of food values is now being displayed.
 ## Fixed
 - [MAJOR] Eggs laid by aphids no longer lose their genes when reloading the game before they can hatch.
 - [MAJOR] Aphid's parents are now referenced directly by ID instead of just saving the name, this is so it reflects the parent's current name change properly (before, you could change a parent's name and it would not be reflected in the bio of their children).

@@ -240,8 +240,10 @@ public partial class JobMenu : Control
                 GlobalManager.CREATE_POPUP("lobby_job_noaphids", this);
                 return;
             }
-            DisplayAphid(current_aphid.GUID);
-            SoundManager.CreateSound("ui/button_select");
+            else
+            {
+                SoundManager.CreateSound("ui/button_select");
+            }
         }
         else if (current_request.IsDone)
         {
@@ -261,19 +263,18 @@ public partial class JobMenu : Control
             if (_pair.Value.Status.Mode != AphidData.EntityStatusType.Passive)
                 continue;
 
-            var _pair_clone = _pair;
-            current_aphid ??= _pair_clone.Value;
-            var _slot = CanvasManager.CreateAphidSlot(_pair_clone.Key, false, DisplayAphid);
+            Guid _key = _pair.Key;
+            var _slot = CanvasManager.CreateAphidSlot(_key, false, DisplayAphid);
             slot_container.AddChild(_slot);
-            _slot.SetMeta(StringNames.IdMeta, current_aphid.ID);
 
             // mark as tired
-            if (current_aphid.Status.Hunger < HUNGER_LOSS || current_aphid.Status.Thirst < THIRST_LOSS ||
-                current_aphid.Status.Rest < REST_LOSS)
+            if (_pair.Value.Status.Hunger < HUNGER_LOSS || _pair.Value.Status.Thirst < THIRST_LOSS ||
+                _pair.Value.Status.Rest < REST_LOSS)
                 _slot.SelfModulate = new Color("darkred");
 
             _wasGenerated = true;
         }
+
         is_displaying_aphids = _wasGenerated;
         return _wasGenerated;
     }
@@ -426,7 +427,7 @@ public partial class JobMenu : Control
 
         return _request;
     }
-    
+
     // MARK: Job Fullfilment
     /// <summary>
     /// Automatically creates a tracked job with the current aphid and request given.
@@ -503,16 +504,21 @@ public partial class JobMenu : Control
         // display skill levels and icons
         for (int i = 0; i < job_skills.Length; i++)
         {
-            if (current_request.Skills.Length <= i)
-            {
-                job_skills[i].Visible = false;
-                continue;
-            }
-            job_skills_icons[i].Texture = GlobalManager.GetIcon(current_request.Skills[i]);
-            job_skills_icons[i].GetParent<Control>().SelfModulate = difficulty_colors[(int)current_request.Data.Difficulty];
-            job_skills_labels[i].Text = current_request.MinimumLevels[i].ToString();
+            job_skills[i].SelfModulate = difficulty_colors[(int)current_request.Data.Difficulty];
             job_skills_labels[i].SelfModulate = new Color("white");
-            job_skills[i].Visible = true;
+
+            if (i < current_request.Skills.Length)
+            {
+                job_skills_icons[i].Texture = GlobalManager.GetIcon(current_request.Skills[i]);
+                job_skills_labels[i].Text = current_request.MinimumLevels[i].ToString();
+                job_skills[i].Visible = true;
+            }
+            else
+            {
+                job_skills_icons[i].Texture = null;
+                job_skills_labels[i].Text = string.Empty;
+                job_skills[i].Visible = false;
+            }
         }
 
         TweenRequestSlot(current_request.Slot);
@@ -538,7 +544,7 @@ public partial class JobMenu : Control
         assign_button.Text = "lobby_job_assign";
         string[] _list = [
                 $"{Tr("lobby_job_aphidname")}: {GameManager.Aphids[_key].Genes.Name}",
-                $"{Tr("lobby_job_successchance")}: {(int)(current_request.ChanceToSucceed * 100)}%",
+                $"{Tr("lobby_job_successchance")}: [color={(current_request.ChanceToSucceed < 0.9 ? "red" : "black")}]{(int)(current_request.ChanceToSucceed * 100)}%[/color]",
                 (current_aphid.Status.Hunger < HUNGER_LOSS ? $"[color=red]{Tr("lobby_job_toohungry")}[/color]" : string.Empty),
                 (current_aphid.Status.Thirst < THIRST_LOSS ? $"[color=red]{Tr("lobby_job_toothirsty")}[/color]" : string.Empty),
                 (current_aphid.Status.Rest < REST_LOSS ? $"[color=red]{Tr("lobby_job_toosleepy")}[/color]" : string.Empty)

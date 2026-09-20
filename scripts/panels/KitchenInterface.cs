@@ -80,7 +80,7 @@ public partial class KitchenInterface : Control
 			// set metadata
 			var _item_name = Player.Data.Inventory[i];
 			_item.SetMeta(StringNames.IdMeta, _item_name);
-			_item.TooltipText = GlobalManager.Utils.GetTooltipText(_item_name);
+			_item.TooltipText = GlobalManager.Utils.GetTooltip(_item_name, true);
 
 			// check for available icon
 			(_item.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(_item_name);

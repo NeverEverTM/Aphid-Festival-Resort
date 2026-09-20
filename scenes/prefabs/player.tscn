@@ -275,19 +275,18 @@ animatorNode = NodePath("animator")
 
 [node name="animator" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_mupq7")
-animation = &"sit_idle"
+animation = &"idle"
 autoplay = "idle"
-frame = 5
-frame_progress = 0.74273
 offset = Vector2(0, -32)
 flip_h = true
 
 [node name="collider" type="CollisionShape2D" parent="."]
+z_index = -240
 position = Vector2(0.5, -3)
 shape = SubResource("RectangleShape2D_r3o6d")
 
 [node name="interaction_area" type="Area2D" parent="."]
-y_sort_enabled = true
+z_index = -240
 collision_layer = 0
 collision_mask = 5
 monitorable = false

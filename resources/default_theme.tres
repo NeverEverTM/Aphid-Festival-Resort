@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=31 format=3 uid="uid://c26milatu6udv"]
+[gd_resource type="Theme" load_steps=32 format=3 uid="uid://c26milatu6udv"]
 
 [ext_resource type="StyleBox" uid="uid://cisvgvfobi4xh" path="res://resources/button_focus.tres" id="1_bsk3a"]
 [ext_resource type="Texture2D" uid="uid://bsmj8qpxydevb" path="res://sprites/ui/backgrounds/menu_bar.png" id="2_1p6bo"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dfx3fw8bx84n6" path="res://sprites/just_a_white_rectangle_lmao.png" id="5_u7cj8"]
 [ext_resource type="StyleBox" uid="uid://b3u1nc0w1yjgo" path="res://resources/button_pressed_checkbutton.tres" id="6_0konk"]
 [ext_resource type="Texture2D" uid="uid://cd3yc4wnij1fe" path="res://sprites/ui/gui_icons/icon_arrow.png" id="6_uwdo0"]
+[ext_resource type="StyleBox" uid="uid://be6ghctf8tpoh" path="res://resources/tooltip_border.tres" id="12_0konk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mtlnc"]
 atlas = ExtResource("3_wdiyg")
@@ -197,6 +198,7 @@ TextEdit/colors/background_color = Color(0.0745098, 0.27451, 0.176471, 0)
 TextEdit/colors/font_placeholder_color = Color(0.688896, 0.621552, 0.728016, 0.6)
 TextEdit/styles/focus = SubResource("StyleBoxFlat_wdiyg")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_i1e6c")
+TooltipPanel/styles/panel = ExtResource("12_0konk")
 VScrollBar/styles/grabber = SubResource("StyleBoxTexture_24aqj")
 VScrollBar/styles/grabber_highlight = SubResource("StyleBoxTexture_4yrx2")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxTexture_wdiyg")

@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://c70h72bbst8n8"]
+
+[node name="tooltip" type="RichTextLabel"]
+clip_contents = false
+custom_minimum_size = Vector2(400, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+offset_right = -880.0
+offset_bottom = -722.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"RTL_SWhite"
+bbcode_enabled = true
+text = "
+
+This is a description to show a large description for words, how many words yyyyyyyy"
+fit_content = true
+vertical_alignment = 2
+
+[node name="title" type="RichTextLabel" parent="."]
+layout_mode = 1
+offset_top = -8.0
+offset_right = 369.0
+offset_bottom = 44.0
+theme_type_variation = &"RTL_White"
+bbcode_enabled = true
+text = "Title"
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1

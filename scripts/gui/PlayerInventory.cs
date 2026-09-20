@@ -84,7 +84,7 @@ public partial class PlayerInventory : Control
 			return;
 
 		_node.SetMeta(StringNames.IdMeta, _item_name);
-		_node.TooltipText = GlobalManager.Utils.GetTooltipText(_item_name);
+		_node.TooltipText = GlobalManager.Utils.GetTooltip(_item_name, true);
 		_node.FocusMode = FocusModeEnum.None;
 		_slot.Texture = GlobalManager.GetIcon(_item_name);
 

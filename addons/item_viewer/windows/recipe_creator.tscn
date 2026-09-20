@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_ystqg"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="2_102fa"]
 [ext_resource type="Texture2D" uid="uid://by731h48tm8a0" path="res://sprites/icons/abomihoney.tres" id="3_102fa"]
-[ext_resource type="PackedScene" uid="uid://c140r8dv4t86f" path="res://addons/item_viewer/prefabs/item_slot.tscn" id="4_jttmb"]
+[ext_resource type="PackedScene" uid="uid://c140r8dv4t86f" path="res://addons/item_viewer/prefabs/dev_item_slot.tscn" id="4_jttmb"]
 
 [node name="RecipeCombinator" type="Window" node_paths=PackedStringArray("itemGrid", "slotsNode", "plusLabel")]
 oversampling_override = 1.0

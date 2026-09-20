@@ -31,6 +31,19 @@ public partial class AphidData : Aphid
         Busy
     }
 
+    /// <summary>
+    /// Sweet, Sour, Salty, Bitter, Vile, Bland, Neutral 
+    /// </summary>
+    public readonly static string[] FlavorColors =
+    [
+        new("gold"),
+        new("green"),
+        new("orange"),
+        new("royalblue"),
+        new("purple"),
+        new("gray"),
+        new("white")
+    ];
     public readonly static string[] SkillNames = ["speed", "strength", "intelligence", "stamina"];
     private readonly static float[] flavor_weights = [22, 22, 22, 22, 12],
         preference_options = [0.25f, 0.5f, 0.75f, 1.0f];

@@ -167,7 +167,7 @@ public partial class GenerationsPanel : Control
         current_page = -1;
         current_photos = null;
     }
-    /// <param name="_current">If true, display current aphid album, otherwise, the global one</param>
+    /// <param name="_current">If true, display current aphid album, otherwise show the global album</param>
     private async void DisplayAlbum(bool _state, bool _current = true)
     {
         if (is_busy)
@@ -183,7 +183,6 @@ public partial class GenerationsPanel : Control
             warning.Hide();
             // either show aphid specific screenshots or global resort screenshots
             string _path = SaveSystem.ProfilePath + SaveSystem.PROFILE_SCREENSHOTS_DIR;
-
             if (_current)
                 _path += current_key.ToString() + "/";
 

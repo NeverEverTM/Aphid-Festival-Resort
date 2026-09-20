@@ -209,10 +209,16 @@ public partial class CanvasManager : CanvasLayer
 	}
 	public static void UpdateCurrency()
 	{
+		Instance.currency_text.Text = GetCurrencyFormat();
+	}
+	public static string GetCurrencyFormat()
+	{
+		if (Player.Data.Currency >= 1000000)
+			return (Player.Data.Currency / 1000).ToString("00M");
 		if (Player.Data.Currency >= 10000)
-			Instance.currency_text.Text = (Player.Data.Currency / 1000).ToString("00K");
+			return (Player.Data.Currency / 1000).ToString("00K");
 		else
-			Instance.currency_text.Text = Player.Data.Currency.ToString("000");
+			return Player.Data.Currency.ToString("000");
 	}
 
 	// MARK: Popups

@@ -273,7 +273,7 @@ public partial class Aphid : CharacterBody2D
                 {
                     // if there is valid food nearby to pick, and we are not in trying to eat, then attempt to
                     // (valid food also means we are not full)
-                    if (nearby_food.Count > 0 && !(_myAphid.State.Is(StateEnum.Hungry) || _myAphid.State.Is(StateEnum.Eat)))
+                    if (nearby_food.Count > 0 && _myAphid.State.Is(StateEnum.Idle))
                         _myAphid.SetState(StateEnum.Hungry);
                 }
             }
@@ -582,24 +582,23 @@ public partial class Aphid : CharacterBody2D
             {
                 case BreedMode.AsPartner:
                     // walk towards it and stop once you are close
-                    if (aphid.GlobalPosition.DistanceSquaredTo(position_to_partner) <= MIN_PARTNER_DISTANCE)
+                    if (aphid.GlobalPosition.DistanceSquaredTo(position_to_partner) < MIN_PARTNER_DISTANCE)
                     {
                         aphid.SetMovementDirection(Vector2.Zero);
                         is_in_final_stage = true;
                     }
                     break;
                 case BreedMode.WithPartner:
+                    breed_effect.GlobalPosition = aphid.GlobalPosition; // move particles in case you get moved
+                    
+                    // remove partner and start search again if they are invalid
+                    if (!IsInstanceValid(breed_lookout.breed_partner) || !breed_lookout.breed_partner.State.Is(StateEnum.Breed))
+                        breed_lookout.breed_partner = null;
                     if (breed_lookout.breed_partner == null)
                         return;
 
-                    if (!IsInstanceValid(breed_lookout.breed_partner) || !breed_lookout.breed_partner.State.Is(StateEnum.Breed))
-                    {
-                        breed_lookout.breed_partner = null;
-                        return;
-                    }
-
                     // wait for partner to arrive
-                    if (breed_lookout.breed_partner.GlobalPosition.DistanceSquaredTo(position_to_partner) <= MIN_PARTNER_DISTANCE)
+                    if (breed_lookout.breed_partner.GlobalPosition.DistanceSquaredTo(breed_lookout.position_for_partner) <= MIN_PARTNER_DISTANCE)
                         StartBreedingWithPartner(aphid);
                     else
                         aphid.Skin.DoWalkAnim(); // waiting animation
@@ -640,15 +639,18 @@ public partial class Aphid : CharacterBody2D
         }
         public static void StartLayingEgg(Aphid aphid, Aphid _father = null)
         {
-            _father ??= aphid;
-            _ = _father.Skin.DoDance();// let your partner do a lil dance
+            bool _isAlone = !IsInstanceValid(_father);
+            if (!_isAlone)
+                _ = _father.Skin.DoDance();
+            else
+                _father = aphid;
+            
             Task _dance = aphid.Skin.DoDance();
-
             _dance.ContinueWith((_task) =>
             {
                 Callable _layEgg = Callable.From(() =>
                 {
-                    aphid.LayAnEgg(aphid.Instance, true);
+                    aphid.LayAnEgg(_father.Instance, _isAlone);
                 });
                 _layEgg.CallDeferred();
             });
@@ -664,6 +666,7 @@ public partial class Aphid : CharacterBody2D
         public class BreedTrigger : IInteractionEvent
         {
             public Aphid breed_partner;
+            public Vector2 position_for_partner;
             private readonly List<Node2D> ignored = [], alreadyChecked = [];
 
             public void OnTrigger(Aphid _myAphid, Node2D _incomingNode, StringNames.GlobalTags _nodeTag)
@@ -709,8 +712,10 @@ public partial class Aphid : CharacterBody2D
 
                 breed_partner = _partner;
                 _partner.Instance.Status.BreedMode = BreedMode.AsPartner;
+                position_for_partner = _myAphid.GlobalPosition + (_myAphid.Skin.IsFlipped ? new(-40, -5) : new(40, -5));
                 _partner.SetState(StateEnum.Breed, new BreedArgs()
-                { position = _myAphid.GlobalPosition + (_myAphid.Skin.IsFlipped ? new(-40, -5) : new(40, -5)) });
+                    { position = position_for_partner });
+
                 _partner.Skin.DoHop();
                 GlobalManager.EmitParticles("heart", _partner.GlobalPosition, false);
             }

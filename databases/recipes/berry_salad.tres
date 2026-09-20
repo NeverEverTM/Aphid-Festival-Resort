@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://c6jl318s1q01j"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_83ob4"]
+[ext_resource type="Resource" uid="uid://db3fe3vrac52l" path="res://databases/food/berry.tres" id="2_qxu72"]
+[ext_resource type="Resource" uid="uid://pmxbsmfg78wb" path="res://databases/food/leaf.tres" id="3_gkgp4"]
+[ext_resource type="Resource" uid="uid://0vd4s8hpe6j3" path="res://databases/items/berry_salad.tres" id="4_nmxut"]
+[ext_resource type="Resource" uid="uid://clb30u7nkprr" path="res://databases/food/leaf_salad.tres" id="4_qxu72"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_d6bu6"]
+[ext_resource type="Resource" uid="uid://c8vdniuehpe40" path="res://databases/food/roasted_berries.tres" id="5_gkgp4"]
+
+[resource]
+script = ExtResource("5_d6bu6")
+Owner = ExtResource("4_nmxut")
+Combinations = Array[Array]([Array[ExtResource("1_83ob4")]([ExtResource("2_qxu72"), ExtResource("3_gkgp4")]), Array[ExtResource("1_83ob4")]([ExtResource("2_qxu72"), ExtResource("4_qxu72")]), Array[ExtResource("1_83ob4")]([ExtResource("5_gkgp4"), ExtResource("3_gkgp4")]), Array[ExtResource("1_83ob4")]([ExtResource("5_gkgp4"), ExtResource("4_qxu72")])])

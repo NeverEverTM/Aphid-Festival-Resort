@@ -477,15 +477,16 @@ internal partial class GlobalManager : Node2D
 		public static Vector2 GetRandomVector_X(float _rangeMin, float _rangeMax, float _Y = 0) => new(RNG.RandfRange(_rangeMin, _rangeMax), _Y);
 		public static Vector2 GetRandomVector_Y(float _rangeMin, float _rangeMax, float _X = 0) => new(_X, RNG.RandfRange(_rangeMin, _rangeMax));
 
-		public static string GetTooltipText(string _id)
+		public static string GetTooltip(string _id, bool _includeFoodStats = false)
 		{
-			return Instance.Tr(_id + "_name") + "\n" +
-				Instance.Tr(_id + "_desc");
-		}
-		public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
-		{
-			DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-			return dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+			if (_includeFoodStats && G_FOOD.TryGetValue(_id, out FoodData _data))
+			{
+				return Instance.Tr(_id + "_name") + "@" + Instance.Tr(_id + "_desc")  + "\n"
+					+ $"{StringNames.HungerIcon}{_data.FoodValue} {StringNames.ThirstIcon}{_data.DrinkValue}"
+					+ $" ([color={AphidData.FlavorColors[(int)_data.Flavor]}]{Instance.Tr("food_flavor_" + (int)_data.Flavor)}[/color])";
+			}
+			else 
+				return Instance.Tr(_id + "_name") + "@" + Instance.Tr(_id + "_desc");
 		}
 		/// <summary>
 		/// Calls the listeners on the refered list with the given arguments, can optionally clear the list of all listeners after doing so.

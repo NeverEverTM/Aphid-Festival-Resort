@@ -1,0 +1,105 @@
+[gd_scene load_steps=4 format=3 uid="uid://xisl5sxxrauc"]
+
+[ext_resource type="Texture2D" uid="uid://by731h48tm8a0" path="res://sprites/icons/abomihoney.tres" id="1_owjd4"]
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_xnr3n"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fq5lk"]
+
+[node name="food_slot" type="NinePatchRect"]
+self_modulate = Color(1, 0.31, 0.31, 1)
+custom_minimum_size = Vector2(850, 50)
+offset_right = 500.0
+offset_bottom = 50.0
+texture = ExtResource("1_xnr3n")
+patch_margin_left = 20
+patch_margin_top = 5
+patch_margin_right = 20
+patch_margin_bottom = 5
+
+[node name="icon" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 12.0
+offset_top = 5.0
+offset_right = 52.0
+offset_bottom = 45.0
+texture = ExtResource("1_owjd4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="food" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_right = 163.0
+offset_bottom = 50.0
+theme_type_variation = &"RTL_SWhite"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fq5lk")
+bbcode_enabled = true
+text = "F: 100"
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="water" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 173.0
+offset_right = 269.0
+offset_bottom = 50.0
+theme_type_variation = &"RTL_SWhite"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fq5lk")
+bbcode_enabled = true
+text = "W: 100"
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="flavor" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 269.0
+offset_right = 361.0
+offset_bottom = 50.0
+theme_type_variation = &"RTL_SWhite"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fq5lk")
+bbcode_enabled = true
+text = "[color=yellow]Sour[/color]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="tier" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 364.0
+offset_right = 434.0
+offset_bottom = 50.0
+theme_type_variation = &"RTL_SWhite"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fq5lk")
+bbcode_enabled = true
+text = "Tier 1"
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="cost" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 456.0
+offset_right = 560.0
+offset_bottom = 50.0
+theme_type_variation = &"RTL_SWhite"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fq5lk")
+bbcode_enabled = true
+text = "C: 100"
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="skills" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 534.0
+offset_right = 839.0
+offset_bottom = 50.0
+theme_type_variation = &"RTL_SWhite"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fq5lk")
+bbcode_enabled = true
+text = "S 1 A 1 I 1 E 1"
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1

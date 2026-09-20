@@ -50,7 +50,7 @@ public partial class ShopInterface : MenuControl
 		itemName.Text = Tr($"store_{GetShopTagName()}_name");
 		itemDescription.Text = Tr($"store_{GetShopTagName()}_desc");
 		itemCost.Text = Tr($"store_{GetShopTagName()}_phrase");
-		currencyLabel.Text = Player.Data.Currency.ToString();
+		currencyLabel.Text = CanvasManager.GetCurrencyFormat();
 		itemIcon.Texture = defaultIcon;
 		itemBuyButton.Hide();
 		CreateShelfFromList();
@@ -158,7 +158,7 @@ public partial class ShopInterface : MenuControl
 	protected virtual void Purchase()
 	{
 		Player.RemoveCurrency(current_item.Cost);
-		currencyLabel.Text = Player.Data.Currency.ToString();
+		currencyLabel.Text = CanvasManager.GetCurrencyFormat();
 		SoundManager.CreateSound("ui/kaching");
 	}
 	public string GetShopTagName() => shopTag.ToString().ToLower();

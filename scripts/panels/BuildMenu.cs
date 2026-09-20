@@ -89,7 +89,7 @@ public partial class BuildMenu : Control
 		{
 			TextureButton _item = itemContainer.Instantiate<TextureButton>();
 			string _structure = Player.Data.Storage[i];
-			_item.TooltipText = GlobalManager.Utils.GetTooltipText(_structure);
+			_item.TooltipText = GlobalManager.Utils.GetTooltip(_structure);
 			(_item.GetChild(1) as TextureRect).Texture = GlobalManager.GetIcon(_structure);
 			_item.Pressed += () => GrabFromStorage(_structure, _item);
 			storageContainer.AddChild(_item);

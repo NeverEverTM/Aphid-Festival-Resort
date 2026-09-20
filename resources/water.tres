@@ -1,0 +1,33 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://c716q45xreim7"]
+
+[ext_resource type="Shader" uid="uid://dmhlykjpl60jb" path="res://scripts/shaders/water.gdshader" id="1_e6mqs"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tvjqf"]
+noise_type = 2
+seed = 100
+frequency = 0.0147
+cellular_distance_function = 3
+cellular_return_type = 6
+domain_warp_type = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_voy8x"]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_tvjqf")
+seamless = true
+invert = true
+in_3d_space = true
+seamless_blend_skirt = 1.0
+
+[resource]
+shader = ExtResource("1_e6mqs")
+shader_parameter/noise = SubResource("NoiseTexture2D_voy8x")
+shader_parameter/scroll_speed = 0.10000000475
+shader_parameter/buoyancy = 2.0
+shader_parameter/tile_size = Vector2(32, 32)
+shader_parameter/pixelization_strength = 75
+shader_parameter/sensitivity = 0.3290000156275
+shader_parameter/sensitivity_reflection = 0.76400003629
+shader_parameter/foam_color = Color(0.41421, 0.784691, 0.933781, 1)
+shader_parameter/shadow_color = Color(0.183114, 0.554392, 0.689628, 1)
+shader_parameter/reflection_color = Color(1, 1, 1, 1)

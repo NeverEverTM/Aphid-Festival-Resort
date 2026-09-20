@@ -359,6 +359,8 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 	/// </summary>
 	public virtual void HighlightHarvest()
 	{
+		if (harvest_effect != null)
+			return;
 		last_material = Skin.Material;
 		Skin.Material = ResourceLoader.Load<ShaderMaterial>("uid://b5q5fbeq3dilm");
 		harvest_effect = GlobalManager.EmitParticles("harvest", new(), this, false);

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://b270tkgaimx6u"]
+
+[ext_resource type="Script" uid="uid://ypo8rjv678ql" path="res://scripts/resources/FoodData.cs" id="1_ipkv0"]
+[ext_resource type="Resource" uid="uid://db3fe3vrac52l" path="res://databases/food/berry.tres" id="2_bawhr"]
+[ext_resource type="Resource" uid="uid://tqr4clao4cij" path="res://databases/food/honey_drop.tres" id="3_dq2rp"]
+[ext_resource type="Resource" uid="uid://b6xnudllhu78l" path="res://databases/food/glazed_honey.tres" id="4_bawhr"]
+[ext_resource type="Resource" uid="uid://dgb4c1l83l5y7" path="res://databases/items/berry_jam.tres" id="4_ncdv0"]
+[ext_resource type="Script" uid="uid://estbxxjo0lcl" path="res://scripts/resources/RecipeData.cs" id="5_1bx3l"]
+[ext_resource type="Resource" uid="uid://c8vdniuehpe40" path="res://databases/food/roasted_berries.tres" id="5_dq2rp"]
+
+[resource]
+script = ExtResource("5_1bx3l")
+Owner = ExtResource("4_ncdv0")
+Combinations = Array[Array]([Array[ExtResource("1_ipkv0")]([ExtResource("2_bawhr"), ExtResource("3_dq2rp")]), Array[ExtResource("1_ipkv0")]([ExtResource("2_bawhr"), ExtResource("4_bawhr")]), Array[ExtResource("1_ipkv0")]([ExtResource("5_dq2rp"), ExtResource("3_dq2rp")]), Array[ExtResource("1_ipkv0")]([ExtResource("5_dq2rp"), ExtResource("4_bawhr")])])

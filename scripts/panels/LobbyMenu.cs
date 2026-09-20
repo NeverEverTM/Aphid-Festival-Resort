@@ -236,6 +236,7 @@ public partial class LobbyMenu : Control
 
         _slot.Pressed += () =>
         {
+            SoundManager.CreateSound("ui/button_switch");
             ShowUpgrade(_upgrade);
         };
         _slot.MouseEntered += () =>

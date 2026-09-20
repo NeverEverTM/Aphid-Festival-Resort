@@ -7,7 +7,7 @@ using static AphidData;
 /// <summary>
 /// Contains all data related to a single aphid, plus some functions to control its behaviour during active/pasive time.
 /// </summary>
-public class AphidInstance
+public class AphidInstance(Guid GUID)
 {
     // MARK: SAVEDATA VARIABLES
     /// <summary>
@@ -21,19 +21,14 @@ public class AphidInstance
     /// <summary>
     /// ID of the aphid
     /// </summary>
-    public Guid GUID { get; set; }
+    public Guid GUID { get; set; } = GUID;
     /// <summary>
     /// ID of the aphid
     /// </summary>
     public string ID { get => GUID.ToString(); }
 
-    public AphidInstance(Guid GUID)
-    {
-        this.GUID = GUID;
-        Start();
-    }
-
     // RUNTIME VARIABLES
+
     /// <summary>
     /// The current active entity in the scene, if the scene doesn't spawn them then it will return null/invalid.
     /// </summary>

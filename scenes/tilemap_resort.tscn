@@ -36,7 +36,6 @@ size = Vector2(96, 16)
 y_sort_enabled = true
 script = ExtResource("1_a4k14")
 ColorCube = NodePath("globalFilter")
-AffectedByColorCube = true
 TopLeft = NodePath("tilemap_layers/topleft")
 BottomRight = NodePath("tilemap_layers/bottomright")
 
@@ -375,25 +374,31 @@ position = Vector2(1, -81)
 position = Vector2(115, -268)
 
 [node name="paper_lantern" parent="structurePit" instance=ExtResource("14_634x3")]
-position = Vector2(687, 591)
+position = Vector2(766, 603)
 
 [node name="paper_lantern2" parent="structurePit" instance=ExtResource("14_634x3")]
-position = Vector2(-911, 386)
+position = Vector2(-914, -116)
 
 [node name="paper_lantern3" parent="structurePit" instance=ExtResource("14_634x3")]
-position = Vector2(964, 306)
+position = Vector2(973, -74)
+
+[node name="paper_lantern9" parent="structurePit" instance=ExtResource("14_634x3")]
+position = Vector2(973, 294)
 
 [node name="paper_lantern4" parent="structurePit" instance=ExtResource("14_634x3")]
-position = Vector2(-912, -195)
+position = Vector2(-906, 344)
 
 [node name="paper_lantern5" parent="structurePit" instance=ExtResource("14_634x3")]
-position = Vector2(207, 535)
+position = Vector2(211, 564)
 
 [node name="paper_lantern6" parent="structurePit" instance=ExtResource("14_634x3")]
-position = Vector2(958, -203)
+position = Vector2(977, -413)
 
 [node name="paper_lantern7" parent="structurePit" instance=ExtResource("14_634x3")]
-position = Vector2(-333, 505)
+position = Vector2(-605, 514)
+
+[node name="paper_lantern8" parent="structurePit" instance=ExtResource("14_634x3")]
+position = Vector2(-173, 533)
 
 [node name="stump" parent="structurePit" instance=ExtResource("15_8vvyk")]
 position = Vector2(710, -192)

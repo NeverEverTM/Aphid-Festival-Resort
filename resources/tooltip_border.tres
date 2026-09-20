@@ -1,0 +1,13 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://be6ghctf8tpoh"]
+
+[ext_resource type="Texture2D" uid="uid://ccbyegabk431u" path="res://sprites/ui/backgrounds/menu_border.png" id="1_judql"]
+
+[resource]
+texture = ExtResource("1_judql")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(0.48825467, 0.07313398, 0.27021182, 1)

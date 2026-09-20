@@ -273,7 +273,6 @@ public partial class Aphid : CharacterBody2D
             BaseTime = Harvest_Cooldown;
             TimeLeft = Harvest_Cooldown - Instance.Status.HarvestBuildup;
             OneShot = true;
-            IsStopped = Instance.Status.IsReadyForHarvest;
         }
         public override void Update(float _delta)
         {
