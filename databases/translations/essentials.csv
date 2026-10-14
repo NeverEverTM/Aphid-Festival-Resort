@@ -177,6 +177,7 @@ lobby_category_aphid,Aphids,Áfidos
 lobby_category_upgrades,Upgrades,Mejoras
 lobby_category_stats,Statistics,Estadísticas
 lobby_aphid_noaphids,No Aphids to show,No Áfidos para mostrar
+lobby_aphid_lastone,You can’t sell your last aphid!,¡No puedes vender tu ultimo áfido!
 lobby_upgrade_buy,Purchase,Comprar
 lobby_upgrade_upgrade,Upgrade,Mejorar
 lobby_upgrade_cost,Cost,Costo

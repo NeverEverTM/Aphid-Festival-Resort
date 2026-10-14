@@ -12,18 +12,19 @@ job_adrun,"Needing some advertising on the go!
 No skills required, just a lot of enthusiasm!","Necesitamos publicidad!
 No se necesitan habilidades, solo un monton de entusiasmo!"
 job_deliveryrun,"In need of delivery bugs. We need them now and fast!
-We got lots of packages already, so please contact us as soon as you can.","Necesitamos bichos de servicio. Ahora o nunca!
-Tenemos varios paquetes acumulados, así que porfavor, contactenos lo más rapido que pueda."
+We got lots of packages already, so please contact us as soon as you can.","Necesitamos bichos de servicio ¡Urgentemente!
+Tenemos varios pedidos acumulados, porfavor comuniquese
+con nosotros tan pronto como pueda."
 job_schoolrent,"Looking to rent an aphid for a school class. The children would love it!
-Just need it to be well behaved. ","Viendo si puedo rentar un áfido para una clase.
-Estoy segura que a los chicos les encantara!
-Solo lo necesito que sea bien portado."
-job_treasurehunter,"There's lots of treasure hidden beneath the sands.
-We could do with a few lil scavengers.","Hay varios tesoros enterados debajo de las arenas.
-Nos podrian ser utiles un par de recolletores."
+Just need it to be well behaved. ","Considerando rentar un áfido para una clase en el salon.
+¡Estoy segura que a los chicos les encantara! 
+Tan solo necesito que tenga buen comportamiento."
+job_treasurehunter,"Lots of treasures to be found within the sands, whatever we can’t see,
+the little ones sure will.","El desierto esta repleto de tesoros por descubrir, cualquier cosa
+que no podamos ver, seguro que los pequeñuelos lo haran."
 job_therapyservice,"Requesting aphids for general therapy and support services.
-Only requirement is for them to understand my orders.","Requerio áfidos para fines de terapia y servicios de salud.
-Unico requerimiento es que entiendan mis ordenes."
+Only requirement is for them to understand our commands.","Solicitud de áfidos para fines de terapia y servicios de salud.
+Unico requerimiento es que entiendan nuestras ordenes."
 job_landwork,"Local workers needing a hand for land renovation!
 Cleaning the area is gonna be hard so, any strong arms appreciated.","Trabajadores locales necesitan una mano para renovación de parcela!
 Limpiar el area sera duro, pero cualquier par de brazos fuertes se agradece."
@@ -31,8 +32,9 @@ job_mowweed,"Having a problem with unwanted plant residents!
 Need someone who can slice the life out of this weeds.","Tengo un problema con inquilinos plantiferos no deseados!
 Necesito alguien que pueda cortar estas hierbas desde la raiz."
 job_berrytransport,"Berry transport cargo in need of mules.
-We'll even give you a part of the supply as thanks! (Just don't tell the queen)","Transporte de cargamento de bayas en necesidad de mulas.
-Te daremos una parte del encargo como agradecimiento! (Solo no lo digas a la reina)"
+We'll even give you a part of the supply as thanks! (Just don't tell the queen)","Transporte de bayas en necesidad de mulas.
+Te daremos una parte del encargo como agradecimiento!
+(Solo no se lo menciones a la reina)"
 job_lostrescue,Emergency crew in need of a trained searcher for the rescue of lost explorers.,"Equipo de emergencia requiere de un buscador entrenado
 para el rescate de exploradores perdidos."
 job_tunnelwork,"Work in the tunnels is getting rough.
@@ -44,19 +46,27 @@ Responded a esta solicitud si crees tener lo que necesito."
 job_bridgerepair,"Requesting assistance for bridge repair operation.
 The stronger, the better.","Se requiere asistencia para la reparación de puentes.
 Cuanto más fuerte, mejor."
-job_chompyplay,"Requesting a playmate for Chompy, let it be known, she plays rough.
-Looking forward to it.",WIP
-job_queenrequest,"The queen has requested to see one of your aphids from the resort.
-She states that “they look like little adorable fellas” and such demands a demonstration.
-Bring one of great mind alike!",WIP
-job_chompfight,"The chomp infestation is getting out of hands.
-Requesting the strongest bugs the settlement can send, quick!",WIP
+job_chompyplay,"Need a playmate for Chompy, let it be known, she plays rough.
+Looking forward to what you bring."," Chompy necesita un amigo con el que jugar,
+y que se sepa que tiende a jugar rudo.
+Los esperarmos con ansia."
+job_queenrequest,"The queen has requested one of the prestigious aphids from the resort.
+She states that “they look like little adorable fellas” and demands to see it.
+Bring one of such honor as our queen!","La reina ha pedido ver a uno de los tantos prestigiosos áfidos del complejo.
+Con el motivo de “ver a los preciosos pequeñines hacer trucos”
+¡Traer uno al calibre de su majestad!"
+job_chompfight,"Chomp infestation is getting out of hands.
+Asking for the strongest bugs the settlement can send, and quick!","Infestacion de mordedores se esta saliendo de control.
+Pedimos a los bicho más poderosos que puedan enviar, ¡y rapido!"
 job_goldenhunt,"Going on a hunt for golden seedlings, and I will need a companion who is tougher than the toughies, smarter than the smarties,
-and sharper than the sharpies.",WIP
-job_pestcontrol,"Threat arises from the shadows, requesting strong companions for
-pest control.",WIP
-job_wizardfetch,"I need someone to go fetch me some ingredients, and it better be quick!
-Just leave them by the door.",WIP
+and sharper than the sharpies.","Tendre una cacería de semillines dorados y necesito compañeros
+que tengan madera de guerrero."
+job_pestcontrol,"Threats arises from the shadows, requesting strong companions for
+pest control.","Peligros acechan desde las sombras, se requiere de compañeros de caza
+para control de pestes."
+job_wizardfetch,"I don’t have time to go wandering around the lands, and some
+ol chump told me some of you can do me a favor.","No tengo tiempo de estar dando vueltas en estas tierras, pero una
+vieja polilla me ha dicho que ustedes me podrian hacer un favor."
 job_nesthunt,"Scout teams need to follow a trace for a potential nest of mantidflies, 
 and they could do with a bug with incredible hunting skills.",WIP
 job_campattack,"Attacks by the deadlanders have obliterated our camps.
@@ -65,5 +75,7 @@ job_adventure,"Adventuring deeper on unknown areas, and as the paths become more
 we need a companion who can wiggle us out of trouble.",WIP
 job_mothflyrequest,"(The request note is barely legible but you can see the crude drawing of an aphid)
 (It also has a berry symbol, so they pay for sure!)",WIP
-job_bosstest,Needing some test subjects for sustained battle simulations and I heard from a friend one of you could grant me one worthy subject.,WIP
-job_makitest,"Sir Maki is looking to “test” some newcomers with a rather eccentric way of combat, his idea, not mine!",WIP
+job_bosstest,"Needing some test subjects for sustained battle simulations
+and I heard from a friend one of you could grant me one worthy subject.",WIP
+job_makitest,"Sir Maki is looking to “test” some newcomers with a rather eccentric
+way of combat, his idea, not mine!",WIP

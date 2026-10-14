@@ -6,7 +6,7 @@
 script = ExtResource("1_arm1c")
 ID = "hot_bathtub"
 Type = 1
-Cost = 30
+Cost = 40
 TierRequirement = 2
 Category = 5
 Shop = 2

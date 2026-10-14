@@ -10,8 +10,8 @@ public partial class NewGameMenu : Control
 	[Export] private TextEdit resort_name_input, player_name_input, pronouns_input;
 	[Export] private Control popup_anchor;
 
-	[GeneratedRegex(@"\[.+?\]")]
-	private static partial Regex strip_bbcode();
+	[GeneratedRegex(@"[\(\)\[\]]")]
+	private static partial Regex remove_invalid_characters();
 	private const int resort_char_limit = 40, name_char_limit = 15, pronouns_char_limit = 25;
 	private MenuInstance menu;
 	private Dictionary<Control, Vector2> cached_positions = [];
@@ -48,7 +48,7 @@ public partial class NewGameMenu : Control
 		SoundManager.CreateSound("ui/key_type", false);
 
 		Tween _tween = _node.CreateTween();
-		_tween.TweenProperty(_node, "position", _node.Position + new Vector2(0,5), 0);
+		_tween.TweenProperty(_node, "position", _node.Position + new Vector2(0, 5), 0);
 		_tween.TweenProperty(_node, "position", _node.Position, 0.05f);
 	}
 
@@ -67,40 +67,53 @@ public partial class NewGameMenu : Control
 
 	public override void _Input(InputEvent @event)
 	{
-		bool _resortIsFocused = resort_name_input.HasFocus(),
-		_playerIsFocused = player_name_input.HasFocus(), _pronounsIsFocused = pronouns_input.HasFocus();
+		if (@event is not InputEventKey || !@event.IsPressed() || @event.IsEcho())
+			return;
 
-		if ((_resortIsFocused || _playerIsFocused || _pronounsIsFocused) && @event is InputEventKey && @event.IsPressed())
+		bool _resortIsFocused = resort_name_input.HasFocus(), _playerIsFocused = player_name_input.HasFocus(), _pronounsIsFocused = pronouns_input.HasFocus();
+		if (!_resortIsFocused && !_playerIsFocused && !_pronounsIsFocused)
+			return;
+
+		InputEventKey _input = @event as InputEventKey;
+		Key _inputKey = (Key)_input.Unicode;
+
+		// confirm input
+		if (_input.KeyLabel == Key.Enter || _input.KeyLabel == Key.Tab)
 		{
-			InputEventKey _input = @event as InputEventKey;
-
-			// confirm input
-			if (_input.KeyLabel == Key.Enter || _input.KeyLabel == Key.Tab)
-			{
-				if (_playerIsFocused)
-					pronouns_input.GrabFocus();
-				else if (_pronounsIsFocused)
-					resort_name_input.GrabFocus();
-				else
-					new_game_button.GrabFocus();
-				AcceptEvent();
-				SoundManager.CreateSound("ui/button_select");
-				return;
-			}
-
-			// allow character deletion and moving through ui
-			if (_input.KeyLabel == Key.Backspace || _input.KeyLabel == Key.Left || _input.KeyLabel == Key.Right)
-				return;
-
-			if ((_resortIsFocused && resort_name_input.Text.Length >= resort_char_limit) || // Resort Name Char Limit
-				(_playerIsFocused && player_name_input.Text.Length >= name_char_limit) || // Player Name Char Limit
-				(_pronounsIsFocused && (pronouns_input.Text.Split('/').Length > 4 // Pronouns Max Elements
-					|| pronouns_input.Text.Length >= pronouns_char_limit))) // Pronouns Char Limit
-			{
-				AcceptEvent();
-				SoundManager.CreateSound("ui/button_fail");
-			}
+			if (_playerIsFocused)
+				pronouns_input.GrabFocus();
+			else if (_pronounsIsFocused)
+				resort_name_input.GrabFocus();
+			else
+				new_game_button.GrabFocus();
+			AcceptEvent();
+			SoundManager.CreateSound("ui/button_select");
+			return;
 		}
+
+		// allow character deletion and moving through ui
+		if (_input.KeyLabel == Key.Backspace || _input.KeyLabel == Key.Left || _input.KeyLabel == Key.Right)
+			return;
+
+		// invalid keys
+		if (_inputKey == Key.Parenleft || _inputKey == Key.Parenright ||
+			_inputKey == Key.Bracketleft || _inputKey == Key.Bracketright ||
+			_inputKey == Key.Braceleft || _inputKey == Key.Braceright)
+		{
+			AcceptEvent();
+			SoundManager.CreateSound("ui/button_fail");
+		}
+
+		// char limits
+		if ((_resortIsFocused && resort_name_input.Text.Length >= resort_char_limit) || // Resort Name Char Limit
+			(_playerIsFocused && player_name_input.Text.Length >= name_char_limit) || // Player Name Char Limit
+			(_pronounsIsFocused && (pronouns_input.Text.Split('/').Length > 4 // Pronouns Max Elements
+				|| pronouns_input.Text.Length >= pronouns_char_limit))) // Pronouns Char Limit
+		{
+			AcceptEvent();
+			SoundManager.CreateSound("ui/button_fail");
+		}
+
 	}
 	private async void CreateResort()
 	{
@@ -128,7 +141,7 @@ public partial class NewGameMenu : Control
 	}
 	private bool SanitizeResortName(out string _resortName)
 	{
-		_resortName = resort_name_input.Text;
+		_resortName = remove_invalid_characters().Replace(resort_name_input.Text, string.Empty);
 
 		switch (_resortName)
 		{
@@ -141,11 +154,9 @@ public partial class NewGameMenu : Control
 #endif
 			case "MEDIC!":
 			case "medic!":
-				SoundManager.CreateSound("misc/medic_prognosis", false);
+				SoundManager.CreateSound("misc/medic_prognosis", false).VolumeDb = -20;
 				return false;
 		}
-
-		_resortName = strip_bbcode().Replace(_resortName, string.Empty);
 
 		// Invalid resort names
 		if (string.IsNullOrWhiteSpace(_resortName) || _resortName.EndsWith('.') || !_resortName.IsValidFileName())
@@ -165,9 +176,7 @@ public partial class NewGameMenu : Control
 	}
 	private string SanitizePlayerName()
 	{
-		string _playerName = player_name_input.Text;
-
-		_playerName = strip_bbcode().Replace(_playerName, string.Empty);
+		string _playerName = remove_invalid_characters().Replace(player_name_input.Text, string.Empty);
 
 		if (string.IsNullOrWhiteSpace(_playerName))
 			_playerName = StringNames.DefaultPlayerName;
@@ -176,11 +185,10 @@ public partial class NewGameMenu : Control
 	}
 	private string[] SanitizePronouns()
 	{
-		string[] _pronouns;
+		string _pronounInput = remove_invalid_characters().Replace(pronouns_input.Text, string.Empty);
+		string[] _pronouns = StringNames.DefaultPlayerPronouns;
 
-		if (string.IsNullOrWhiteSpace(pronouns_input.Text))
-			_pronouns = StringNames.DefaultPlayerPronouns;
-		else
+		if (!string.IsNullOrWhiteSpace(_pronounInput))
 			_pronouns = pronouns_input.Text.Split("/");
 		_pronouns[0].Capitalize();
 

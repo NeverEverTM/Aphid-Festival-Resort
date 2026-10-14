@@ -98,4 +98,12 @@ public static class StringNames
         EmptyStarIcon = "[img height=50]res://sprites/icons/empty_star.tres[/img]",
         StrengthIcon = "[img height=50]res://sprites/icons/strength.tres[/img]",
         UnknownIcon = "[img height=50]res://sprites/icons/unknown.tres[/img]";
+
+    public static readonly string[] SkillIcons =
+    [
+        "[img width=40]res://sprites/icons/speed.tres[/img]",
+        "[img width=40]res://sprites/icons/strength.tres[/img]",
+        "[img width=40]res://sprites/icons/intelligence.tres[/img]",
+        "[img width=40]res://sprites/icons/stamina.tres[/img]"
+    ];
 }

@@ -681,6 +681,7 @@ public partial class Player : CharacterBody2D
 			HeldItem.Entity_Aphid.Skin.SetFlipDirection(flip_direction ? Vector2.Right : Vector2.Left, true);
 			HeldItem.InitialOffset = HeldItem.Entity_Aphid.Skin.Position;
 
+			HeldItem.Entity_Aphid.Skin.KillCurrentTween();
 			SoundManager.CreateSound2D(HeldItem.Entity_Aphid.AudioDynamic_Idle, HeldItem.Entity_Aphid.GlobalPosition, true);
 		}
 

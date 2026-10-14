@@ -11,8 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="9_fmhb2"]
 
 [sub_resource type="Curve" id="Curve_n8f61"]
-_data = [Vector2(0, 0), 0.0, 3.7957885, 0, 0, Vector2(1, 1), 1.0861826, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 0), 0.0, 0.5877539, 0, 0, Vector2(0.2512195, 0.09727633), 1.3052709, 1.3052709, 0, 0, Vector2(1, 1), 0.50645435, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Animation" id="Animation_f8pk4"]
 length = 0.001

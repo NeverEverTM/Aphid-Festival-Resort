@@ -119,10 +119,8 @@ public partial class ItemViewer : Control, ItemMasterDB.ITab
 
         icon.Texture = ItemMasterDB.GET_ITEM_ICON(_data.ID, _data.Type);
 
-        item_stats.Text =
-                $"Category: {_data.Category}\n" +
-                $"Shop: {_data.Shop}([color=gold]{_data.ShopOrderPriority}[/color])\n" +
-                $"{ItemMasterDB.ICON_BERRY}[color=gold]{_data.Cost}[/color]({_data.Cost / 2}) (Tier {_data.TierRequirement})";
+        item_stats.Text = string.Format("Category: {0}\nShop: {1}([color=gold]{2}[/color])\n{3}{4}([color=gold]{5}[/color]) Tier {6}",
+            _data.Category, _data.Shop, _data.ShopOrderPriority, ItemMasterDB.ICON_BERRY, _data.Cost, _data.Cost / 2, _data.TierRequirement);
 
         SET_FOOD(_id);
         SET_RECIPES(_id);

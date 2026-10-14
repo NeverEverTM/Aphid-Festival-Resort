@@ -163,9 +163,6 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 
 		if (Instance.Status.IsReadyForHarvest) // Harvest behaviour
 		{
-			if (State.Is(StateEnum.Breed))
-				return;
-
 			if (State.Is(StateEnum.Sleep))
 				WakeUp(true);
 
@@ -176,13 +173,8 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 			if (IsBusy())
 				return;
 
-			// Get ANGY if awoken
-			if (State.Is(StateEnum.Sleep))
-			{
-				if (WakeUp(true)) // if it cant wake up, dont pet
-					SetState(StateEnum.Pet);
-			}
-			else
+			// Get ANGY if woken up, unless they cant be woken up
+			if (State.Is(StateEnum.Sleep) && WakeUp(true))
 				SetState(StateEnum.Pet);
 		}
 	}
@@ -309,6 +301,12 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 		SetState(StateEnum.Idle, new IdleState.IdleArgs(_position));
 		Skin.DoHop();
 	}
+	/// <summary>
+	/// Wakes up the aphid from sleep
+	/// </summary>
+	/// <param name="_forcefully">Will normally try to do so gently, forcing it will have a bondship cost</param>
+	/// <param name="_byPassHeavySleeper">Force them awake, even if they normally wouldnt budge</param>
+	/// <returns></returns>
 	public bool WakeUp(bool _forcefully = false, bool _byPassHeavySleeper = false)
 	{
 		if (!State.Is(StateEnum.Sleep))
@@ -320,7 +318,8 @@ public partial class Aphid : CharacterBody2D, IInteractableArea
 
 		if (!_forcefully)
 			return true;
-		Instance.AddAffection(-5);
+		if (!Instance.BoolFlags[AphidInstance.FlagsEnum.NoPettyBondshipLoss].Value)
+			Instance.AddBondship(-1);
 		GlobalManager.EmitParticles("anger", new(), this);
 		SoundManager.CreateSound2D("aphid/hurt", GlobalPosition, false);
 		return true;

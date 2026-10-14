@@ -42,7 +42,7 @@ public class AphidInstance(Guid GUID)
     /// List of timers that run on the background at all times, including when the aphid is not loaded in as an entity.
     /// </summary>
     public readonly List<CustomBaseTimer<AphidInstance>> Timers = [];
-    public enum FlagsEnum { IdleTimeMultiplier, RestTimeMultiplier, BreedTimeMultiplier, HarvestMultiplier, IsHeavySleeper, IsPicky, CanOvereat }
+    public enum FlagsEnum { IdleTimeMultiplier, RestTimeMultiplier, BreedTimeMultiplier, HarvestMultiplier, IsHeavySleeper, IsPicky, CanOvereat, NoPettyBondshipLoss }
     public readonly Dictionary<FlagsEnum, FloatFlag> FloatFlags = new()
     {
         { FlagsEnum.IdleTimeMultiplier, new() },

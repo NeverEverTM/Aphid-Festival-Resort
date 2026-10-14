@@ -6,6 +6,6 @@
 script = ExtResource("1_0qrt2")
 ID = "berry_juice"
 Type = 2
-Cost = 6
+Cost = 4
 Category = 1
 ShopOrderPriority = -1

@@ -133,7 +133,13 @@ public partial class ShopInterface : MenuControl
 		if (string.IsNullOrEmpty(current_item.ID))
 			return false;
 		if ((Player.Data.Currency - current_item.Cost) < 0)
+		{
+			currencyLabel.Modulate = new Color("red");
+			Tween _flashRed = CreateTween();
+			_flashRed.TweenProperty(currencyLabel, "modulate", new Color("white"), 0.2);
+			
 			return false;
+		}
 		return true;
 	}
 	/// <summary>
@@ -144,12 +150,7 @@ public partial class ShopInterface : MenuControl
 		if (CanPurchase())
 			Purchase();
 		else
-		{
-			currencyLabel.Modulate = new Color("red");
-			Tween _flashRed = CreateTween();
-			_flashRed.TweenProperty(currencyLabel, "modulate", new Color("white"), 0.2);
 			SoundManager.CreateSound("ui/button_fail");
-		}
 	}
 	/// <summary>
 	/// Override for what it should give/set for buying this shop's items.

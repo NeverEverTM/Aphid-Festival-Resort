@@ -54,10 +54,10 @@ tracks/1/keys = {
 "method": &"FlipAphidToTheRight"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOn"
 }, {
 "args": [],
-"method": &"SetWalk"
+"method": &"ToggleWalkOff"
 }]
 }
 

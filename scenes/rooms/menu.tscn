@@ -1,15 +1,17 @@
-[gd_scene load_steps=100 format=3 uid="uid://by6u0617yy7oe"]
+[gd_scene load_steps=102 format=3 uid="uid://by6u0617yy7oe"]
 
 [ext_resource type="Script" uid="uid://cesdis2vfhjmp" path="res://scripts/main_menu/MainMenu.cs" id="1_5e31e"]
 [ext_resource type="FontFile" uid="uid://bni8k8sk1r4bd" path="res://sprites/fonts/BubblegumSans-Regular.ttf" id="2_w3mwt"]
 [ext_resource type="PackedScene" uid="uid://cxjsuahuuuonu" path="res://scenes/tilemap_resort.tscn" id="3_7aeaj"]
 [ext_resource type="PackedScene" uid="uid://ckqm3dpr64x3k" path="res://scenes/prefabs/room_trigger.tscn" id="3_17y42"]
-[ext_resource type="Material" uid="uid://bw6b7xdwls5jh" path="res://resources/title_trans.tres" id="5_66y5n"]
+[ext_resource type="Material" uid="uid://bw6b7xdwls5jh" path="res://resources/title_materials/title_trans.tres" id="5_66y5n"]
 [ext_resource type="Script" uid="uid://y1wi3v5g1rvv" path="res://scripts/main_menu/StartMenu.cs" id="6_8loy6"]
-[ext_resource type="Material" uid="uid://dja8c35ub7hdb" path="res://resources/title_wave.tres" id="6_17y42"]
-[ext_resource type="Material" uid="uid://c8y1it4pga61m" path="res://resources/title_aro.tres" id="6_u2bl4"]
+[ext_resource type="Material" uid="uid://dja8c35ub7hdb" path="res://resources/title_materials/resort_title_default.tres" id="6_17y42"]
+[ext_resource type="Material" uid="uid://c8y1it4pga61m" path="res://resources/title_materials/title_ace.tres" id="6_u2bl4"]
 [ext_resource type="Texture2D" uid="uid://cdaeaycura48q" path="res://sprites/ui/logos/TITLE_APHID.png" id="7_55q3j"]
+[ext_resource type="Material" uid="uid://ynxhyar1a1ic" path="res://resources/title_materials/title_aro.tres" id="7_nqiqd"]
 [ext_resource type="Texture2D" uid="uid://b1qbwy4mto345" path="res://sprites/ui/logos/TITLE_FESTIVAL.png" id="8_55q3j"]
+[ext_resource type="Material" uid="uid://ctv82mrw6x6od" path="res://resources/title_materials/title_pan.tres" id="8_721kg"]
 [ext_resource type="Texture2D" uid="uid://v4b2uxe72p3y" path="res://sprites/ui/logos/github-mark-white.png" id="8_ao5k5"]
 [ext_resource type="Texture2D" uid="uid://cyp5ykw0lep0c" path="res://sprites/ui/logos/itchio-logo-textless-white.png" id="9_8g0pq"]
 [ext_resource type="Theme" uid="uid://c26milatu6udv" path="res://resources/default_theme.tres" id="9_76l0k"]
@@ -2002,8 +2004,7 @@ aphidButton = NodePath("title/title_aphid/aphid_button")
 secretButton = NodePath("title/title_festival/secret_button")
 githubButton = NodePath("bottom_bar/github")
 itchioButton = NodePath("bottom_bar/itch_io")
-trans_rights = ExtResource("5_66y5n")
-aro_flag = ExtResource("6_u2bl4")
+pride_flags = Array[Material]([ExtResource("5_66y5n"), ExtResource("6_u2bl4"), ExtResource("7_nqiqd"), ExtResource("8_721kg")])
 
 [node name="anim_player" type="AnimationPlayer" parent="CanvasLayer/start_panel"]
 libraries = {
@@ -2021,7 +2022,7 @@ anchor_bottom = 0.5
 offset_left = 213.5
 offset_top = -476.5
 offset_right = 913.5
-offset_bottom = 23.5
+offset_bottom = 23.499756
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -2061,6 +2062,7 @@ offset_bottom = 350.445
 pivot_offset = Vector2(251.5, 81)
 mouse_filter = 2
 texture = ExtResource("8_55q3j")
+stretch_mode = 4
 
 [node name="secret_button" type="TextureButton" parent="CanvasLayer/start_panel/title/title_festival"]
 layout_mode = 0
@@ -2069,6 +2071,20 @@ offset_top = 26.555
 offset_right = 321.0
 offset_bottom = 91.555
 focus_mode = 0
+
+[node name="title_festival_bg" type="TextureRect" parent="CanvasLayer/start_panel/title/title_festival"]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+light_mask = 0
+layout_mode = 0
+offset_left = -9.0
+offset_top = 7.0
+offset_right = 493.0
+offset_bottom = 162.0
+pivot_offset = Vector2(251.5, 81)
+mouse_filter = 2
+texture = ExtResource("8_55q3j")
+stretch_mode = 4
 
 [node name="title_resort" type="TextureRect" parent="CanvasLayer/start_panel/title"]
 light_mask = 0
@@ -2089,7 +2105,7 @@ layout_mode = 0
 offset_left = 126.0
 offset_top = 525.0
 offset_right = 553.0
-offset_bottom = 604.0
+offset_bottom = 604.00006
 mouse_filter = 1
 theme_override_constants/outline_size = 14
 theme_override_fonts/normal_font = ExtResource("2_w3mwt")
@@ -2106,7 +2122,7 @@ layout_mode = 0
 offset_left = -176.0
 offset_top = 531.0
 offset_right = 843.0
-offset_bottom = 586.0
+offset_bottom = 585.99994
 mouse_filter = 1
 theme = ExtResource("9_76l0k")
 theme_override_constants/outline_size = 14

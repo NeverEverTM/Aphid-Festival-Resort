@@ -6,7 +6,7 @@
 script = ExtResource("1_lauj5")
 ID = "jump_rope"
 Type = 1
-Cost = 25
+Cost = 30
 Category = 4
 Shop = 2
 ShopOrderPriority = 73

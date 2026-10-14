@@ -5,6 +5,7 @@ public partial class AphidSkin : Node2D
 {
 	[Export] public Sprite2D eyes, antenna, body, back_legs, front_legs;
 	private AphidInstance Instance;
+	private Tween current_tween;
 
 	/// <summary>
 	/// Used to keep track of eye expressions after blink.
@@ -106,6 +107,13 @@ public partial class AphidSkin : Node2D
 		tween.TweenProperty(this, _property, _finalVar, _duration);
 		return tween;
 	}
+	public void KillCurrentTween()
+	{
+		current_tween?.Pause();
+		current_tween?.CustomStep(double.PositiveInfinity);
+		current_tween?.Kill();
+		current_tween = null;
+	}
 
 	public virtual void DoWalkAnim()
 	{
@@ -153,6 +161,7 @@ public partial class AphidSkin : Node2D
 		Tween _jump = CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Cubic, "position", new Vector2(0, -20), 0.15f);
 		_jump.TweenInterval(0.05);
 		_jump.TweenSubtween(CreateAnimationTween(Tween.EaseType.In, Tween.TransitionType.Cubic, "position", new Vector2(0, 0), 0.25f * _dropIntensity));
+		current_tween = _jump;
 	}
 	/// <summary>
 	/// A smaller jump animation, a hop for the aphid.
@@ -160,10 +169,11 @@ public partial class AphidSkin : Node2D
 	/// <param name="_playSound"></param>
 	public void DoHop(bool _playSound = true)
 	{
-		Tween tween = CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, -5), 0.15f);
-		tween.Finished += () =>  CreateAnimationTween(Tween.EaseType.In, Tween.TransitionType.Bounce, "position", new Vector2(0, 0), 0.15f);
+		Tween _hop = CreateAnimationTween(Tween.EaseType.Out, Tween.TransitionType.Bounce, "position", new Vector2(0, -5), 0.15f);
+		_hop.Finished += () =>  CreateAnimationTween(Tween.EaseType.In, Tween.TransitionType.Bounce, "position", new Vector2(0, 0), 0.15f);
 		if (_playSound)
 			SoundManager.CreateSound2D("aphid/jump", GlobalPosition, true);
+		current_tween = _hop;
 	}
 	public async Task DoDance()
 	{
@@ -198,6 +208,7 @@ public partial class AphidSkin : Node2D
 
 		if (_playSound)
 			SoundManager.CreateSound2D("aphid/boing", GlobalPosition, true);
+		current_tween = _squish;
 		return _squish;
 	}
 }

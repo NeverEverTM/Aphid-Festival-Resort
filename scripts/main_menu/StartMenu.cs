@@ -14,13 +14,14 @@ public partial class StartMenu : Control
 	[ExportGroup("Cosmetics")]
 	[Export] private TextureRect titleAphid, titleFestival;
 	[Export] private TextureButton aphidButton, secretButton, githubButton, itchioButton;
-	[Export] private Material trans_rights, aro_flag; // the woke left? without saying goodbye?
+	[Export] private Material[] pride_flags;// the woke left? without saying goodbye?
 
 	public bool IsReady;
 	private bool is_busy;
 
 	private int isASecreeeeet;
 	private MenuInstance menu, credits_menu;
+	internal static List<MenuInstance> CACHED_MENU_INSTANCES = [];
 
 	public enum WheelCategories
 	{
@@ -57,6 +58,10 @@ public partial class StartMenu : Control
 		menu = new("start", anim_player);
 		_ = Menus.SetTo(menu);
 		credits_menu = new MenuInstance("credits", credits_player, null, null, null, true);
+		CreateWheelAction(WheelCategories.Options, options_panel.GetMenuInstance());
+		CreateWheelAction(WheelCategories.Controls, controls_panel.GetMenuInstance());
+		CreateWheelAction(WheelCategories.Credits, credits_menu);
+		CreateWheelAction(WheelCategories.Exit, MainMenu.Instance.ExitGame);
 
 		// miscellaneous
 		aphidButton.Pressed += () =>
@@ -76,21 +81,11 @@ public partial class StartMenu : Control
 			if (isASecreeeeet < 7)
 				isASecreeeeet++;
 			else
-			{
-				if (GD.Randf() > 0.5f)
-					titleFestival.Material = trans_rights;
-				else
-					titleFestival.Material = aro_flag;
-			}
+				titleFestival.Material = pride_flags[GlobalManager.RNG.RandiRange(0, pride_flags.Length - 1)];
 		};
 
 		if (DateTime.Now.Month == 6) // pride month!!!
-		{
-			if (GD.Randf() > 0.5f)
-				titleFestival.Material = trans_rights;
-			else
-				titleFestival.Material = aro_flag;
-		}
+			titleFestival.Material = pride_flags[GlobalManager.RNG.RandiRange(0, pride_flags.Length - 1)];
 
 		githubButton.Pressed += () =>
 			OS.ShellOpen("https://github.com/NeverEverTM/Aphid-Festival");
@@ -104,10 +99,7 @@ public partial class StartMenu : Control
 
 	public override void _Ready()
 	{
-		CreateWheelAction(WheelCategories.Options, options_panel.GetMenuInstance());
-		CreateWheelAction(WheelCategories.Controls, controls_panel.GetMenuInstance());
-		CreateWheelAction(WheelCategories.Credits, credits_menu);
-		CreateWheelAction(WheelCategories.Exit, MainMenu.Instance.ExitGame);
+		
 	}
 	public override void _UnhandledInput(InputEvent @event)
 	{
@@ -185,8 +177,11 @@ public partial class StartMenu : Control
 	}
 
 	// MARK: UI Handling
-	public static void CreateWheelAction(WheelCategories _key, MenuInstance _menu) =>
+	public static void CreateWheelAction(WheelCategories _key, MenuInstance _menu)
+	{
+		CACHED_MENU_INSTANCES.Add(_menu);
 		CreateWheelAction(_key, () => _ = Instance.Menus.SetTo(_menu));
+	}
 	public static void CreateWheelAction(WheelCategories _key, Action _action)
 	{
 		Instance.wheel_actions.Add(_key, _action);

@@ -246,6 +246,7 @@ public partial class AphidTraits : Aphid
         public override void OnStart(AphidInstance aphid)
         {
             aphid.Timers.Remove(aphid.Timers.Find((d) => d is BondshipDecay));
+            aphid.BoolFlags[AphidInstance.FlagsEnum.NoPettyBondshipLoss].Value = true;
         }
     }
     public class Fertile : ITrait

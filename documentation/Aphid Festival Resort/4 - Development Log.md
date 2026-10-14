@@ -16,6 +16,8 @@ Things that are on my mind but aren't currently being developed
 - Visual highlight over job board when a job is done
 - Mention breeding requirements in tutorial (optionally, Joy could talk about them)
 - Disallow selling aphids if you would have none left.
+- Item Pickup notification
+- Skill gain should have a proper VFX when it goes up a point/level
 ### Technical
 - refactor aphid animations and sprites to include individual legs + hat
 - expand player and aphid animations to be more flexible
@@ -30,7 +32,7 @@ Things that are on my mind but aren't currently being developed
 	- Display grid of recipe slots
 	- Maybe a search query?
 + aphid skill affinities which make them "lock in" into a single skill, plus a change of color accompanying this.
-+ aphid moodlets that signalize how they feel about certain things or what thye need
++ aphid moodlets that signalize how they feel about certain things or what they need
 + Trade Functionality
 	- Players would be able to generate a QR code with the genes (and status if it fits) of an aphid, which they can share with others. 
 	-  aphid trading will be either daily procedurally generated aphids by the game or with other players via qr codes (or both)

@@ -11,8 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://c01eajhe3mjpc" path="res://sprites/circle.svg" id="9_ru27g"]
 
 [sub_resource type="Curve" id="Curve_rqcp8"]
-_data = [Vector2(0, 0), 0.0, 0.0627683, 0, 0, Vector2(0.449405, 0.456604), 2.85283, 2.85283, 0, 0, Vector2(1, 1), -0.095692, 0.0, 0, 0]
-point_count = 3
+_data = [Vector2(0, 0), 0.0, 2.246487, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="Animation" id="Animation_e0ouy"]
 length = 0.001
@@ -108,7 +108,7 @@ _data = {
 [sub_resource type="LabelSettings" id="LabelSettings_be8mp"]
 font_size = 45
 
-[node name="controls_panel" type="Control" node_paths=PackedStringArray("anim_player", "scroll", "reset_bar", "reset_button", "controls", "animPlayer")]
+[node name="controls_panel" type="Control" node_paths=PackedStringArray("scroll", "reset_bar", "reset_button", "controls", "animPlayer")]
 visible = false
 modulate = Color(1, 1, 1, 0)
 light_mask = 0
@@ -125,7 +125,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_1a8ee")
 script = ExtResource("2_vx8d4")
-anim_player = NodePath("anim_player")
 scroll = NodePath("ScrollContainer")
 reset_bar = NodePath("ScrollContainer/Container/reset_bg/reset_button/reset_progress")
 reset_button = NodePath("ScrollContainer/Container/reset_bg/reset_button")

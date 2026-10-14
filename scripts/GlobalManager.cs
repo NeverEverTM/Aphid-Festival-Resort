@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Godot;
 
@@ -135,6 +136,7 @@ internal partial class GlobalManager : Node2D
 	{
 		try
 		{
+			Callable.From(CACHE_PARTICLES).CallDeferred();
 			await LOAD_DICTIONARY(ABSOLUTE_ICONS_PATH, (_id, _resource) => G_ICONS.Add(_id, _resource as Texture2D),
 				(_id) => !G_ICONS.ContainsKey(_id));
 			await LOAD_DICTIONARY_RECURSIVE(ABSOLUTE_SKINS_PATH, (_id, _resource) => G_SKINS.Add(_id, _resource as Texture2D),
@@ -145,7 +147,6 @@ internal partial class GlobalManager : Node2D
 			await LOAD_DICTIONARY(ABSOLUTE_FOODS_DB_PATH, (_id, _resource) => G_FOOD.Add(_id, _resource as FoodData));
 			await LOAD_LIST(ABSOLUTE_RECIPES_DB_PATH, (_resource) => G_RECIPES.Add(_resource as RecipeData));
 			await LOAD_DICTIONARY(ABSOLUTE_JOBS_DB_PATH, (_id, _resource) => { (_resource as JobData).ID = _id; G_JOBS.Add(_id, _resource as JobData); });
-			await CACHE_PARTICLES();
 
 			IsBusy = false;
 		}
@@ -229,7 +230,7 @@ internal partial class GlobalManager : Node2D
 	}
 #endif
 
-	private static async Task CACHE_PARTICLES()
+	private static async void CACHE_PARTICLES()
 	{
 		var _particleList = DirAccess.GetFilesAt(ABSOLUTE_PARTICLES_PATH);
 
@@ -369,14 +370,8 @@ internal partial class GlobalManager : Node2D
 	{
 		Control _popup = ResourceLoader.Load<PackedScene>(POPUP_WINDOW_SCENE).Instantiate() as Control;
 		_popup.Position = CameraManager.SCREEN_CENTER_CANVAS - _popup.Size / 2;
-		(_popup.GetChild(0) as Label).Text = Instance.Tr(_translation_key);
+		_popup.GetChild<RichTextLabel>(0).Text = Instance.Tr(_translation_key);
 		_parent.AddChild(_popup);
-		Timer _timer = new()
-		{
-			OneShot = true
-		};
-		_timer.Timeout += () => _popup.QueueFree();
-		_popup.AddChild(_timer);
 
 		Timer _vanish = new()
 		{
@@ -388,11 +383,11 @@ internal partial class GlobalManager : Node2D
 			tween.SetEase(Tween.EaseType.InOut);
 			tween.SetTrans(Tween.TransitionType.Linear);
 			tween.TweenProperty(_popup, "modulate", new Color(1, 1, 1, 0), 0.5f);
+			tween.TweenCallback(Callable.From(_popup.QueueFree));
 		};
-		_timer.AddChild(_vanish);
+		_popup.AddChild(_vanish);
 
 		_vanish.Start(1.5f);
-		_timer.Start(2);
 	}
 
 	public static class Utils
@@ -481,9 +476,29 @@ internal partial class GlobalManager : Node2D
 		{
 			if (_includeFoodStats && G_FOOD.TryGetValue(_id, out FoodData _data))
 			{
-				return Instance.Tr(_id + "_name") + "@" + Instance.Tr(_id + "_desc")  + "\n"
-					+ $"{StringNames.HungerIcon}{_data.FoodValue} {StringNames.ThirstIcon}{_data.DrinkValue}"
-					+ $" ([color={AphidData.FlavorColors[(int)_data.Flavor]}]{Instance.Tr("food_flavor_" + (int)_data.Flavor)}[/color])";
+				StringBuilder _builder = new();
+				_builder.Append(Instance.Tr(_id + "_name"));
+				_builder.Append('@');
+				_builder.Append(Instance.Tr(_id + "_desc"));
+				_builder.Append('\n');
+				if (_data.FoodValue != 0)
+				{
+					_builder.AppendFormat("{0}{1}", StringNames.HungerIcon, _data.FoodValue);
+					_builder.Append(' ');
+				}
+				if (_data.DrinkValue != 0)
+				{
+					_builder.AppendFormat("{0}{1}", StringNames.ThirstIcon, _data.DrinkValue);
+					_builder.Append(' ');
+				}
+				_builder.AppendFormat("([color={0}]{1}[/color])", AphidData.FlavorColors[(int)_data.Flavor], Instance.Tr("food_flavor_" + (int)_data.Flavor));
+				_builder.Append('\n');
+				foreach(var _pair in _data.Skills)
+				{
+					_builder.AppendFormat("{0} {1}", StringNames.SkillIcons[(int)_pair.Key], _pair.Value);
+					_builder.Append(' ');
+				}
+				return _builder.ToString();
 			}
 			else 
 				return Instance.Tr(_id + "_name") + "@" + Instance.Tr(_id + "_desc");

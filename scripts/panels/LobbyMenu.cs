@@ -135,6 +135,13 @@ public partial class LobbyMenu : Control
     }
     private void SellAphid()
     {
+        if (GameManager.Aphids.Count == 1)
+        {
+            GlobalManager.CREATE_POPUP("lobby_aphid_lastone", this);
+            SoundManager.CreateSound("ui/button_fail");
+            return;
+        }
+
         int _value = GetAphidValue(GameManager.Aphids[current_key]);
         Player.AddCurrency(_value);
         GameManager.RemoveAphid(current_key);
@@ -309,6 +316,11 @@ public partial class LobbyMenu : Control
 		    SoundManager.CreateSound("ui/kaching");
         }
         else
+        {
             SoundManager.CreateSound("ui/button_fail");
+            currencyLabel.Modulate = new Color("red");
+			Tween _flashRed = CreateTween();
+			_flashRed.TweenProperty(currencyLabel, "modulate", new Color("white"), 0.2);
+        }
     }
 }

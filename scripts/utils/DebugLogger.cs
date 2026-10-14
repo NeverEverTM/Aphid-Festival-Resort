@@ -47,32 +47,35 @@ public static class DebugLogger
 		if ((int)LogMode > (int)priority)
 			return;
 
-		string _time = DateTime.Now.ToString("hh:mm:ss");
-		StringBuilder _string = new("[{0}] {1} ");
-		_string.AppendJoin(" ", Array.ConvertAll(args, x => x.ToString()));
-		string _message = string.Format(_string.ToString(), _time, LOG_STARTERS[(int)priority]);
+		string _message = new StringBuilder(string.Format("[{0}] {1} ", DateTime.Now.ToString("hh:mm:ss"), LOG_STARTERS[(int)priority]))
+			.AppendJoin(" ", Array.ConvertAll(args, x => x.ToString()))
+			.ToString();
 
-		switch (priority)
+		Callable _printCall = Callable.From(() =>
 		{
-			case LogPriority.Warning:
-#if DEBUG
-				DebugConsole.Print("[color=yellow]" + _message + "[/color]");
-#endif
-				GD.PushWarning(_message);
-				break;
-			case LogPriority.Error:
-#if DEBUG
-				DebugConsole.Print("[color=red]" + _message + "[/color]");
-#endif
-				GD.PushError(_message);
-				break;
-			default:
-#if DEBUG
-				DebugConsole.Print(_message);
-#endif
-				GD.Print(_message);
-				break;
-		}
+			switch (priority)
+			{
+				case LogPriority.Warning:
+	#if DEBUG
+					DebugConsole.Print("[color=yellow]" + _message + "[/color]");
+	#endif
+					GD.PushWarning(_message);
+					break;
+				case LogPriority.Error:
+	#if DEBUG
+					DebugConsole.Print("[color=red]" + _message + "[/color]");
+	#endif
+					GD.PushError(_message);
+					break;
+				default:
+	#if DEBUG
+					DebugConsole.Print(_message);
+	#endif
+					GD.Print(_message);
+					break;
+			}
+		});
+		_printCall.CallDeferred();
 	}
 
 	[StackTraceHidden]

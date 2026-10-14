@@ -6,7 +6,7 @@
 script = ExtResource("1_a1tps")
 ID = "runmill"
 Type = 1
-Cost = 25
+Cost = 30
 TierRequirement = 1
 Category = 4
 Shop = 2

@@ -35,8 +35,8 @@
 [ext_resource type="Script" uid="uid://ct8bmr4iumtqp" path="res://scripts/panels/JobMenu.cs" id="25_7burb"]
 [ext_resource type="PackedScene" uid="uid://cr7ypl2glxegu" path="res://scenes/prefabs/ui/job_slot.tscn" id="26_kqy6y"]
 [ext_resource type="PackedScene" uid="uid://bjtr0loca80g8" path="res://databases/structures/pot_grass.tscn" id="26_qx61t"]
-[ext_resource type="Material" uid="uid://ls4kaj0fom6s" path="res://resources/job_completed.tres" id="27_dc3ka"]
-[ext_resource type="Material" uid="uid://dyerhwix2wmjn" path="res://resources/job_current.tres" id="28_m11w5"]
+[ext_resource type="Material" uid="uid://pxaiigtxjwdx" path="res://resources/job_completed.tres" id="27_7burb"]
+[ext_resource type="Material" uid="uid://dyerhwix2wmjn" path="res://resources/job_onprogress.tres" id="28_m11w5"]
 [ext_resource type="Texture2D" uid="uid://dypgkkm4rlb6u" path="res://sprites/ui/backgrounds/mosaic_menu_bg.png" id="29_gybo1"]
 [ext_resource type="PackedScene" uid="uid://dwbrrndkneyjs" path="res://scenes/prefabs/ui/news_post.tscn" id="29_tu0un"]
 [ext_resource type="Texture2D" uid="uid://dvogijqb7j12i" path="res://sprites/ui/backgrounds/menu_book.png" id="30_4b1th"]
@@ -720,13 +720,14 @@ shader_parameter/useModulateAlpha = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jkjy4"]
 shader = ExtResource("18_lvdgc")
-shader_parameter/top_wave_color = Color(0.739006, 0.776814, 0.975822, 1)
-shader_parameter/middle_wave_color = Color(0.728128, 0.922554, 1, 1)
-shader_parameter/bottom_wave_color = Color(0.704963, 0.818966, 1, 1)
-shader_parameter/bg_color = Color(0.811765, 0.886275, 1, 1)
-shader_parameter/line_width = 0.11
-shader_parameter/width = 2.1
+shader_parameter/wave_frequency = 2.60000003874312
+shader_parameter/line_width = 0.40999999083568
 shader_parameter/speed = 0.2
+shader_parameter/offset = 0.0
+shader_parameter/wave_range = 0.26999999396496
+shader_parameter/colors_used = 3
+shader_parameter/bg_color = Color(0.811765, 0.886275, 1, 1)
+shader_parameter/colors = PackedColorArray(1, 1, 1, 1, 0.65890944, 0.85837126, 1, 1, 0.7790457, 0.94119406, 0.99999994, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xv8rl"]
 
@@ -1758,7 +1759,16 @@ patch_margin_top = 20
 patch_margin_right = 20
 patch_margin_bottom = 20
 
-[node name="text_bg" type="NinePatchRect" parent="CanvasLayer/news_menu/panel" index="0"]
+[node name="text_bg_bg" type="TextureRect" parent="CanvasLayer/news_menu/panel" index="0"]
+self_modulate = Color(0, 0, 0, 0.28235295)
+layout_mode = 0
+offset_left = 26.0
+offset_top = 31.0
+offset_right = 1152.0
+offset_bottom = 639.0
+texture = ExtResource("4_io1qn")
+
+[node name="text_bg" type="TextureRect" parent="CanvasLayer/news_menu/panel" index="1"]
 self_modulate = Color(0.811765, 0.886275, 1, 1)
 clip_children = 2
 light_mask = 0
@@ -1768,11 +1778,8 @@ offset_left = 34.0
 offset_top = 33.0
 offset_right = 1141.0
 offset_bottom = 630.0
-texture = ExtResource("2_nneko")
-patch_margin_left = 20
-patch_margin_top = 20
-patch_margin_right = 20
-patch_margin_bottom = 20
+texture = ExtResource("4_io1qn")
+expand_mode = 2
 
 [node name="menu_decoration" type="TextureRect" parent="CanvasLayer/news_menu/panel/text_bg" index="0"]
 self_modulate = Color(0.303949, 0.734465, 0.814746, 0.25098)
@@ -1822,7 +1829,7 @@ text = " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lacin
 Etiam egestas leo nec risus varius, fermentum consectetur libero vestibulum. Phasellus ut sodales lectus, quis tincidunt eros. Suspendisse ligula neque, sollicitudin vel lacinia in, varius ut nulla. Integer maximus molestie diam vel semper. Curabitur tincidunt ut sapien in placerat. Pellentesque auctor tortor ac nisl rutrum, sed vehicula lacus posuere. Fusce euismod hendrerit dui, nec sodales dui varius a. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque feugiat sit amet diam non pulvinar. In volutpat est nisl, euismod feugiat diam sodales vel. Praesent sodales elementum finibus. Nunc sed dui elit. Aliquam dapibus, est quis eleifend finibus, diam neque efficitur nibh, ut efficitur ante sem ut eros. Donec quis nulla sit amet massa dapibus rhoncus at et leo. Phasellus viverra, odio sit amet ultricies hendrerit, enim ex lacinia dolor, in mollis turpis sapien quis mauris. "
 selection_enabled = true
 
-[node name="go_back" type="TextureButton" parent="CanvasLayer/news_menu/panel" index="1"]
+[node name="go_back" type="TextureButton" parent="CanvasLayer/news_menu/panel" index="2"]
 visible = false
 light_mask = 0
 layout_mode = 0
@@ -1853,7 +1860,7 @@ interactArea = NodePath("../../job_sign/jobs_trigger")
 animation_player = NodePath("job_player")
 slot_container = NodePath("slot_container/ScrollContainer/GridContainer")
 slot_prefab = ExtResource("26_kqy6y")
-job_completion_material = ExtResource("27_dc3ka")
+job_completion_material = ExtResource("27_7burb")
 job_current_material = ExtResource("28_m11w5")
 aphid_node = NodePath("job_display/background/background_frame/aphid_node")
 skill_bar_bg = NodePath("job_display/skills_bar")

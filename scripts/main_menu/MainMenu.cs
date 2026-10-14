@@ -24,8 +24,15 @@ public partial class MainMenu : Node2D
 	}
 	public async override void _Ready()
 	{
+		// initial asset load
 		if (!IsReady)
 		{
+			Task _assetLoad = Task.Run(GlobalManager.INTIALIZE_GAME_PROCESS);
+			// i do this to avoid a stutter when opening THESE menus in specific
+			for(int i = 0; i < StartMenu.CACHED_MENU_INSTANCES.Count; i++)
+				StartMenu.CACHED_MENU_INSTANCES[i].MenuPlayer.Play(StringNames.OpenAnim);
+
+			// intro animation
 			intro_animator.Play("start");
 			while (intro_animator.IsPlaying())
 			{
@@ -34,23 +41,26 @@ public partial class MainMenu : Node2D
 				await Task.Delay(1);
 			}
 			intro_animator.Play("loading");
-			await GlobalManager.INTIALIZE_GAME_PROCESS();
+			
+			// wait for assets and cached to load fully
+			for(int i = 0; i < StartMenu.CACHED_MENU_INSTANCES.Count; i++)
+				StartMenu.CACHED_MENU_INSTANCES[i].MenuPlayer.Play(StringNames.CloseAnim);
+			StartMenu.CACHED_MENU_INSTANCES.Clear();
+			await _assetLoad;
 
+			// menu reveal (player can see after this point)
 			intro_animator.Play("sweep");
 		}
 
 		SpawnBunchaOfAphidsForTheFunnies();
-		RandomNumberGenerator _rng = new();
-		DirectionForX = _rng.Randf() > 0.5f;
-		DirectionForY = _rng.Randf() > 0.5f;
-		CameraManager.ForceCameraPosition(GlobalManager.Utils.GetRandomVector(-300, 300));
-
+		InitBounceAnim();
+		
 		SoundManager.PlaySong("misc/title");
 		title_animator.Play("slide_down");
 
 		while (title_animator.IsPlaying())
 			await Task.Delay(1);
-		IsReady = true;
+		IsReady = true; // most processing waits until this is true
 	}
 	public override void _Process(double delta)
 	{
@@ -62,7 +72,7 @@ public partial class MainMenu : Node2D
 	{
 		if (string.IsNullOrWhiteSpace(OptionsManager.Settings.LastPlayedResort) || !DirAccess.DirExistsAbsolute(SaveSystem.ProfilePath))
 		{
-			GlobalManager.CREATE_POPUP("Could not find valid profile to continue", this);
+			GlobalManager.CREATE_POPUP("warning_invalid_resort", this);
 			return;
 		}
 
@@ -106,6 +116,13 @@ public partial class MainMenu : Node2D
 	}
 
 	// MARK: Cosmetic Interface
+	private void InitBounceAnim()
+	{
+		RandomNumberGenerator _rng = new();
+		DirectionForX = _rng.Randf() > 0.5f;
+		DirectionForY = _rng.Randf() > 0.5f;
+		CameraManager.ForceCameraPosition(GlobalManager.Utils.GetRandomVector(-300, 300));
+	}
 	private void DoBounceAnim()
 	{
 		if (CameraManager.Instance.GlobalPosition.X > MaxWanderDistanceX)

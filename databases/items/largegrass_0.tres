@@ -6,7 +6,7 @@
 script = ExtResource("1_qcuif")
 ID = "largegrass_0"
 Type = 1
-Cost = 4
+Cost = 2
 Category = 3
 Shop = 2
 ShopOrderPriority = 10

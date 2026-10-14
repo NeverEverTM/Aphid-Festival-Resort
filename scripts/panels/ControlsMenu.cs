@@ -111,8 +111,9 @@ public partial class ControlsMenu : MenuControl
 		// cancel the rebind
 		if (@event.IsActionPressed(InputNames.Escape))
 		{
-			SetBind(ControlsManager.Binds[current_action.Name], false);
+			SetBind(ControlsManager.Binds[current_action.Name]);
 			AcceptEvent();
+			SoundManager.CreateSound(fail_sound);
 			return;
 		}
 
@@ -131,17 +132,18 @@ public partial class ControlsMenu : MenuControl
 			(@event as InputEventMouseButton).DoubleClick = false;
 
 		// assign key if possible
-		if (@event is InputEventKey || _mouseEvent != null && _mouseEvent.Pressed)
+		if (@event is InputEventKey && !@event.IsEcho() && !(@event as InputEventKey).ShiftPressed || _mouseEvent != null && _mouseEvent.Pressed)
 		{
 			if (IsKeyDuplicated(@event))
 				return;
 
 			SetBind(@event);
+			SoundManager.CreateSound(select_sound);
 		}
 
 		AcceptEvent();
 	}
-	public void SetBind(InputEvent @event, bool _success = true)
+	public void SetBind(InputEvent @event)
 	{
 		is_remapping = false;
 
@@ -149,10 +151,6 @@ public partial class ControlsMenu : MenuControl
 		(current_action.FindChild("action") as RichTextLabel).Text = ControlsManager.GetActionName(@event);
 		current_action = null;
 		current_keybind = null;
-		if (_success)
-			SoundManager.CreateSound(select_sound);
-		else
-			SoundManager.CreateSound(fail_sound);
 	}
 	public override void _Process(double delta)
 	{
